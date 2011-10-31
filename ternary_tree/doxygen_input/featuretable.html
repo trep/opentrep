@@ -1,0 +1,61 @@
+<table bgcolor="#fbf9e5" border="1">
+<tr><th>Feature</th>
+  <th>Associative type</th>
+  <th>Prefix match</th>
+  <th>Longest match</th>
+  <th>Partial match</th>
+  <th>Hamming search</th>
+  <th>Iterators</th>
+  <th>Status</th></tr>
+<tr><th>DDJ</th>
+  <td>raw char* can be assigned</td>
+  <td>no</td>
+  <td>no</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>no (but tree printf dump function traverse() can easily be adapted)</td>
+  <td>Incomplete (singleton root)</td></tr>
+<tr><th>libtst</th>
+  <td>raw char*</td>
+  <td>no</td>
+  <td>no</td>
+  <td>no</td>
+  <td>no</td>
+  <td>no</td>
+  <td>Worked-out version of DDJ, but no searches</td></tr>
+<tr><th>Boost.Spirit</th>
+  <td>any type stored as managed ptr</td>
+  <td>yes?</td>
+  <td>no</td>
+  <td>no</td>
+  <td>no</td>
+  <td>no</td>
+  <td>Used only for parser name tables</td></tr>
+<tr><th>Kaiser</th>
+  <td>Any type ptr, deleted on key destroy</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>no?</td>
+  <td>no?</td>
+  <td>forward</td>
+  <td>Interesting design, but development discontinued "for performance reasons"</td></tr>
+<tr><th>pytst</th>
+  <td>Any type, copied</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>no</td>
+  <td>forward traversal calling back a "filter" functor</td>
+  <td>Under active development. Has SWIG wrappers.</td></tr>
+<tr><th>ekman</th>
+  <td>Any type, copied</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>yes</td>
+  <td>Bidirectional</td>
+  <td>Under development, test suite available</td></tr>
+</table><p>
+
+Our <tt>ternary_tree</tt> class adds combinatorial search and levenshtein_search.
+This could probably also be done using <b>pytst</b>, since any behaviour can be implemented by the traversal filter callback.

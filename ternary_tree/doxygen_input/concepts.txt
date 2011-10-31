@@ -1,0 +1,122 @@
+Tutorial
+
+In programming, a Concept is a set of formal requirements on input/output of a subsystem, or pre/post-conditions of 
+an operation, of complexity constraints and exceptional behaviour. 
+Note ye well the "complexity" bit. Since the specification of C++ STL, the complexity of operations on
+a type have been introduced as a proper feature of its concept, a full-citizenship part of type specification.
+(This diverges from the mathematical roots of programming, which defines types/concepts in purely structural terms 
+-- ie as long as an operation does not transgress countability or infinity boundaries, it doesn't matter a damn bit whether 
+it requires zero overhead or would enrol half the atoms in the universe to encode intermediate information. 
+Maths is not about bean counting.).
+
+Here we will discuss tree concepts in the common sense.
+The following are some definitions of terms as used in documentation of the Structured Containers library.
+The definitions given are stipulative, in that they do not purely document an existing usage, but unless an expert 
+tells me otherwise, I believe they should be made into when discussing trees and tries.
+
+
+Tree  =df  a directed acyclic graph of single-parented, multi-childed Nodes. Usually single-rooted, but this is not essential.
+	Stipulative: tree nodes have a fixed maximum number of children. 
+		An implementation constraint that has become ingrained in most programmers' understanding of the concept.
+	All trees can be reduced to (easily and naturally implemented by) a binary tree.
+
+We assume common terminology for the parts of Trees:
+	Root - a node designated as start point, from which other nodes are reachable as children, or children of children etc.
+		Single-rooted Tree - a Tree where all nodes are reachable from a single Root node.
+		Multi-rooted tree, or Forest - a Tree where several start nodes are designated.
+	Level N - the set of nodes that are at the same distance from Root. Every node at level 3 is reachable 
+		from the/a Root node by following exactly 3 child-node links.
+	Sibling - relation between any two nodes on the same Level.
+	Leaf - a node without children.
+	Fanout - the number of children that a node can have. This defines the maximum number of nodes at each level.
+
+Trie =df  A Tree where the nodes have a "alphabet"-sized (max) number of children, for some alphabet.
+	Typical alphabets are the English letters, Unicode, or the ACGT genetic bases.
+
+Tree nodes represent a full "key" of any [less-comparable] type.
+Tries store string-like keys; a Trie node does not store a full key, only a part of it. 
+A full key is represented by a leaf node and its path back to the/a root node.
+The reason for using Tries is that access to string-like keys is very fast - in principle linear in key length.
+Binary Trees over the same key is O(log n) where n is count of keys in the tree, with average key length
+as a constant factor.
+
+
+Ternary Search Tree (TST) is a space optimization for Tries.
+
+Because each path to a child of a Tree node takes up memory space, Trie nodes are very expensive
+if the alphabet is large. From the 3rd or 4th level on, most child-node links are empty.
+A TST constructs exactly the number of links existing at each level of a Trie.
+
+Graphics:
+Tree 
+			root==node==node==node
+				\\node==node     \\node==node
+
+Trie (6-letter alphabet: 123456)
+								  root
+        ______________||______________
+	    ||          ||          ||          ||          ||          ||
+	node1 (empty) node3 node4 node5 (empty)
+                           ______________||_____________
+						  ||          ||          ||         ||           ||          ||
+					 node1 node2 node3 node4 node5 node6
+
+Here we see the root node with 4/6 child links populated. Each child has 6 empty links, except the 5th child.
+The 5th child has 6/6 links filled, and each of its children has 0/6 children.
+In all there are 4+6 = 10 nodes, and 10*6 = 60 links. 
+Since a Trie only stores part of a key, the substantial information in each trie node is small, and the
+structure overhead - the links - is very large.
+
+This cries out for optimization. Several kinds of variable-sized nodes have been tried, but they usually
+end up with complex code to use and maintain, and thus squander the search speed which was the rationale
+for constructing Tries in the first place.
+
+
+TST is one such optimization. Here each trie node is constructed from much smaller nodes, but the
+code to use and maintain nodes is still fairly simple, so search speed is not badly compromised.
+Let's see the structure of the above tree:
+The exact runtime layout depends on insert order. If child 3 is inserted before child 1, child1 may become a
+"lower-child" child of child 2.
+Here we assume insertion order 4, 3, 5, 1 for the root
+
+					//node1
+			//node3
+root=node4
+			\\node5==(level2)
+
+level 2: assume insertion order 3,4,5,1,2,6
+
+						  //node1
+						//      \\node2
+level2.root=node3
+						\\node4
+								\\node5
+										\\node6
+
+
+Here we see 10 nodes, each with 3 child links. This means 30 links, ie half the link count of Trie.
+The space savings are of course even better for larger alphabets.
+(And in the Structured Containers implementation, the middle child link is omitted, so only 2*10=20 links are needed.)
+Given English alphabet Trie with the above sparse population, there would be 26*10 = 260 links in 
+the Trie (each Trie node has 26 child links), and still the same count of TST node-links (30, or 20).
+A Unicode Trie would have 10*2^16 links= 10*65536= 655 thousand links. A TST for Unicode again uses 30 (20) links only.
+
+Important points wrt TSTs and TST nodes.
+A. TST nodes have two different kinds of child links:
+	(1) Two same-level sibling links
+	(2) One next-level "proper" child link.
+
+B. TSTs generalizes Trie implementations.
+	Tries with any alphabet can be implemented by the same TST node type - no new type needs to be defined for new alphabets. 
+	(However a specialization is still often needed, since there must be a comparison function for the alphabet letters)
+
+C. TSTs are a hybrid of (binary) Tree and Trie.
+	In consequence of (A), TSTs combine the features of binary trees with Tries. 
+	TST nodes can be viewed as binary nodes with associated data, where the data is a link to a next-level binary tree
+	(that implements a trie node).
+		- Against this view one may note that the binary treelets have absolute size constraints (defined by 
+			count of letters in the implemented alphabet) - this is an "unnatural" constraint on a tree type.
+		- In support of the view one may note that search complexity is more like binary trees than pure Trie implementation.
+
+
+

@@ -1,0 +1,62 @@
+Todo list for the OpenTrep project
+----------------------------------
+
+* [25/06/2010] For date parsing, RememberTheMilk (RTM) gathers on a page
+  all the formats supported by its parser:
+  http://www.rememberthemilk.com/help/answers/basics/dateformat.rtm 
+
+* [06/09/2009] Add the data type (e.g., "GEO", "TIM", "AIR", "PAX")
+  in front of the Xapian document data (when indexing).
+
+* [06/09/2009] Create a new table for time-related data (e.g.,
+  "tue" for the code, and "en, tuesday" or "fr, mardi" for
+  the names).
+  Write the C++ code to take that new data into account.
+
+* [06/06/2009] Alter the parser so that when a suggestion is made for
+  a string, and when the suggestion for the same string minus a word
+  is different, the Levenshtein distance between the original suppresed
+  word and the "suggested" one (defined as the difference between the 
+  suggestions for the two strings) is something like nb_of_letters/3.
+
+* [06/09/2009] To allow searches like "ru" or "france", just add the
+  corresponding (country) keywords to the main airport of that country
+  (e.g., "par" for "fr"/"france" and "lon" for "uk"/"gb").
+
+* [06/09/2009] Create a table with the states and countries.
+  Write the C++ code adding all the state- and country-related keywords
+  to the geogrphical index (e.g., add the "texas" keyword to the "paris, tx"
+  element).
+
+* [01/08/2009] Write a (Python-based) PSP page, in order to test the
+  different locales of the browsers.
+The Python (PSP) page has been created, but there is still some work 
+to do in order to adapt it to the new API (with extra and alternate
+locations).
+
+* [14/08/2009] With the ICU library, check the encoding of the input,
+  and convert it to Unicode if needed (see the test/i18n/icuustring
+  and test/i18n/icuconv samples for example). First detect and convert
+  hard-coded strings, then do it on the output of PSP pages.
+
+* [14/08/2009] Write a transliterator, taking UTF-8 Cyrillic input
+  (e.g., Russian and/or Ukrainian) and romanising/transliterating
+  it. Note that there is good transliterator sample within the ICU
+  Subversion repository
+  (http://source.icu-project.org/repos/icu/icu/trunk/source/samples/translit).
+
+* [14/08/2009] With the ICU library, convert UTF-8 encoded strings to
+  lower cases.
+OK
+
+* [01/08/2009] Finish the work on bringing extra and additional
+  Location objects into the API.
+OK
+
+* [01/08/2009] In the search batch, when looking in the database, do
+  it based on the airport/city code, rather than on the Xapian
+  document ID. That way, no database update will be necessary when
+  re-indexing, and any search from any Xapian index will find the
+  corresponding result details within the database. The easiest way is
+  to extract the first three letters of the Xapian document data.
+OK
