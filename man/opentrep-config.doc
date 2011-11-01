@@ -1,0 +1,65 @@
+/*!
+
+\page opentrep-config
+	Configuration Script for the C++ Travel Request Parsing (TREP) Library
+
+\section sec_synopsis SYNOPSIS
+<b>opentrep-config</b> <tt>[--prefix] [--version] [--libs] [--cflags]</tt>
+
+\section sec_description DESCRIPTION
+
+\e opentrep-config is a tool that is used by configure to determine the
+compiler and linker flags that should be used to compile and link
+programs that use \e Opentrep. It is also used internally by the .m4
+macros, that are included with \e Opentrep, for GNU autoconf.
+
+\section sec_options OPTIONS
+
+\e opentrep-config accepts the following options:
+
+ \b --help<br>
+    Display this help and exit
+
+ \b --prefix<br>
+    Show the Opentrep installation prefix.
+
+ \b --version<br>
+    Print the currently installed version of Opentrep on the standard output.
+
+ \b --libs<br>
+    Print the linker flags that are necessary to link with the Opentrep library.
+
+ \b --cflags<br>
+    Print the compiler flags that are necessary to compile with the
+    Opentrep library.
+
+ \b --sampledir<br>
+    Show where the (StdAir CSV) sample files are located.
+
+ \b --mandir<br>
+    Show where the manual pages are located.
+
+ \b --infodir<br>
+    Show where the information pages are located.
+
+ \b --docdir<br>
+    Show the documentation base directory.
+
+ \b --htmldocpath<br>
+    Show where the HTML documentation is located.
+
+ \b --refmanpath<br>
+    Show where the PDF documentation is located.
+
+\section sec_see_also SEE ALSO
+ \b opentrep-indexer(1), \b opentrep-searcher(1), \b boost-config(1), \b opentrep-library(3)
+
+\section sec_copyright COPYRIGHT
+
+Copyright © 2009-2011 Denis Arnaud
+
+See the COPYING file for more information on the (LGPLv2+) license, or
+directly on Internet:<br>
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+*/

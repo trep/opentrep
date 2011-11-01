@@ -1,6 +1,5 @@
-// C
-#include <cassert>
 // STL
+#include <cassert>
 #include <stdexcept>
 #include <fstream>
 #include <sstream>

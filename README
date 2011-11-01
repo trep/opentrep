@@ -1,33 +1,93 @@
 
-Building the library and test binary from Subversion repository:
+Summary:
+--------
+OpenTREP aims at providing a clean API, and the corresponding C++
+implementation, for parsing travel-focused requests (e.g.,
+"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog").
+
+OpenTREP uses Xapian (http://www.xapian.org) for the Information Retrieval part,
+on freely available travel-related data (e.g., country names and codes,
+city names and codes, airline names and codes, etc.).
+
+OpenTREP exposes a simple, clean and object-oriented, API. For instance,
+the static Parse() method takes, as input, a string containing the travel
+request, and yields, as output, the list of the recognised terms as well as
+their corresponding types. As an example, the travel request
+"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog" would give
+the following list:
+  * Origin airport: Washington, DC, USA
+  * Destination airport: Beijing, China
+  * Date of travel: next Monday
+  * Date of return: 1 week after next Monday
+  * Preferred airline: American Airlines; non-preferred airline: United Airlines
+  * Number of travellers: 2 adults and a dog
+
+The output can then be used by other systems, for instance to book the
+corresponding travel or to visualise it on a map and calendar and to
+share it with others.
+
+OpenTREP makes an extensive use of existing open-source libraries for
+increased functionality, speed and accuracy. In particular the
+Boost (C++ Standard Extensions: http://www.boost.org) library is used.
+
+
+Getting and installing from the Fedora/CentOS/RedHat distribution:
+------------------------------------------------------------------
+Just use Yum:
+yum -y install opentrep-devel opentrep-doc
+
+You can also get the RPM packages (which may work on Linux
+distributions like Novel Suse and Mandriva) from the Fedora repository
+(e.g., for Fedora 16, 
+http://fr2.rpmfind.net/linux/fedora/releases/16/Everything/)
+
+
+Building the library and test binary from Git repository:
 ----------------------------------------------------------------
-The Sourceforge Git repository is to be found here:
-git clone git://opentrep.git.sourceforge.net/gitroot/opentrep/opentrep opentrepgit
+The Sourceforge Git repository may be cloned as following:
+git clone ssh://opentrep.git.sourceforge.net/gitroot/opentrep/opentrep opentrepgit
+cd opentrepgit
+git checkout trunk
 
-Note that the 'db' sub-directory maps to the 'trepdb' sub-branch of the
-OpenTravelData project (e.g., on GitHub: git@github.com:opentraveldata/optd.git).
-
-Then, you need the following packages (Fedora Core 6 names here, 
+Then, you need the following packages (Fedora/RedHat/CentOS names here, 
 but names may vary according to distributions):
-  * libtool, autoconf, automake
-  * gettext-devel
+  * cmake
   * gcc-c++
   * boost-devel
+  * readline-devel
+  * soci-mysql-devel
+  * python-devel
+  * gettext-devel
   * doxygen
   * tetex-latex (optional)
-  * rpm-build
+  * rpm-build (optional)
 
 Building the library and test binary from the tarball:
 ------------------------------------------------------
 The latest stable source tarball (opentrep*.tar.gz or .bz2) can be found here:
 http://sourceforge.net/project/showfiles.php?group_id=252803
 
-Then, as usual, you can just type the following sequence:
-"./configure --prefix=/home/user/dev/deliveries/opentrep-0.1.0 && make && make check && cd test && ./testLibsh"
-Of course, if you want to install the library (libopentrep*.so*),
-just type: "make install".
+Then, as usual:
+* To configure the project, type something like:
+  mkdir build && cd build
+  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/opentrep-99.99.99 \
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ..
+* To build the project, type:
+  make
+* To test the project, type:
+  make check
+* To install the library (libopentrep*.so*) and the binary (opentrep), just type:
+  make install
+* To package the source files, type:
+  make dist
+* To package the binary and the documentation:
+  make package
+* To run the local binary version:
+  ./opentrep/opentrep -b
+* To run the installed version (the first following line must be done once
+  per session):
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/dev/deliveries/opentrep-99.99.99/lib
+  /home/user/dev/deliveries/opentrep-99.99.99/bin/opentrep -b
 
-See the INSTALL file for more details.
-
-Denis Arnaud (February 2009)
+Denis Arnaud (October 2011)
 

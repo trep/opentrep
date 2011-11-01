@@ -10,7 +10,13 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  Place::Place () : _world (NULL), _placeHolder (NULL), _mainPlace (NULL) {
+  Place::Place () :
+    _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
+    _placeCode (""), _cityCode (""), _stateCode (""), _countryCode (""),
+    _regionCode (""), _continentCode (""), _timeZoneGroup (""),
+    _longitude (0.0), _latitude (0.0), _originalKeywords (""),
+    _correctedKeywords (""), _docID (0),
+    _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
   
   // //////////////////////////////////////////////////////////////////////

@@ -281,37 +281,30 @@ namespace OPENTREP {
     // Create a PlaceHolder object, to collect the matching Place objects
     PlaceHolder& lPlaceHolder = FacPlaceHolder::instance().create();
 
-    try {
+    // Make the database
+    Xapian::Database lXapianDatabase (iTravelDatabaseName);
 
-      // Make the database
-      Xapian::Database lXapianDatabase (iTravelDatabaseName);
+    // Create a ResultHolder object
+    ResultHolder& lResultHolder =
+      FacResultHolder::instance().create (iTravelQuery, lXapianDatabase);
 
-      // Create a ResultHolder object
-      ResultHolder& lResultHolder =
-        FacResultHolder::instance().create (iTravelQuery, lXapianDatabase);
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG (std::endl
-                          << "=========================================");
+    // DEBUG
+    OPENTREP_LOG_DEBUG (std::endl
+                        << "=========================================");
       
-      // Main algorithm
-      DocumentList_T lDocumentList;
-      lResultHolder.searchString (lDocumentList, ioWordList);
+    // Main algorithm
+    DocumentList_T lDocumentList;
+    lResultHolder.searchString (lDocumentList, ioWordList);
 
-      /** Create the list of Result objects corresponding to the list
-          of documents. */
-      createResults (lDocumentList, lXapianDatabase, lResultHolder);
+    /** Create the list of Result objects corresponding to the list
+        of documents. */
+    createResults (lDocumentList, lXapianDatabase, lResultHolder);
 
-      /** Create the list of Place objects, for each of which a
-          look-up is made in the SQL database (e.g., MySQL or Oracle)
-          to retrieve complementary data. */
-      createPlaces (lResultHolder, ioSociSession, lPlaceHolder);
+    /** Create the list of Place objects, for each of which a
+        look-up is made in the SQL database (e.g., MySQL or Oracle)
+        to retrieve complementary data. */
+    createPlaces (lResultHolder, ioSociSession, lPlaceHolder);
       
-    } catch (const Xapian::Error& error) {
-      OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
-      throw XapianDatabaseFailureException();
-    }  
-
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
                         << "========================================="

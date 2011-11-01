@@ -8,6 +8,7 @@
 #include <vector>
 #include <exception>
 // Boost
+#include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 // OpenTrep
 #include <opentrep/bom/World.hpp>
@@ -53,91 +54,84 @@ namespace OPENTREP {
   addDocumentToIndex (Xapian::WritableDatabase& ioDatabase,
                       Place& ioPlace) {
 
-    try {
+    // Build a Xapian document
+    Xapian::Document lDocument;
     
-      // Build a Xapian document
-      Xapian::Document lDocument;
-    
-      // The document data is indeed meta-data, allowing a human being
-      // to read it
-      lDocument.set_data (ioPlace.toString());
+    // The document data is indeed meta-data, allowing a human being
+    // to read it
+    lDocument.set_data (ioPlace.toString());
       
-      /* When the city code is empty, it means that the place is a city and
-         not an airport. The city code is thus the same as the place code
-         itself. It is added twice to the indexing terms, so that when the
-         user searches for that term, the corresponding city get more weight
-         compared to the airports of the same city.
-      */
-      const std::string& lPlaceCode = ioPlace.getPlaceCode();
-      const std::string& lCityCode = ioPlace.getCityCode();
-      const std::string lDBCityCode =
-        (lCityCode.empty())?lPlaceCode:lCityCode;
-      const std::string& lStateCode = ioPlace.getStateCode();
-      const std::string lDBStateCode = (lStateCode.empty())?"NA":lStateCode;
+    /* When the city code is empty, it means that the place is a city and
+       not an airport. The city code is thus the same as the place code
+       itself. It is added twice to the indexing terms, so that when the
+       user searches for that term, the corresponding city get more weight
+       compared to the airports of the same city.
+    */
+    const std::string& lPlaceCode = ioPlace.getPlaceCode();
+    const std::string& lCityCode = ioPlace.getCityCode();
+    const std::string lDBCityCode =
+      (lCityCode.empty())?lPlaceCode:lCityCode;
+    const std::string& lStateCode = ioPlace.getStateCode();
+    const std::string lDBStateCode = (lStateCode.empty())?"NA":lStateCode;
 
-      // Word index/position within the Xapian document
-      unsigned short idx = 1;
+    // Word index/position within the Xapian document
+    unsigned short idx = 1;
       
-      // Add indexing terms
-      lDocument.add_term (lPlaceCode); ++idx;
-      lDocument.add_term (lDBCityCode); ++idx;
-      lDocument.add_term (lDBStateCode); ++idx;
-      lDocument.add_term (ioPlace.getCountryCode()); ++idx;
-      lDocument.add_term (ioPlace.getRegionCode()); ++idx;
-      lDocument.add_term (ioPlace.getContinentCode()); ++idx;
-      lDocument.add_term (ioPlace.getTimeZoneGroup()); ++idx;
+    // Add indexing terms
+    lDocument.add_term (lPlaceCode); ++idx;
+    lDocument.add_term (lDBCityCode); ++idx;
+    lDocument.add_term (lDBStateCode); ++idx;
+    lDocument.add_term (ioPlace.getCountryCode()); ++idx;
+    lDocument.add_term (ioPlace.getRegionCode()); ++idx;
+    lDocument.add_term (ioPlace.getContinentCode()); ++idx;
+    lDocument.add_term (ioPlace.getTimeZoneGroup()); ++idx;
 
-      // Add terms to the spelling dictionnary
-      ioDatabase.add_spelling (lPlaceCode);
-      ioDatabase.add_spelling (lDBCityCode);
-      if (lStateCode.empty() == false) {
-        ioDatabase.add_spelling (lStateCode);
-      }
+    // Add terms to the spelling dictionnary
+    ioDatabase.add_spelling (lPlaceCode);
+    ioDatabase.add_spelling (lDBCityCode);
+    if (lStateCode.empty() == false) {
+      ioDatabase.add_spelling (lStateCode);
+    }
       
-      // Retrieve the place names in all the available languages
-      const NameMatrix_T& lNameMatrix = ioPlace.getNameMatrix ();
-      for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
-           itNameList != lNameMatrix.end(); ++itNameList) {
-        // Retrieve the language code and locale
-        const Language::EN_Language& lLanguage = itNameList->first;
-        const Names& lNames = itNameList->second;
+    // Retrieve the place names in all the available languages
+    const NameMatrix_T& lNameMatrix = ioPlace.getNameMatrix ();
+    for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
+         itNameList != lNameMatrix.end(); ++itNameList) {
+      // Retrieve the language code and locale
+      const Language::EN_Language& lLanguage = itNameList->first;
+      const Names& lNames = itNameList->second;
 
-        // Add that language code and locale to the Xapian document
-        lDocument.add_term (Language::getLongLabel (lLanguage)); ++idx;
+      // Add that language code and locale to the Xapian document
+      lDocument.add_term (Language::getLongLabel (lLanguage)); ++idx;
 
-        // For a given language, retrieve the list of place names
-        const NameList_T& lNameList = lNames.getNameList();
+      // For a given language, retrieve the list of place names
+      const NameList_T& lNameList = lNames.getNameList();
         
-        for (NameList_T::const_iterator itName = lNameList.begin();
-             itName != lNameList.end(); ++itName) {
-          const std::string& lName = *itName;
+      for (NameList_T::const_iterator itName = lNameList.begin();
+           itName != lNameList.end(); ++itName) {
+        const std::string& lName = *itName;
 
-          // Add the place name (it can be the classical one, or
-          // extended, alternate, etc.)
-          if (lName.empty() == false) {
-            // Add the full name (potentially containing spaces, e.g.,
-            // 'san francisco'), as well as each word
-            // within it (with the example above, 'san' and 'francisco').
-            lDocument.add_term (lName); ++idx;
-            ioDatabase.add_spelling (lName);
-            tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
+        // Add the place name (it can be the classical one, or
+        // extended, alternate, etc.)
+        if (lName.empty() == false) {
+          // Add the full name (potentially containing spaces, e.g.,
+          // 'san francisco'), as well as each word
+          // within it (with the example above, 'san' and 'francisco').
+          lDocument.add_term (lName); ++idx;
+          ioDatabase.add_spelling (lName);
+          tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
 
-            // OPENTREP_LOG_DEBUG ("Added name: " << lName);
-          }
+          // OPENTREP_LOG_DEBUG ("Added name: " << lName);
         }
       }
-      
-      // Add the document to the database
-      const Xapian::docid& lDocID = ioDatabase.add_document (lDocument);
-      
-      // Assign back the newly generated Xapian document ID to the
-      // Place object
-      ioPlace.setDocID (lDocID);
-      
-    } catch (const Xapian::Error& lXapianError) {
-      OPENTREP_LOG_ERROR ("Xapian error: "  << lXapianError.get_msg());
-      throw XapianException();
     }
+      
+    // Add the document to the database
+    const Xapian::docid& lDocID = ioDatabase.add_document (lDocument);
+      
+    // Assign back the newly generated Xapian document ID to the
+    // Place object
+    ioPlace.setDocID (lDocID);
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -146,60 +140,73 @@ namespace OPENTREP {
                     const TravelDatabaseName_T& iTravelDatabaseName) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
-    try {
-    
-      // Instanciate an empty place object, which will be filled from the
-      // rows retrieved from the database.
-      Place& lPlace = FacPlace::instance().create();
+    // Instanciate an empty place object, which will be filled from the
+    // rows retrieved from the database.
+    Place& lPlace = FacPlace::instance().create();
 
-      // Prepare and execute the select statement
-      soci::statement lSelectStatement (ioSociSession);
-      DBManager::prepareSelectFromCodeStatement (ioSociSession,
-                                                 lSelectStatement, lPlace);
+    // Prepare and execute the select statement
+    soci::statement lSelectStatement (ioSociSession);
+    DBManager::prepareSelectFromCodeStatement (ioSociSession,
+                                               lSelectStatement, lPlace);
 
-      // Create the Xapian database (index)
-      Xapian::WritableDatabase lDatabase (iTravelDatabaseName,
-                                          Xapian::DB_CREATE_OR_OVERWRITE);
+    // Check that the directory for the Xapian database (index) exists and,
+    // if not, create it.
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDatabaseName
+                        << "') will be cleared");
+    boost::filesystem::remove_all (iTravelDatabaseName);
+    boost::filesystem::create_directory (iTravelDatabaseName);
 
-      // Start a transaction on the Xapian database (index)
-      lDatabase.begin_transaction();
+    // Create the Xapian database (index). As the directory has been fully
+    // cleaned, deleted and re-created, that Xapian database (index) is empty.
+    Xapian::WritableDatabase lDatabase (iTravelDatabaseName, Xapian::DB_CREATE);
 
-      // Iterate through the retrieved database rows
-      const bool shouldDoReset = true;
-      bool hasStillData = DBManager::iterateOnStatement (lSelectStatement,
-                                                         lPlace,
-                                                         shouldDoReset);
-      while (hasStillData == true) {
-        // Add the document, corresponding to the Place object, to the
-        // Xapian index
-        IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
+    // Iterate through the retrieved database rows
+    const bool shouldDoReset = true;
+    bool hasStillData = DBManager::iterateOnStatement (lSelectStatement,
+                                                       lPlace,
+                                                       shouldDoReset);
 
-        //
-        ++oNbOfEntries;
+    /**
+     * Begin a transation on the Xapian database (index).
+     *
+     * Normally, there are around 11,000 entries (rows/documents) to
+     * be indexed. Not specifying the beginning of a transaction would
+     * mean that every document addition would end up in a corresponding
+     * independant transaction, which would be very much inefficient.
+     */
+    lDatabase.begin_transaction();
+
+    while (hasStillData == true) {
+      // Add the document, corresponding to the Place object, to the
+      // Xapian index
+      IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
+
+      //
+      ++oNbOfEntries;
         
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
         
-        // Iterate on the MySQL database cursor
-        hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace,
-                                                      shouldDoReset);
-      }
-
-      // Commit the transaction on the Xapian database (index)
-      lDatabase.commit_transaction();
-    
-    } catch (const Xapian::Error& lXapianError) {
-      OPENTREP_LOG_ERROR ("Xapian error: "  << lXapianError.get_msg());
-      throw XapianException();
-      
-    } catch (const RootException& lTrepException) {
-      OPENTREP_LOG_ERROR ("General OpenTrep error: " << lTrepException.what());
-      throw RootException();
-      
-    } catch (const std::exception& lStdError) {
-      OPENTREP_LOG_ERROR ("Error: " << lStdError.what());
-      throw RootException();
+      // Iterate on the MySQL database cursor
+      hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace,
+                                                    shouldDoReset);
     }
+
+    // Commit the pending modifications on the Xapian database (index)
+    lDatabase.commit_transaction();
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Xapian has indexed " << oNbOfEntries << " entries.");
+
+    /**
+     * Close the Xapian database (index).
+     *
+     * \note For a yet unknown reason, when the current method is called within
+     *       the Boost Unit Test framework, that latter kills the process.
+     *       When called from within GDB, all is fine.
+     */
+    lDatabase.close();
 
     return oNbOfEntries;
   }

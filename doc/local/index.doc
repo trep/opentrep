@@ -1,0 +1,130 @@
+/*!
+\mainpage OpenTrep Documentation
+
+\htmlonly
+<!-- start of main block -->
+<div style="width: 100%;">
+<!-- start of right margin -->
+<div style="float:right; width:200px; background-color: #eeeeff; 
+     border: 1px solid #b0b0b0; margin: 0 0 10px 20px; padding: 10px; 
+     font-size: 90%;">
+\endhtmlonly
+
+\section getting_started Getting Started
+
+- \ref features
+- \ref installation
+- \ref linking
+- \ref users_guide
+- \ref tutorials
+- \ref copyright
+- \ref help_wanted
+- \ref howto_release
+- \ref authors
+
+\section at_sourceforge OpenTrep at SourceForge
+- <a href="http://sourceforge.net/projects/opentrep/">Project page</a>
+- <a href="http://sourceforge.net/project/showfiles.php?group_id=252803">Download OpenTrep</a>
+- <a href="https://sourceforge.net/apps/trac/opentrep/newticket">Open a ticket fora bug or feature</a>
+- <a href="http://sourceforge.net/mail/?group_id=252803">Mailing lists</a>
+- <a href="https://sourceforge.net/apps/phpbb/opentrep/">Forums</a>
+  - <a href="https://sourceforge.net/apps/phpbb/opentrep/viewforum.php?f=1">Discuss about Development issues</a>
+  - <a href="https://sourceforge.net/apps/phpbb/opentrep/viewforum.php?f=2">Ask for Help</a>
+  - <a href="https://sourceforge.net/apps/phpbb/opentrep/viewforum.php?f=3">Discuss OpenTrep</a>
+
+
+\section development OpenTrep Development
+- <a href="http://opentrep.git.sourceforge.net/git/gitweb.cgi?p=opentrep/opentrep;a=tree;h=refs/heads/trunk;hb=trunk">Git Repository</a> (Subversion is deprecated)
+- \ref coding_rules
+- \ref documentation
+- \ref test
+
+
+\section external_libs External Libraries
+- <a href="http://www.boost.org">Boost (C++ STL extensions)</a>
+- <a href="http://www.xapian.org/">Xapian (information retrieval made easy)</a>
+- <a href="http://www.python.org/">Python</a>
+- <a href="http://dev.mysql.com/">MySQL client</a>
+- <a href="http://soci.sourceforge.net/">SOCI (C++ DB API)</a>
+
+\section social_sponsorship Support OpenTrep
+\htmlonly
+<table width="100%">
+ <tr>
+  <td align="left" valign="middle">
+   <a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-via="denis_arnaud">Tweet</a>
+   <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+  </td>
+  <td align="right" valign="middle">
+   <g:plusone></g:plusone> 
+  </td>
+ </tr>
+</table>
+\endhtmlonly
+
+\htmlonly
+</div>
+<!-- end of right margin -->
+\endhtmlonly
+
+\section about About OpenTrep
+
+OpenTrep aims at providing a clean API, and the corresponding C++
+implementation, for parsing travel-focused requests (e.g.,
+"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog").  \ref N
+
+OpenTrep uses <a href="http://www.xapian.org">Xapian</a> for the Information
+Retrieval part, on freely available travel-related data (e.g., country names
+and codes, city names and codes, airline names and codes, etc.).
+
+OpenTrep exposes a simple, clean and object-oriented, API. For instance,
+the static Parse() method takes, as input, a string containing the travel
+request, and yields, as output, the list of the recognised terms as well as
+their corresponding types. As an example, the travel request
+"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog" would give
+the following list:
+  * Origin airport: Washington, DC, USA
+  * Destination airport: Beijing, China
+  * Date of travel: next Monday
+  * Date of return: 1 week after next Monday
+  * Preferred airline: American Airlines; non-preferred airline: United Airlines
+  * Number of travellers: 2 adults and a dog
+
+The output can then be used by other systems, for instance to book the
+corresponding travel or to visualise it on a map and calendar and to
+share it with others.
+
+OpenTrep makes an extensive use of existing open-source libraries for
+increased functionality, speed and accuracy. In particular the
+Boost (C++ Standard Extensions: http://www.boost.org) library is used.
+
+The OpenTrep library originates from the department of Operational
+Research and Innovation at <a
+href="http://www.amadeus.com">Amadeus</a>, Sophia Antipolis,
+France. OpenTrep is released under the terms of the <a
+href="http://www.gnu.org/licenses/lgpl-2.1.html">GNU Lesser General Public
+License</a> (LGPLv2.1) for you to enjoy.
+
+OpenTrep should work on
+<a href="http://en.wikipedia.org/wiki/GNU/Linux">GNU/Linux</a>,
+<a href="http://www.sun.com/software/solaris/">Sun Solaris</a>,
+Microsoft Windows (with <a href="http://www.cygwin.com/">Cygwin</a>,
+<a href="http://www.mingw.org/">MinGW/MSYS</a>, or 
+<a href="http://msdn.microsoft.com/visualc/">Microsoft Visual C++ .NET</a>) and
+<a href="http://www.apple.com/macosx/">Mac OS X</a> operating systems.
+
+\note
+\anchor N
+(N) - The OpenTrep library is \b NOT intended, in any way, to be used 
+for production systems. If you want to report issue, bug or feature request,
+or if you just want to give feedback, have a look on the right-hand side
+of this page for the preferred reporting methods.
+In any case, please do not contact Amadeus directly for any matter
+related to OpenTrep.
+
+\htmlonly
+</div>
+<!-- end of main block -->
+\endhtmlonly
+
+*/

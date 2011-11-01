@@ -1,0 +1,22 @@
+#
+# Config file for the AirRAC package. It defines the following variables:
+#  AIRRAC_VERSION      - version of AirRAC
+#  AIRRAC_BINARY_DIRS  - binary directories for AirRAC
+#  AIRRAC_INCLUDE_DIRS - include directories for AirRAC
+#  AIRRAC_LIBRARY_DIRS - library directories for AirRAC (normally not used!)
+#  AIRRAC_LIBRARIES    - libraries to link against
+#  AIRRAC_EXECUTABLES  - the AirRAC binaries/executables
+
+# Tell the user project where to find AirRAC headers and libraries
+set (AIRRAC_VERSION "@PACKAGE_VERSION@")
+set (AIRRAC_BINARY_DIRS "@AIRRAC_BIN_DIR@")
+set (AIRRAC_INCLUDE_DIRS "@AIRRAC_INCLUDE_DIRS@")
+set (AIRRAC_LIBRARY_DIRS "@AIRRAC_LIB_DIR@")
+
+# Library dependencies for AirRAC (contains definitions for the AirRAC IMPORTED
+# targets)
+include ("@AIRRAC_CMAKE_DIR@/airrac-library-depends.cmake")
+
+# These are the AirRAC IMPORTED targets, created by airrac-library-depends.cmake
+set (AIRRAC_LIBRARIES airraclib)
+set (AIRRAC_EXECUTABLES airrac)

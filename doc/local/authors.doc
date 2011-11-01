@@ -5,28 +5,28 @@
 \section admins Project Admins
 
 - Denis Arnaud <denis_arnaud@users.sourceforge.net> (\ref N)
-- Patrick Grandjean <pgrandjean@users.sourceforge.net> (\ref N)
+- Charles-Antoine Robelin <carobelin@users.sourceforge.net> (\ref N)
 
 
 \section developers Developers
 
-- Karim Duval <duvalkarim@users.sourceforge.net> (\ref N)
-- Ngoc-Thach Hoang <hoangngocthach@users.sourceforge.net> (\ref N)
+- Patrick Grandjean <pgrandjean@users.sourceforge.net> (\ref N)
 
 
 \section retired Retired Developers
 
-- Fabrice Bellard
+- Ngoc-Thach Hoang <hoangngocthach@users.sourceforge.net> (\ref N)
 
 
 \section contributors Contributors
 
-- Simon Martin (\ref N)
+- Emmanuel Bastien <ebastien@users.sourceforge.net> (\ref N)
 
 
 \section distributors Distribution Maintainers
 
--  Christopher Gragsone <maetrics@users.sourceforge.net> 
+- Denis Arnaud <denis_arnaud@users.sourceforge.net> (\ref N)
+- Emmanuel Bastien <ebastien@users.sourceforge.net> (\ref N)
 
 \note
 \anchor N

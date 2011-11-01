@@ -49,8 +49,8 @@ namespace OPENTREP {
     
     // ///////// Setters //////////
     /** Set the SOCI Session. */
-    void setSociSession (soci::session& ioSociSession) {
-      _sociSession = &ioSociSession;
+    void setSociSession (soci::session* ioSociSession_ptr) {
+      _sociSession = ioSociSession_ptr;
     }
 
     /** Set the World object (BOM root). */
