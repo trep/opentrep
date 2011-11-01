@@ -20,7 +20,7 @@ but names may vary according to distributions):
 Building the library and test binary from the tarball:
 ------------------------------------------------------
 The latest stable source tarball (opentrep*.tar.gz or .bz2) can be found here:
-http://sourceforge.net/project/showfiles.php?group_id=xxxxxx
+http://sourceforge.net/project/showfiles.php?group_id=252803
 
 Then, as usual, you can just type the following sequence:
 "./configure --prefix=/home/user/dev/deliveries/opentrep-0.1.0 && make && make check && cd test && ./testLibsh"
