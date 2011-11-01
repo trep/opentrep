@@ -4,6 +4,9 @@ Building the library and test binary from Subversion repository:
 The Sourceforge Git repository is to be found here:
 git clone git://opentrep.git.sourceforge.net/gitroot/opentrep/opentrep opentrepgit
 
+Note that the 'db' sub-directory maps to the 'trepdb' sub-branch of the
+OpenTravelData project (e.g., on GitHub: git@github.com:opentraveldata/optd.git).
+
 Then, you need the following packages (Fedora Core 6 names here, 
 but names may vary according to distributions):
   * libtool, autoconf, automake
