@@ -1,8 +1,8 @@
 #
-%define mydocs __tmp_docdir
+%global mydocs __tmp_docdir
 #
 Name:           opentrep
-Version:        99.99.99
+Version:        0.4.0
 Release:        1%{?dist}
 
 Summary:        C++ library providing a clean API for parsing travel-focused requests
@@ -11,16 +11,10 @@ Group:          System Environment/Libraries
 License:        LGPLv2+
 URL:            http://%{name}.sourceforge.net
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-BuildRequires:  gsl-devel >= 1.8
-BuildRequires:  boost-devel >= 1.34
-BuildRequires:  mysql-devel >= 5.0
-BuildRequires:  mysql++-devel >= 3.0
-BuildRequires:  cppunit-devel >= 1.10
-BuildRequires:  xapian-core-devel >= 1.0
-BuildRequires:  soci-devel >= 3.0
-#Requires:       
+BuildRequires:  cmake, python-devel, xapian-core-devel
+BuildRequires:  boost-devel, soci-mysql-devel
 
 %description
 %{name} aims at providing a clean API, and the corresponding C++
@@ -53,53 +47,53 @@ increased functionality, speed and accuracy. In particular the
 Boost (C++ Standard Extensions: http://www.boost.org) library is used.
 
 %package        devel
-Summary:        Header files, libraries and development documentation for %{name}
+Summary:        Header files, libraries and development helper tools for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       pkgconfig
-Requires(post): info
-Requires(preun): info
 
 %description    devel
-This package contains the header files, static libraries and
-development documentation for %{name}. If you would like to develop
+This package contains the header files, shared libraries and
+development helper tools for %{name}. If you would like to develop
 programs using %{name}, you will need to install %{name}-devel.
 
 %package        doc
-Summary:        HTML documentation for the @PACKAGE_NAME@ library
+Summary:        HTML documentation for the %{name} library
 Group:          Documentation
+%if 0%{?fedora} || 0%{?rhel} > 5
 BuildArch:      noarch
-BuildRequires:  doxygen, texlive-latex, texlive-dvips, ghostscript
+%endif
+BuildRequires:  tex(latex)
+BuildRequires:  doxygen, ghostscript
 
 %description    doc
-This package contains the documentation in the HTML format of the @PACKAGE_NAME@
-library. The documentation is the same as at the @PACKAGE_NAME@ web page.
+This package contains HTML pages, as well as a PDF reference manual,
+for %{name}. All that documentation is generated thanks to Doxygen
+(http://doxygen.org). The content is the same as what can be browsed
+online (http://%{name}.org).
 
 
 %prep
 %setup -q
-# find ./doc -type f -perm 755 -exec chmod 644 {} \;
-# Fix some permissions and formats
-rm -f INSTALL
-chmod -x ABOUT-NLS AUTHORS ChangeLog COPYING NEWS README
-find . -type f -name '*.[hc]pp' -exec chmod 644 {} \;
 
 
 %build
-%configure --disable-static
+%cmake .
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-%find_lang %{name}
-# remove unpackaged files from the buildroot
-rm -f $RPM_BUILD_ROOT%{_includedir}/%{name}/config.h
-rm -f $RPM_BUILD_ROOT%{_infodir}/dir
-rm -f $RPM_BUILD_ROOT%{_libdir}/lib%{name}.la
-# chmod 644 doc/html/installdox doc/html/*.png doc/html/*.ico
-rm -rf %{mydocs} && mkdir -p %{mydocs}
+
+# Fix some permissions
+find $RPM_BUILD_ROOT%{_libexecdir}/%{name} -type f -name '*.sh' -exec chmod +x {} \;
+
+mkdir -p %{mydocs}
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html %{mydocs}
+rm -f %{mydocs}/html/installdox
+
+%check
+ctest
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -108,21 +102,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun -p /sbin/ldconfig
 
-%post devel
-/sbin/install-info %{_infodir}/%{name}-ref.info.* %{_infodir}/dir || :
-
-%preun devel 
-if [ "$1" = 0 ]; then
-   /sbin/install-info --delete %{_infodir}/%{name}-ref.info.* %{_infodir}/dir || :
-fi
-
-%files -f %{name}.lang
+%files
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README
-%{_bindir}/%{name}_indexer
-%{_bindir}/%{name}_searcher
-%{_libdir}/lib*.so.*
-%{_mandir}/man3/%{name}.3.*
+%{_bindir}/%{name}-indexer
+%{_bindir}/%{name}-searcher
+%{_libdir}/lib%{name}.so.*
+%{_mandir}/man1/%{name}-indexer.1.*
+%{_mandir}/man1/%{name}-searcher.1.*
+%dir %{_libexecdir}/%{name}
+%{_libexecdir}/%{name}/*.sh
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/%{name}/db
+%dir %{_datadir}/%{name}/db/data
+%{_datadir}/%{name}/db/data/*.sql
+%{_datadir}/%{name}/db/data/*.csv
 
 %files devel
 %defattr(-,root,root,-)
@@ -131,16 +125,20 @@ fi
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_datadir}/aclocal/%{name}.m4
-%{_infodir}/%{name}-ref.info.*
+%{_datadir}/%{name}/CMake
 %{_mandir}/man1/%{name}-config.1.*
+%{_mandir}/man3/%{name}-library.3.*
 
 %files doc
 %defattr(-,root,root,-)
 %doc %{mydocs}/html
-%doc AUTHORS ChangeLog COPYING NEWS README
+%doc COPYING
 
 
 %changelog
+* Tue Nov 01 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.4.0-1
+- The build system is now based on CMake (instead of the GNU Autotools)
+
 * Sun Mar 29 2009 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.3.0-1
 - Now relies on the new SOCI RPM
 

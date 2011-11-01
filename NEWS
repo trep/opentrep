@@ -1,3 +1,12 @@
 * 2011-11-01:
-- Version 0.1.0
-- Release of RPMs for Fedora 15.
+- Version 0.4.0
+- The build system is now based on CMake (instead of the GNU Autotools)
+
+* 2009-03-29:
+- Version 0.3.0
+- Now relies on the new SOCI RPM
+
+* 2009-03-22:
+- Version 0.2.0
+- RPM release for Fedora 10
+
