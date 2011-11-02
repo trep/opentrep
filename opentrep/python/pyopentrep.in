@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys, getopt
-sys.path.append('/home/www/webapps/opentrep/trep/lib')
+sys.path.append('@INSTALL_LIB_DIR@')
 
 # Default search string
 defaultSearchString = 'sna francicso rio de janero lso angles reykyavki'
@@ -18,13 +18,14 @@ def usage(script_name):
 	print
 	print "Options:"
 	print "    -h, --help              : outputs this help and exits"
+	print "    -x, --xapiandb          : specifies the path to the Xapian DB (index)"
 	print "    -l, --long              : long output version"
 	print
 
 # Handle opt
 def handle_opt():
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hl", ["help", "long"])
+		opts, args = getopt.getopt(sys.argv[1:], "h:x:l:", ["help", "xapiandb=", "long"])
 	except getopt.GetoptError, err:
 		# print help information and exit:
 		print str(err) # will print something like "option -a not recognized"
@@ -37,22 +38,25 @@ def handle_opt():
 
 	# options
 	needDetails = False # default
+	xapianDBPath = "/home/www/webapps/opentrep/trep/traveldb"
 	for o, a in opts:
 		if o in ("-l", "--long"):
 			needDetails = True
+		elif o in ("-x", "--xapiandb"):
+			xapianDBPath = a
 		elif o in ("-h", "--help"):
 			usage(sys.argv[0])
 			sys.exit()
 		else:
 			assert False, "unhandled option"
-	return needDetails, searchString
+	return needDetails, xapianDBPath, searchString
 
-needDetails, searchString = handle_opt()
+needDetails, xapianDBPath, searchString = handle_opt()
 
 # Initialise the OpenTrep C++ library
 import libpyopentrep
 openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-openTrepLibrary.init('/home/www/webapps/opentrep/trep/traveldb', 'pyopentrep.log', 'opentrep', 'opentrep', 'localhost', '3306', 'trep_opentrep')
+openTrepLibrary.init (xapianDBPath, 'pyopentrep.log', 'geo', 'geo', 'localhost', '3306', 'geo_geonames')
 
 # If no search string was supplied as arguments of the command-line,
 # ask the user for some
