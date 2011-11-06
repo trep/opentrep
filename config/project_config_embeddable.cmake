@@ -279,10 +279,6 @@ macro (get_external_libs)
       get_boost (${_arg_version})
     endif (${_arg_lower} STREQUAL "boost")
 
-    if (${_arg_lower} STREQUAL "xapian")
-      get_xapian (${_arg_version})
-    endif (${_arg_lower} STREQUAL "xapian")
-
     if (${_arg_lower} STREQUAL "readline")
       get_readline (${_arg_version})
     endif (${_arg_lower} STREQUAL "readline")
@@ -372,7 +368,13 @@ macro (get_python)
     message (STATUS "Requires PythonLibs without specifying any version")
   endif (${ARGC} GREATER 0)
 
+  # The first check searches for the libraries and include paths.
+  # However, on some older versions (e.g., on RedHat/CentOS 5.x),
+  # only the static library is searched.
   find_package (PythonLibs ${_required_version} REQUIRED)
+
+  # The second check is to get the dynamic library for sure.
+  find_package (PythonLibsWrapper ${_required_version} REQUIRED)
 
   if (PYTHONLIBS_FOUND)
 	# Derive the version of Python (for whatever reason, FindPythonLibs
@@ -468,28 +470,6 @@ macro (get_boost)
 
 endmacro (get_boost)
 
-# ~~~~~~~~~~ Xapian ~~~~~~~~~
-macro (get_xapian)
-  unset (_required_version)
-  if (${ARGC} GREATER 0)
-    set (_required_version ${ARGV0})
-    message (STATUS "Requires Xapian-${_required_version}")
-  else (${ARGC} GREATER 0)
-    message (STATUS "Requires Xapian without specifying any version")
-  endif (${ARGC} GREATER 0)
-
-  find_package (Xapian ${_required_version} REQUIRED)
-
-  if (XAPIAN_FOUND)
-    # Update the list of include directories for the project
-    include_directories (${XAPIAN_INCLUDE_DIR})
-
-    # Update the list of dependencies for the project
-    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${XAPIAN_LIBRARIES})
-  endif (XAPIAN_FOUND)
-
-endmacro (get_xapian)
-
 # ~~~~~~~~~~ Readline ~~~~~~~~~
 macro (get_readline)
   unset (_required_version)
@@ -552,7 +532,8 @@ macro (get_soci)
   find_package (SOCIMySQL ${_required_version} REQUIRED)
   if (SOCIMYSQL_FOUND)
     #
-    message (STATUS "Found SOCI with MySQL back-end support version: ${SOCI_VERSION}")
+    message (STATUS "Found SOCI with MySQL back-end support version:"
+	  " ${SOCI_HUMAN_VERSION}")
 
     # Update the list of include directories for the project
     include_directories (${SOCI_INCLUDE_DIR})
@@ -1667,9 +1648,13 @@ macro (doc_add_web_pages)
 	ARGS -E chdir ${TEX_GEN_DIR} makeindex -q ${REFMAN_IDX}
 	COMMAND ${CMAKE_COMMAND}
 	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "Second PDF generation done."
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E chdir ${TEX_GEN_DIR} makeindex -q ${REFMAN_IDX}
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "Third PDF generation done."
 	COMMENT "Generating PDF Reference Manual ('${REFMAN_PDF}')..."
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} test -f ${REFMAN_PDF} || echo "Warning: the PDF reference manual \\\('${REFMAN_PDF_FULL}'\\\) has failed to build. You can perform a simple re-build \\\('make' in the 'doc/latex' sub-directory\\\)."
+	ARGS -E chdir ${TEX_GEN_DIR} test -f ${REFMAN_PDF} || (touch ${REFMAN_PDF} && echo "Warning: the PDF reference manual \\\('${REFMAN_PDF_FULL}'\\\) has failed to build. You can perform a simple re-build \\\('make' in the 'doc/latex' sub-directory\\\).")
 	COMMENT "Checking whether the PDF Reference Manual ('${REFMAN_PDF}') has been built...")
   # Add the 'pdf' target, depending on the generated PDF manual
   add_custom_target (pdf ALL DEPENDS ${REFMAN_PDF_FULL})
@@ -1899,17 +1884,6 @@ macro (display_boost)
   endif (Boost_FOUND)
 endmacro (display_boost)
 
-# Xapian
-macro (display_xapian)
-  if (XAPIAN_FOUND)
-    message (STATUS)
-	message (STATUS "* Xapian:")
-	message (STATUS "  - XAPIAN_VERSION ............. : ${XAPIAN_VERSION}")
-	message (STATUS "  - XAPIAN_LIBRARIES ........... : ${XAPIAN_LIBRARIES}")
-	message (STATUS "  - XAPIAN_INCLUDE_DIR ......... : ${XAPIAN_INCLUDE_DIR}")
-  endif (XAPIAN_FOUND)
-endmacro (display_xapian)
-
 # Readline
 macro (display_readline)
   if (READLINE_FOUND)
@@ -1938,6 +1912,8 @@ macro (display_soci)
     message (STATUS)
     message (STATUS "* SOCI:")
     message (STATUS "  - SOCI_VERSION ............... : ${SOCI_VERSION}")
+    message (STATUS "  - SOCI_LIB_VERSION ........... : ${SOCI_LIB_VERSION}")
+    message (STATUS "  - SOCI_HUMAN_VERSION ......... : ${SOCI_HUMAN_VERSION}")
     message (STATUS "  - SOCI_INCLUDE_DIR ........... : ${SOCI_INCLUDE_DIR}")
     message (STATUS "  - SOCIMYSQL_INCLUDE_DIR ...... : ${SOCIMYSQL_INCLUDE_DIR}")
     message (STATUS "  - SOCI_LIBRARIES ............. : ${SOCI_LIBRARIES}")
@@ -2194,7 +2170,6 @@ macro (display_status)
   display_python ()
   display_zeromq ()
   display_boost ()
-  display_xapian ()
   display_readline ()
   display_mysql ()
   display_soci ()
