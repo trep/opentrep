@@ -14,8 +14,6 @@
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_MODULE IndexBuildingTestSuite
 #include <boost/test/unit_test.hpp>
-// CPPUNIT
-#include <extracppunit/CppUnitCore.hpp>
 // OpenTrep
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
