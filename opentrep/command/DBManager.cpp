@@ -4,8 +4,13 @@
 // STL
 #include <cassert>
 // SOCI
+#if defined(SOCI_HEADERS_BURIED)
 #include <soci/core/soci.h>
 #include <soci/backends/mysql/soci-mysql.h>
+#else // SOCI_HEADERS_BURIED
+#include <soci/soci.h>
+#include <soci/mysql/soci-mysql.h>
+#endif // SOCI_HEADERS_BURIED
 // OpenTrep
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>

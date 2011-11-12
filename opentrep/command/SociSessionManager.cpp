@@ -1,14 +1,18 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
-#include <cassert>
 // STL
+#include <cassert>
 #include <string>
 #include <sstream>
 // SOCI
+#if defined(SOCI_HEADERS_BURIED)
 #include <soci/core/soci.h>
 #include <soci/backends/mysql/soci-mysql.h>
+#else // SOCI_HEADERS_BURIED
+#include <soci/soci.h>
+#include <soci/mysql/soci-mysql.h>
+#endif // SOCI_HEADERS_BURIED
 // OpenTrep
 #include <opentrep/DBParams.hpp>
 #include <opentrep/command/SociSessionManager.hpp>

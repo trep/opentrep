@@ -18,8 +18,11 @@
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/service/Logger.hpp>
 // SOCI
+#if defined(SOCI_HEADERS_BURIED)
 #include <soci/core/soci.h>
-//#include <soci/backends/mysql/soci-mysql.h>
+#else // SOCI_HEADERS_BURIED
+#include <soci/soci.h>
+#endif // SOCI_HEADERS_BURIED
 // Xapian
 #include <xapian.h>
 
