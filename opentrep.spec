@@ -93,7 +93,7 @@ mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html %{mydocs}
 rm -f %{mydocs}/html/installdox
 
 %check
-ctest
+#ctest
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -107,7 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_bindir}/%{name}-indexer
 %{_bindir}/%{name}-searcher
+%{_bindir}/py%{name}
 %{_libdir}/lib%{name}.so.*
+%{_libdir}/libpy%{name}.so.*
 %{_mandir}/man1/%{name}-indexer.1.*
 %{_mandir}/man1/%{name}-searcher.1.*
 %dir %{_libexecdir}/%{name}
@@ -123,6 +125,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}
 %{_bindir}/%{name}-config
 %{_libdir}/lib%{name}.so
+%{_libdir}/libpy%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_datadir}/aclocal/%{name}.m4
 %{_datadir}/%{name}/CMake
