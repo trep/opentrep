@@ -70,10 +70,10 @@ http://sourceforge.net/project/showfiles.php?group_id=252803
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/opentrep-0.4.1 \
+  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/opentrep-99.99.99 \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ..
   cd /home/user/dev/deliveries
-  rm -f opentrep-stable && ln -s opentrep-0.4.1 opentrep-stable
+  rm -f opentrep-unstable && ln -s opentrep-99.99.99 opentrep-unstable
   cd -
 * To build the project, type:
   make
@@ -89,8 +89,8 @@ Then, as usual:
   ./opentrep/opentrep -b
 * To run the installed version (the first following line must be done once
   per session):
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/dev/deliveries/opentrep-stable/lib
-  /home/user/dev/deliveries/opentrep-stable/bin/opentrep -b
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/dev/deliveries/opentrep-unstable/lib
+  /home/user/dev/deliveries/opentrep-unstable/bin/opentrep -b
 
 Denis Arnaud (November 2011)
 
