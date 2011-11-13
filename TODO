@@ -30,9 +30,9 @@ Todo list for the OpenTrep project
 
 * [01/08/2009] Write a (Python-based) PSP page, in order to test the
   different locales of the browsers.
-The Python (PSP) page has been created, but there is still some work 
-to do in order to adapt it to the new API (with extra and alternate
-locations).
+  The Python (PSP) page has been created, but there is still some work
+  to do in order to adapt it to the new API (with extra and alternate
+  locations).
 
 * [14/08/2009] With the ICU library, check the encoding of the input,
   and convert it to Unicode if needed (see the test/i18n/icuustring
