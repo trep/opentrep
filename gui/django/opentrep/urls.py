@@ -5,12 +5,16 @@ from django.conf.urls.defaults import *
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+	#
+	(r'^api/', include('opentrep.api.urls')),
+
     # Example:
     # (r'^opentrep/', include('opentrep.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # (r'^admin/', include(admin.site.urls)),
+    (r'^admin/', include('admin.site.urls')),
 )
+
