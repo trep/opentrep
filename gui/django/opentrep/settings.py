@@ -75,6 +75,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+	'django.contrib.messages.context_processors.messages',
+)
+
 ROOT_URLCONF = 'opentrep.urls'
 
 TEMPLATE_DIRS = (
@@ -89,9 +93,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    # Uncomment the next line to enable the admin:
+    # See https://docs.djangoproject.com/en/dev/ref/contrib/admin/
+	# Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+	# GeoDjango
+	'django.contrib.gis',
 	'ref_place',
+	'geonames',
 )
