@@ -101,4 +101,5 @@ INSTALLED_APPS = (
 	# GeoDjango
 	'django.contrib.gis',
 	'ref_place',
+	'geonames',
 )
