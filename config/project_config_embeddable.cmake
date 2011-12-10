@@ -1279,10 +1279,9 @@ macro (module_library_add_standard _layer_list)
   endif (_publish_all_headers_flag)
 
   # Convenient message to the user/developer
-  if (NOT ${CMAKE_INSTALL_RPATH_USE_LINK_PATH}
-      AND "${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr")
+  if (NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
     install (CODE "message (\"On Unix-based platforms, run export LD_LIBRARY_PATH=${INSTALL_LIB_DIR}:\$LD_LIBRARY_PATH once per session\")")
-  endif()
+  endif (NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
 
 endmacro (module_library_add_standard)
 
@@ -1484,8 +1483,15 @@ macro (module_binary_add _exec_source_dir)
 endmacro (module_binary_add)
 
 ##
-# Add a Python script to be installed
-macro (module_python_add _script_file)
+# Add a (Shell, Python, Perl, Ruby, etc) script to be installed.
+#
+# The parameter is the relative file path of the (template) script to
+# be installed. That template file must end with the '.in' suffix.
+# Indeed, the project variables (wrapped by @@ signs) of the template file
+# are evaluated and expanded thanks to the configure command.
+# The '.in' extension of the script is dropped once installed.
+#
+macro (module_script_add _script_file)
   #
   set (_full_script_src_path ${CMAKE_CURRENT_SOURCE_DIR}/${_script_file}.in)
   set (_full_script_path ${CMAKE_CURRENT_BINARY_DIR}/${_script_file})
@@ -1493,11 +1499,14 @@ macro (module_python_add _script_file)
 	#
     configure_file (${_full_script_src_path} ${_full_script_path} @ONLY)
 
-    # Add the 'scripts_${MODULE_NAME}' target, depending on the
-    # converted (Python) scripts
-    add_custom_target (scripts_${MODULE_NAME} ALL DEPENDS ${_full_script_path})
+	# Extract the file name (only) from the full file path
+	get_filename_component (_script_alone ${_script_file} NAME)
+    
+	# Add the 'scripts_${MODULE_NAME}' target, depending on the
+    # converted (Shell, Python, Perl, Ruby, etc) scripts
+    add_custom_target (${_script_alone}_script ALL DEPENDS ${_full_script_path})
 
-    # Install the (Python) script file
+    # Install the (Shell, Python, Perl, Ruby, etc) script file
     install (PROGRAMS ${_full_script_path} DESTINATION bin COMPONENT devel)
 
   else (EXISTS ${_full_script_src_path})
@@ -1506,7 +1515,6 @@ macro (module_python_add _script_file)
   endif (EXISTS ${_full_script_src_path})
 
   # Register the binary target in the project (for reporting purpose)
-  get_filename_component (_script_alone ${_script_file} NAME)
   list (APPEND PROJ_ALL_BIN_TARGETS ${_script_alone})
   set (PROJ_ALL_BIN_TARGETS ${PROJ_ALL_BIN_TARGETS} PARENT_SCOPE)
 
@@ -1515,7 +1523,7 @@ macro (module_python_add _script_file)
   list (APPEND ${MODULE_NAME}_ALL_EXECS ${_script_alone})
   set (${MODULE_NAME}_ALL_EXECS ${${MODULE_NAME}_ALL_EXECS} PARENT_SCOPE)
 
-endmacro (module_python_add)
+endmacro (module_script_add)
 
 ##
 # Installation of the CMake import helper, so that third party projects
