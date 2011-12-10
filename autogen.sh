@@ -49,9 +49,9 @@ then
 	PROJECT_NAME=${PROJECT_NAME_STRING}
 fi
 #
-VERSION_MAJOR=99
-VERSION_MINOR=99
-VERSION_PATCH=99
+VERSION_MAJOR=0
+VERSION_MINOR=4
+VERSION_PATCH=0
 VERSION_TMP_STRING=`grep "set_project_versions" CMakeLists.txt | sed -e "s/set_project_versions.*\([0-9]\+.\+[0-9]\+.\+[0-9]\+\).\+/\1/"`
 VERSION_STRING=`echo "${VERSION_TMP_STRING}" | grep "^[0-9]\+.[0-9]\+.[0-9]\+$"`
 
