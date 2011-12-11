@@ -6,6 +6,8 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
+#include <cassert>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
