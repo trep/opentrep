@@ -51,7 +51,7 @@ module_binary_add (batches opentrep-searcher)
 
 ##
 # Installing Python scripts
-module_python_add (python/pyopentrep)
+module_script_add (python/pyopentrep)
 
 ##
 # Install the CMake import helper, so that third party projects can refer to it
