@@ -5,7 +5,7 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <ostream>
+#include <iosfwd>
 #include <string>
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
@@ -19,55 +19,77 @@ namespace OPENTREP {
   class OPENTREP_ServiceContext;
 
   
-  /** Interface for the OPENTREP Services. */
+  /** 
+   * @brief Interface for the OPENTREP Services.
+   */
   class OPENTREP_Service {
   public:
     // /////////// Business Methods /////////////
-    /** Build the Xapian database (index) on the BOM held in memory. */
+    /** 
+     * Build the Xapian database (index) on the BOM held in memory. 
+     */
     NbOfDBEntries_T buildSearchIndex();
 
-    /** Match the given string, thanks to a full-text search on the
-        underlying Xapian index (named "database").
-        @param const std::string& (Travel-related) query string (e.g.,
-               "sna francicso rio de janero lso angles reykyavki nce iev mow").
-        @param LocationList_T& List of (geographical) locations, if any,
-               matching the given query string.
-        @param WordList_T& List of non-matched words of the query string.
-        @return NbOfMatches_T Number of matches. */
+    /**
+     * Match the given string, thanks to a full-text search on the
+     * underlying Xapian index (named "database").
+     *
+     * @param const std::string& (Travel-related) query string (e.g.,
+     *        "sna francicso rio de janero lso angles reykyavki nce iev mow").
+     * @param LocationList_T& List of (geographical) locations, if any,
+     *        matching the given query string.
+     * @param WordList_T& List of non-matched words of the query string.
+     * @return NbOfMatches_T Number of matches. 
+     */
     NbOfMatches_T interpretTravelRequest (const std::string& iTravelQuery,
                                           LocationList_T&, WordList_T&);
 
     
     // ////////// Constructors and destructors //////////
-    /** Constructor.
-        @param std::ostream& Output log stream (for instance, std::cout).
-        @param const DBParams& The SQL database parameters.
-        @param const std::string& Filepath of the Xapian index/database. */
+    /**
+     *  Constructor.
+     *
+     * @param std::ostream& Output log stream (for instance, std::cout).
+     * @param const DBParams& The SQL database parameters.
+     * @param const std::string& Filepath of the Xapian index/database. 
+     */
     OPENTREP_Service (std::ostream& ioLogStream, const DBParams&,
                       const std::string& iXapianDatabaseFilepath);
 
-    /** Destructor. */
+    /** 
+     * Destructor. 
+     */
     ~OPENTREP_Service();
 
     
   private:
     // /////// Construction and Destruction helper methods ///////
-    /** Default constructor. */
+    /**
+     * Default constructor. 
+     */
     OPENTREP_Service ();
-    /** Default copy constructor. */
+    /**
+     * Default copy constructor. 
+     */
     OPENTREP_Service (const OPENTREP_Service&);
 
-    /** Initialise. */
+    /**
+     * Initialise. 
+     */
     void init (std::ostream& ioLogStream, const DBParams&,
                const std::string& iXapianDatabaseFilepath);
 
-    /** Finalise. */
+    /**
+     *  Finalise. 
+     */
     void finalise ();
 
     
   private:
     // ///////// Service Context /////////
-    /** Opentrep context. */
+    /**
+     * Opentrep context. 
+     */
     OPENTREP_ServiceContext* _opentrepServiceContext;
   };
 }

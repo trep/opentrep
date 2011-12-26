@@ -12,7 +12,9 @@ namespace OPENTREP {
   // Forward declaration
   struct Location;
   
-  /** List of (geographical) location structures. */
+  /** 
+   * List of (geographical) location structures. 
+   */
   typedef std::list<Location> LocationList_T;
 
 }

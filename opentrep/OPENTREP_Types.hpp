@@ -9,30 +9,97 @@
 #include <string>
 #include <list>
 #include <map>
-// Boost Arry
+// Boost Array
 #include <boost/array.hpp>
 
 namespace OPENTREP {
 
   // ///////// Exceptions ///////////
-  class RootException : public std::exception {
+  /**
+   * @brief Root of the OpenTREP exceptions.
+   *
+   * All the OpenTREP exceptions inherit from that root, allowing to
+   * catch them and to spot them easily when arising in code wrapping
+   * the stdair library.
+   */
+  class RootException : public std::exception { 
+  public:
+    /**
+     * Main Constructor.
+     */
+    RootException (const std::string& iWhat) : _what (iWhat) {}
+    /**
+     * Default constructor.
+     */
+    RootException() : _what ("No further details") {}
+    
+    /**
+     * Destructor.
+     */
+    virtual ~RootException() throw() {}
+    
+    /**
+     * Give the details of the exception.
+     */
+    const char* what() const throw() {
+      return _what.c_str();
+    }
+    
+  protected:
+    /**
+     * Details for the exception.
+     */
+    std::string _what;
   };
-
+  
+  /** OpenTREP service not initialised. */
   class NonInitialisedServiceException : public RootException {
+  public:
+    /** Constructor. */
+    NonInitialisedServiceException (const std::string& iWhat)
+      : RootException (iWhat) {}
   };
 
+  /** Multiple rows for a single Xapian document ID. */
   class MultipleRowsForASingleDocIDException : public RootException {
   };
 
+  /** Language code is not recognised. */
   class LanguageCodeNotDefinedInNameTableException : public RootException {
   };
 
+  /** Memory allocation issue. */
   class MemoryAllocationException : public RootException {
   };
 
+  /** The object cannot be retrieved. */
   class ObjectNotFoundException : public RootException {
   };
 
+  /** Parser. */
+  class ParserException : public RootException { 
+  public:
+    /** Constructor. */
+    ParserException (const std::string& iWhat) : RootException (iWhat) {}
+  };
+  
+  /** Code conversion. */
+  class CodeConversionException : public ParserException {  
+  public:
+    /** Constructor. */
+    CodeConversionException (const std::string& iWhat)
+      : ParserException (iWhat) {}
+  };
+  
+  /** Code duplication. */
+  class CodeDuplicationException : public ParserException { 
+  public:
+    /** Constructor. */
+    CodeDuplicationException (const std::string& iWhat)
+      : ParserException(iWhat) {}
+  };
+
+  /** Xapian root exception. */
   class XapianException : public RootException {
   };
   
@@ -51,12 +118,14 @@ namespace OPENTREP {
   class XapianTravelDatabaseNotInSyncWithSQLDatabaseException : public XapianException {
   };
 
+  /** Database root exception. */
   class SQLDatabaseException : public RootException {
   };
 
   class SQLDatabaseConnectionImpossibleException : public SQLDatabaseException {
   };
 
+  /** Index issue. */
   class BuildIndexException : public RootException {
   };
 
@@ -71,7 +140,9 @@ namespace OPENTREP {
 
 
   // /////////////// Log /////////////
-  /** Level of logs. */
+  /** 
+   * Level of logs. 
+   */
   namespace LOG {
     typedef enum {
       CRITICAL = 0,
@@ -86,8 +157,10 @@ namespace OPENTREP {
 
 
   // //////// Type definitions /////////
-  /** Xapian database name, corresponding to the (potentially relative)
-      directory name (on the filesystem) where Xapian stores its index. */
+  /** 
+   * Xapian database name, corresponding to the (potentially relative)
+   * directory name (on the filesystem) where Xapian stores its index.
+   */
   typedef std::string TravelDatabaseName_T;
 
   /** Xapian document ID. */
@@ -122,7 +195,5 @@ namespace OPENTREP {
 
   /** Number of (distance) errors allowed for a given number of letters. */
   typedef boost::array<NbOfLetters_T, 5> DistanceErrorScaleArray_T;
-  
 }
 #endif // __OPENTREP_OPENTREP_TYPES_HPP
-
