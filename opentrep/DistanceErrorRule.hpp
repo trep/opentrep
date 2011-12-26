@@ -7,6 +7,7 @@
 // STL
 #include <istream>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <map>
 // Boost Array
@@ -18,26 +19,33 @@
 namespace OPENTREP {
 
   // ////////////////////////////////////////////////////////////////////
-  /** Default distance error scale.
-      <br>Allowed error for a given number of letters:
-      <ul>
-      <li><   4 => 0</li>
-      <li><   7 => 1</li>
-      <li><  10 => 2</li>
-      <li><  15 => 3</li>
-      <li><  20 => 4</li>
-      <li>>= 20 => (nb of letters) / 5</li>
-      </ul> */
+  /** 
+   * Default distance error scale.
+   *
+   * Allowed error for a given number of letters:
+   * <ul>
+   *  <li><   4 => 0</li>
+   *  <li><   7 => 1</li>
+   *  <li><  10 => 2</li>
+   *  <li><  15 => 3</li>
+   *  <li><  20 => 4</li>
+   *  <li>>= 20 => (nb of letters) / 5</li>
+   *  </ul> 
+   */
   static const DistanceErrorScaleArray_T K_DEFAULT_ERROR_SCALE =
     { {3, 6, 9, 14, 19} };
 
 
   // ///////////////////////////////////////////////////////////////
-  /** Structure modelling a (geographical) distanceerrorrule. */
+  /** 
+   * Structure modelling a (geographical) distanceerrorrule. 
+   */
   struct DistanceErrorRule : public OPENTREP_Abstract {
   public:
     // ///////// Getters ////////
-    /** Get the DistanceErrorRule code. */
+    /**
+     * Get the DistanceErrorRule code. 
+     */
     const DistanceErrorScale_T& getDistanceErrorScale() const {
       return _scale;
     }
@@ -48,8 +56,10 @@ namespace OPENTREP {
     
   public:
     // ///////// Business methods ////////
-    /** Get, for a given number of letters, the corresponding allowed
-        (distance) error. */
+    /**
+     * Get, for a given number of letters, the corresponding allowed
+     * (distance) error. 
+     */
     NbOfErrors_T getAllowedDistanceError (const NbOfLetters_T& iNbOfLetters) const {
       NbOfErrors_T oNbOfErrors_T = 0;
 
@@ -69,18 +79,26 @@ namespace OPENTREP {
     
   public:
     // ///////// Display methods ////////
-    /** Dump a structure into an output stream.
-        @param ostream& the output stream. */
+    /**
+     * Dump a structure into an output stream.
+     *
+     * @param ostream& the output stream. 
+     */
     void toStream (std::ostream& ioOut) const {
       ioOut << toString();
     }
 
-    /** Read a structure from an input stream.
-        @param istream& the input stream. */
+    /**
+     * Read a structure from an input stream.
+     *
+     * @param istream& the input stream. 
+     */
     void fromStream (std::istream&) {
     }
 
-    /** Get a short display of the DistanceErrorRule structure. */
+    /**
+     * Get a short display of the DistanceErrorRule structure. 
+     */
     std::string toShortString() const {
       std::ostringstream oStr;
       NbOfLetters_T idx = 0;
@@ -94,7 +112,9 @@ namespace OPENTREP {
       return oStr.str();
     }
     
-    /** Get the serialised version of the DistanceErrorRule structure. */
+    /**
+     * Get the serialised version of the DistanceErrorRule structure. 
+     */
     std::string toString() const {
       std::ostringstream oStr;
       oStr << toShortString();
@@ -103,12 +123,16 @@ namespace OPENTREP {
 
     
   public:
-    /** Main Constructor. */
+    /**
+     * Main Constructor. 
+     */
     DistanceErrorRule (const DistanceErrorScale_T& iScale)
       : _scale (iScale) {
     }
 
-    /** Constructor. */
+    /**
+     * Constructor. 
+     */
     DistanceErrorRule (const NbOfErrors_T iSize,
                        const NbOfLetters_T iScaleArray[]) {
       for (NbOfErrors_T idx = 0; idx != iSize; ++idx) {
@@ -117,7 +141,9 @@ namespace OPENTREP {
       }
     }
 
-    /** Constructor. */
+    /**
+     * Constructor. 
+     */
     DistanceErrorRule (const DistanceErrorScaleArray_T& iScaleArray) {
       for (NbOfErrors_T idx = 0; idx != iScaleArray.size(); ++idx) {
         _scale.insert (DistanceErrorScale_T::value_type (iScaleArray[idx],
@@ -125,18 +151,28 @@ namespace OPENTREP {
       }
     }
 
-    /** Default Constructor. */
-    // DistanceErrorRule ();
-    /** Default copy constructor. */
-    // DistanceErrorRule (const DistanceErrorRule&);
+  private:
+    /**
+     * Default Constructor. 
+     */
+    DistanceErrorRule ();
+
+    /**
+     * Default copy constructor. 
+     */
+    DistanceErrorRule (const DistanceErrorRule&);
     
-    /** Destructor. */
+    /**
+     * Destructor. 
+     */
     virtual ~DistanceErrorRule() {}
 
     
   private:
     // /////// Attributes /////////
-    /** Scale of distance errors. */
+    /** 
+     * Scale of distance errors. 
+     */
     DistanceErrorScale_T _scale;
   };
 

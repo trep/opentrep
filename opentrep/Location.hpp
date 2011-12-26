@@ -15,11 +15,15 @@
 
 namespace OPENTREP {
 
-  /** List of names for a given (geographical) location. */
+  /**
+   * @brief List of names for a given (geographical) location. 
+   */
   typedef std::list<std::string> LocationNameList_T;
 
   
-  /** Structure modelling a (geographical) location. */
+  /**
+   * @brief Structure modelling a (geographical) location. 
+   */
   struct Location : public OPENTREP_Abstract {
   public:
     // ///////// Getters ////////
@@ -200,84 +204,35 @@ namespace OPENTREP {
 
   public:
     // ///////// Display methods ////////
-    /** Dump a structure into an output stream.
-        @param ostream& the output stream. */
-    void toStream (std::ostream& ioOut) const {
-      ioOut << toString();
-    }
+    /** 
+     * Dump a structure into an output stream.
+     *
+     * @param ostream& the output stream. 
+     */
+    void toStream (std::ostream& ioOut) const;
 
-    /** Read a structure from an input stream.
-        @param istream& the input stream. */
-    void fromStream (std::istream&) {
-    }
+    /**
+     * Read a structure from an input stream.
+     *
+     * @param istream& the input stream. 
+     */
+    void fromStream (std::istream&);
 
-    /** Get a short display of the Location structure. */
-    std::string toShortString() const {
-      std::ostringstream oStr;
-      oStr << _locationCode << ", " << _cityCode << ", " << _stateCode
-           << ", " << _countryCode << ", " << _regionCode
-           << ", " << _continentCode << ", " << _timeZoneGroup
-           << ", " << _longitude << ", " << _latitude
-           << ", " << _originalKeywords << ", " << _correctedKeywords
-           << ", " << _percentage
-           << ", " << _editDistance << ", " << _allowableEditDistance;
+    /**
+     * Get the serialised version of the structure. 
+     */
+    std::string toString() const;
 
-      if (_extraLocationList.empty() == false) {
-        oStr << " with " << _extraLocationList.size() << " extra match(es)";
-      }
-      
-      if (_alternateLocationList.empty() == false) {
-        oStr << " with " << _alternateLocationList.size()
-             << " alternate match(es)";
-      }
-      
-      return oStr.str();
-    }
-    
-    /** Get the serialised version of the Location structure. */
-    std::string toString() const {
-      std::ostringstream oStr;
-      oStr << toShortString();
-      for (LocationNameList_T::const_iterator itName = _nameList.begin();
-           itName != _nameList.end(); ++itName) {
-        oStr << ", " << *itName;
-      }
-
-      if (_extraLocationList.empty() == false) {
-        oStr << "; Extra matches: {";
-        unsigned short idx = 0;
-        for (LocationList_T::const_iterator itLoc = _extraLocationList.begin();
-             itLoc != _extraLocationList.end(); ++itLoc, ++idx) {
-          if (idx != 0) {
-            oStr << ", ";
-          }
-          const Location& lExtraLocation = *itLoc;
-          oStr << lExtraLocation.toShortString();
-        }
-        oStr << "}";
-      }
-      
-      if (_alternateLocationList.empty() == false) {
-        oStr << "; Alternate matches: {";
-        unsigned short idx = 0;
-        for (LocationList_T::const_iterator itLoc =
-               _alternateLocationList.begin();
-             itLoc != _alternateLocationList.end(); ++itLoc, ++idx) {
-          if (idx != 0) {
-            oStr << ", ";
-          }
-          const Location& lAlternateLocation = *itLoc;
-          oStr << lAlternateLocation.toShortString();
-        }
-        oStr << "}";
-      }
-      
-      return oStr.str();
-    }
+    /** 
+     * Get a short display of the Location structure. 
+     */
+    std::string toShortString() const;
 
     
   public:
-    /** Main Constructor. */
+    /**
+     * Main Constructor. 
+     */
     Location (const std::string& iPlaceCode, const std::string& iCityCode,
               const std::string& iStateCode, const std::string& iCountryCode,
               const std::string& iRegionCode, const std::string& iContinentCode,
@@ -288,25 +243,21 @@ namespace OPENTREP {
               const std::string& iCorrectedKeywords,
               const MatchingPercentage_T& iPercentage,
               const NbOfErrors_T& iEditDistance,
-              const NbOfErrors_T& iAllowableEditDistance)
-      : _locationCode (iPlaceCode), _cityCode (iCityCode),
-        _stateCode (iStateCode), _countryCode (iCountryCode),
-        _regionCode (iRegionCode), _continentCode (iContinentCode),
-        _timeZoneGroup (iTimeZoneGroup), _longitude (iLongitude),
-        _latitude (iLatitude), _nameList (iNameList),
-        _originalKeywords (iOriginalKeywords),
-        _correctedKeywords (iCorrectedKeywords),
-        _percentage (iPercentage), _editDistance (iEditDistance),
-        _allowableEditDistance (iAllowableEditDistance) {
-    }
+              const NbOfErrors_T& iAllowableEditDistance);
 
-    /** Default Constructor. */
-    // Location ();
-    /** Default copy constructor. */
-    // Location (const Location&);
+    /**
+     * Default Constructor. 
+     */
+    Location();
+    /**
+     * Default copy constructor. 
+     */
+    Location (const Location&);
     
-    /** Destructor. */
-    virtual ~Location() {}
+    /**
+     * Destructor. 
+     */
+    ~Location();
 
     
   private:

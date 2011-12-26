@@ -1,136 +1,161 @@
 #!/usr/bin/env python
 
-import sys, getopt
-sys.path.append('@INSTALL_LIB_DIR@')
-
-# Default search string
-defaultSearchString = 'sna francicso rio de janero lso angles reykyavki'
-
-# Parser helpers
-def getMain(locations): return locations[:3]
+import sys, getopt, os
+sys.path.append ('@INSTALL_LIB_DIR@')
 
 # Usage
-def usage(script_name):
+def usage (script_name):
 	print
-	print "Usage: ./%s [options] search string" % script_name
+	print "That script searches for, against a Xapian-indexed database of"
+	print "travel-related terms, place key words. It allows for some"
+	print "mis-spelling. For instance: 'sna francicso rio de janero lso angles reykyavki'"
+	print "will retrieve the details of San Francisco, CA,"
+	print "Rio de Janeiro, Brasil, Los Angeles, CA and Reykjavik, Iceland."
+	print
+	print "The output is a mere string giving the retrieved place codes"
+	print "associated to their correspondong matching weights. It can:"
+	print " - be a single line with only the place codes and matching weigths;"
+	print " - give the full details, as returned by the C++ library;"
+	print " - return a JSON-formatted string with all the details"
+	print
+	print "Usage: %s [options] \"search string\"" % script_name
 	print
 	print "The default output is short."
 	print
 	print "Options:"
-	print "    -h, --help              : outputs this help and exits"
-	print "    -x, --xapiandb          : specifies the path to the Xapian DB (index)"
-	print "    -l, --long              : long output version"
+	print "  -h, --help      : outputs this help and exits"
+	print "  -x, --xapiandb  : specifies the path to the Xapian DB (index)"
+	print "  -f, --format    : format of the output: Short (S, default),"
+	print "                    Full (F) and JSON (J)"
 	print
 
-# Handle opt
+# Conversion of a string into a boolean
+def str2bool (v):
+	return v.lower() in ("yes", "true", "t", "1")
+
+# Handle command-line options
 def handle_opt():
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "h:x:l:", ["help", "xapiandb=", "long"])
+		opts, args = getopt.getopt (sys.argv[1:], "hf:x:",
+					    ["help", "format", "xapiandb="])
 	except getopt.GetoptError, err:
-		# print help information and exit:
-		print str(err) # will print something like "option -a not recognized"
+		# Print help information and exit. It will print something like
+		# "option -a not recognized"
+		print str(err)
 		usage()
 		sys.exit(2)
 
-	# search string
-	searchString = "" # default
-	if len(args) >= 1: searchString = ' '.join(args)
+	# Format of the output
+	outputFormat = 'S'
 
-	# options
-	needDetails = False # default
-	xapianDBPath = "/home/www/webapps/opentrep/trep/traveldb"
+	# Default search string
+	searchString = 'sna francicso rio de janero lso angles reykyavki'
+	if len (args) >= 1:
+		searchString = ' '.join (args)
+
+	# Options
+	xapianDBPath = "/var/www/webapps/opentrep/trep/traveldb"
 	for o, a in opts:
-		if o in ("-l", "--long"):
-			needDetails = True
+		if o in ("-f", "--format"):
+			outputFormat = a
 		elif o in ("-x", "--xapiandb"):
 			xapianDBPath = a
 		elif o in ("-h", "--help"):
-			usage(sys.argv[0])
+			usage (sys.argv[0])
 			sys.exit()
 		else:
-			assert False, "unhandled option"
-	return needDetails, xapianDBPath, searchString
+			assert False, "Unhandled option"
+	return (outputFormat, xapianDBPath, searchString)
 
-needDetails, xapianDBPath, searchString = handle_opt()
+# Parser helpers
+def getMain (locations):
+	return locations[:3]
 
-# Initialise the OpenTrep C++ library
-import libpyopentrep
-openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-openTrepLibrary.init (xapianDBPath, 'pyopentrep.log', 'geo', 'geo', 'localhost', '3306', 'geo_geonames')
 
-# If no search string was supplied as arguments of the command-line,
-# ask the user for some
-if searchString == '':
-    # Ask for the user input
-    searchString = raw_input('Enter a search string, or just Enter for the default one (' + defaultSearchString + '): ')
-if searchString == '' : searchString = defaultSearchString
+############################
+# Main
+############################
+if __name__ == '__main__':
+	outputFormat, xapianDBPath, searchString = handle_opt()
 
-# DEBUG
-print "searchString: " + searchString
+	# Initialise the OpenTrep C++ library
+	import libpyopentrep
+	openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+	openTrepLibrary.init (xapianDBPath, 'pyopentrep.log', 'geo', 'geo',
+			      'localhost', '3306', 'geo_geonames')
 
-# Call the OpenTrep C++ library
-if needDetails == True:
-	result = openTrepLibrary.searchWithFullDetails (searchString)
-else:
-	result = openTrepLibrary.search (searchString)
+	# If no search string was supplied as arguments of the command-line,
+	# ask the user for some
+	if searchString == '':
+		# Ask for the user input
+		searchString = raw_input ("Enter a search string, e.g., 'rio de janero sna francisco'")
+	if searchString == '':
+		searchString = 'rio de janero sna francisco'
 
-print 'Raw result from the OpenTrep library:'
-print result
+	# DEBUG
+	print "searchString: " + searchString
 
-# If we have requested the detailed display, the result string is
-# potentially big and complex, and is not aimed to be parsed. So, it
-# is better to stop here.
-if needDetails == True:
-	quit()
+	# Call the OpenTrep C++ library
+	result = openTrepLibrary.search (outputFormat, searchString)
 
-# As we have requested no details, the result string is aimed to be
-# parsed, so as to get the whole meaning of it.
+	print 'Raw result from the OpenTrep library:'
+	print result
 
-# Defaults
-msg, form_value, original_form_value, unrecognized = '', '', '', ''
+	# If we have requested the detailed display, or if the output
+	# is formatted in a JSON message, the result string is
+	# potentially big and complex, and is not aimed to be
+	# parsed. So, it is better to stop here.
+	if (outputFormat != 'S'):
+		quit()
 
-# Sample of result string to be parsed:
-# 'nce/100,sfo/100-emb/98-jcc/97,yvr/100-cxh/83-xea/83-ydt/83;niznayou'
-# parsing: recognize sequence of three-letter codes
-codes = []
-locations = []
-alter_locations = []
+	# As we have requested no details, the result string is aimed to be
+	# parsed, so as to get the whole meaning of it.
 
-# Delegate the interpretation to the underlying
-# OpenTrep library
-str_matches = result
+	# Defaults
+	msg, form_value, original_form_value, unrecognized = '', '', '', ''
 
-# Parsing begins
-# 1. First, strip out the unrecongised keywords
-if ';' in str_matches:
-    str_matches, unrecognized = str_matches.split(';')
+	# Sample of result string to be parsed:
+	# 'nce/100,sfo/100-emb/98-jcc/97,yvr/100-cxh/83-xea/83-ydt/83;niznayou'
+	# parsing: recognize sequence of three-letter codes
+	codes = []
+	locations = []
+	alter_locations = []
 
-msg = 'unrecognized: %s. ' % unrecognized
-str_value = unrecognized
+	# Delegate the interpretation to the underlying
+	# OpenTrep library
+	str_matches = result
 
-if str_matches != '':
-    # 2. Then, for each matching location, the
-    #    alternate matches have to be stored aside
-    alter_locations = [x for x in str_matches.split(',')]
-    locations = [getMain(x) for x in alter_locations]
+	# Parsing begins
+	# 1. First, strip out the unrecongised keywords
+	if ';' in str_matches:
+		str_matches, unrecognized = str_matches.split(';')
 
-    for alter_location_list in alter_locations:
-        alter_location_list = [x for x in alter_location_list.split('-')]
-        for extra_location_list in alter_location_list:
-            extra_location_list = [x for x in extra_location_list.split(':')]
-                
-            codes = [x[:3].upper() for x in alter_locations]
-            if len(codes) > 0:
-                form_value = ' '.join(codes)
-            if str_value != '':
-                form_value += ' ' + str_value
+	msg = 'unrecognized: %s. ' % unrecognized
+	str_value = unrecognized
 
-print "Parsed entries:"
-print form_value
+	if str_matches != '':
+		# 2. Then, for each matching location, the
+		#    alternate matches have to be stored aside
+		alter_locations = [x for x in str_matches.split(',')]
+		locations = [getMain(x) for x in alter_locations]
 
-#print "Locations:"
-#print locations
+		for alter_location_list in alter_locations:
+			alter_location_list = [x for x in alter_location_list.split('-')]
+			for extra_location_list in alter_location_list:
+				extra_location_list = [x for x in extra_location_list.split(':')]
+	    
+				codes = [x[:3].upper() for x in alter_locations]
+				if len(codes) > 0:
+					form_value = ' '.join(codes)
+				if str_value != '':
+					form_value += ' ' + str_value
 
-# Free the OpenTREP library resource
-openTrepLibrary.finalize()
+	print "Parsed entries:"
+	print form_value
+
+        #print "Locations:"
+        #print locations
+
+	# Free the OpenTREP library resource
+	openTrepLibrary.finalize()
 

@@ -3,6 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
+#include <ostream>
 // Boost
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/ptime.hpp>
@@ -105,7 +106,8 @@ namespace OPENTREP {
     NbOfDBEntries_T oNbOfEntries = 0;
     
     if (_opentrepServiceContext == NULL) {
-      throw NonInitialisedServiceException();
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+					    " initialised");
     }
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext= *_opentrepServiceContext;
@@ -142,7 +144,8 @@ namespace OPENTREP {
     NbOfMatches_T nbOfMatches = 0;
 
     if (_opentrepServiceContext == NULL) {
-      throw NonInitialisedServiceException();
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+					    " initialised");
     }
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext= *_opentrepServiceContext;
