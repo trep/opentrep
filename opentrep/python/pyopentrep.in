@@ -54,7 +54,7 @@ def handle_opt():
 		searchString = ' '.join (args)
 
 	# Options
-	xapianDBPath = "/var/www/webapps/opentrep/trep/traveldb"
+	xapianDBPath = "/tmp/opentrep/traveldb"
 	for o, a in opts:
 		if o in ("-f", "--format"):
 			outputFormat = a
