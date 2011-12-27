@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys, getopt, os
+import simplejson as json
 sys.path.append ('@INSTALL_LIB_DIR@')
 
 # Usage
@@ -37,7 +38,7 @@ def str2bool (v):
 def handle_opt():
 	try:
 		opts, args = getopt.getopt (sys.argv[1:], "hf:x:",
-					    ["help", "format", "xapiandb="])
+					    ["help", "format=", "xapiandb="])
 	except getopt.GetoptError, err:
 		# Print help information and exit. It will print something like
 		# "option -a not recognized"
@@ -71,6 +72,110 @@ def handle_opt():
 def getMain (locations):
 	return locations[:3]
 
+##
+# Compact result parser. The result string contains the main matches,
+# separated by commas (','), along with their associated weights, given
+# as percentage numbers. For every main match:
+#  - Columns (':') separate potential extra matches (i.e., matches with the same
+#    matching percentage).
+#  - Dashes ('-') separate potential alternate matches (i.e., matches with lower
+#    matching percentages).
+#
+# Samples of result string to be parsed:
+#  - pyopentrep -f S nice sna francisco vancouver niznayou
+#    - 'nce/100,sfo/100-emb/98-jcc/97,yvr/100-cxh/83-xea/83-ydt/83;niznayou'
+#  - pyopentrep -f S fr
+#    - 'aur:avf:bae:bou:chr:cmf:cqf:csf:cvf:dij/100'
+def compactResultParser (resultString):
+	# Defaults
+	msg, form_value, unrecognized = '', '', ''
+	codes, locations, alter_locations = [], [], []
+
+	# Initialise the string of matches with the raw result
+	str_matches = resultString
+
+	# Parsing begins
+	# 1. First, strip out the unrecognised keywords
+	if ';' in str_matches:
+		str_matches, unrecognized = str_matches.split(';')
+
+	msg = 'Unrecognised: %s. ' % unrecognized
+	str_value = unrecognized
+
+	# 2. Then, for each matching location, the alternate matches have to be
+	#    stored aside.
+	if str_matches != '':
+		alter_locations = [x for x in str_matches.split(',')]
+		locations = [getMain(x) for x in alter_locations]
+
+		for alter_location_list in alter_locations:
+			alter_location_list = [x for x in alter_location_list.split('-')]
+			for extra_location_list in alter_location_list:
+				extra_location_list = [x for x in extra_location_list.split(':')]
+	    
+				codes = [x[:3].upper() for x in alter_locations]
+				if len(codes) > 0:
+					form_value = ' '.join(codes)
+				if str_value != '':
+					form_value += ' ' + str_value
+
+	#
+	return form_value
+
+##
+# JSON interpreter. The JSON structure contains a list with the main matches,
+# along with their associated fields (weights, coordinates, etc).
+# For every main match:
+#  - There is a potential list of extra matches (i.e., matches with the same
+#    matching percentage).
+#  - There is a potential list of alternate matches (i.e., matches with lower
+#    matching percentages).
+#
+# Samples of result string to be parsed:
+#  - pyopentrep -f S nice sna francisco
+#    - {'locations':[
+#         {'names':[
+#           {'name': 'nice'}, {'name': 'nice/fr:cote d azur'}],
+#           'city_code': 'nce'},
+#         {'names':[
+#           {'name': 'san francisco'}, {'name': 'san francisco/ca/us:intl'}],
+#           'city_code': 'sfo',
+#           'alternates':[
+#               {'names':[
+#                   {'name': 'san francisco emb'},
+#                   {'name': 'san francisco/ca/us:embarkader'}],
+#                   'city_code': 'sfo'},
+#               {'names':[
+#                   {'name': 'san francisco jcc'},
+#                   {'name': 'san francisco/ca/us:china hpt'}],
+#                   'city_code': 'sfo'}
+#         ]}
+#      ]}
+#  - pyopentrep -f S fr
+#    - {'locations':[
+#         {'names':[
+#           {'name': 'aurillac'}, {'name': 'aurillac/fr'}],
+#           'extras':[
+#              {'names':[
+#                {'name': 'avoriaz'}, {'name': 'avoriaz/fr'}],
+#                'city_code': 'avf'},
+#              {'names':[
+#                {'name': 'barcelonnette'}, {'name': 'barcelonnette/fr'}],
+#                'city_code': 'bae'}
+#         ]}
+#      ]}
+def jsonInterpret (parsedStructJSON):
+	interpretedJSONString = ''
+
+	#
+	return interpretedJSONString
+
+##
+# JSON parser
+def jsonResultParser (resultString):
+	#
+	return json.loads (resultString)
+
 
 ############################
 # Main
@@ -98,63 +203,27 @@ if __name__ == '__main__':
 	# Call the OpenTrep C++ library
 	result = openTrepLibrary.search (outputFormat, searchString)
 
-	print 'Raw result from the OpenTrep library:'
-	print result
+	# When the compact format is selected, the result string has to be
+	# parsed accordingly.
+	if (outputFormat == 'S'):
+		parsedStruct = compactResultParser (result)
+		print "Compact format => recognised place (city/airport) codes:"
+		print parsedStruct
 
-	# If we have requested the detailed display, or if the output
-	# is formatted in a JSON message, the result string is
+	# When the full details have been requested, the result string is
 	# potentially big and complex, and is not aimed to be
-	# parsed. So, it is better to stop here.
-	if (outputFormat != 'S'):
-		quit()
+	# parsed. So, the result string is just displayed/dumped as is.
+	elif (outputFormat == 'F'):
+		print 'Raw result from the OpenTrep library:'
+		print result
 
-	# As we have requested no details, the result string is aimed to be
-	# parsed, so as to get the whole meaning of it.
-
-	# Defaults
-	msg, form_value, original_form_value, unrecognized = '', '', '', ''
-
-	# Sample of result string to be parsed:
-	# 'nce/100,sfo/100-emb/98-jcc/97,yvr/100-cxh/83-xea/83-ydt/83;niznayou'
-	# parsing: recognize sequence of three-letter codes
-	codes = []
-	locations = []
-	alter_locations = []
-
-	# Delegate the interpretation to the underlying
-	# OpenTrep library
-	str_matches = result
-
-	# Parsing begins
-	# 1. First, strip out the unrecongised keywords
-	if ';' in str_matches:
-		str_matches, unrecognized = str_matches.split(';')
-
-	msg = 'unrecognized: %s. ' % unrecognized
-	str_value = unrecognized
-
-	if str_matches != '':
-		# 2. Then, for each matching location, the
-		#    alternate matches have to be stored aside
-		alter_locations = [x for x in str_matches.split(',')]
-		locations = [getMain(x) for x in alter_locations]
-
-		for alter_location_list in alter_locations:
-			alter_location_list = [x for x in alter_location_list.split('-')]
-			for extra_location_list in alter_location_list:
-				extra_location_list = [x for x in extra_location_list.split(':')]
-	    
-				codes = [x[:3].upper() for x in alter_locations]
-				if len(codes) > 0:
-					form_value = ' '.join(codes)
-				if str_value != '':
-					form_value += ' ' + str_value
-
-	print "Parsed entries:"
-	print form_value
-
-        #print "Locations:"
-        #print locations
+	# When the JSON format has been requested, the result string has to be
+	# parsed accordingly.
+	elif (outputFormat == 'J'):
+		parsedStructJSON = jsonResultParser (result)
+		interpretedJSONString = jsonInterpret (parsedStructJSON)
+		print "JSON format => recognised place (city/airport) codes:"
+		print interpretedJSONString
 
 	# Free the OpenTREP library resource
 	openTrepLibrary.finalize()

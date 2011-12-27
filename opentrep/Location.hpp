@@ -10,8 +10,8 @@
 #include <list>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/LocationList.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
+#include <opentrep/LocationList.hpp>
 
 namespace OPENTREP {
 
@@ -27,176 +27,244 @@ namespace OPENTREP {
   struct Location : public OPENTREP_Abstract {
   public:
     // ///////// Getters ////////
-    /** Get the Location code. */
+    /** 
+     * Get the Location code. 
+     */
     std::string getLocationCode() const {
       return _locationCode;
     }
     
-    /** Get the City code. */
+    /**
+     * Get the City code. 
+     */
     std::string getCityCode() const {
       return _cityCode;
     }
     
-    /** Get the State code. */
+    /**
+     * Get the State code. 
+     */
     std::string getStateCode() const {
       return _stateCode;
     }
     
-    /** Get the Country code. */
+    /**
+     * Get the Country code. 
+     */
     std::string getCountryCode() const {
       return _countryCode;
     }
     
-    /** Get the Region code. */
+    /**
+     * Get the Region code. 
+     */
     std::string getRegionCode() const {
       return _regionCode;
     }
     
-    /** Get the Continent code. */
+    /**
+     * Get the Continent code. 
+     */
     std::string getContinentCode() const {
       return _continentCode;
     }
     
-    /** Get the Time-zone group. */
+    /**
+     * Get the Time-zone group. 
+     */
     std::string getTimeZoneGroup() const {
       return _timeZoneGroup;
     }
     
-    /** Get the Longitude. */
+    /**
+     * Get the Longitude. 
+     */
     double getLongitude() const {
       return _longitude;
     }
     
-    /** Get the Latitude. */
+    /**
+     * Get the Latitude. 
+     */
     double getLatitude() const {
       return _latitude;
     }
 
-    /** Get the list of (American) English names for that location. */
+    /**
+     * Get the list of (American) English names for that location. 
+     */
     const LocationNameList_T& getNameList () const {
       return _nameList;
     }
     
-    /** Get the original keywords. */
+    /**
+     * Get the original keywords. 
+     */
     std::string getOriginalKeywords() const {
       return _originalKeywords;
     }
     
-    /** Get the corrected keywords. */
+    /**
+     * Get the corrected keywords. 
+     */
     std::string getCorrectedKeywords() const {
       return _correctedKeywords;
     }
     
-    /** Get the matching percentage. */
+    /**
+     * Get the matching percentage. 
+     */
     const MatchingPercentage_T& getPercentage() const {
       return _percentage;
     }
 
-    /** Get the allowed edit distance/error. */
+    /**
+     * Get the allowed edit distance/error. 
+     */
     const NbOfErrors_T& getEditDistance() const {
       return _editDistance;
     }
 
-    /** Get the maximal allowable edit distance/error, with which the
-        matching has been made. */
+    /**
+     * Get the maximal allowable edit distance/error, with which the
+     * matching has been made. 
+     */
     const NbOfErrors_T& getAllowableEditDistance () const {
       return _allowableEditDistance;
     }
     
-    /** Get the list of extra matching (similar) locations. */
+    /**
+     * Get the list of extra matching (similar) locations. 
+     */
     const LocationList_T& getExtraLocationList() const {
       return _extraLocationList;
     }
 
-    /** Get the list of alternate matching (less similar) locations. */
+    /**
+     * Get the list of alternate matching (less similar) locations. 
+     */
     const LocationList_T& getAlternateLocationList() const {
       return _alternateLocationList;
     }
 
     
     // ///////// Setters //////////
-    /** Set the Location code. */
+    /**
+     * Set the Location code. 
+     */
     void setLocationCode (const std::string& iLocationCode) {
       _locationCode = iLocationCode;
     }
     
-    /** Set the City code. */
+    /**
+     * Set the City code. 
+     */
     void setCityCode (const std::string& iCityCode) {
       _cityCode = iCityCode;
     }
     
-    /** Set the State code. */
+    /**
+     * Set the State code. 
+     */
     void setStateCode (const std::string& iStateCode) {
       _stateCode = iStateCode;
     }
     
-    /** Set the Country code. */
+    /**
+     * Set the Country code. 
+     */
     void setCountryCode (const std::string& iCountryCode) {
       _countryCode = iCountryCode;
     }
     
-    /** Set the Region code. */
+    /**
+     * Set the Region code. 
+     */
     void setRegionCode (const std::string& iRegionCode) {
       _regionCode = iRegionCode;
     }
     
-    /** Set the Continent code. */
+    /**
+     * Set the Continent code. 
+     */
     void setContinentCode (const std::string& iContinentCode) {
       _continentCode = iContinentCode;
     }
     
-    /** Set the Time-zone group. */
+    /**
+     * Set the Time-zone group. 
+     */
     void setTimeZoneGroup (const std::string& iTimeZoneGroup) {
       _timeZoneGroup = iTimeZoneGroup;
     }
     
-    /** Set the Longitude. */
+    /**
+     * Set the Longitude. 
+     */
     void setLongitude (const double& iLongitude) {
       _longitude = iLongitude;
     }
     
-    /** Set the Latitude. */
+    /**
+     * Set the Latitude. 
+     */
     void setLatitude (const double& iLatitude) {
       _latitude = iLatitude;
     }
 
-    /** Set the list of (American) English names for that location. */
+    /**
+     * Set the list of (American) English names for that location. 
+     */
     void setNameList (const LocationNameList_T& iNameList) {
       _nameList = iNameList;
     }
 
-    /** Set the original keywords. */
+    /**
+     * Set the original keywords. 
+     */
     void setOriginalKeywords (const std::string& iOriginalKeywords) {
       _originalKeywords = iOriginalKeywords;
     }
     
-    /** Set the corrected keywords. */
+    /**
+     * Set the corrected keywords. 
+     */
     void setCorrectedKeywords (const std::string& iCorrectedKeywords) {
       _correctedKeywords = iCorrectedKeywords;
     }
     
-    /** Set the Xapian matching percentage. */
+    /**
+     * Set the Xapian matching percentage. 
+     */
     void setPercentage (const MatchingPercentage_T& iPercentage) {
       _percentage = iPercentage;
     }
 
-    /** Set the allowed edit distance/error. */
+    /**
+     * Set the allowed edit distance/error. 
+     */
     void setEditDistance (const NbOfErrors_T& iEditDistance) {
       _editDistance = iEditDistance;
     }
 
-    /** Set the maxiaml allowable edit distance/error, with which the
-        matching has been made. */
+    /**
+     * Set the maxiaml allowable edit distance/error, with which the
+     * matching has been made. 
+     */
     void setAllowableEditDistance (const NbOfErrors_T& iAllowableEditDistance) {
       _allowableEditDistance = iAllowableEditDistance;
     }
     
-    /** Add an extra matching location. */
+    /**
+     * Add an extra matching location. 
+     */
     void addExtraLocation (const Location& iExtraLocation) {
       _extraLocationList.push_back (iExtraLocation);
     }
     
-    /** Add an alternate matching location. */
+    /**
+     * Add an alternate matching location.
+     */
     void addAlternateLocation (const Location& iAlternateLocation) {
       _alternateLocationList.push_back (iAlternateLocation);
     }
@@ -209,7 +277,7 @@ namespace OPENTREP {
      *
      * @param ostream& the output stream. 
      */
-    void toStream (std::ostream& ioOut) const;
+    void toStream (std::ostream&) const;
 
     /**
      * Read a structure from an input stream.
@@ -219,14 +287,35 @@ namespace OPENTREP {
     void fromStream (std::istream&);
 
     /**
-     * Get the serialised version of the structure. 
+     * Display of the Location structure with its associated names.
+     *
+     * The alternate and extra matches are also fully displayed.
      */
     std::string toString() const;
 
     /** 
-     * Get a short display of the Location structure. 
+     * Basic display of the Location structure.
+     *
+     * The names are not displayed. No information is displayed about
+     * alternate and extra matches.
+     */
+    std::string toBasicString() const;
+
+    /** 
+     * Short display of the Location structure.
+     *
+     * The names are not displayed. Basic information is displayed about
+     * alternate and extra matches.
      */
     std::string toShortString() const;
+
+    /** 
+     * Display of the Location structure with its associated names.
+     *
+     * Contrary to the toString() method, the alternate and extra matches
+     * are not displayed.
+     */
+    std::string toSingleLocationString() const;
 
     
   public:
@@ -249,6 +338,7 @@ namespace OPENTREP {
      * Default Constructor. 
      */
     Location();
+
     /**
      * Default copy constructor. 
      */
@@ -262,47 +352,81 @@ namespace OPENTREP {
     
   private:
     // /////// Attributes /////////
-    /** Location code. */
+    /** 
+     * Location code. 
+     */
     std::string _locationCode;
-    /** City code. */
+    /**
+     * City code. 
+     */
     std::string _cityCode;
-    /** State code. */
+    /**
+     * State code. 
+     */
     std::string _stateCode;
-    /** Country code. */
+    /**
+     * Country code. 
+     */
     std::string _countryCode;
-    /** Region code. */
+    /**
+     * Region code. 
+     */
     std::string _regionCode;
-    /** Continent code. */
+    /**
+     * Continent code. 
+     */
     std::string _continentCode;
-    /** Time-zone group. */
+    /**
+     * Time-zone group. 
+     */
     std::string _timeZoneGroup;
-    /** Longitude. */
+    /**
+     * Longitude. 
+     */
     double _longitude;
-    /** Latitude. */
+    /**
+     * Latitude. 
+     */
     double _latitude;
-    /** List of (American) English names. */
+    /**
+     * List of (American) English names. 
+     */
     LocationNameList_T _nameList;
 
-    /** Original keywords. */
+    /**
+     * Original keywords. 
+     */
     std::string _originalKeywords;
     
-    /** Original keywords. */
+    /**
+     * Original keywords. 
+     */
     std::string _correctedKeywords;
     
-    /** Matching percentage. */
+    /**
+     * Matching percentage. 
+     */
     MatchingPercentage_T _percentage;
 
-    /** Allowed edit error/distance. */
+    /**
+     * Allowed edit error/distance. 
+     */
     NbOfErrors_T _editDistance;
 
-    /** Maximum allowable edit distance/error, with which the matching
-        has been made. */
+    /**
+     * Maximum allowable edit distance/error, with which the matching
+     * has been made. 
+     */
     NbOfErrors_T _allowableEditDistance;
     
-    /** List of extra matching (similar) locations. */
+    /**
+     * List of extra matching (similar) locations. 
+     */
     LocationList_T _extraLocationList;
 
-    /** List of alternate matching (less similar) locations. */
+    /**
+     * List of alternate matching (less similar) locations. 
+     */
     LocationList_T _alternateLocationList;
   };
 

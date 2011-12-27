@@ -83,7 +83,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Location::toShortString() const {
+  std::string Location::toBasicString() const {
     std::ostringstream oStr;
     oStr << _locationCode << ", " << _cityCode << ", " << _stateCode
 	 << ", " << _countryCode << ", " << _regionCode
@@ -92,6 +92,14 @@ namespace OPENTREP {
 	 << ", " << _originalKeywords << ", " << _correctedKeywords
 	 << ", " << _percentage
 	 << ", " << _editDistance << ", " << _allowableEditDistance;
+      
+    return oStr.str();
+  }
+    
+  // //////////////////////////////////////////////////////////////////////
+  std::string Location::toShortString() const {
+    std::ostringstream oStr;
+    oStr << toBasicString();
 
     if (_extraLocationList.empty() == false) {
       oStr << " with " << _extraLocationList.size() << " extra match(es)";
@@ -106,13 +114,20 @@ namespace OPENTREP {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  std::string Location::toString() const {
+  std::string Location::toSingleLocationString() const {
     std::ostringstream oStr;
-    oStr << toShortString();
+    oStr << toBasicString();
     for (LocationNameList_T::const_iterator itName = _nameList.begin();
 	 itName != _nameList.end(); ++itName) {
       oStr << ", " << *itName;
     }
+    return oStr.str();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string Location::toString() const {
+    std::ostringstream oStr;
+    oStr << toSingleLocationString();
 
     if (_extraLocationList.empty() == false) {
       oStr << "; Extra matches: {";
