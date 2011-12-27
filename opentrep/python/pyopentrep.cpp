@@ -92,8 +92,8 @@ namespace OPENTREP {
 
 	    //
             oNoDetailedStr << lLocation.getLocationCode();
-            oDetailedStr << idx+1 << ". " << lLocation.toShortString()
-                         << std::endl;
+            oDetailedStr << idx+1 << ". " << lLocation.toSingleLocationString()
+			 << std::endl;
 
             // List of extra matching locations (those with the same
             // matching weight/percentage)
