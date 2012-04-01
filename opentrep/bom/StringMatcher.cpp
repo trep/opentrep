@@ -619,7 +619,7 @@ namespace OPENTREP {
 
     } catch (const Xapian::Error& error) {
       OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
-      throw XapianException();
+      throw XapianException (error.get_msg());
     }
 
     return oMatchedString;

@@ -266,10 +266,12 @@ namespace OPENTREP {
 
     if (hasFoundNameList == false) {
       //
-      OPENTREP_LOG_ERROR ("No list of names in (American) English (en_US "
-                          << "locale) can be found for the following place: "
-                          << toShortString());
-      throw LanguageCodeNotDefinedInNameTableException();
+      std::ostringstream errorStr;
+      errorStr << "No list of names in (American) English (en_US "
+               << "locale) can be found for the following place: "
+               << toShortString();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw LanguageCodeNotDefinedInNameTableException (errorStr.str());
     }
     assert (hasFoundNameList == true);
 

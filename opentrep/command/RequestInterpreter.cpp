@@ -100,14 +100,16 @@ namespace OPENTREP {
          the latter.  If that happens, it means that the user gave a
          wrong Xapian database.
       */
-      OPENTREP_LOG_ERROR ("There is no document corresponding to "
-                          << lPlaceCode << " (Xapian document ID" << lDocID
-                          << " [" << lDocData << "]) in the SQL database. "
-                          << "It usually means that the Xapian index/database "
-                          << "is not synchronised with the SQL database. "
-                          << "[Hint] Rebuild the Xapian index/database "
-                          << "from the SQL database.");
-      throw XapianTravelDatabaseNotInSyncWithSQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "There is no document corresponding to "
+               << lPlaceCode << " (Xapian document ID" << lDocID
+               << " [" << lDocData << "]) in the SQL database. "
+               << "It usually means that the Xapian index/database "
+               << "is not synchronised with the SQL database. "
+               << "[Hint] Rebuild the Xapian index/database "
+               << "from the SQL database.";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw XapianTravelDatabaseNotInSyncWithSQLDatabaseException (errorStr.str());
     }
     
     return hasRetrievedPlace;

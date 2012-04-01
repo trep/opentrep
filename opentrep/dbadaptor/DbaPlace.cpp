@@ -2,8 +2,9 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <string>
 #include <exception>
+#include <string>
+#include <sstream>
 // OpenTrep
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/dbadaptor/DbaPlace.hpp>
@@ -42,7 +43,11 @@ namespace soci {
     const std::string& lLanguageString =
       iPlaceValues.get<std::string> ("language_code", "");
     if (lLanguageString.empty() == true) {
-      throw new OPENTREP::LanguageCodeNotDefinedInNameTableException();
+      std::ostringstream errorStr;
+      errorStr << "The language field is empty for the place "
+               << ioPlace.getPlaceCode();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw OPENTREP::LanguageCodeNotDefinedInNameTableException (errorStr.str());
     }
 
     const OPENTREP::Language::EN_Language lLanguageCode =

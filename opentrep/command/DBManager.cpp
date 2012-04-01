@@ -3,6 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
+#include <sstream>
 // SOCI
 #if defined(SOCI_HEADERS_BURIED)
 #include <soci/core/soci.h>
@@ -58,8 +59,11 @@ namespace OPENTREP {
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error in the 'select * from ref_place_details' SQL request: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
   }
 
@@ -130,8 +134,11 @@ namespace OPENTREP {
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error in the 'select * from ref_place_details' SQL request: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
   }
   
@@ -176,8 +183,11 @@ namespace OPENTREP {
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error in the 'select * from ref_place_details' SQL request: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
   }
 
@@ -222,8 +232,10 @@ namespace OPENTREP {
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
   }
 
@@ -244,8 +256,11 @@ namespace OPENTREP {
       hasStillData = ioStatement.fetch();
       
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error when iterating on the SQL fetch: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
 
     return hasStillData;
@@ -281,8 +296,11 @@ namespace OPENTREP {
       // OPENTREP_LOG_DEBUG ("[" << lDocID << "] " << iPlace);
       
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error when updating " << iPlace.toString() << ": "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
   }
 
@@ -311,15 +329,22 @@ namespace OPENTREP {
       hasStillData = iterateOnStatement (lSelectStatement, ioPlace,
                                          shouldNotDoReset);
       if (hasStillData == true) {
-        throw MultipleRowsForASingleDocIDException();
+        std::ostringstream errorStr;
+        errorStr << "Error - There are multiple entries for the " << iPlaceCode
+                 << " place code in the MySQL database.";
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw MultipleRowsForASingleDocIDException (errorStr.str());
       }
 
       // Debug
       // OPENTREP_LOG_DEBUG ("[" << iDocID << "] " << ioPlace);
       
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve " << iPlaceCode
+               << "from the MySQL database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
 
     return oHasRetrievedPlace;
@@ -336,8 +361,11 @@ namespace OPENTREP {
 
       
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error: " << lException.what());
-      throw SQLDatabaseException();
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve the closest places for "
+               << iLatitude << " / " << iLongitude << ": " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
     }
 
     return oHasRetrievedPlace;

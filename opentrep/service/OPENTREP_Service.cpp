@@ -63,16 +63,20 @@ namespace OPENTREP {
 
     // Check that the Xapian travel database is not empty
     if (iTravelDatabaseName.empty() == true) {
-      OPENTREP_LOG_ERROR ("The filepath for the Xapian travel database is "
-                          << "not specified.");
-      throw XapianTravelDatabaseWrongPathnameException();
+      std::ostringstream errorStr;
+      errorStr << "The filepath for the Xapian travel database is "
+               << "not specified.";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw XapianTravelDatabaseWrongPathnameException (errorStr.str());
     }
 
     // Check that the parameters for the SQL database are not empty
     if (iDBParams.check() == false) {
-      OPENTREP_LOG_ERROR ("At least one of the parameters for the SQL "
-                          << "database is empty: " << iDBParams);
-      throw XapianTravelDatabaseEmptyException();
+      std::ostringstream errorStr;
+      errorStr << "At least one of the parameters for the SQL "
+               << "database is empty: " << iDBParams;
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw XapianTravelDatabaseEmptyException (errorStr.str());
     }
     
     // Initialise the context
@@ -145,7 +149,7 @@ namespace OPENTREP {
 
     if (_opentrepServiceContext == NULL) {
       throw NonInitialisedServiceException ("The OpenTREP service has not been"
-					    " initialised");
+                                            " initialised");
     }
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext= *_opentrepServiceContext;
@@ -164,8 +168,10 @@ namespace OPENTREP {
     
     // Check that the travel request is not empty
     if (iTravelQuery.empty() == true) {
-      OPENTREP_LOG_ERROR ("The travel request is empty.");
-      throw TravelRequestEmptyException();
+      std::ostringstream errorStr;
+      errorStr << "The travel request is empty.";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw TravelRequestEmptyException (errorStr.str());
     }
     
     // Retrieve the SOCI Session
