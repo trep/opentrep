@@ -77,7 +77,7 @@ DB_USER="geo"
 DB_PASSWD="geo"
 
 # Database Name
-DB_NAME="geo_geonames"
+DB_NAME="geo_trep"
 
 # Specify the SQL request
 GET_AIRPORT_COORDINATES_REQUEST="
@@ -101,19 +101,16 @@ PL_LON_LOWER=`echo "scale=2; ${PL_LON} - ${PL_TOL}" | bc`
 
 # Specify the SQL request
 GET_CLOSEST_AIRPORT_REQUEST="
-select (airpop.paxc)/1000 AS 'popularity', 
-		places.code, places.code, 
-		names.classical_name, names.extended_name, places.country_code,
-		places.latitude, places.longitude
-from airport_popularity AS airpop, 
-	  ref_place_details AS places, ref_place_names AS names
+select places.code, places.code, 
+	names.classical_name, names.extended_name, places.country_code,
+	places.latitude, places.longitude
+from place_details AS places, place_names AS names
 WHERE places.longitude >= ${PL_LON_LOWER}
 	  AND places.longitude <= ${PL_LON_UPPER}
 	  AND places.latitude >= ${PL_LAT_LOWER}
 	  AND places.latitude <= ${PL_LAT_UPPER}
 	  AND airpop.airport_code = places.code
-	  AND names.code = places.code
-ORDER BY airpop.tpax DESC"
+	  AND names.code = places.code"
 
 # Get the closest airports
 echo "Get the closest airports of the (${PL_LAT} +/-${PL_TOL}, ${PL_LON} +/-${PL_TOL}) location:"

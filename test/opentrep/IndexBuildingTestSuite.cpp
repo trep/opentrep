@@ -52,7 +52,7 @@ const std::string K_MYSQL_DB_USER ("geo");
 const std::string K_MYSQL_DB_PASSWD ("geo");
 const std::string K_MYSQL_DB_HOSTNAME ("localhost");
 const std::string K_MYSQL_DB_PORT ("3306");
-const std::string K_MYSQL_DB_DBNAME ("geo_geonames");
+const std::string K_MYSQL_DB_DBNAME ("geo_trep");
 
 
 // /////////////// Main: Unit Test Suite //////////////

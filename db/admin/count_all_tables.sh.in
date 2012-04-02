@@ -24,7 +24,7 @@ fi
 DB_PASSWD="${DB_USER}"
 
 # Database Name
-DB_NAME="geo_geonames"
+DB_NAME="geo_trep"
 if [ "$2" != "" ];
 then
     DB_NAME="$2"
@@ -55,7 +55,7 @@ function countElements() {
 }
 
 #
-TABLES="ref_place_details ref_place_names airport_popularity"
+TABLES="place_details place_names"
 
 # Count rows
 for table_name in ${TABLES}

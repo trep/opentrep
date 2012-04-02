@@ -18,11 +18,9 @@ set (OPENTREP_DB_DATA_DIR
 # Convert the database admin files (basically, just replace the @<variable>@
 # variables).
 
-
-set (db_admin_sh_SOURCES clean_all_tables.sh count_all_tables.sh 
-  create_geo_db.sh create_geo_user.sh drop_tables_from_trep_db.sh
-  dump_geo_db_structure.sh execSQL.sh export_ref_data.sh
-  getClosestAirports.sh getPopularity.sh load_geo_db.sh uptade_db_01.sh)
+set (db_admin_sh_SOURCES clean_all_tables.sh count_all_tables.sh
+  create_trep_db.sh create_trep_user.sh drop_trep_tables.sh
+  dump_trep_db_structure.sh execSQL.sh getClosestAirports.sh load_trep_data.sh)
 set (db_admin_sh_in_SOURCES "")
 #
 foreach (db_admin_sh ${db_admin_sh_SOURCES})

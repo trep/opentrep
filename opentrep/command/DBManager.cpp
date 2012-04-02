@@ -32,35 +32,47 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.code AS code, city_code, xapian_docid, is_airport, is_city,
-         is_main, is_commercial, state_code, country_code, region_code,
-         continent_code, time_zone_grp, longitude, latitude, language_code,
-         classical_name, extended_name, alternate_name1, alternate_name2,
-         alternate_name3, alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9, alternate_name10
-         from ref_place_details rpd, ref_place_names rpn
-         where rpd.code = rpn.code
+         select rpd.iata_code as code, xapian_docid, icao_code, 
+         is_geonames, geonameid, 
+         latitude, longitude, fclass, fcode, 
+         country_code, cc2, admin1, admin2, admin3, admin4, 
+         population, elevation, gtopo30, 
+         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
+         is_airport, is_commercial, 
+         city_code, state_code, region_code, location_type, 
+         language_code, ascii_name, utf_name, 
+         alternate_name1, alternate_name2, alternate_name3, 
+         alternate_name4, alternate_name5, alternate_name6, 
+         alternate_name7, alternate_name8, alternate_name9, 
+         alternate_name10 
+         from place_details rpd, place_names pn 
+         where rpd.iata_code = pn.iata_code
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.code AS code, city_code, xapian_docid, is_airport, "
-         << "is_city, is_main, is_commercial, state_code, country_code, "
-         << "region_code, continent_code, time_zone_grp, longitude, latitude, "
-         << "language_code, classical_name, extended_name, "
+         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "is_geonames, geonameid, "
+         << "latitude, longitude, fclass, fcode, "
+         << "country_code, cc2, admin1, admin2, admin3, admin4, "
+         << "population, elevation, gtopo30, "
+         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
+         << "is_airport, is_commercial, "
+         << "city_code, state_code, region_code, location_type, "
+         << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10 "
-         << "from ref_place_details rpd, ref_place_names rpn "
-         << "where rpd.code = rpn.code", soci::into (ioPlace));
+         << "from place_details rpd, place_names pn "
+         << "where rpd.iata_code = pn.iata_code", soci::into (ioPlace));
 
       // Execute the SQL query
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from ref_place_details' SQL request: "
+      errorStr << "Error in the 'select * from place_details' SQL request: "
                << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -78,28 +90,25 @@ namespace OPENTREP {
       
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.code AS code, city_code, xapian_docid, is_airport, is_city,
-         is_main, is_commercial, state_code, country_code, region_code,
-         continent_code, time_zone_grp, longitude, latitude, language_code,
-         classical_name, extended_name, alternate_name1, alternate_name2,
-         alternate_name3, alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9, alternate_name10
-         from ref_place_details rpd, ref_place_names rpn
-         where rpd.code = iPlaceCode
-           and rpn.code = rpd.code;
-
-        select (airpop.tpax)/1000 as 'popularity', 
-		places.code as 'airport_code', places.code as 'city_code', 
-		places.longitude as 'longitude', places.latitude  as 'latitude'
-        from airport_popularity AS airpop, ref_place_details AS places
-        WHERE places.longitude >= ${PL_LON_LOWER}
-        AND places.longitude <= ${PL_LON_UPPER}
-        AND places.latitude >= ${PL_LAT_LOWER}
-        AND places.latitude <= ${PL_LAT_UPPER}
-        AND airpop.airport_code = places.code
-        AND places.is_city = 'y'
-        AND names.code = places.code
-        ORDER BY airpop.tpax DESC
+         select rpd.iata_code as code, xapian_docid, icao_code, 
+         is_geonames, geonameid, 
+         latitude, longitude, fclass, fcode, 
+         country_code, cc2, admin1, admin2, admin3, admin4, 
+         population, elevation, gtopo30, 
+         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
+         is_airport, is_commercial, 
+         city_code, state_code, region_code, location_type, 
+         language_code, ascii_name, utf_name, 
+         alternate_name1, alternate_name2, alternate_name3,
+         alternate_name4, alternate_name5, alternate_name6,
+         alternate_name7, alternate_name8, alternate_name9,
+         alternate_name10 
+         from place_details rpd, place_names pn 
+         where latitude >= :lower_latitude
+           and latitude <= :upper_latitude
+           and longitude >= :lower_longitude
+           and longitude <= :upper_longitude
+           and rpd.iata_code = pn.iata_code
       */
       Place& lPlace = FacPlace::instance().create();
       const double K_ERROR = 2.0;
@@ -110,22 +119,25 @@ namespace OPENTREP {
       
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.code AS code, city_code, xapian_docid, is_airport, "
-         << "is_city, is_main, is_commercial, state_code, country_code, "
-         << "region_code, continent_code, time_zone_grp, longitude, latitude, "
-         << "language_code, classical_name, extended_name, "
+         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "is_geonames, geonameid, "
+         << "latitude, longitude, fclass, fcode, "
+         << "country_code, cc2, admin1, admin2, admin3, admin4, "
+         << "population, elevation, gtopo30, "
+         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
+         << "is_airport, is_commercial, "
+         << "city_code, state_code, region_code, location_type, "
+         << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10 "
-         << "from ref_place_details rpd, ref_place_names rpn, "
-         << "     popularity pop "
+         << "from place_details rpd, place_names pn "
          << "where latitude >= :lower_latitude "
          << "  and latitude <= :upper_latitude "
          << "  and longitude >= :lower_longitude "
          << "  and longitude <= :upper_longitude "
-         << "  and rpn.code = rpd.code"
-         << "  and pop.airport_code = rpd.code",
+         << "  and pn.iata_code = rpd.iata_code",
          soci::into (lPlace), soci::use (lLowerBoundLatitude),
          soci::use (lUpperBoundLatitude), soci::use (lLowerBoundLongitude),
          soci::use (lUpperBoundLongitude));
@@ -135,7 +147,7 @@ namespace OPENTREP {
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from ref_place_details' SQL request: "
+      errorStr << "Error in the 'select * from place_details' SQL request: "
                << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -153,30 +165,42 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.code AS code, city_code, xapian_docid, is_airport, is_city,
-         is_main, is_commercial, state_code, country_code, region_code,
-         continent_code, time_zone_grp, longitude, latitude, language_code,
-         classical_name, extended_name, alternate_name1, alternate_name2,
-         alternate_name3, alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9, alternate_name10
-         from ref_place_details rpd, ref_place_names rpn
-         where rpd.code = iPlaceCode
-           and rpn.code = rpd.code;
+         select rpd.iata_code as code, xapian_docid, icao_code, 
+         is_geonames, geonameid, 
+         latitude, longitude, fclass, fcode, 
+         country_code, cc2, admin1, admin2, admin3, admin4, 
+         population, elevation, gtopo30, 
+         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
+         is_airport, is_commercial, 
+         city_code, state_code, region_code, location_type, 
+         language_code, ascii_name, utf_name, 
+         alternate_name1, alternate_name2, alternate_name3,
+         alternate_name4, alternate_name5, alternate_name6,
+         alternate_name7, alternate_name8, alternate_name9,
+         alternate_name10 
+         from place_details rpd, place_names pn 
+         where rpd.iata_code = iPlaceCode
+           and pn.iata_code = rpd.iata_code;
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.code AS code, city_code, xapian_docid, is_airport, "
-         << "is_city, is_main, is_commercial, state_code, country_code, "
-         << "region_code, continent_code, time_zone_grp, longitude, latitude, "
-         << "language_code, classical_name, extended_name, "
+         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "is_geonames, geonameid, "
+         << "latitude, longitude, fclass, fcode, "
+         << "country_code, cc2, admin1, admin2, admin3, admin4, "
+         << "population, elevation, gtopo30, "
+         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
+         << "is_airport, is_commercial, "
+         << "city_code, state_code, region_code, location_type, "
+         << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10 "
-         << "from ref_place_details rpd, ref_place_names rpn "
-         << "where rpd.code = :place_code "
-         << "and rpn.code = rpd.code",
+         << "from place_details rpd, place_names pn "
+         << "where rpd.iata_code = :place_code "
+         << "and pn.iata_code = rpd.iata_code",
          soci::into (ioPlace), soci::use (iPlaceCode));
 
       // Execute the SQL query
@@ -184,7 +208,7 @@ namespace OPENTREP {
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from ref_place_details' SQL request: "
+      errorStr << "Error in the 'select * from place_details' SQL request: "
                << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -202,30 +226,42 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.code AS code, city_code, xapian_docid, is_airport, is_city,
-         is_main, is_commercial, state_code, country_code, region_code,
-         continent_code, time_zone_grp, longitude, latitude, language_code,
-         classical_name, extended_name, alternate_name1, alternate_name2,
-         alternate_name3, alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9, alternate_name10
-         from ref_place_details rpd, ref_place_names rpn
+         select rpd.iata_code as code, xapian_docid, icao_code, 
+         is_geonames, geonameid, 
+         latitude, longitude, fclass, fcode, 
+         country_code, cc2, admin1, admin2, admin3, admin4, 
+         population, elevation, gtopo30, 
+         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
+         is_airport, is_commercial, 
+         city_code, state_code, region_code, location_type, 
+         language_code, ascii_name, utf_name, 
+         alternate_name1, alternate_name2, alternate_name3,
+         alternate_name4, alternate_name5, alternate_name6,
+         alternate_name7, alternate_name8, alternate_name9,
+         alternate_name10 
+         from place_details rpd, place_names pn 
          where rpd.xapian_docid = DocID
-           and rpn.code = rpd.code;
+           and pn.iata_code = rpd.iata_code;
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.code AS code, city_code, xapian_docid, is_airport, "
-         << "is_city, is_main, is_commercial, state_code, country_code, "
-         << "region_code, continent_code, time_zone_grp, longitude, latitude, "
-         << "language_code, classical_name, extended_name, "
+         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "is_geonames, geonameid, "
+         << "latitude, longitude, fclass, fcode, "
+         << "country_code, cc2, admin1, admin2, admin3, admin4, "
+         << "population, elevation, gtopo30, "
+         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
+         << "is_airport, is_commercial, "
+         << "city_code, state_code, region_code, location_type, "
+         << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10 "
-         << "from ref_place_details rpd, ref_place_names rpn "
+         << "from place_details rpd, place_names pn "
          << "where rpd.xapian_docid = :xapian_docid "
-         << "and rpn.code = rpd.code",
+         << "and pn.iata_code = rpd.iata_code",
          soci::into (ioPlace), soci::use (iDocID));
 
       // Execute the SQL query
@@ -280,9 +316,10 @@ namespace OPENTREP {
       std::string lPlaceCode;
       soci::statement lUpdateStatement =
         (ioSociSession.prepare
-         << "update ref_place_details "
+         << "update place_details "
          << "set xapian_docid = :xapian_docid "
-         << "where code = :code", soci::use (lDocID), soci::use (lPlaceCode));
+         << "where iata_code = :code",
+         soci::use (lDocID), soci::use (lPlaceCode));
       
       // Execute the SQL query
       lDocID = iPlace.getDocID();

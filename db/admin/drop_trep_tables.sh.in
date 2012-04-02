@@ -15,7 +15,7 @@ then
 	echo ""
 	echo "Default values:"
 	echo "<Database Username> = geo"
-	echo "<Database Name> = geo_geonames"
+	echo "<Database Name> = geo_trep"
 	echo "<Database Server Hostname> = localhost"
 	echo "<Database Server Port> = 3306"
 	echo ""
@@ -35,7 +35,7 @@ fi
 DB_PASSWD="${DB_USER}"
 
 # Database Name
-DB_NAME="${DB_USER}_geonames"
+DB_NAME="${DB_USER}_trep"
 if [ "$2" != "" ];
 then
 	DB_NAME="$2"
@@ -61,14 +61,10 @@ dropTable() {
 	mysql -u ${DB_USER} --password=${DB_PASSWD} -P ${DB_PORT} -h ${DB_HOST} ${DB_NAME} -e "drop table ${DB_NAME}.${TABLE}"
 }
 
-# Table: drop the ref_place_details table
-TABLE=ref_place_details
+# Table: drop the place_details table
+TABLE=place_details
 dropTable
 
-# Table: drop the ref_place_names table
-TABLE=ref_place_names
-dropTable
-
-# Table: drop the airport_popularity table
-TABLE=airport_popularity
+# Table: drop the place_names table
+TABLE=place_names
 dropTable

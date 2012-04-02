@@ -6,7 +6,7 @@
 MYSQL_CLIENT="mysql"
 MYSQL_USER="geo"
 MYSQL_PASSWD="geo"
-MYSQL_DB="geo_geonames"
+MYSQL_DB="geo_trep"
 MYSQL_ROOT="${MYSQL_CLIENT} --user=${MYSQL_USER} --password=${MYSQL_PASSWD} --default-character-set=utf8 -D ${MYSQL_DB}"
 
 ##

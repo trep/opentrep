@@ -34,12 +34,16 @@ namespace OPENTREP {
       return _placeCode;
     }
     
-    /** Get the City code.
-        <br>When the city code is empty, it means that the place is a
-        city and not an airport. The city code is thus the same as the
-        place code itself. */
-    std::string getCityCode() const;
+    /** Get the City code. */
+    std::string getCityCode() const {
+      return _cityCode;
+    }
 
+    /** Get the City name. */
+    const std::string& getCityName() const {
+      return _cityName;
+    }
+    
     /** Get the State code. */
     const std::string& getStateCode() const {
       return _stateCode;
@@ -139,6 +143,11 @@ namespace OPENTREP {
     /** Set the City code. */
     void setCityCode (const std::string& iCityCode) {
       _cityCode = iCityCode;
+    }
+    
+    /** Set the City name. */
+    void setCityName (const std::string& iCityName) {
+      _cityName = iCityName;
     }
     
     /** Set the State code. */
@@ -282,6 +291,8 @@ namespace OPENTREP {
     std::string _placeCode;
     /** City code. */
     std::string _cityCode;
+    /** City name. */
+    std::string _cityName;
     /** State code. */
     std::string _stateCode;
     /** Country code. */

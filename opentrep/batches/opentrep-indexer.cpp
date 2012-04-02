@@ -29,7 +29,7 @@ const std::string K_OPENTREP_DEFAULT_DATABSE_FILEPATH("/tmp/opentrep/traveldb");
 /** Default name and location for the Xapian database. */
 const std::string K_OPENTREP_DEFAULT_DB_USER ("geo");
 const std::string K_OPENTREP_DEFAULT_DB_PASSWD ("geo");
-const std::string K_OPENTREP_DEFAULT_DB_DBNAME ("geo_geonames");
+const std::string K_OPENTREP_DEFAULT_DB_DBNAME ("geo_trep");
 const std::string K_OPENTREP_DEFAULT_DB_HOST ("localhost");
 const std::string K_OPENTREP_DEFAULT_DB_PORT ("3306");
 
@@ -77,7 +77,7 @@ int readConfiguration (int argc, char* argv[],
      "SQL database port (e.g., 3306)")
     ("dbname,m",
      boost::program_options::value< std::string >(&ioDBDBName)->default_value(K_OPENTREP_DEFAULT_DB_DBNAME),
-     "SQL database name (e.g., geo_geonames)")
+     "SQL database name (e.g., geo_trep)")
     ;
 
   // Hidden options, will be allowed both on command line and

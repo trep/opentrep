@@ -17,12 +17,17 @@ namespace soci {
   from_base (values const& iPlaceValues, indicator /* ind */,
              OPENTREP::Place& ioPlace) {
     /*
-      code, city_code, xapian_docid, is_airport, is_city,
-      is_main, is_commercial, state_code, country_code, region_code,
-      continent_code, time_zone_grp, longitude, latitude, language_code,
-      classical_name, extended_name, alternate_name1, alternate_name2,
-      alternate_name3, alternate_name4, alternate_name5, alternate_name6,
-      alternate_name7, alternate_name8, alternate_name9, alternate_name10      
+      code, xapian_docid, icao_code, is_geonames, geonameid, 
+      latitude, longitude, fclass, fcode, country_code, cc2,
+      admin1, admin2, admin3, admin4, population, elevation, gtopo30, 
+      timezone, gmt_offset, dst_offset, raw_offset, moddate, 
+      is_airport, is_commercial,
+      city_code, state_code, region_code, location_type, 
+      language_code, ascii_name, utf_name, 
+      alternate_name1, alternate_name2, alternate_name3,
+      alternate_name4, alternate_name5, alternate_name6,
+      alternate_name7, alternate_name8, alternate_name9,
+      alternate_name10 
     */
     ioPlace.setPlaceCode (iPlaceValues.get<std::string> ("code"));
     // The city code will be set to the default value (empty string)
@@ -33,8 +38,7 @@ namespace soci {
     ioPlace.setStateCode (iPlaceValues.get<std::string> ("state_code", ""));
     ioPlace.setCountryCode (iPlaceValues.get<std::string> ("country_code"));
     ioPlace.setRegionCode (iPlaceValues.get<std::string> ("region_code"));
-    ioPlace.setContinentCode (iPlaceValues.get<std::string> ("continent_code"));
-    ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("time_zone_grp"));
+    ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("timezone"));
     ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
     ioPlace.setLatitude (iPlaceValues.get<double> ("latitude"));
     ioPlace.setDocID (iPlaceValues.get<int> ("xapian_docid"));
@@ -54,11 +58,11 @@ namespace soci {
       OPENTREP::Language::getCode (lLanguageString);
 
     const std::string& lClassicalName =
-      iPlaceValues.get<std::string> ("classical_name", "");
+      iPlaceValues.get<std::string> ("ascii_name", "");
     ioPlace.addName (lLanguageCode, lClassicalName);
 
     const std::string& lExtendedName =
-      iPlaceValues.get<std::string> ("extended_name", "");
+      iPlaceValues.get<std::string> ("utf_name", "");
     ioPlace.addName (lLanguageCode, lExtendedName);
 
     const std::string& lAlternateName1 =
@@ -116,8 +120,7 @@ namespace soci {
                        lStateCodeIndicator);
     ioPlaceValues.set ("country_code", iPlace.getCountryCode());
     ioPlaceValues.set ("region_code", iPlace.getRegionCode());
-    ioPlaceValues.set ("continent_code", iPlace.getContinentCode());
-    ioPlaceValues.set ("time_zone_grp", iPlace.getTimeZoneGroup());
+    ioPlaceValues.set ("timezone", iPlace.getTimeZoneGroup());
     ioPlaceValues.set ("longitude", iPlace.getLongitude());
     ioPlaceValues.set ("latitude", iPlace.getLatitude());
     ioPlaceValues.set ("xapian_docid", iPlace.getDocID());
