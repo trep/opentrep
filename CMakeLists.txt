@@ -114,7 +114,7 @@ init_test ()
 ##
 # Test suites
 add_test_suite (${PROJECT_NAME})
-add_test_suite (split)
+add_test_suite (partition)
 
 
 #######################################
