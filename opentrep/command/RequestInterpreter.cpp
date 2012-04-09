@@ -4,8 +4,7 @@
 // C
 #include <cassert>
 // STL
-#include <istream>
-#include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <exception>
