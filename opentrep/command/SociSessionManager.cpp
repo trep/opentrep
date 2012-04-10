@@ -40,14 +40,16 @@ namespace OPENTREP {
       ioSociSession_ptr->open (soci::mysql, lSociSessionConnectionString);
       
     } catch (std::exception const& lException) {
-      OPENTREP_LOG_ERROR ("Error while opening a connection to database: "
-                          << lException.what());
-      OPENTREP_LOG_ERROR ("Database parameters used:"
-                          << " db=" << iDBParams.getDBName()
-                          << " user=" << iDBParams.getUser()
-                          << " port=" << iDBParams.getPort()
-                          << " host=" << iDBParams.getHost());
-      throw SQLDatabaseConnectionImpossibleException();
+      std::ostringstream errorStr;
+      errorStr << "Error while opening a connection to database: "
+               << lException.what() << std::endl;
+      errorStr << "Database parameters used:"
+               << " db=" << iDBParams.getDBName()
+               << " user=" << iDBParams.getUser()
+               << " port=" << iDBParams.getPort()
+               << " host=" << iDBParams.getHost();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseConnectionImpossibleException (errorStr.str());
     }
   }
   

@@ -64,16 +64,9 @@ namespace OPENTREP {
     // to read it
     lDocument.set_data (ioPlace.toString());
       
-    /* When the city code is empty, it means that the place is a city and
-       not an airport. The city code is thus the same as the place code
-       itself. It is added twice to the indexing terms, so that when the
-       user searches for that term, the corresponding city get more weight
-       compared to the airports of the same city.
-    */
     const std::string& lPlaceCode = ioPlace.getPlaceCode();
     const std::string& lCityCode = ioPlace.getCityCode();
-    const std::string lDBCityCode =
-      (lCityCode.empty())?lPlaceCode:lCityCode;
+    const std::string& lDBCityCode = (lCityCode.empty())?lPlaceCode:lCityCode;
     const std::string& lStateCode = ioPlace.getStateCode();
     const std::string lDBStateCode = (lStateCode.empty())?"NA":lStateCode;
 
@@ -82,16 +75,16 @@ namespace OPENTREP {
       
     // Add indexing terms
     lDocument.add_term (lPlaceCode); ++idx;
-    lDocument.add_term (lDBCityCode); ++idx;
     lDocument.add_term (lDBStateCode); ++idx;
+    lDocument.add_term (lDBCityCode); ++idx;
     lDocument.add_term (ioPlace.getCountryCode()); ++idx;
     lDocument.add_term (ioPlace.getRegionCode()); ++idx;
-    lDocument.add_term (ioPlace.getContinentCode()); ++idx;
-    lDocument.add_term (ioPlace.getTimeZoneGroup()); ++idx;
 
     // Add terms to the spelling dictionnary
     ioDatabase.add_spelling (lPlaceCode);
-    ioDatabase.add_spelling (lDBCityCode);
+    if (lPlaceCode != lDBCityCode) {
+      ioDatabase.add_spelling (lDBCityCode);
+    }
     if (lStateCode.empty() == false) {
       ioDatabase.add_spelling (lStateCode);
     }

@@ -40,15 +40,6 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Place::getCityCode() const {
-    std::string oCityCode (_cityCode);
-    if (oCityCode.empty() == true) {
-      oCityCode = _placeCode;
-    }
-    return oCityCode;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
   bool Place::getNameList (const Language::EN_Language& iLanguageCode,
                            NameList_T& ioNameList) const {
     bool oFoundNameList = false;
@@ -77,14 +68,10 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   std::string Place::toString() const {
-    /* When the city code is empty, it means that the place is a city and
-       not an airport. The city code is thus the same as the place code
-       itself. */
     std::ostringstream oStr;
     oStr << describeShortKey();
 
-    const std::string& lCityCode = getCityCode();
-    oStr << ", " << lCityCode << ", " << _stateCode
+    oStr << ", " << _cityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _continentCode << ", " << _timeZoneGroup
          << ", " << _longitude << ", " << _latitude
@@ -266,10 +253,12 @@ namespace OPENTREP {
 
     if (hasFoundNameList == false) {
       //
-      OPENTREP_LOG_ERROR ("No list of names in (American) English (en_US "
-                          << "locale) can be found for the following place: "
-                          << toShortString());
-      throw LanguageCodeNotDefinedInNameTableException();
+      std::ostringstream errorStr;
+      errorStr << "No list of names in (American) English (en_US "
+               << "locale) can be found for the following place: "
+               << toShortString();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw LanguageCodeNotDefinedInNameTableException (errorStr.str());
     }
     assert (hasFoundNameList == true);
 

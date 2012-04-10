@@ -189,7 +189,7 @@ if __name__ == '__main__':
 	import libpyopentrep
 	openTrepLibrary = libpyopentrep.OpenTrepSearcher()
 	openTrepLibrary.init (xapianDBPath, 'pyopentrep.log', 'geo', 'geo',
-			      'localhost', '3306', 'geo_geonames')
+			      'localhost', '3306', 'geo_trep')
 
 	# If no search string was supplied as arguments of the command-line,
 	# ask the user for some
