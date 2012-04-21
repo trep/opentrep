@@ -29,9 +29,19 @@ namespace OPENTREP {
     friend class DbaPlace;
   public:
     // ///////// Getters ////////
-    /** Get the Place code. */
-    const std::string& getPlaceCode() const {
-      return _placeCode;
+    /** Get the IATA code. */
+    const std::string& getIataCode() const {
+      return _iataCode;
+    }
+    
+    /** Get the ICAO code. */
+    const std::string& getIcaoCode() const {
+      return _icaoCode;
+    }
+    
+    /** Get the FAA code. */
+    const std::string& getFaaCode() const {
+      return _faaCode;
     }
     
     /** Get the City code. */
@@ -115,12 +125,15 @@ namespace OPENTREP {
       return _nameMatrix;
     }
 
-    /** Get, for a given language (code), the corresponding list of names.
-        @param const Language::EN_Language& Language code.
-        @param NameList_T& Empty list of names, which will be filled by the
-               method if a list exists for that language code.
-        @return bool Whether or not such a list exists for the given
-                language. */
+    /**
+     * Get, for a given language (code), the corresponding list of names.
+     *
+     * @param const Language::EN_Language& Language code.
+     * @param NameList_T& Empty list of names, which will be filled by the
+     *        method if a list exists for that language code.
+     * @return bool Whether or not such a list exists for the given
+     *         language.
+     */
     bool getNameList (const Language::EN_Language&, NameList_T&) const;
 
     /** Get the list of extra matching (similar) places. */
@@ -135,9 +148,19 @@ namespace OPENTREP {
 
     
     // ///////// Setters ////////
-    /** Set the Place code. */
-    void setPlaceCode (const std::string& iPlaceCode) {
-      _placeCode = iPlaceCode;
+    /** Set the IATA code. */
+    void setIataCode (const std::string& iIataCode) {
+      _iataCode = iIataCode;
+    }
+    
+    /** Set the ICAO code. */
+    void setIcaoCode (const std::string& iIcaoCode) {
+      _icaoCode = iIcaoCode;
+    }
+    
+    /** Set the FAA code. */
+    void setFaaCode (const std::string& iFaaCode) {
+      _faaCode = iFaaCode;
     }
     
     /** Set the City code. */
@@ -287,8 +310,12 @@ namespace OPENTREP {
     
   private:
     // /////// Attributes /////////
-    /** Place code. */
-    std::string _placeCode;
+    /** IATA code. */
+    std::string _iataCode;
+    /** ICAO code. */
+    std::string _icaoCode;
+    /** FAA code. */
+    std::string _faaCode;
     /** City code. */
     std::string _cityCode;
     /** City name. */

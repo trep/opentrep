@@ -28,10 +28,24 @@ namespace OPENTREP {
   public:
     // ///////// Getters ////////
     /** 
-     * Get the Location code. 
+     * Get the IATA code. 
      */
-    std::string getLocationCode() const {
-      return _locationCode;
+    std::string getIataCode() const {
+      return _iataCode;
+    }
+    
+    /** 
+     * Get the ICAO code. 
+     */
+    std::string getIcaoCode() const {
+      return _icaoCode;
+    }
+    
+    /** 
+     * Get the FAA code. 
+     */
+    std::string getFaaCode() const {
+      return _faaCode;
     }
     
     /**
@@ -150,10 +164,24 @@ namespace OPENTREP {
     
     // ///////// Setters //////////
     /**
-     * Set the Location code. 
+     * Set the IATA code. 
      */
-    void setLocationCode (const std::string& iLocationCode) {
-      _locationCode = iLocationCode;
+    void setIataCode (const std::string& iIataCode) {
+      _iataCode = iIataCode;
+    }
+    
+    /**
+     * Set the ICAO code. 
+     */
+    void setIcaoCode (const std::string& iIcaoCode) {
+      _icaoCode = iIcaoCode;
+    }
+    
+    /**
+     * Set the FAA code. 
+     */
+    void setFaaCode (const std::string& iFaaCode) {
+      _faaCode = iFaaCode;
     }
     
     /**
@@ -322,7 +350,8 @@ namespace OPENTREP {
     /**
      * Main Constructor. 
      */
-    Location (const std::string& iPlaceCode, const std::string& iCityCode,
+    Location (const std::string& iIataCode, const std::string& iIcaoCode,
+              const std::string& iFaaCode, const std::string& iCityCode,
               const std::string& iStateCode, const std::string& iCountryCode,
               const std::string& iRegionCode, const std::string& iContinentCode,
               const std::string& iTimeZoneGroup, 
@@ -353,9 +382,17 @@ namespace OPENTREP {
   private:
     // /////// Attributes /////////
     /** 
-     * Location code. 
+     * IATA code.
      */
-    std::string _locationCode;
+    std::string _iataCode;
+    /** 
+     * ICAO code. 
+     */
+    std::string _icaoCode;
+    /** 
+     * FAA code. 
+     */
+    std::string _faaCode;
     /**
      * City code. 
      */

@@ -29,7 +29,13 @@ namespace soci {
       alternate_name7, alternate_name8, alternate_name9,
       alternate_name10 
     */
-    ioPlace.setPlaceCode (iPlaceValues.get<std::string> ("code"));
+    ioPlace.setIataCode (iPlaceValues.get<std::string> ("iata_code"));
+    // The ICAO code will be set to the default value (empty string)
+    // when the column is null
+    ioPlace.setIcaoCode (iPlaceValues.get<std::string> ("icao_code", ""));
+    // The FAA code will be set to the default value (empty string)
+    // when the column is null
+    // ioPlace.setFaaCode (iPlaceValues.get<std::string> ("faa_code", ""));
     // The city code will be set to the default value (empty string)
     // when the column is null
     ioPlace.setCityCode (iPlaceValues.get<std::string> ("city_code", ""));
@@ -49,7 +55,7 @@ namespace soci {
     if (lLanguageString.empty() == true) {
       std::ostringstream errorStr;
       errorStr << "The language field is empty for the place "
-               << ioPlace.getPlaceCode();
+               << ioPlace.getIataCode();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw OPENTREP::LanguageCodeNotDefinedInNameTableException (errorStr.str());
     }
@@ -110,11 +116,15 @@ namespace soci {
   void type_conversion<OPENTREP::Place>::
   to_base (const OPENTREP::Place& iPlace, values& ioPlaceValues,
            indicator& ioIndicator) {
+    const indicator lIcaoCodeIndicator =
+      iPlace.getIcaoCode().empty() ? i_null : i_ok;
     const indicator lCityCodeIndicator =
       iPlace.getCityCode().empty() ? i_null : i_ok;
     const indicator lStateCodeIndicator =
       iPlace.getStateCode().empty() ? i_null : i_ok;
-    ioPlaceValues.set ("code", iPlace.getPlaceCode());
+    ioPlaceValues.set ("iata_code", iPlace.getIataCode());
+    ioPlaceValues.set ("icao_code", iPlace.getIcaoCode(), lIcaoCodeIndicator);
+    //ioPlaceValues.set ("faa_code", iPlace.getFaaCode());
     ioPlaceValues.set ("city_code", iPlace.getCityCode(), lCityCodeIndicator);
     ioPlaceValues.set ("state_code", iPlace.getStateCode(),
                        lStateCodeIndicator);

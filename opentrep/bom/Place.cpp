@@ -12,7 +12,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   Place::Place () :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
-    _placeCode (""), _cityCode (""), _stateCode (""), _countryCode (""),
+    _iataCode (""), _icaoCode (""), _faaCode (""), _cityCode (""),
+    _stateCode (""), _countryCode (""),
     _regionCode (""), _continentCode (""), _timeZoneGroup (""),
     _longitude (0.0), _latitude (0.0), _originalKeywords (""),
     _correctedKeywords (""), _docID (0),
@@ -23,7 +24,8 @@ namespace OPENTREP {
   Place::Place (const Place& iPlace) :
     _world (iPlace._world), _placeHolder (iPlace._placeHolder),
     _mainPlace (iPlace._mainPlace),
-    _placeCode (iPlace._placeCode), _cityCode (iPlace._cityCode),
+    _iataCode (iPlace._iataCode), _icaoCode (iPlace._icaoCode),
+    _faaCode (iPlace._faaCode), _cityCode (iPlace._cityCode),
     _stateCode (iPlace._stateCode), _countryCode (iPlace._countryCode),
     _regionCode (iPlace._regionCode), _continentCode (iPlace._continentCode),
     _timeZoneGroup (iPlace._timeZoneGroup), _longitude (iPlace._longitude),
@@ -57,7 +59,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Place::describeShortKey() const {
     std::ostringstream oStr;
-    oStr << _placeCode;
+    oStr << _iataCode;
     return oStr.str();
   }
   
@@ -71,7 +73,8 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeShortKey();
 
-    oStr << ", " << _cityCode << ", " << _stateCode
+    oStr << ", " << _icaoCode << ", " << _faaCode
+         << ", " << _cityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _continentCode << ", " << _timeZoneGroup
          << ", " << _longitude << ", " << _latitude
@@ -177,7 +180,9 @@ namespace OPENTREP {
     oStr << describeKey();
 
     const std::string& lCityCode = getCityCode();
-    oStr << ", city code = " << lCityCode
+    oStr << ", ICAO code = " << _icaoCode
+         << ", FAA code = " << _faaCode
+         << ", city code = " << lCityCode
          << ", state code = " << _stateCode
          << ", country code = " << _countryCode
          << ", region code = " << _regionCode
@@ -263,7 +268,8 @@ namespace OPENTREP {
     assert (hasFoundNameList == true);
 
     // Copy the parameters from the Place object to the Location structure
-    Location oLocation (_placeCode, lCityCode, _stateCode, _countryCode,
+    Location oLocation (_iataCode, _icaoCode, _faaCode, lCityCode,
+                        _stateCode, _countryCode,
                         _regionCode, _continentCode, _timeZoneGroup,
                         _longitude, _latitude, lNameList,
                         _originalKeywords, _correctedKeywords,

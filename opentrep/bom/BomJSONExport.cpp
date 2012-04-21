@@ -92,7 +92,9 @@ namespace OPENTREP {
   void BomJSONExport::jsonExportLocation (bpt::ptree& ioPTLocation,
 					  const Location& iLocation) {
     // Fill all the fields of the JSON instance
-    ioPTLocation.put ("location_code", iLocation.getLocationCode());
+    ioPTLocation.put ("iata_code", iLocation.getIataCode());
+    ioPTLocation.put ("icao_code", iLocation.getIcaoCode());
+    ioPTLocation.put ("faa_code", iLocation.getFaaCode());
     ioPTLocation.put ("city_code", iLocation.getCityCode());
     ioPTLocation.put ("state_code", iLocation.getStateCode());
     ioPTLocation.put ("country_code", iLocation.getCountryCode());

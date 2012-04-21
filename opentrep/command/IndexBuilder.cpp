@@ -64,9 +64,10 @@ namespace OPENTREP {
     // to read it
     lDocument.set_data (ioPlace.toString());
       
-    const std::string& lPlaceCode = ioPlace.getPlaceCode();
+    const std::string& lIataCode = ioPlace.getIataCode();
+    const std::string& lIcaoCode = ioPlace.getIcaoCode();
     const std::string& lCityCode = ioPlace.getCityCode();
-    const std::string& lDBCityCode = (lCityCode.empty())?lPlaceCode:lCityCode;
+    const std::string& lDBCityCode = (lCityCode.empty())?lIataCode:lCityCode;
     const std::string& lStateCode = ioPlace.getStateCode();
     const std::string lDBStateCode = (lStateCode.empty())?"NA":lStateCode;
 
@@ -74,16 +75,22 @@ namespace OPENTREP {
     unsigned short idx = 1;
       
     // Add indexing terms
-    lDocument.add_term (lPlaceCode); ++idx;
+    lDocument.add_term (lIataCode); ++idx;
+    if (lIcaoCode.empty() == false) {
+      lDocument.add_term (lIcaoCode); ++idx;
+    }
     lDocument.add_term (lDBStateCode); ++idx;
     lDocument.add_term (lDBCityCode); ++idx;
     lDocument.add_term (ioPlace.getCountryCode()); ++idx;
     lDocument.add_term (ioPlace.getRegionCode()); ++idx;
 
-    // Add terms to the spelling dictionnary
-    ioDatabase.add_spelling (lPlaceCode);
-    if (lPlaceCode != lDBCityCode) {
+    // Add terms to the spelling dictionary
+    ioDatabase.add_spelling (lIataCode);
+    if (lIataCode != lDBCityCode) {
       ioDatabase.add_spelling (lDBCityCode);
+    }
+    if (lIcaoCode.empty() == false) {
+      ioDatabase.add_spelling (lIcaoCode);
     }
     if (lStateCode.empty() == false) {
       ioDatabase.add_spelling (lStateCode);

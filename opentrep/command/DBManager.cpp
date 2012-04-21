@@ -32,7 +32,7 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.iata_code as code, xapian_docid, icao_code, 
+         select rpd.iata_code, xapian_docid, icao_code, 
          is_geonames, geonameid, 
          latitude, longitude, fclass, fcode, 
          country_code, cc2, admin1, admin2, admin3, admin4, 
@@ -51,7 +51,7 @@ namespace OPENTREP {
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "select rpd.iata_code, xapian_docid, icao_code, "
          << "is_geonames, geonameid, "
          << "latitude, longitude, fclass, fcode, "
          << "country_code, cc2, admin1, admin2, admin3, admin4, "
@@ -90,7 +90,7 @@ namespace OPENTREP {
       
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.iata_code as code, xapian_docid, icao_code, 
+         select rpd.iata_code, xapian_docid, icao_code, 
          is_geonames, geonameid, 
          latitude, longitude, fclass, fcode, 
          country_code, cc2, admin1, admin2, admin3, admin4, 
@@ -119,7 +119,7 @@ namespace OPENTREP {
       
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "select rpd.iata_code, xapian_docid, icao_code, "
          << "is_geonames, geonameid, "
          << "latitude, longitude, fclass, fcode, "
          << "country_code, cc2, admin1, admin2, admin3, admin4, "
@@ -158,14 +158,14 @@ namespace OPENTREP {
   void DBManager::
   prepareSelectOnPlaceCodeStatement (soci::session& ioSociSession,
                                      soci::statement& ioSelectStatement,
-                                     const std::string& iPlaceCode,
+                                     const std::string& iIataCode,
                                      Place& ioPlace) {
   
     try {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.iata_code as code, xapian_docid, icao_code, 
+         select rpd.iata_code, xapian_docid, icao_code, 
          is_geonames, geonameid, 
          latitude, longitude, fclass, fcode, 
          country_code, cc2, admin1, admin2, admin3, admin4, 
@@ -179,13 +179,13 @@ namespace OPENTREP {
          alternate_name7, alternate_name8, alternate_name9,
          alternate_name10 
          from place_details rpd, place_names pn 
-         where rpd.iata_code = iPlaceCode
+         where rpd.iata_code = iIataCode
            and pn.iata_code = rpd.iata_code;
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "select rpd.iata_code, xapian_docid, icao_code, "
          << "is_geonames, geonameid, "
          << "latitude, longitude, fclass, fcode, "
          << "country_code, cc2, admin1, admin2, admin3, admin4, "
@@ -201,7 +201,7 @@ namespace OPENTREP {
          << "from place_details rpd, place_names pn "
          << "where rpd.iata_code = :place_code "
          << "and pn.iata_code = rpd.iata_code",
-         soci::into (ioPlace), soci::use (iPlaceCode));
+         soci::into (ioPlace), soci::use (iIataCode));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -226,7 +226,7 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.iata_code as code, xapian_docid, icao_code, 
+         select rpd.iata_code, xapian_docid, icao_code, 
          is_geonames, geonameid, 
          latitude, longitude, fclass, fcode, 
          country_code, cc2, admin1, admin2, admin3, admin4, 
@@ -246,7 +246,7 @@ namespace OPENTREP {
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.iata_code as code, xapian_docid, icao_code, "
+         << "select rpd.iata_code, xapian_docid, icao_code, "
          << "is_geonames, geonameid, "
          << "latitude, longitude, fclass, fcode, "
          << "country_code, cc2, admin1, admin2, admin3, admin4, "
@@ -313,17 +313,17 @@ namespace OPENTREP {
       
       // Instanciate a SQL statement (no request is performed at that stage)
       XapianDocID_T lDocID;
-      std::string lPlaceCode;
+      std::string lIataCode;
       soci::statement lUpdateStatement =
         (ioSociSession.prepare
          << "update place_details "
          << "set xapian_docid = :xapian_docid "
-         << "where iata_code = :code",
-         soci::use (lDocID), soci::use (lPlaceCode));
+         << "where iata_code = :iata_code",
+         soci::use (lDocID), soci::use (lIataCode));
       
       // Execute the SQL query
       lDocID = iPlace.getDocID();
-      lPlaceCode = iPlace.getPlaceCode();
+      lIataCode = iPlace.getIataCode();
       lUpdateStatement.execute (true);
       
       // Commit the transaction on the database
@@ -343,7 +343,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::retrievePlace (soci::session& ioSociSession,
-                                 const std::string& iPlaceCode,
+                                 const std::string& iIataCode,
                                  Place& ioPlace) {
     bool oHasRetrievedPlace = false;
       
@@ -353,7 +353,7 @@ namespace OPENTREP {
       soci::statement lSelectStatement (ioSociSession);
       DBManager::prepareSelectOnPlaceCodeStatement (ioSociSession,
                                                     lSelectStatement,
-                                                    iPlaceCode, ioPlace);
+                                                    iIataCode, ioPlace);
       const bool shouldDoReset = true;
       bool hasStillData = iterateOnStatement (lSelectStatement, ioPlace,
                                               shouldDoReset);
@@ -367,7 +367,7 @@ namespace OPENTREP {
                                          shouldNotDoReset);
       if (hasStillData == true) {
         std::ostringstream errorStr;
-        errorStr << "Error - There are multiple entries for the " << iPlaceCode
+        errorStr << "Error - There are multiple entries for the " << iIataCode
                  << " place code in the MySQL database.";
         OPENTREP_LOG_ERROR (errorStr.str());
         throw MultipleRowsForASingleDocIDException (errorStr.str());
@@ -378,7 +378,7 @@ namespace OPENTREP {
       
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to retrieve " << iPlaceCode
+      errorStr << "Error when trying to retrieve " << iIataCode
                << "from the MySQL database: " << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
