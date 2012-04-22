@@ -48,7 +48,7 @@ DB_USER=${userinput_adminname}
 DB_PASSWD=${userinput_pw}
 
 #
-SQL_STATEMENT="create database if not exists ${DB_NAME} default character set utf8 collate utf8_unicode_ci"
+SQL_STATEMENT="drop database if exists ${DB_NAME}; create database ${DB_NAME} default character set utf8 collate utf8_unicode_ci"
 
 #
 echo "The database '${DB_NAME}' will be created..."

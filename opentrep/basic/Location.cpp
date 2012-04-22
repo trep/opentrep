@@ -2,8 +2,6 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <istream>
-#include <ostream>
 #include <sstream>
 #include <string>
 #include <list>
@@ -14,8 +12,8 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   Location::Location () 
-    : _locationCode ("AAA"), _cityCode ("AAA"),
-      _stateCode ("NA"), _countryCode ("NA"),
+    : _iataCode ("AAA"), _icaoCode ("AAAA"), _faaCode ("AAA"),
+      _cityCode ("AAA"), _stateCode ("NA"), _countryCode ("NA"),
       _regionCode ("NA"),
       _continentCode ("NA"),
       _timeZoneGroup ("NA"),
@@ -27,7 +25,8 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   Location::Location (const Location& iLocation) 
-    : _locationCode (iLocation._locationCode), _cityCode (iLocation._cityCode),
+    : _iataCode (iLocation._iataCode), _icaoCode (iLocation._icaoCode),
+      _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
       _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
       _regionCode (iLocation._regionCode),
       _continentCode (iLocation._continentCode),
@@ -44,21 +43,24 @@ namespace OPENTREP {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  Location::Location (const std::string& iPlaceCode, 
-		      const std::string& iCityCode,
-		      const std::string& iStateCode, 
-		      const std::string& iCountryCode,
-		      const std::string& iRegionCode, 
-		      const std::string& iContinentCode,
-		      const std::string& iTimeZoneGroup, 
-		      const double iLongitude, const double iLatitude,
-		      const LocationNameList_T& iNameList,
-		      const std::string& iOriginalKeywords,
-		      const std::string& iCorrectedKeywords,
-		      const MatchingPercentage_T& iPercentage,
-		      const NbOfErrors_T& iEditDistance,
-		      const NbOfErrors_T& iAllowableEditDistance)
-    : _locationCode (iPlaceCode), _cityCode (iCityCode),
+  Location::Location (const std::string& iIataCode,
+                      const std::string& iIcaoCode,
+                      const std::string& iFaaCode,
+                      const std::string& iCityCode,
+                      const std::string& iStateCode, 
+                      const std::string& iCountryCode,
+                      const std::string& iRegionCode, 
+                      const std::string& iContinentCode,
+                      const std::string& iTimeZoneGroup, 
+                      const double iLongitude, const double iLatitude,
+                      const LocationNameList_T& iNameList,
+                      const std::string& iOriginalKeywords,
+                      const std::string& iCorrectedKeywords,
+                      const MatchingPercentage_T& iPercentage,
+                      const NbOfErrors_T& iEditDistance,
+                      const NbOfErrors_T& iAllowableEditDistance)
+    : _iataCode (iIataCode), _icaoCode (iIcaoCode), _faaCode (iFaaCode),
+      _cityCode (iCityCode),
       _stateCode (iStateCode), _countryCode (iCountryCode),
       _regionCode (iRegionCode), _continentCode (iContinentCode),
       _timeZoneGroup (iTimeZoneGroup), _longitude (iLongitude),
@@ -85,13 +87,14 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Location::toBasicString() const {
     std::ostringstream oStr;
-    oStr << _locationCode << ", " << _cityCode << ", " << _stateCode
-	 << ", " << _countryCode << ", " << _regionCode
-	 << ", " << _continentCode << ", " << _timeZoneGroup
-	 << ", " << _longitude << ", " << _latitude
-	 << ", " << _originalKeywords << ", " << _correctedKeywords
-	 << ", " << _percentage
-	 << ", " << _editDistance << ", " << _allowableEditDistance;
+    oStr << _iataCode << ", " << _icaoCode << ", " << _faaCode
+         << ", " << _cityCode << ", " << _stateCode
+         << ", " << _countryCode << ", " << _regionCode
+         << ", " << _continentCode << ", " << _timeZoneGroup
+         << ", " << _longitude << ", " << _latitude
+         << ", " << _originalKeywords << ", " << _correctedKeywords
+         << ", " << _percentage
+         << ", " << _editDistance << ", " << _allowableEditDistance;
       
     return oStr.str();
   }

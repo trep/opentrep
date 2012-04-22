@@ -90,8 +90,8 @@ namespace OPENTREP {
               oNoDetailedStr << ",";
             }
 
-	    //
-            oNoDetailedStr << lLocation.getLocationCode();
+            //
+            oNoDetailedStr << lLocation.getIataCode();
             oDetailedStr << idx+1 << ". " << lLocation.toSingleLocationString()
 			 << std::endl;
 
@@ -110,7 +110,7 @@ namespace OPENTREP {
                 oDetailedStr << "    " << idx+1 << "." << idxExtra+1 << ". ";
 
                 const Location& lExtraLocation = *itLoc;
-                oNoDetailedStr << lExtraLocation.getLocationCode();
+                oNoDetailedStr << lExtraLocation.getIataCode();
                 oDetailedStr << lExtraLocation << std::endl;
               }
             }
@@ -134,7 +134,7 @@ namespace OPENTREP {
                 oDetailedStr << "    " << idx+1 << "." << idxAlter+1 << ". ";
 
                 const Location& lAlternateLocation = *itLoc;
-                oNoDetailedStr << lAlternateLocation.getLocationCode()
+                oNoDetailedStr << lAlternateLocation.getIataCode()
                                << "/" << lAlternateLocation.getPercentage();
                 oDetailedStr << lAlternateLocation << std::endl;
               }

@@ -566,8 +566,8 @@ namespace OPENTREP {
       while (shouldStop == false) {
 
         // DEBUG
-        OPENTREP_LOG_DEBUG ("--------");
-        OPENTREP_LOG_DEBUG ("Current query string: `"
+        OPENTREP_LOG_DEBUG ("        --------");
+        OPENTREP_LOG_DEBUG ("        Current query string: `"
                             << iPartialQueryString
                             << "', with a maximal edit distance of "
                             << lMaxEditDistance << ".");
@@ -581,7 +581,7 @@ namespace OPENTREP {
                             hasReachedMaximalAllowableEditDistance, iDatabase);
         
         // DEBUG
-        OPENTREP_LOG_DEBUG ("---- Current query string: `"
+        OPENTREP_LOG_DEBUG ("        ---- Current query string: `"
                             << iPartialQueryString << "' --- Kept query: `"
                             << oMatchedString
                             << "', with a Levenshtein edit distance of "

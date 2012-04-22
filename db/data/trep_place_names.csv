@@ -1,56 +1,35 @@
 language_code^iata_code^ascii_name^utf_name^alternate_name1^alternate_name2^alternate_name3^alternate_name4^alternate_name5^alternate_name6^alternate_name7^alternate_name8^alternate_name9^alternate_name10
-en^09m^charleston municipal airport
-en^1b2^katama airpark airport
-en^1b6^hopedale industrial park airport
-en^1k1^lloyd stearman field airport
-en^1m8^myricks airport
-en^28m^cranland airport
-en^2b1^cape cod airport
-en^2d8^davis airport
-en^35d^padgham field airport
-en^3b3^sterling airport
-en^3b5^twitchell airport
-en^41g^university airpark
-en^49g^wend valley airport
-en^52f^northwest regional airport
-en^53t^cannon field airport
-en^60g^skyway estates airport
-en^60m^spencer airport
-en^6r6^terrell county airport
-en^8b5^tanner-hiller airport
-en^9b1^marlboro airport
-en^9c8^evart municipal airport
 en^aaa^anaa aiport
 en^aab^arrabury airport
 en^aac^el arish
 en^aae^annaba
 en^aaf^apalachicola municipal airport
 en^aag^arapoti/pr/br
-en^aah^aachen/de:merzbrueck
+en^aah^aachen-merzbruck^aachen-merzbrück
 en^aai^arraias airport
 en^aaj^cayana airstrip
 en^aak^aranuka airport
 en^aal^alborg^ålborg
 en^aam^malamala airport
 en^aan^al ain international airport
-en^aao^anaco/ve
+en^aao^anaco
 en^aap^houston/tx/us:andrau airpark
 en^aaq^anapa airport
 en^aar^tirstrup
 en^aas^apalapsili airport
 en^aat^altay airport
 en^aau^asau airport
-en^aav^alah/ph
+en^aav^allah valley
 en^aaw^abbottabad airport
 en^aax^araxa airport^araxá airport
 en^aay^al ghaidah international airport
 en^aaz^quezaltenango
-en^aba^abakan
+en^aba^abakan international airport
 en^abb^raf abingdon
-en^abc^albacete/es:airport
+en^abc^albacete / los llanos
 en^abd^abadan
 en^abe^lehigh valley international airport
-en^abf^abaiang/ki
+en^abf^abaiang airfield
 en^abg^abingdon downs/ql/au
 en^abh^alpha airport
 en^abi^abilene regional airport
@@ -58,7 +37,7 @@ en^abj^abidjan
 en^abk^kabre dare military
 en^abl^ambler airport
 en^abm^bamaga injinoo airport
-en^abn^albina/sr
+en^abn^albina
 en^abo^aboisso/ci
 en^abp^atkamba/pg
 en^abq^albuquerque international airport
@@ -94,7 +73,7 @@ en^acy^atlantic city international airport
 en^acz^zabol
 en^ada^adana / sakirpasa
 en^adb^izmir / adnan menderes
-en^adc^andakombe/pg
+en^adc^andakombe
 en^add^addis ababa
 en^ade^aden
 en^adf^adiyaman
@@ -113,8 +92,7 @@ en^adr^andrews municipal airport
 en^ads^addison airport
 en^adt^ada municipal airport
 en^adu^ardabil airport
-en^adv^andover airfield
-en^adw^washington executive airport/hyde field
+en^adw^joint base andrews
 en^adx^leuchars
 en^ady^alldays airport
 en^adz^san andres isla / sesquicentenario
@@ -139,12 +117,10 @@ en^afa^san rafael aerodrome
 en^afd^port alfred
 en^aff^united states air force academy airstrip
 en^afi^amalfi airport
-en^afj^washington county airport
 en^afk^ampara/lk:kondavattavan tank
 en^afl^alta floresta aeroporto
 en^afn^jaffrey municipal-silver ranch airport
 en^afo^afton municipal airport
-en^afp^anson county airport
 en^afr^afore/pg
 en^afs^sugraly airport
 en^aft^afutara/sb:afutara aerodrome
@@ -155,7 +131,7 @@ en^aga^agadir al massira
 en^agb^augsburg
 en^agc^allegheny county airport
 en^agd^anggi airport
-en^age^wangerooge/de
+en^age^wangerooge
 en^agf^agen-la-garenne
 en^agg^angoram/pg
 en^agh^aengelholm-helsingborg airport^ängelholm-helsingborg airport
@@ -189,7 +165,6 @@ en^ahl^aishalton airport
 en^ahm^ashland/or/us:sumner parker fi
 en^ahn^athens-ben epps airport
 en^aho^alghero
-en^ahp^port alexander seaplane base
 en^ahs^ahuas airport
 en^aht^amchitka/ak/us
 en^ahu^al hoceima
@@ -206,23 +181,21 @@ en^aig^yalinga
 en^aih^aiambak/pg
 en^aii^ali-sabieh airport
 en^aik^aiken municipal airport
-en^ail^ailigandi/pa
-en^aim^ailuk island/mh
+en^ail^ailigandi
+en^aim^ailuk airfield
 en^ain^wainwright airport
 en^aio^atlantic municipal airport
-en^aip^ailinglapalap isl/mh
+en^aip^airuk airfield
 en^air^aripuana airport^aripuanã airport
 en^ais^arorae airport
-en^ait^aitutaki island/ck
+en^ait^aitutaki airstrip
 en^aiu^enua airport
 en^aiv^george downer airport
 en^aiw^ai ais/na
 en^aiy^atlantic city municipal airport-bader field
 en^aiz^lee c fine memorial airport
 en^aja^ajaccio-napoleon-bonaparte^ajaccio-napoléon-bonaparte
-en^ajc^chignik airport
 en^ajf^al-jawf domestic airport
-en^ajg^mount carmel municipal airport
 en^aji^agri airport^ağrı airport
 en^ajj^akjoujt
 en^ajk^arak
@@ -250,7 +223,7 @@ en^ako^akron-washington county airport
 en^akp^anaktuvuk pass airport
 en^akq^gunung batin airport
 en^akr^akure airport
-en^aks^auki airport
+en^aks^gwaunaru'u airport
 en^akt^akrotiri airfield
 en^aku^aksu airport
 en^akv^akulivik airport
@@ -284,7 +257,7 @@ en^alx^thomas c russell field
 en^aly^alexandria / nouzha
 en^alz^alitak seaplane base
 en^ama^rick husband amarillo international airport
-en^amb^ambilobe/mg
+en^amb^mahavavy
 en^amc^am timan airport
 en^amd^ahmadabad
 en^ame^alto molocue/mz
@@ -297,7 +270,7 @@ en^amk^animas air park
 en^aml^puerto armuelles airport
 en^amm^queen alia international
 en^amn^gratiot community airport
-en^amo^mao/td
+en^amo^mao
 en^amp^ampanihy airport
 en^amq^ambon / pattimura
 en^amr^arno/mh
@@ -318,12 +291,12 @@ en^anf^aeropuerto cerro moreno
 en^ang^angouleme - brie-champniers^angoulême - brie-champniers
 en^anh^anuha island resort/sb
 en^ani^aniak airport
-en^anj^zanaga/cg
+en^anj^zanaga
 en^ank^etimesgut havaalani
 en^anl^andulo/ao
 en^anm^antalaha
 en^ann^tamgas harbor seaplane base
-en^ano^angoche/mz
+en^ano^antonio enes
 en^anp^lee airport
 en^anq^tri-state steuben county airport
 en^anr^antwerpen / deurne
@@ -361,7 +334,7 @@ en^ape^san juan aposento/pe
 en^apf^naples municipal airport
 en^apg^phillips army airfield
 en^aph^a.p. hill army airfield (fort a p hill)
-en^api^apiay/co
+en^api^gomez nino
 en^apk^apataki airport
 en^apl^nampula
 en^apn^alpena county regional airport
@@ -380,13 +353,11 @@ en^apz^zapala airport
 en^aqa^araraquara airport
 en^aqb^santa cruz del quiche airport
 en^aqg^anqing airport
-en^aqi^qaisumah/sa:hafar al batin
+en^aqi^qaysumah
 en^aqj^matar al `aqabah^maţār al `aqabah
 en^aqm^nova vida airport
 en^aqp^arequipa
-en^aqr^atoka municipal airport
 en^aqs^saqani/fj
-en^aqw^harriman and west airport
 en^aqy^alyeska/ak/us
 en^ara^acadiana regional airport
 en^arb^ann arbor municipal airport
@@ -417,7 +388,7 @@ en^arz^n'zeto airport
 en^asa^assab international airport
 en^asb^ashgabat airport
 en^asc^ascencion de guarayos
-en^asd^andros town/bs
+en^asd^andros town
 en^ase^aspen-pitkin county airport-sardy field
 en^asf^astrakhan
 en^asg^ashburton aerodrome
@@ -441,7 +412,7 @@ en^asy^ashley/nd/us
 en^asz^asirim/pg
 en^ata^anta huaraz
 en^atb^atbara
-en^atc^arthur's town/bs
+en^atc^arthur's town
 en^atd^uru harbour airport
 en^ate^antlers municipal airport
 en^atf^ambato / chachoan
@@ -460,7 +431,7 @@ en^atr^atar
 en^ats^artesia municipal airport
 en^att^atmautluak airport
 en^atu^attu island/ak/us:casco cove
-en^atv^ati/td
+en^atv^ati
 en^atw^outagamie county airport
 en^atx^atbasar airport
 en^aty^watertown municipal airport
@@ -469,14 +440,14 @@ en^aua^koningin beatrix luchthaven
 en^aub^itauba/mt/br
 en^auc^aeropuerto santiago perez quiroz^aeropuerto santiago pérez quiróz
 en^aud^augustus downs airport
-en^aue^abu rudeis/eg
+en^aue^abu rudeis airfield
 en^auf^auxerre-branches
 en^aug^augusta state airport
 en^auh^abu dhabi international airport
 en^aui^aua island/pg
 en^auj^ambunti/pg
 en^auk^alakanuk airport
-en^aul^aur island/mh
+en^aul^tabal airfield
 en^aum^austin municipal airport
 en^aun^auburn municipal airport
 en^auo^auburn-opelika robert g pitts airport
@@ -491,9 +462,8 @@ en^auw^wausau municipal airport
 en^aux^araguaina airport^araguaína airport
 en^auy^anelghowhat airport
 en^auz^aurora municipal airport
-en^ava^an shun/cn:huang guo shu
+en^ava^anshun/cn:hunagguoshu
 en^avb^aviano
-en^avc^mecklenburg-brunswick regional airport
 en^avf^avoriaz/fr
 en^avg^auvergne airport
 en^avi^maximo gomez^máximo gómez
@@ -510,11 +480,9 @@ en^awa^awassa
 en^awb^awaba airport
 en^awd^aniwa airport
 en^awe^alowe/ga
-en^awg^washington municipal airport
 en^awk^wake island - restricted civilian airport
 en^awm^west memphis municipal airport
 en^awn^alton downs/sa/au
-en^awo^arlington municipal airport
 en^awp^austral downs airport
 en^awr^awar/pg
 en^awz^ahwaz airport
@@ -544,7 +512,7 @@ en^ayi^yari/co
 en^ayk^arkalyk north airport
 en^ayl^anthony lagoon airport
 en^ayn^anyang airport
-en^ayo^ayolas/py
+en^ayo^ayolas
 en^ayp^ayacucho
 en^ayq^ayers rock
 en^ayr^ayr airport
@@ -556,11 +524,9 @@ en^ayy^pothuvil/lk:arugam bay spb
 en^ayz^amityville/ny/us:zahns
 en^aza^phoenix-mesa gateway airport
 en^azb^amazon bay/pg
-en^azc^colorado city municipal airport
 en^azd^yazd
-en^azg^apatzingan/mx
+en^azg^pablo l. sidar
 en^azi^abu dhabi bateen airport
-en^azk^skelton airport
 en^azl^sapezal/mt/br:fazenda tucunare
 en^azn^andizhan airport
 en^azo^kalamazoo-battle creek international airport
@@ -599,20 +565,19 @@ en^bba^balmaceda airport
 en^bbb^benson municipal airport
 en^bbc^bay city/tx/us
 en^bbd^brady curtis field
-en^bbe^big bell airport
 en^bbf^burlington/ma/us
 en^bbg^butaritari airport
-en^bbh^stralsund/de:barth
+en^bbh^barth
 en^bbi^bhubaneswar
-en^bbj^bitburg/de
+en^bbj^bitburg
 en^bbk^kasane airport
 en^bbl^babolsar airport
 en^bbm^battambang airport
 en^bbn^bario airport
 en^bbo^berbera airport
 en^bbp^bembridge airport
-en^bbq^barbuda/ag
-en^bbr^basse terre/gp:baillif
+en^bbq^codrington
+en^bbr^basse-terre - le baillif
 en^bbs^blackbushe airport
 en^bbt^berberati airport^berbérati airport
 en^bbu^bucuresti / baneasa
@@ -721,7 +686,7 @@ en^bfs^belfast / aldergrove airport
 en^bft^beaufort, marine corps air station
 en^bfu^bengbu/cn
 en^bfv^buri ram airport
-en^bfw^silver bay municipal airport
+en^bfw^sidi bel abbes
 en^bfx^bafoussam airport
 en^bga^palonegro international airport
 en^bgb^booue airport
@@ -732,7 +697,7 @@ en^bgf^bangui
 en^bgh^abbaye airport
 en^bgi^grantley adams international airport
 en^bgj^borgarfjoerdur eystri airport^borgarfjörður eystri airport
-en^bgk^big creek/bz
+en^bgk^big creek airstrip
 en^bgl^baglung airport
 en^bgm^binghamton regional airport-edwin a link field
 en^bgo^bergen / flesland
@@ -781,13 +746,13 @@ en^bie^beatrice municipal airport
 en^bif^biggs army air field
 en^big^allen army air field
 en^bih^bishop airport
-en^bii^bikini atoll/mh:enyu airfield
+en^bii^enyu airfield
 en^bij^biliau/pg
 en^bik^biak / mokmer
 en^bil^logan international airport
 en^bim^alice town, bimini
 en^bin^bamiyan airport
-en^bio^bilbao / sondica
+en^bio^bilbao / sondica^bilboko aireportua / aeropuerto de bilbao
 en^bip^bulimba/ql/au
 en^biq^biarritz-bayonne-anglet
 en^bir^biratnagar airport
@@ -845,8 +810,7 @@ en^bkq^blackall airport
 en^bkr^bokoro
 en^bks^bengkulu / padangkemiling
 en^bkt^allen c perkinson municipal airport
-en^bku^betioky/mg
-en^bkv^hernando county airport
+en^bku^betioky
 en^bkw^raleigh county memorial airport
 en^bkx^brookings municipal airport
 en^bky^bukavu kavumu airport
@@ -874,27 +838,27 @@ en^blt^blackwater airport
 en^blu^blue canyon-nyack airport
 en^blv^flying l airport
 en^blw^waimanalo/hi/us:bellows field
-en^blx^belluno/it
+en^blx^belluno
 en^bly^belmullet aerodrome
 en^blz^chileka international airport
 en^bma^stockholm-bromma airport
 en^bmb^bumbar airport
 en^bmc^brigham city airport
-en^bmd^belo tsiribihina/mg
+en^bmd^belo sur tsiribihina
 en^bme^broome airport
 en^bmf^bakouma airport
 en^bmg^monroe county airport
 en^bmh^bomai/pg
 en^bmi^central illinois regional airport at bloomington-normal
 en^bmj^baramita airport
-en^bmk^borkum/de
+en^bmk^borkum
 en^bml^berlin municipal airport
 en^bmm^bitam
 en^bmn^bamarni/iq
 en^bmo^bhamo/mm
 en^bmp^brampton island airport
 en^bmq^bamburi airport
-en^bmr^baltrum/de:baltrum
+en^bmr^baltrum
 en^bms^socrates mariani bittencourt airport^sócrates mariani bittencourt airport
 en^bmt^beaumont municipal airport
 en^bmu^bima
@@ -918,7 +882,7 @@ en^bnl^barnwell/sc/us:barnwell cnty
 en^bnm^bodinumu/pg
 en^bnn^bronnoysund / bronnoy
 en^bno^burns municipal airport
-en^bnp^bannu/pk
+en^bnp^bannu airfield
 en^bnq^baganga/ph
 en^bnr^banfora airport
 en^bns^barinas airport
@@ -965,19 +929,17 @@ en^bpg^barra do garcas airport^barra do garças airport
 en^bph^bislig/ph
 en^bpi^big piney-marbleton airport
 en^bpk^biangabip/pg
-en^bpl^bole/cn
-en^bpm^hyderabad/in:begumpet airport
+en^bpl^bole/cn:alashankou
+en^bpm^bagram airfield
 en^bpn^sepinggan international airport
-en^bpp^bowman municipal airport
-en^bpr^borongan airport
+en^bpo^boao/cn:railway station
 en^bps^porto seguro
 en^bpt^jefferson county airport
 en^bpu^beppu/jp
 en^bpx^qamdo bangda airport
 en^bpy^besalampy
 en^bqa^baler airport
-en^bqb^belbek airport
-en^bqd^budardalur airport^búðardalur airport
+en^bqb^sevastopol international airport
 en^bqe^bubaque airport
 en^bqg^bogorodskoye/ru
 en^bqh^london biggin hill airport
@@ -1013,7 +975,7 @@ en^brr^barra north bay airport
 en^brs^bristol / lulsgate
 en^brt^bathurst island airport
 en^bru^bruxelles national
-en^brv^bremerhaven/de:bremerhaven
+en^brv^bremerhaven am luneort
 en^brw^wiley post-will rogers memorial airport
 en^brx^barahona
 en^bry^samuels field airport
@@ -1036,7 +998,7 @@ en^bsp^bensbach/pg
 en^bsq^bisbee municipal airport
 en^bsr^basra international airport
 en^bss^balsas airport
-en^bst^lashkar gah/af:bost
+en^bst^bost airfield
 en^bsu^basankusu airport
 en^bsv^besakoa/mg
 en^bsw^boswell bay airport
@@ -1059,7 +1021,7 @@ en^btm^bert mooney airport
 en^btn^bennettsville/sc/us
 en^bto^botopasie/sr
 en^btp^butler-graham airport
-en^btq^butare/rw
+en^btq^butare
 en^btr^baton rouge metropolitan airport
 en^bts^bratislava ivanka
 en^btt^bettles airport
@@ -1104,7 +1066,6 @@ en^bvi^birdsville airport
 en^bvk^huacaraje/bo
 en^bvl^baures airport
 en^bvm^belmonte airport
-en^bvn^albion municipal airport
 en^bvo^bartlesville municipal airport
 en^bvp^bolovip/pg
 en^bvr^brava island/cv:esperadinha
@@ -1127,7 +1088,7 @@ en^bwi^baltimore-washington international airport
 en^bwj^bawan/pg
 en^bwk^brac
 en^bwl^earl henry airport
-en^bwm^bowman/nd/us
+en^bwm^bowman municipal airport
 en^bwn^brunei
 en^bwo^balakovo airport
 en^bwp^bewani/pg
@@ -1140,7 +1101,7 @@ en^bxa^george r carr memorial air field
 en^bxb^babo airport
 en^bxc^boxborough/ma/us
 en^bxd^bade airport
-en^bxe^bakel/sn
+en^bxe^bakel
 en^bxf^bellburn/wa/au
 en^bxg^bendigo/vi/au:bendigo
 en^bxh^balkhash airport
@@ -1174,14 +1135,13 @@ en^bym^bayamo
 en^byn^bayankhongor airport
 en^byo^bonito/ms/br
 en^byq^bunyu airport
-en^byr^laeso/dk:laeso
+en^byr^laeso^læsø
 en^bys^bicycle lake army airfield
 en^byt^bantry aerodrome
 en^byu^bayreuth
 en^byv^colombo/lk:beira lake
 en^byw^blakely island/wa/us
 en^byx^baniyala airport
-en^byy^bay city municipal airport
 en^bza^san pedro airport
 en^bzb^bazaruto island airport
 en^bzc^umberto modiano airport
@@ -1193,7 +1153,6 @@ en^bzh^bumi hills/zw:airfield
 en^bzi^balikesir
 en^bzk^brjansk
 en^bzl^barisal airport
-en^bzm^woensdrecht
 en^bzn^gallatin field airport
 en^bzo^bolzano
 en^bzp^bizant/ql/au
@@ -1239,18 +1198,18 @@ en^cbf^council bluffs municipal airport
 en^cbg^cambridge
 en^cbh^bechar
 en^cbi^cape barren island airport
-en^cbj^cabo rojo/do
+en^cbj^cabo rojo
 en^cbk^shalz field airport
 en^cbl^ciudad bolivar^ciudad bolívar
 en^cbm^columbus air force base
 en^cbn^penggung airport
-en^cbo^cotabato/ph:awang
+en^cbo^cotabato new
 en^cbp^coimbra airport
 en^cbq^calabar
 en^cbr^canberra international airport
 en^cbs^oro negro
 en^cbt^catumbela airport
-en^cbu^cottbus/de:drewitz apt
+en^cbu^drewitz
 en^cbv^coban
 en^cbw^campo mourao/pr/br
 en^cbx^condobolin airport
@@ -1281,7 +1240,7 @@ en^ccv^craig cove airport
 en^ccw^cowell airport
 en^ccx^caceres/mt/br
 en^ccy^charles city municipal airport
-en^ccz^chub cay/bs
+en^ccz^chub cay
 en^cda^cooinda airport
 en^cdb^cold bay airport
 en^cdc^cedar city regional airport
@@ -1360,7 +1319,7 @@ en^cgh^sao paulo/congonhas aeroporto
 en^cgi^cape girardeau municipal airport
 en^cgj^chingola airport
 en^cgk^jakarta / soekarno-hatta
-en^cgm^camiguin/ph:mambajao
+en^cgm^camiguin
 en^cgn^cologne/bonn
 en^cgo^zhengzhou
 en^cgp^shah amanat international airport
@@ -1374,9 +1333,8 @@ en^cgx^chicago/il/us:merrill c meigs
 en^cgy^cagayan de oro airport
 en^cgz^casa grande municipal airport
 en^cha^lovell field
-en^chb^chilas/pk
+en^chb^chilas^chilās
 en^chc^christchurch international airport
-en^chd^chandler municipal airport
 en^che^tallinn linnahall heliport
 en^chf^jinhae airport
 en^chg^chaoyang airport
@@ -1430,10 +1388,9 @@ en^cjc^aerodromo el loa^aeródromo el loa
 en^cjd^candilejas/co
 en^cjh^chilko lake/bc/ca
 en^cjj^chongju ab
-en^cjl^chitral/pk
+en^cjl^chitral airfield
 en^cjm^chumphon airport
 en^cjn^el cajon/ca/us
-en^cjr^culpeper county airport
 en^cjs^abraham gonzalez international airport^abraham gonzález international airport
 en^cjt^comitan airport
 en^cju^cheju-gukchegonghang
@@ -1442,16 +1399,14 @@ en^ckb^north central west virginia airport
 en^ckc^cherkasy
 en^ckd^crooked creek airport
 en^cke^clear lake/ca/us
-en^ckf^crisp county-cordele airport
 en^ckg^chongqing
 en^ckh^chokurdakh airport
-en^cki^croker island/nt/au
+en^cki^croker island
 en^ckk^cherokee/ar/us
 en^ckl^chkalovsky airport
 en^ckm^fletcher field airport
 en^ckn^crookston municipal airport-kirkwood field
 en^cko^cornelio procopio airport^cornélio procópio airport
-en^ckp^cherokee municipal airport
 en^ckr^crane island/wa/us
 en^cks^carajas / maraba
 en^ckt^sarakhs
@@ -1461,7 +1416,6 @@ en^ckx^chicken airport
 en^cky^conakry / gbessia
 en^ckz^canakkale airport^çanakkale airport
 en^cla^comilla airport
-en^clb^castlebar airport
 en^clc^clearlake/tx/us:metroport
 en^cld^mcclellan-palomar airport
 en^cle^cleveland-hopkins international airport
@@ -1483,7 +1437,7 @@ en^clt^charlotte/douglas international airport
 en^clu^columbus bakalar municipal airport
 en^clv^caldas novas airport
 en^clw^clearwater air park
-en^clx^clorinda/fo/ar
+en^clx^clorinda
 en^cly^calvi - sainte-catherine
 en^clz^calabozo airport
 en^cma^cunnamulla airport
@@ -1512,7 +1466,7 @@ en^cmw^camaguey aeropuerto
 en^cmx^houghton county memorial airport
 en^cmy^sparta-fort mccoy airport
 en^cmz^caia/mz
-en^cna^cananea/mx
+en^cna^cananea
 en^cnb^coonamble airport
 en^cnc^coconut island airport
 en^cnd^mihail kogalniceanu international airport^mihail kogălniceanu international airport
@@ -1525,7 +1479,6 @@ en^cnj^cloncurry airport
 en^cnk^blosser municipal airport
 en^cnl^sindal
 en^cnm^cavern city air terminal
-en^cnn^chulman airport
 en^cno^chino airport
 en^cnp^constable pynt
 en^cnq^corrientes aero.
@@ -1561,10 +1514,10 @@ en^cot^cotulla, cotulla-la salle county airport
 en^cou^columbia regional airport
 en^cov^covilha airport
 en^cow^coquimbo/cl
-en^cox^congo town/bs
+en^cox^congo town
 en^coy^coolawanyah station/wa/au
-en^coz^constanza/do
-en^cpa^harper/lr:cape palmas
+en^coz^constanza
+en^cpa^cape palmas
 en^cpb^capurgana airport^capurganá airport
 en^cpc^aeropuerto chapelco
 en^cpd^coober pedy airport
@@ -1573,7 +1526,6 @@ en^cpf^cepu airport
 en^cpg^carmen de patagones/ba/ar
 en^cph^kastrup
 en^cpi^cape orford/pg
-en^cpk^chesapeake municipal airport
 en^cpl^chaparral airport
 en^cpm^compton/woodley airport
 en^cpn^cape rodney/pg
@@ -1586,7 +1538,6 @@ en^cpu^cururupu airport
 en^cpv^campina grande
 en^cpx^benjamin rivera noriega airport
 en^cqa^canarana airport
-en^cqb^chandler municipal airport
 en^cqd^forudgah-e shahr-e kord^forūdgāh-e shahr-e kord
 en^cqf^calais-dunkerque
 en^cqm^aeropuerto central ciudad real
@@ -1596,7 +1547,7 @@ en^cqt^caquetania/co
 en^cqx^chatham municipal airport
 en^cra^craiova airport
 en^crb^collarenebri airport
-en^crc^cartago/co
+en^crc^santa ana
 en^crd^comodoro rivadavia aerodrome
 en^cre^grand strand airport
 en^crf^carnot airport
@@ -1613,7 +1564,7 @@ en^crq^caravelas
 en^crr^ceres aerodrome
 en^crs^c david campbell field-corsicana municipal airport
 en^crt^z m jack stell field airport
-en^cru^carriacou is/gd
+en^cru^carriacou
 en^crv^crotone
 en^crw^yeager airport
 en^crx^roscoe turner airport
@@ -1648,7 +1599,7 @@ en^csz^co/ba/ar:brigadier hector ruiz
 en^cta^aeroporto di catania-fontanarossa
 en^ctb^cut bank municipal airport
 en^ctc^catamarca aero.
-en^ctd^chitre/pa
+en^ctd^chitre
 en^cte^carti/pa
 en^ctf^coatepeque/gt:coatepeque
 en^ctg^aeropuerto internacional de crespo
@@ -1698,8 +1649,8 @@ en^cuz^cuzco
 en^cva^pittsburgh/pa/us:civic ar hpt
 en^cvb^chungribu airport
 en^cvc^cleve airport
-en^cve^covenas/co
-en^cvf^courchevel/fr
+en^cve^covenas^coveñas
+en^cvf^courchevel
 en^cvg^cincinnati-northern kentucky international airport
 en^cvh^caviahue airport
 en^cvi^caleta olivia airport
@@ -1733,7 +1684,7 @@ en^cxa^caicara del orinoco airport
 en^cxb^cox's bazar airport
 en^cxc^chitina/ak/us:chitina apt
 en^cxf^coldfoot airport
-en^cxh^vancouver/bc/ca:coal harbour
+en^cxh^vancouver harbour water airport
 en^cxi^cassidy international airport
 en^cxj^campo dos bugres airport
 en^cxl^calexico international airport
@@ -1745,7 +1696,7 @@ en^cxq^christmas creek stn/wa/au
 en^cxr^cam ranh international airport
 en^cxt^charters towers airport
 en^cxy^cat cay airport
-en^cya^les cayes/ht
+en^cya^cayes
 en^cyb^gerrard smith airport
 en^cyc^caye chapel/bz
 en^cye^crystal lake/pa/us
@@ -1755,14 +1706,14 @@ en^cyi^chiayi airport
 en^cyl^coyoles/hn
 en^cym^chatham seaplane base
 en^cyo^cayo largo del sur
-en^cyp^calbayog/ph
+en^cyp^calbayog
 en^cyr^aeropuerto arco
 en^cys^cheyenne airport
 en^cyt^yakataga airport
 en^cyu^cuyo airport
 en^cyw^captain rogelio castillo national airport
 en^cyx^cherskiy airport
-en^cyz^cauayan/ph
+en^cyz^cauayan
 en^cza^chichen-itza
 en^czb^cruz alta/rs/br:carlos ruhl
 en^czc^copper center 2 airport
@@ -1779,7 +1730,7 @@ en^czo^chistochina/ak/us
 en^czp^cape pole/ak/us
 en^czs^cruzeiro do sul
 en^czt^carrizo springs/tx/us
-en^czu^corozal/co
+en^czu^corozal
 en^czw^rudniki
 en^czx^changzhou airport
 en^czy^cluny airport
@@ -1825,7 +1776,7 @@ en^dby^dalby airport
 en^dca^ronald reagan washington national airport
 en^dcf^canefield airport
 en^dcg^dubai/ae:dubai creek spb
-en^dci^decimomannu/it:air base
+en^dci^decimomannu military airfield
 en^dck^dahl creek/ak/us:dahl creek
 en^dcm^castres-mazamet
 en^dcn^derby/wa/au:raaf curtin
@@ -1859,6 +1810,7 @@ en^der^derim/pg
 en^des^desroches airport
 en^det^detroit city airport
 en^dew^deer park airport
+en^dey^deyang/cn:bus station
 en^dez^deir ezzor
 en^dfi^defiance memorial airport
 en^dfp^drumduff airport
@@ -1980,7 +1932,7 @@ en^dnu^dinangat/pg
 en^dnv^vermilion county airport
 en^dnx^galegu airport
 en^dnz^cardak
-en^doa^doany/mg
+en^doa^doany
 en^dob^dobo airport
 en^doc^dornoch airport
 en^dod^dodoma
@@ -2020,7 +1972,7 @@ en^drf^drift river/ak/us
 en^drg^deering airport
 en^drh^dabra airport
 en^dri^beauregard regional airport
-en^drj^drietabbetje/sr
+en^drj^drietabbetje
 en^drk^drake bay
 en^drn^dirranbandi airport
 en^dro^durango-la plata county airport
@@ -2033,7 +1985,7 @@ en^drx^dresden/de:bus station
 en^dry^drysdale river/wa/au:airport
 en^dsa^doncaster airport
 en^dsc^dschang airport
-en^dsd^la desirade/gp
+en^dsd^la desirade^la désirade
 en^dse^combolcha airport
 en^dsg^dilasag/ph
 en^dsi^destin/fl/us
@@ -2082,7 +2034,7 @@ en^dvp^davenport downs airport
 en^dvr^daly river airport
 en^dvt^phoenix-deer valley municipal airport
 en^dwa^dwangwa airport
-en^dwb^soalala/mg
+en^dwb^soalala
 en^dwc^dubai/ae:al maktoum intl
 en^dwd^dawadmi domestic airport
 en^dwf^dayton/oh/us:wright afb
@@ -2109,28 +2061,27 @@ en^dzi^codazzi/co
 en^dzn^dzezkazgan
 en^dzo^durazno
 en^dzu^dazu/cn
-en^e30^bruce field airport
 en^eaa^eagle airport
 en^eab^abbse airport
-en^eae^emae/vu
-en^eal^kwajelein at/mh:elenak airport
+en^eae^airfield emae
+en^eal^elenak airfield
 en^eam^najran
 en^ean^wheatland/wy/us:phifer field
 en^eap^bale-mulhouse^bâle-mulhouse
 en^ear^kearney municipal airport
-en^eas^san sebastian / fuenterrabia^san sebastián / fuenterrabía
+en^eas^san sebastian / fuenterrabia^donostiako aireportua / aeropuerto de san sebastián
 en^eat^pangborn field
 en^eau^chippewa valley regional airport
 en^eba^marina di campo
 en^ebb^entebbe airport
 en^ebd^el obeid
-en^ebg^el bagre/co
+en^ebg^el bagre
 en^ebh^el bayadh/dz:el bayadh
 en^ebj^esbjerg
 en^ebl^erbil international airport
 en^ebm^el borma
 en^ebn^ebadon/mh
-en^ebo^ebon/mh:ebon apt
+en^ebo^ebon airfield
 en^ebr^baton rouge/la/us:downtown
 en^ebs^webster city municipal airport
 en^ebu^saint-etienne - boutheon^saint-etienne - bouthéon
@@ -2198,7 +2149,7 @@ en^ehr^henderson city-county airport
 en^eht^east hartford/ct/us:rentschler
 en^eia^eia/pg:popondetta
 en^eib^eisenach/de:kindel airport
-en^eie^yeniseysk/ru
+en^eie^enisejsk
 en^eih^einasleigh airport
 en^eik^yeysk/ru
 en^eil^eielson air force base
@@ -2207,7 +2158,7 @@ en^eis^beef island
 en^eiy^ein yahav airfield
 en^eja^yariguies airport^yariguíes airport
 en^ejh^wejh
-en^ejt^mili atoll/mh:enijet airport
+en^ejt^enejet airfield
 en^eka^eureka city airport
 en^ekb^ekibastuz airport
 en^ekd^elkedra airport
@@ -2218,7 +2169,7 @@ en^ekn^jennings randolph field
 en^eko^elko regional airport
 en^ekq^wayne county airport
 en^eks^shakhtersk/ru:shakhtersk
-en^ekt^eskilstuna/se
+en^ekt^eskilstuna
 en^ekx^addington field airport
 en^ela^eagle lake/tx/us
 en^elb^aeropuerto el banco
@@ -2249,7 +2200,7 @@ en^elz^wellsville municipal airport-tarantine field
 en^ema^east midlands
 en^emb^san francisco/ca/us:embarkader
 en^emd^emerald airport
-en^eme^emden/de
+en^eme^emden
 en^emg^empangeni/za
 en^emi^emirau/pg
 en^emk^emmonak airport
@@ -2272,7 +2223,7 @@ en^enf^enontekio
 en^enh^enshi airport
 en^eni^el nido airport
 en^enj^el naranjo airport
-en^enk^zyryanka west airport
+en^enk^enniskillen airport
 en^enl^centralia municipal airport
 en^enn^nenana municipal airport
 en^eno^encarnacion
@@ -2312,7 +2263,7 @@ en^erf^erfurt-bindersleben
 en^erg^eromanga airport
 en^erh^errachidia
 en^eri^erie international airport
-en^erl^erenhot shi/cn:saiwusu
+en^erl^erenhot/cn:saiwusu intl
 en^erm^erechim airport
 en^ern^eirunepe airport^eirunepé airport
 en^ero^eldred rock/ak/us:coast guard
@@ -2338,7 +2289,7 @@ en^esm^esmeraldas-tachina
 en^esn^easton municipal airport
 en^eso^ohkay owingeh airport
 en^esp^stroudsburg-pocono airport
-en^esr^el salvador/cl:salvador bajo
+en^esr^el salvador
 en^ess^essen-mulheim
 en^est^estacion de bomberos heliport
 en^esu^essaouira
@@ -2357,16 +2308,16 @@ en^eue^eureka airport
 en^euf^weedon field airport
 en^eug^mahlon sweet field airport
 en^eul^caldwell industrial airport
-en^eum^neumuenster/de
+en^eum^neumunster^neumünster
 en^eun^laayoune/hassan isl
 en^euo^paratebueno/co
-en^euq^antique/ph:evelio javier
+en^euq^san jose airfield
 en^eux^franklin delano roosevelt airport
 en^eva^evadale/tx/us:landing strip
 en^evb^new smyrna beach municipal airport
 en^evd^eva downs airport
 en^eve^evenes
-en^evg^sveg/se
+en^evg^sveg
 en^evh^evans head aerodrome
 en^evm^eveleth-virginia municipal airport
 en^evn^zvartnots
@@ -2621,7 +2572,7 @@ en^ftk^godman army air field
 en^ftl^fortuna ledge/ak/us
 en^ftu^fort-dauphin
 en^ftw^fort worth meacham airport
-en^ftx^owando/cg
+en^ftx^owando
 en^fty^fulton county airport-brown field
 en^fua^fundacion oftalmologica de santander heliport
 en^fub^fulleborn/pg
@@ -2633,7 +2584,7 @@ en^fuk^fukuoka airport
 en^ful^fullerton municipal airport
 en^fum^fuma/pg
 en^fun^funafuti international airport
-en^fuo^foshan/cn
+en^fuo^foshan/cn:shadi
 en^fut^maopoopo ile futuna
 en^fve^northern aroostook regional airport
 en^fvl^flora valley/wa/au
@@ -2642,7 +2593,7 @@ en^fvr^forre/wa/au:forrest river arpt
 en^fvx^farmville municipal airport
 en^fwa^fort wayne international airport
 en^fwc^fairfield municipal airport
-en^fwh^dallas/tx/us:carswell afb
+en^fwh^fort worth, naval air station
 en^fwl^farewell/ak/us
 en^fwm^fort william/gb:hpt
 en^fwn^sussex airport
@@ -2696,7 +2647,7 @@ en^gbf^negarbo/pg
 en^gbg^galesburg municipal airport
 en^gbh^galbraith lake airport
 en^gbi^grand bahama/bs:aux ab
-en^gbj^marie galante/gp:les bases
+en^gbj^marie-galante
 en^gbk^gbangbatok airport
 en^gbl^south goulburn island/nt/au
 en^gbm^garbaharey/so
@@ -2794,7 +2745,7 @@ en^ght^ghat
 en^ghu^gualeguaychu aerodrome
 en^gib^gibraltar airport
 en^gic^boigu airport
-en^gid^gitega/bi
+en^gid^gitega
 en^gif^winter haven's gilbert airport
 en^gig^galeao
 en^gii^siguiri airport
@@ -2823,7 +2774,7 @@ en^gkt^gatlinburg-pigeon forge airport
 en^gky^arlington municipal airport
 en^gla^glasgow airport
 en^glb^globe/az/us:san carlos apache
-en^glc^geladi/et
+en^glc^geladi severnyy
 en^gld^goodland municipal airport
 en^gle^gainesville municipal airport
 en^glf^golfito airport
@@ -2910,7 +2861,7 @@ en^gpn^garden point airport
 en^gpo^general pico aerodrome
 en^gps^seymour
 en^gpt^gulfport-biloxi regional airport
-en^gpz^grand rapids-itasca county/gordon newstrom field
+en^gpz^grand rapids/itasca county airport-gordon newstrom field
 en^gqq^galion municipal airport
 en^gra^gamarra/co
 en^grb^austin straubel international airport
@@ -3009,7 +2960,7 @@ en^gvt^majors airport
 en^gvw^grandview/mo/us:richards gebau
 en^gvx^gavle-sandviken airport
 en^gwa^gwa airport
-en^gwd^gwadar/pk
+en^gwd^gwadar airfield^gwādar airfield
 en^gwe^gweru
 en^gwl^gwalior airport
 en^gwn^gnarowein/pg
@@ -3024,17 +2975,17 @@ en^gxg^negage airport
 en^gxq^coyhaique teniente vidal
 en^gxx^yagoua airport
 en^gxy^greeley-weld county airport
-en^gya^guayaramerin
+en^gya^guayaramerin airport^guayaramerín airport
 en^gyd^heydar aliyev international airport
 en^gye^guayaquil / simon bolivar
-en^gyi^gisenyi/rw
+en^gyi^gisenyi
 en^gyl^argyle airport
 en^gym^guaymas international airport
 en^gyn^goiania aeroporto
 en^gyp^gympie airport
 en^gyr^phoenix goodyear airport
 en^gys^guangyuan airport
-en^gyu^guyuan shi/cn:liu pan shan
+en^gyu^guyuan/cn:liupanshan
 en^gyy^gary/chicago international airport
 en^gza^gaza/ps:yasser arafat intl
 en^gzh^middleton field
@@ -3108,7 +3059,7 @@ en^hdq^headquarters/zz
 en^hdr^havadarya airport
 en^hds^hoedspruit
 en^hdy^tha akatsayan hat yai
-en^hea^herat/af
+en^hea^aerodrom gerat
 en^heb^henzada airport
 en^hed^herendeen/ak/us
 en^hee^thompson-robbins airport
@@ -3136,7 +3087,7 @@ en^hft^hammerfest airport
 en^hga^hargeisa
 en^hgd^hughenden airport
 en^hgh^hangzhou
-en^hgl^helgoland/de:duene
+en^hgl^helgoland-dune^helgoland-düne
 en^hgn^sanam bin mae hong son
 en^hgo^korhogo airport
 en^hgr^washington county regional airport
@@ -3208,7 +3159,7 @@ en^hls^st helens airport
 en^hlt^hamilton airport
 en^hlu^nesson airport
 en^hlv^helenvale airport
-en^hlw^hluhluwe/za
+en^hlw^hluhluwe
 en^hly^holyhead/gb
 en^hlz^hamilton airport
 en^hma^hanty-mansijsk
@@ -3222,7 +3173,7 @@ en^hmo^hermosillo, son.
 en^hmr^stafsberg airport
 en^hms^homeshore/ak/us
 en^hmt^hemet-ryan airport
-en^hmv^hemavan tarnaby/se
+en^hmv^hemavan
 en^hna^hanamaki airport
 en^hnb^huntingburg/in/us:mnpl
 en^hnc^billy mitchell airport
@@ -3246,7 +3197,7 @@ en^hod^hodeidah
 en^hoe^houeisay/la
 en^hof^al ahsa
 en^hog^holguin civ / mil
-en^hoh^hohenems dornbirn/at:airport
+en^hoh^hohenems-dornbirn
 en^hoi^hao
 en^hok^hooker creek airport
 en^hol^holikachu/ak/us
@@ -3259,7 +3210,7 @@ en^hor^horta airport
 en^hos^chos malal/ne/ar:oscar reguera
 en^hot^memorial field
 en^hou^william p hobby airport
-en^hov^orsta-volda / hovden
+en^hov^orsta-volda lufthamn, hovden^ørsta-volda lufthamn, hovden
 en^how^fort kobbe/pa:howard afb
 en^hox^homalin/mm
 en^hoy^hoy/gb:longhope
@@ -3323,7 +3274,7 @@ en^htu^hopetoun airport
 en^htv^huntsville/tx/us
 en^htw^lawrence county airpark
 en^hty^hatay havaalani^hatay havaalanı
-en^htz^hato corozal/co
+en^htz^hato corozal
 en^hua^redstone army airfield
 en^hub^humbert river airport
 en^huc^humacao airport
@@ -3379,7 +3330,7 @@ en^hyx^saginaw county h.w. browne airport
 en^hzb^merville-calonne
 en^hze^mercer county regional airport
 en^hzg^hanzhong airport
-en^hzh^liping city/cn:liping
+en^hzh^liping/cn
 en^hzk^husavik airport
 en^hzl^hazleton municipal airport
 en^hzp^fort mackay/ab/ca:horizon
@@ -3415,7 +3366,7 @@ en^ick^nieuw nickerie/sr
 en^icl^clarinda/ia/us:municipal
 en^icn^incheon international airport
 en^ico^sicogon island/ph
-en^icr^nicaro/cu
+en^icr^nicaro
 en^ics^cascade/id/us
 en^ict^wichita mid-continent airport
 en^icy^icy bay airport
@@ -3454,7 +3405,7 @@ en^igg^igiugig airport
 en^igh^ingham airport
 en^igl^izmir / cigli
 en^igm^kingman airport
-en^ign^iligan/ph:maria cristina
+en^ign^iligan
 en^igo^chigorodo airport^chigorodó airport
 en^igr^iguazu aerodrome
 en^igs^ingolstadt
@@ -3480,7 +3431,7 @@ en^ike^ikerasak heliport
 en^iki^iki airport
 en^ikk^greater kankakee airport
 en^ikl^ikela airport
-en^iko^nikolski/ak/us:nikolski afs
+en^iko^nikolski
 en^ikp^inkerman airport
 en^iks^tiksi airport
 en^ikt^irkutsk airport
@@ -3499,7 +3450,7 @@ en^ilm^wilmington international airport
 en^iln^airborne airpark
 en^ilo^iloilo
 en^ilp^ile des pins airport^île des pins airport
-en^ilq^ilo/pe
+en^ilq^ilo
 en^ilr^ilorin
 en^ilu^kilaguni airport
 en^ilx^ileg/pg
@@ -3519,9 +3470,8 @@ en^imo^zemio airport
 en^imp^imperatriz
 en^imr^milan/it:rogoredo railway stn
 en^imt^ford airport
-en^imz^nimroz/af
 en^ina^inta airport
-en^inb^independence/bz
+en^inb^mango creek airstrip
 en^inc^yinchuan
 en^ind^indianapolis international airport
 en^ine^chinde/mz
@@ -3622,15 +3572,15 @@ en^itn^itabuna airport
 en^ito^hilo international airport
 en^itp^itaperuna/rj/br:itaperuna
 en^itq^itaqui airport
-en^itr^kit carson county airport
+en^itr^itumbiara airport
 en^itt^turin/it:porta susa railway st
 en^iue^alofi / niue
 en^iul^ilu airport
 en^ium^summit lake/bc/ca
 en^ius^inus/pg
-en^iva^ambanja/mg:ampampamena
+en^iva^ambanja
 en^ivc^invercargill airport
-en^ivg^berane/me:dolac
+en^ivg^ivangrad
 en^ivh^ivishak/ak/us
 en^ivi^isla viveros/pa:isla viveros
 en^ivl^ivalo airport
@@ -3682,7 +3632,7 @@ en^jag^jacobabad
 en^jah^aubagne-les paluds
 en^jai^jaipur / sanganer
 en^jaj^atlanta/ga/us:perimeter mall
-en^jak^jacmel/ht
+en^jak^jacmel
 en^jal^lencero
 en^jam^bezmer air base
 en^jan^jackson-evers international airport
@@ -3691,12 +3641,12 @@ en^jap^punta renes/cr
 en^jaq^jacquinot bay airport
 en^jar^jahrom/ir:jahrom airport
 en^jas^jasper/tx/us:county
-en^jat^jabot/mh
+en^jat^jabat airfield
 en^jau^francisco carle airport
 en^jav^jacobshavn lufthavn
 en^jax^jacksonville international airport
 en^jbc^boston/ma/us:city heliport
-en^jbd^jiang men/cn:cz bus station
+en^jbd^jiangmen/cn:cz bus station
 en^jbk^berkeley/ca/us
 en^jbp^los angeles/ca/us:commerce bus
 en^jbq^la isabela international airport
@@ -3728,7 +3678,7 @@ en^jdh^jodhpur airport
 en^jdk^pseudo/ny/us:pseudo city code
 en^jdm^miami/fl/us:downtown heliport
 en^jdn^jordan airport
-en^jdo^juaze/ce/br:regional do cariri
+en^jdo^cariri
 en^jdp^paris - issy-les-moulineaux
 en^jdr^sao joao del rei airport
 en^jdt^minneapolis/mn/us:downtown hpt
@@ -3739,7 +3689,7 @@ en^jed^jeddah king abdul aziz international airport
 en^jee^jeremie/ht
 en^jef^jefferson city memorial airport
 en^jeg^egedesminde
-en^jej^jeh/mh
+en^jej^jeh airfield
 en^jem^emeryville/ca/us:heliport
 en^jeq^jequie airport^jequié airport
 en^jer^jersey airport
@@ -3773,6 +3723,7 @@ en^jhw^chautauqua county-jamestown airport
 en^jhy^cambridge/ma/us:hyatt reg hpt
 en^jia^juina airport^juína airport
 en^jib^djibouti  ambouli
+en^jic^jinchang jinchuan airport
 en^jid^los angeles/ca/us:cty ind hpt
 en^jij^jijiga airport
 en^jik^ikaria airport
@@ -3834,7 +3785,7 @@ en^jog^jogyakarta / adisucipto
 en^joh^port st johns
 en^joi^joinville
 en^jok^yoshkar-ola airport
-en^jol^jolo/ph
+en^jol^jolo
 en^jom^njombe/tz
 en^jon^johnston island/um
 en^jop^josephstaal/pg
@@ -3886,7 +3837,7 @@ en^jty^astypalaia airport
 en^jua^juara/mt/br
 en^jub^juba airport
 en^juc^los angeles/ca/us:univ hpt
-en^jui^juist/de
+en^jui^juist
 en^juj^jujuy aerodrome
 en^jul^aeropuerto internacional inca manco capac^aeropuerto internacional inca manco cápac
 en^jum^jumla
@@ -3897,7 +3848,7 @@ en^jur^jurien bay airport
 en^jut^jutigalpa airport
 en^juv^upernavik airport
 en^juz^quzhou airport
-en^jva^ankavandra/mg
+en^jva^ankavandra
 en^jvi^central jersey regional airport
 en^jvl^southern wisconsin regional airport
 en^jvm^jonesville mine airport
@@ -3906,8 +3857,8 @@ en^jwc^los angeles/ca/us:warner bus
 en^jwh^houston/tx/us:westchase hpt
 en^jwl^houston/tx/us:woodlawns hpt
 en^jwn^zanjan/ir
-en^jxa^jixi shi/cn:xingkaihu
-en^jxn^jackson/mi/us:reynolds mncpl
+en^jxa^jixi/cn:xingkaihu
+en^jxn^jackson, jackson county-reynolds field airport
 en^jyo^leesburg executive airport
 en^jyr^forudgah-e jiroft^forūdgāh-e jīroft
 en^jyv^jyvaskyla
@@ -3957,7 +3908,7 @@ en^kbp^boryspil international airport
 en^kbq^kasungu airport
 en^kbr^kota bharu
 en^kbs^bo airport
-en^kbt^kaben/mh
+en^kbt^kaven airfield
 en^kbu^kotabaru
 en^kbv^krabi airport
 en^kbw^chignik bay seaplane base
@@ -3992,7 +3943,7 @@ en^kdc^kandi airport
 en^kdd^khuzdar airport
 en^kde^koroba/pg
 en^kdf^kouba/dz
-en^kdh^kandahar/af:international
+en^kdh^de qandahar baynulmilali hawa'i dagar^dê qandahār baynulmilalī hawā’ī ḏagar
 en^kdi^kendari / woltermon-ginsidi
 en^kdj^ville airport
 en^kdk^kodiak municipal airport
@@ -4075,13 +4026,12 @@ en^khh^kaohsiung international airport
 en^khi^karachi airport
 en^khj^kauhajoki airport
 en^khk^forudgah-e khark^forūdgāh-e khārk
-en^khl^khulna/bd
 en^khm^kanti airport
 en^khn^nanchang
 en^kho^khoka moya airport
 en^khr^kharkhorin/mn
 en^khs^khassab
-en^kht^khost/af:chapman
+en^kht^khost airfield
 en^khu^kremenchuk/ua
 en^khv^habarovsk
 en^khw^khwai river lodge airport
@@ -4101,7 +4051,7 @@ en^kik^kirkuk air base
 en^kil^kilwa/cd
 en^kim^kimberly airport
 en^kin^norman manley international airport
-en^kio^kili island/mh
+en^kio^kili airfield
 en^kip^kickapoo downtown airport
 en^kiq^kira/pg
 en^kir^kerry airport
@@ -4114,7 +4064,7 @@ en^kix^kansai international airport
 en^kiy^kilwa masoko
 en^kiz^kikinonda/pg
 en^kja^yemelyanovo airport
-en^kji^buerjin city/cn:kanasi
+en^kji^burqin/cn:kanas
 en^kjk^wevelgem airport
 en^kjp^kerama airport
 en^kju^kamiraba/pg
@@ -4172,7 +4122,7 @@ en^kma^kerema airport
 en^kmb^koinambe/pg
 en^kmc^king khalid mil city/sa
 en^kmd^mandji/ga
-en^kme^cyangugu/rw:kamembe
+en^kme^kamembe
 en^kmf^kamina/pg
 en^kmg^kunming
 en^kmh^johan pienaar airport
@@ -4207,7 +4157,7 @@ en^knj^kindamba airport
 en^knk^kokhanok airport
 en^knl^kelanoa/pg
 en^knm^kaniama airport
-en^knn^kankan/gn
+en^knn^kankan
 en^knp^capanda airport
 en^knq^kone airport^koné airport
 en^knr^forudgah-e jam^forūdgāh-e jam
@@ -4223,7 +4173,7 @@ en^koa^kona international airport
 en^koc^koumac nlle-caledonie
 en^kod^kotabangun airport
 en^koe^kupang / el tari
-en^kof^komatipoort/za
+en^kof^komatipoort
 en^kog^khong/la
 en^koh^koolatah airport
 en^koi^kirkwall airport
@@ -4233,7 +4183,7 @@ en^kol^koumala/cf
 en^kom^komo manda/pg
 en^kon^kontum airport
 en^koo^kongolo
-en^kop^nakhon phanom/th
+en^kop^nakhon phanom airport
 en^koq^koethen de/de
 en^kor^kokoro/pg
 en^kos^sihanoukville international airport
@@ -4333,7 +4283,7 @@ en^ktl^kitale
 en^ktm^tribhuwan airport
 en^ktn^ketchikan international airport
 en^kto^kato airport
-en^ktp^kingston/jm:tinson
+en^ktp^tinson pen
 en^ktq^kitee airport
 en^ktr^tindal / katherine
 en^kts^brevig mission airport
@@ -4346,7 +4296,7 @@ en^kty^katukurunda/lk:slaf base
 en^ktz^kwun tong/hk
 en^kua^kuantan
 en^kub^kuala belait/bn
-en^kuc^kuria/ki
+en^kuc^kuria airfield
 en^kud^kudat airport
 en^kue^kukundu/sb
 en^kuf^samara
@@ -4363,7 +4313,7 @@ en^kup^kupiano/pg
 en^kuq^kuri/pg
 en^kur^kuran wa munjan/af:razer
 en^kus^kulusuk lufthavn
-en^kut^kutaisi/ge:kopitnari
+en^kut^samtredia east
 en^kuu^kullu manali airport
 en^kuv^kunsan ab
 en^kuw^kugururok river/ak/us
@@ -4419,11 +4369,12 @@ en^kyk^karluk airport
 en^kyl^key largo/fl/us:port largo
 en^kyn^milton/gb:central railway stn
 en^kyo^tampa/fl/us:topp of tampa
-en^kyp^kyaukpyu/mm
+en^kyp^kyaukpyu
 en^kys^kayes
 en^kyt^kyauktu airport
 en^kyu^koyukuk airport
 en^kyx^yalumet/pg
+en^kyy^kelamayi/cn:bus station
 en^kyz^kyzyl airport
 en^kzb^zachar bay seaplane base
 en^kzc^kampong chhnang airport
@@ -4471,7 +4422,7 @@ en^lbf^north platte regional airport lee bird field
 en^lbg^paris-le bourget
 en^lbh^sydney/ns/au:palm beach spb
 en^lbi^albi-le sequestre
-en^lbj^labuan bajo/id:mutiara
+en^lbj^lapangan terbang komodo
 en^lbk^liboi airport
 en^lbl^liberal mid-america regional airport
 en^lbm^luabo/mz
@@ -4485,13 +4436,13 @@ en^lbt^lumberton municipal airport
 en^lbu^labuan airport
 en^lbv^libreville
 en^lbw^longbawan / juvai semaring
-en^lbx^lubang/ph
+en^lbx^lubang
 en^lby^la baule-escoublac
 en^lbz^lucapa/ao
 en^lca^larnaca international airport
 en^lcb^pontes e lacerda/mt/br
 en^lcc^lecce
-en^lcd^louis trichardt/za
+en^lcd^louis trichardt vliegveld
 en^lce^la ceiba airport
 en^lcf^las vegas airport
 en^lcg^a coruna airport^a coruña airport
@@ -4527,7 +4478,7 @@ en^lds^yichun shi/cn:lindu
 en^ldu^lahad datu airport
 en^ldv^landivisiau
 en^ldw^lansdowne station/wa/au
-en^ldx^st laurent du maroni/gf
+en^ldx^saint-laurent-du-maroni
 en^ldy^eglinton / londonderr
 en^ldz^londolozi airport
 en^lea^learmonth
@@ -4570,7 +4521,7 @@ en^lga^la guardia airport
 en^lgb^long beach airport (daugherty field)
 en^lgc^la grange, callaway airport
 en^lgd^la grande municipal airport
-en^lge^langebaanweg
+en^lge^lake gregory airport
 en^lgf^laguna army airfield (yuma proving ground)
 en^lgg^bierset
 en^lgh^leigh creek airport
@@ -4580,7 +4531,7 @@ en^lgk^langkawi
 en^lgl^long lellang airport
 en^lgm^laiagam/pg
 en^lgn^linga linga/pg
-en^lgo^langeoog/de
+en^lgo^langeoog
 en^lgp^legaspi
 en^lgq^nueva loja airport
 en^lgr^cochrane
@@ -4591,7 +4542,7 @@ en^lgw^london / gatwick airport
 en^lgx^lugh ganane/so
 en^lgy^lagunillas/ve
 en^lgz^leguizamo/co
-en^lha^lahr/de:black forest
+en^lha^lahr
 en^lhb^hearne municipal airport
 en^lhc^caballococha airport
 en^lhd^lake hood seaplane base
@@ -4605,7 +4556,7 @@ en^lhr^london heathrow airport
 en^lhs^las heras airport
 en^lhu^lianshulu/na
 en^lhv^william t piper memorial airport
-en^lhw^lanzhou/cn:lanzhou arpt
+en^lhw^lanzhou/cn:zhongchuan
 en^lhx^la junta municipal airport
 en^lia^liangping airport
 en^lib^limbunya airport
@@ -4617,7 +4568,7 @@ en^lig^limoges-bellegarde
 en^lih^lihue airport
 en^lii^mulia airport
 en^lij^long island/ak/us
-en^lik^likiep island/mh
+en^lik^likiep airfield
 en^lil^lille-lesquin
 en^lim^jorge chavez international airport^jorge chávez international airport
 en^lin^milano linate airport
@@ -4630,7 +4581,7 @@ en^lit^adams field
 en^liv^livengood/ak/us
 en^liw^loikaw airport
 en^lix^likoma island airport
-en^liy^hinesville/ga/us:wright aaf
+en^liy^ft. stewart
 en^liz^limestone/me/us:loring afb
 en^lja^lodja
 en^ljc^louisville/ky/us:intercont
@@ -4658,9 +4609,9 @@ en^lkw^lekhwair/om
 en^lky^lake manyara
 en^lkz^lakenheath royal air force base
 en^lla^lulea airport^luleå airport
-en^llb^libo city/cn:libo airport
+en^llb^libo/cn
 en^lle^malelane/za
-en^llf^ling ling/cn:ling ling airport
+en^llf^yongzhou/cn:ling ling
 en^llg^chillagoe/ql/au
 en^llh^las limas/hn
 en^lli^lalibela airport
@@ -4687,7 +4638,7 @@ en^lmh^limon/hn
 en^lmi^lumi airport
 en^lmj^tokyo/jp:bus station
 en^lmk^limerick/ie:limerick
-en^lml^lae island/mh
+en^lml^lae airfield
 en^lmm^los mochis airport
 en^lmn^limbang airport
 en^lmo^lossiemouth
@@ -4741,7 +4692,7 @@ en^los^murtala mohammed international airport
 en^lot^lewis university airport
 en^lou^bowman field
 en^lov^monclova, coah.
-en^low^louisa/va/us
+en^low^louisa, louisa county airport/freeman field
 en^lox^los tablones/gt:los tablones
 en^loy^loyengalani airport
 en^loz^london, london-corbin airport-magee field
@@ -4770,6 +4721,7 @@ en^lpy^le puy-loudes
 en^lqk^pickens county airport
 en^lqm^caucaya airport
 en^lqn^qala-i-naw airport
+en^lqs^lingshui/cn:railway station
 en^lra^larissa airport
 en^lrb^leribe airport
 en^lrd^laredo international airport
@@ -4807,7 +4759,7 @@ en^lso^les sables/fr:talmont
 en^lsp^paraguana / josefa
 en^lsq^los angeles/cl:maria dolores
 en^lsr^lost river 1 airport
-en^lss^terre de haut/gp
+en^lss^les saintes - terre-de-haut
 en^lst^launceston airport
 en^lsu^long sukang airport
 en^lsv^las vegas city hall helispot
@@ -4817,7 +4769,7 @@ en^lsy^lismore airport
 en^lsz^losinj island
 en^lta^tzaneen
 en^ltb^latrobe valley airport
-en^ltc^lai/td
+en^ltc^lai
 en^ltd^ghadames
 en^ltf^leitre/pg
 en^ltg^langtang airport
@@ -4841,7 +4793,7 @@ en^lua^lukla airport
 en^lub^lumid pau airport
 en^luc^laucala island airport
 en^lud^luderitz aerodrome^lüderitz aerodrome
-en^lue^lucenec/sk
+en^lue^lucenec
 en^luf^litchfield airport
 en^lug^lugano airport
 en^luh^ludhiana airport
@@ -4865,12 +4817,12 @@ en^luz^lushan/cn
 en^lva^laval-entrammes
 en^lvb^livramento do brumado airport
 en^lvd^lime village/ak/us
-en^lvi^livingstone/zm
+en^lvi^livingstone airport
 en^lvk^livermore municipal airport
 en^lvl^lawrenceville/va/us
 en^lvm^mission field
 en^lvo^laverton airport
-en^lvp^lavan island/ir
+en^lvp^band-e forudgah-e lavan^bānd-e forūdgāh-e lāvān
 en^lvr^lucas do rio verde/mt/br:mun.
 en^lvs^las vegas municipal airport
 en^lwa^lwbak/ph
@@ -4883,7 +4835,7 @@ en^lwk^lerwick / tingwall airport
 en^lwl^wells/nv/us:harriet field
 en^lwm^lawrence municipal airport
 en^lwn^shirak
-en^lwo^l'viv
+en^lwo^lviv international airport
 en^lwr^leeuwarden
 en^lws^lewiston airport
 en^lwt^lewistown municipal airport
@@ -4895,7 +4847,7 @@ en^lxi^linxi/cn
 en^lxn^jim kelly field
 en^lxr^luxor
 en^lxs^limnos airport
-en^lxu^lukulu/zm
+en^lxu^lukulu
 en^lxv^lake county airport
 en^lya^luoyang airport
 en^lyb^edward bodden airfield
@@ -4922,9 +4874,8 @@ en^lzm^luzamba/ao
 en^lzn^mazu
 en^lzo^luzhou airport
 en^lzr^lizard island airport
-en^lzu^lawrenceville/ga/us:gwinnett c
+en^lzu^lawrenceville, gwinnett county-briscoe field airport
 en^lzy^nyingchi airport
-en^m18^hope municipal airport
 en^maa^chennai international airport
 en^mab^maraba
 en^mac^macon downtown airport
@@ -4946,7 +4897,7 @@ en^mar^la chinita internacional
 en^mas^momote airport
 en^mat^matadi
 en^mau^maupiti airport
-en^mav^maloelap island/mh
+en^mav^maloelap airfield
 en^maw^malden regional airport
 en^max^matam
 en^may^mangrove cay/bs
@@ -4965,13 +4916,13 @@ en^mbk^regional orlando villas boas airport
 en^mbl^manistee county-blacker airport
 en^mbm^mkambati airport
 en^mbn^mount barnett/wa/au
-en^mbo^mamburao/ph
+en^mbo^mamburao
 en^mbp^moyobamba airport
 en^mbq^mbarara
 en^mbr^mbout/mr
 en^mbs^mbs international airport
 en^mbt^masbate
-en^mbu^mbambanakira/sb
+en^mbu^mbambanakira airfield
 en^mbv^masa/pg
 en^mbw^moorabbin airport aws
 en^mbx^maribor / slivnica
@@ -5078,7 +5029,7 @@ en^mft^machu pichu airport
 en^mfu^mfuwe airport
 en^mfv^accomack county airport
 en^mfw^magaruque island/mz
-en^mfx^meribel/fr
+en^mfx^meribel^méribel
 en^mfy^mayfa'ah/ye
 en^mfz^meselia/pg:meselia
 en^mga^managua a. c. sandino
@@ -5099,7 +5050,7 @@ en^mgo^manega/ga
 en^mgp^manga/pg
 en^mgq^mogadiscio
 en^mgr^moultrie municipal airport
-en^mgs^mangaia island/ck:auau
+en^mgs^mangaia auau airstrip
 en^mgt^milingimbi airport
 en^mgu^manaung airport
 en^mgv^margaret river station airport
@@ -5138,9 +5089,9 @@ en^mid^merida / lic manuel crecencio
 en^mie^muncie, delaware county-johnson field
 en^mif^monahans/tx/us:roy hurd mem
 en^mig^mianyang airport
-en^mih^mitchell plateau/wa/au
+en^mih^mitchell plateau airfield
 en^mii^marilia airport^marília airport
-en^mij^mili island/mh
+en^mij^mili airfield
 en^mik^mikkeli airport
 en^mil^milan
 en^mim^merimbula airport
@@ -5157,13 +5108,13 @@ en^miw^marshalltown/ia/us:mncp
 en^mix^miriti/co
 en^miy^mittiebah/nt/au
 en^miz^mainoru/nt/au
-en^mja^manja/mg
-en^mjb^mejit island/mh
+en^mja^manja
+en^mjb^mejit airfield
 en^mjc^man
 en^mjd^moenjodaro airport
-en^mje^majkin/mh
+en^mje^majkin airfield
 en^mjf^mosjoen airport, kjaerstad^mosjøen airport, kjærstad
-en^mjg^mayajigua/cu
+en^mjg^mayajigua
 en^mjh^majma/sa
 en^mji^mitiga airport
 en^mjj^moki/pg
@@ -5174,7 +5125,7 @@ en^mjn^majunga
 en^mjo^mount etjo/na
 en^mjp^manjimup airport
 en^mjq^jackson municipal airport
-en^mjr^miramar/ba/ar
+en^mjr^miramar
 en^mjs^maganja da costa/mz
 en^mjt^mytilini airport
 en^mju^tampa padang airport
@@ -5229,7 +5180,7 @@ en^mls^frank wiley field
 en^mlt^millinocket municipal airport
 en^mlu^monroe regional airport
 en^mlv^merluna/ql/au
-en^mlw^monrovia/lr:spriggs payne
+en^mlw^spriggs payne
 en^mlx^malatya / erhac
 en^mly^manley hot springs airport
 en^mlz^melo
@@ -5244,7 +5195,7 @@ en^mmh^mammoth lakes airport
 en^mmi^mcminn county airport
 en^mmj^matsumoto airport
 en^mmk^murmansk airport
-en^mml^marshall/mn/us:municipal ryan
+en^mml^marshall, southwest minnesota regional airport - marshall/ryan field
 en^mmm^middlemount airport
 en^mmn^stow/ma/us:minute man airfield
 en^mmo^maio airport
@@ -5258,10 +5209,10 @@ en^mmv^mc minnville municipal airport
 en^mmw^moma/mz
 en^mmx^malmoe/sturup flygplats^malmö/sturup flygplats
 en^mmy^miyakojima
-en^mmz^maimanah/af
+en^mmz^maymaneh airfield
 en^mna^melangguane airport
 en^mnb^moanda
-en^mnc^nacala/mz
+en^mnc^nacala
 en^mnd^medina/co
 en^mne^mungeranie airport
 en^mnf^mana island airport
@@ -5269,7 +5220,7 @@ en^mng^maningrida airport
 en^mnh^hingurakgoda air force base
 en^mni^blackburne airport
 en^mnj^mananjary airport
-en^mnk^maiana/ki
+en^mnk^maiana airfield
 en^mnl^ninoy aquino international airport
 en^mnm^menominee/mi/us
 en^mnn^marion municipal airport
@@ -5334,7 +5285,7 @@ en^mpu^mapua/pg
 en^mpv^edward f knapp state airport
 en^mpw^mariupol international airport
 en^mpx^miyanmin/pg
-en^mpy^maripasoula/gf
+en^mpy^maripasoula
 en^mpz^mount pleasant municipal airport
 en^mqa^mandora airport
 en^mqb^macomb municipal airport
@@ -5356,7 +5307,7 @@ en^mqq^moundou
 en^mqr^mosquera/co
 en^mqs^mustique airport
 en^mqt^sawyer international airport
-en^mqu^mariquita/co
+en^mqu^mariquita
 en^mqv^mostaganem/dz:mostaganem
 en^mqw^mc rae/ga/us:telfair wheeler
 en^mqx^makale
@@ -5366,7 +5317,7 @@ en^mra^misratah airport
 en^mrb^eastern west virginia regional airport
 en^mrc^columbia/tn/us:maury county
 en^mrd^alberto carnevalli airport
-en^mre^masai mara/ke:mara serena
+en^mre^mara serena
 en^mrf^marfa municipal airport
 en^mrg^mareeba airport
 en^mrh^may river
@@ -5384,7 +5335,7 @@ en^mrs^marseille provence airport
 en^mrt^moroak/nt/au
 en^mru^sir seewoosagur ramgoolam international airport
 en^mrv^mineral'nye vody
-en^mrw^maribo/dk:lolland falster
+en^mrw^maribo
 en^mrx^mahshahr airport
 en^mry^monterey peninsula airport
 en^mrz^moree airport
@@ -5411,7 +5362,7 @@ en^mst^maastricht airport zuid limburg
 en^msu^maseru / moshoeshoe
 en^msv^sullivan county international airport
 en^msw^massawa international airport
-en^msx^mossendjo/cg
+en^msx^mossendjo
 en^msy^louis armstrong new orleans international airport
 en^msz^namibe airport
 en^mta^matamata/nz
@@ -5424,7 +5375,7 @@ en^mtg^mato grosso/mt/br
 en^mth^the florida keys marathon airport
 en^mti^mosteiros airport
 en^mtj^montrose regional airport
-en^mtk^makin island/ki
+en^mtk^makin airfield
 en^mtl^maitland airport
 en^mtm^metlakatla seaplane base
 en^mtn^martin state airport
@@ -5443,7 +5394,7 @@ en^mtz^bar yehuda airfield
 en^mua^munda
 en^mub^maun airport
 en^muc^munich international airport
-en^mud^mueda/mz
+en^mud^mueda
 en^mue^waimea-kohala airport
 en^muf^muting airport
 en^mug^mulege airport
@@ -5457,7 +5408,7 @@ en^mun^maturin
 en^muo^young landing area
 en^mup^mulga park airport
 en^muq^muccan station airport
-en^mur^marudi/my
+en^mur^marudi airfield
 en^mus^marcus island/jp
 en^mut^muscatine municipal airport
 en^muu^mount union/pa/us
@@ -5480,14 +5431,14 @@ en^mvk^mulka airport
 en^mvl^morrisville-stowe state airport
 en^mvm^kayenta airport
 en^mvn^mount vernon airport
-en^mvo^mongo/td
+en^mvo^mongo
 en^mvp^mitu
 en^mvq^mogilev airport
 en^mvr^salak airport
 en^mvs^mucuri airport
 en^mvt^mataiva airport
 en^mvu^musgrave/ql/au
-en^mvv^megeve/fr
+en^mvv^megeve^megève
 en^mvw^bay view airport
 en^mvx^minvoul airport
 en^mvy^martha's vineyard airport
@@ -5549,7 +5500,7 @@ en^myc^mariscal sucre
 en^myd^malindi airport
 en^mye^miyakejima airport
 en^myf^montgomery field
-en^myg^mayaguana/bs
+en^myg^mayaguana
 en^myh^marble canyon/az/us
 en^myi^murray island airport
 en^myj^matsuyama airport
@@ -5578,13 +5529,13 @@ en^mzg^makung ab
 en^mzh^merzifon
 en^mzi^mopti
 en^mzj^pinal airpark
-en^mzk^marakei/ki
+en^mzk^marakei airstrip
 en^mzl^la nubia airport
 en^mzm^metz-frescaty
 en^mzn^minj/pg
 en^mzo^manzanillo, oriente
 en^mzp^motueka/nz
-en^mzq^mkuze/za
+en^mzq^mkuze
 en^mzr^mazar-i-sharif airfield
 en^mzs^mostyn airport
 en^mzt^mazatlan / g. buelna
@@ -5598,7 +5549,7 @@ en^naa^narrabri airport
 en^nab^albany/ga/us:albany nas
 en^nac^naracoorte airport
 en^nad^macanal/co
-en^nae^natitingou/bj
+en^nae^natitingou
 en^naf^banaina airport
 en^nag^nagpur sonegaon
 en^nah^tahuna
@@ -5616,7 +5567,7 @@ en^nas^nassau international airport
 en^nat^augusto severo
 en^nau^napuka island airport
 en^nav^nevsehir
-en^naw^narathiwat/th
+en^naw^tha akatsayan narathiwat
 en^nax^barbers point/hi/us
 en^nay^beijing nanyuan airport
 en^naz^star harbour/sb:nana
@@ -5624,7 +5575,7 @@ en^nba^nambaiyufa/pg
 en^nbb^barranco minas airport
 en^nbc^begishevo airport
 en^nbe^zine el abidine ben ali international airport
-en^nbg^new orleans/la/us:nas
+en^nbg^new orleans, naval air station - alvin callender field
 en^nbh^nambucca heads airport
 en^nbl^san blas airport
 en^nbo^nairobi/jomo kenyatta airport twr/app/nof/civil airlines
@@ -5636,7 +5587,7 @@ en^nbw^leeward point field
 en^nbx^nabire
 en^nca^north caicos airport
 en^nce^nice - cote d'azur^nice - côte d'azur
-en^ncg^nueva casas grandes/mx
+en^ncg^nuevo casas grandes
 en^nch^nachingwea
 en^nci^necocli airport
 en^ncj^sunchales/sf/ar
@@ -5659,8 +5610,8 @@ en^ndf^ndalatandos airport
 en^ndg^qiqihar
 en^ndh^shunde/cn:cz bus station
 en^ndi^namudi/pg
-en^ndj^fort lamy
-en^ndk^namdrik island/mh:namdrik
+en^ndj^n'djamena international airport
+en^ndk^namdrik airfield
 en^ndl^n'dele
 en^ndm^mendi airport
 en^ndn^nadunumu/pg
@@ -5673,9 +5624,9 @@ en^ndv^anacostia/dc/us:usn heliport
 en^ndy^sanday airport
 en^ndz^nordholz
 en^nea^glynco/ga/us:nas
-en^nec^necochea/ba/ar
+en^nec^necochea
 en^nef^neftekamsk airport
-en^neg^negril/jm
+en^neg^negril
 en^nej^nejjo airport
 en^nek^nekemte airport
 en^nel^holmansville heliport
@@ -5702,30 +5653,30 @@ en^ngl^ngala airport
 en^ngm^guam/gu:agana nas
 en^ngn^nargana/pa
 en^ngo^nagoya airport
-en^ngp^corpus christi/tx/us:nas
+en^ngp^corpus christi, corpus christi naval air station/truax field
 en^ngq^shi quan he/cn:ali
 en^ngr^ningerum/pg
 en^ngs^nagasaki airport
 en^ngu^naval station norfolk
 en^ngw^corpus christi/tx/us:cabaniss
 en^ngx^manang airport
-en^ngz^alameda/ca/us:nas
+en^ngz^alameda naval air station
 en^nha^nha trang
 en^nhd^dubai/ae:minhad ab
-en^nhf^new halfa/sd
+en^nhf^new halfa
 en^nhk^park hall-lexington park airport
 en^nhs^nushki airport
 en^nht^northolt
 en^nhv^nuku hiva airport
 en^nhx^foley/al/us:barin olf osn
 en^nhz^brunswick, naval air station
-en^nia^nimba/lr
+en^nia^nimba
 en^nib^nikolai airport
 en^nic^nicosia/cy
 en^nid^ridgecrest community hospital heliport
 en^nie^niblack/ak/us
 en^nif^camp nifty airport
-en^nig^nikunau/ki
+en^nig^nikunau airfield
 en^nik^niokolo-koba/sn
 en^nim^niamey-aero
 en^nin^ninilchik/ak/us
@@ -5751,13 +5702,13 @@ en^nkl^nkolo fuma airport
 en^nkm^nagoya airport
 en^nkn^nankina/pg
 en^nko^ankokoambo/mg:ankokoambo
-en^nks^nkongsamba/cm
+en^nks^nkongsamba
 en^nkt^cherry point, marine corps air station
 en^nku^nkaus airport
 en^nkv^nichen cove/ak/us
 en^nkw^diego garcia
 en^nkx^san diego/ca/us:miramar nas
-en^nky^n'kayi/cg:yokangassi
+en^nky^nkayi-yokangassi
 en^nla^ndola airport
 en^nlc^stone airstrip
 en^nld^nuevo laredo international
@@ -5775,7 +5726,7 @@ en^nlu^mexico city/mx:santa lucia
 en^nlv^mykolaiv
 en^nma^namangan airport
 en^nmb^daman airport
-en^nmc^norman's cay/bs
+en^nmc^normans cay
 en^nme^nightmute airport
 en^nmg^san miguel/pa
 en^nml^mildred lake/ab/ca:mildred lak
@@ -5802,16 +5753,17 @@ en^nny^nanyang airport
 en^noa^nowra ran air station
 en^nob^nosara airport
 en^noc^connaught
-en^nod^norden/de:norddeich
+en^nod^norden-norddeich
 en^nog^nogales/mx
 en^noh^chicago/il/us:chicago nas
 en^noi^novorossiysk/ru:krymska
 en^noj^noyabrsk airport
-en^nok^nova xavantina/mt/br
+en^nok^xavantina
 en^nol^nakolik river/ak/us
 en^nom^nomad river/pg
-en^non^nonouti/ki
+en^non^nonouti airfield
 en^noo^naoro/pg
+en^nop^sinop airport
 en^nor^nordfjoerdur airport^norðfjörður airport
 en^nos^fascene airport
 en^not^novato/ca/us
@@ -5839,12 +5791,12 @@ en^nqx^key west/fl/us:nas
 en^nqy^saint mawgan
 en^nra^narrandera airport
 en^nrb^mayport/fl/us:ns
-en^nrc^crows landing/ca/us:aux field
-en^nrd^norderney/de
+en^nrc^crows landing naval auxiliary landing field
+en^nrd^norderney
 en^nre^namrole airport
 en^nrg^narrogin/wa/au
 en^nri^shangri la/ok/us
-en^nrk^norrkoping/se:kungsangen
+en^nrk^kungsangen
 en^nrl^north ronaldsay airport
 en^nrm^nara/ml:keibane
 en^nrn^niederrhein
@@ -5855,9 +5807,9 @@ en^nrv^guam/gu:uscg shore station
 en^nry^newry/nt/au
 en^nsa^noosa/ql/au
 en^nsb^bimini north seaplane base
-en^nse^milton/fl/us:whiting field nas
+en^nse^milton, whiting field naval air station north
 en^nsf^camp springs/md/us:andrews naf
-en^nsh^now shahr/ir
+en^nsh^noshahr airport
 en^nsi^yaounde
 en^nsk^norilsk-alykel airport
 en^nsl^slayton/mn/us:municipal
@@ -5929,7 +5881,7 @@ en^nwt^nowata/pg
 en^nwu^bermuda/bm:nas
 en^nxx^willow grove, naval air station
 en^nya^nyagan airport
-en^nyc^new york/ny/us
+en^nyc^new york city
 en^nye^nyeri
 en^nyg^quantico/va/us:quantanico nas
 en^nyi^sunyani airport
@@ -5939,7 +5891,7 @@ en^nyn^nyngan airport
 en^nyo^stockholm/skavsta
 en^nyt^nay pyi taw/mm
 en^nyu^bagan airport
-en^nza^maria reiche neuman airport
+en^nza^nzagi airport
 en^nzc^jacksonville, cecil field airport
 en^nze^n'zerekore
 en^nzh^manzhouli
@@ -5978,10 +5930,10 @@ en^obz^hamburg/de:central bus st
 en^oca^ocean reef club airport
 en^occ^francisco de orellana airport
 en^oce^ocean city municipal airport
-en^ocf^ocala/fl/us:taylor field
+en^ocf^ocala, ocala international airport-jim taylor field
 en^och^nacogdoches/tx/us
 en^oci^oceanic/ak/us
-en^ocj^ocho rios/jm:boscobel
+en^ocj^boscobel
 en^ocn^oceanside municipal airport
 en^ocv^aguas claras airport
 en^ocw^washington/nc/us:warren field
@@ -6004,7 +5956,7 @@ en^ody^oudomsay airport
 en^oea^vincennes/in/us:oneal
 en^oec^oe-cusse / oe cusse
 en^oel^oryol yuzhny airport
-en^oem^paloemeu/sr:vincent fayks
+en^oem^vincent fajks
 en^oeo^osceola/wi/us:municipal
 en^oer^oernskoldsvik flygplats^örnskoldsvik flygplats
 en^oes^san antonio oeste aerodrome
@@ -6021,7 +5973,7 @@ en^ogg^kahului airport
 en^ogl^ogle/gy
 en^ogn^yonaguni airport
 en^ogo^abengourou airport
-en^ogr^bongor/td
+en^ogr^bongor
 en^ogs^ogdensburg international airport
 en^ogv^ongava/na
 en^ogx^ouargla
@@ -6034,8 +5986,7 @@ en^ohe^gu-lian airport
 en^ohh^okha airport
 en^ohi^oshakati/na
 en^oho^okhotsk airport
-en^ohp^oban/gb:heliport
-en^ohr^wyk auf foehr/de
+en^ohr^wyk auf fohr^wyk auf föhr
 en^oht^kohat airport
 en^oia^ourilandia
 en^oic^norwich/ny/us:eaton
@@ -6050,7 +6001,7 @@ en^okb^orchid beach airport
 en^okc^will rogers world airport
 en^okd^sapporo ab
 en^oke^okinoerabu
-en^okf^okaukuejo/na
+en^okf^okaukuejo
 en^okg^okoyo airport
 en^okh^cottesmore
 en^oki^oki airport
@@ -6092,12 +6043,12 @@ en^olz^north west santo airport
 en^oma^eppley airfield
 en^omb^omboue hopital airport
 en^omc^ormoc airport
-en^omd^oranjemund/na
+en^omd^oranjemund
 en^ome^nome airport
 en^omf^matar al malik husayn^maţār al malik ḩusayn
 en^omg^omega airport
 en^omh^orumieh
-en^omi^omidiyeh/ir
+en^omi^omidiyeh
 en^omj^omura/jp
 en^omk^omak airport
 en^oml^omkalai/pg
@@ -6106,7 +6057,7 @@ en^omn^osmanabad/in
 en^omo^mostar
 en^omr^oradea
 en^oms^omsk
-en^omy^thbengmeanchey/kh:preahvinhear
+en^omy^thbeng meanchey/kh:preah vinhe
 en^ona^winona municipal airport-max conrad field
 en^onb^ononge/pg
 en^ond^ondangwa airport
@@ -6132,7 +6083,7 @@ en^ook^toksook bay airport
 en^ool^gold coast airport
 en^oom^cooma snowy mountains airport
 en^oor^mooraberree airport
-en^oot^onotoa/ki
+en^oot^onotoa airfield
 en^opa^kopasker airport^kópasker airport
 en^opb^open bay/pg
 en^opf^opa locka airport
@@ -6149,7 +6100,7 @@ en^orc^orocue airport
 en^ord^chicago o'hare international airport
 en^ore^orleans-bricy^orléans-bricy
 en^orf^norfolk international airport
-en^org^paramaribo/sr:zorg en hoop
+en^org^zorg en hoop airport
 en^orh^worcester, worcester regional airport
 en^ori^port lions airport
 en^orj^orinduik airport
@@ -6177,7 +6128,7 @@ en^ose^omora/pg
 en^osg^ossima/pg
 en^osh^wittman regional airport
 en^osi^osijek airport
-en^osk^oskarshamn/se
+en^osk^oskarshamn
 en^osl^oslo airport, gardermoen
 en^osm^mosul international airport
 en^osn^osan ab
@@ -6222,15 +6173,15 @@ en^oum^oum hadjer/td
 en^oun^norman regional hospital heliport
 en^our^batouri
 en^ous^ourinhos airport
-en^out^bousso/td
+en^out^bousso
 en^ouu^ouanga/ga
 en^ouz^tazadit airport
-en^ova^bekily/mg
+en^ova^bekily
 en^ovb^tolmachevo airport
 en^ovd^asturias / aviles
 en^ove^oroville municipal airport
 en^ovg^overberg
-en^ovl^ovalle/cl
+en^ovl^el tuqui
 en^ovr^olavarria airport
 en^ovs^sovetskiy airport
 en^owa^owatonna/mn/us
@@ -6253,7 +6204,7 @@ en^oyk^oiapoque
 en^oyl^moyale
 en^oyn^ouyen/vi/au
 en^oyo^tres arroyos
-en^oyp^st georges de loy/gf
+en^oyp^saint-georges-de-l'oyapock
 en^oys^yosemite ntl park/ca/us
 en^oza^ozona/tx/us
 en^ozc^labo airport
@@ -6272,7 +6223,6 @@ en^pae^boeing-everett ramp site 2 heliport
 en^paf^pakuba/ug
 en^pag^pagadian airport
 en^pah^barkley regional airport
-en^pai^pailin/kh
 en^paj^para chinar/pk
 en^pak^port allen airport
 en^pal^palacio municipal heliport
@@ -6287,7 +6237,7 @@ en^pat^patna
 en^pau^pauk airport
 en^pav^paulo afonso
 en^paw^pambwa/pg
-en^pax^port de paix/ht
+en^pax^port de paix
 en^pay^pamol airport
 en^paz^poza rica / palizada
 en^pba^barrow/ak/us:point barrow
@@ -6310,7 +6260,7 @@ en^pbq^pimenta bueno airport
 en^pbr^puerto barrios airport
 en^pbs^patong beach/th
 en^pbt^puerto leda airport
-en^pbu^putao/mm
+en^pbu^putao
 en^pbv^portos dos gauchos/mt/br
 en^pbw^palibelo/id
 en^pbx^porto alegre do norte/mt/br
@@ -6351,7 +6301,7 @@ en^pdn^parndana/sa/au
 en^pdo^pendopo airport
 en^pdp^capitan corbeta
 en^pdr^presidente dutra/ma/br
-en^pds^piedras negras/mx
+en^pds^piedras negras international
 en^pdt^pendleton municipal airport
 en^pdu^paysandu
 en^pdv^plovdiv
@@ -6362,7 +6312,7 @@ en^peb^pebane/mz
 en^pec^pelican seaplane base
 en^ped^pardubice airport
 en^pee^perm'/bolshoe savino
-en^pef^peenemuende/de
+en^pef^peenemunde^peenemünde
 en^peg^perugia
 en^peh^pehuajo aerodrome
 en^pei^pereira / matecana
@@ -6389,8 +6339,8 @@ en^pfj^patreksfjordur airport
 en^pfl^prague/cz:florenc bus station
 en^pfn^panama city-bay county international airport
 en^pfo^paphos international airport
-en^pfq^parsabad/ir:moghan
-en^pfr^ilebo/cd
+en^pfq^parsabad-moghan airport
+en^pfr^ilebo
 en^pga^page municipal airport
 en^pgb^pangoa/pg
 en^pgc^petersburg/wv/us:grant county
@@ -6428,7 +6378,7 @@ en^phn^st clair county international airport
 en^pho^point hope airport
 en^php^philip municipal airport
 en^phr^pacific harbour
-en^phs^phitsanulok/th
+en^phs^phitsanulok
 en^pht^henry county airport
 en^phu^phu vinh/vn
 en^phw^hendrik van eck airport
@@ -6503,11 +6453,11 @@ en^pll^manaus aeroporto
 en^plm^palembang / talangbetutu
 en^pln^pellston regional airport of emmet county
 en^plo^port lincoln airport
-en^plp^la palma/pa
+en^plp^la palma
 en^plq^palanga
 en^plr^pell city/al/us:st clair cnty
 en^pls^providenciales
-en^plt^plato/co
+en^plt^plato las flores
 en^plu^carlos drummond de andrade airport
 en^plv^suprunovka airport
 en^plw^palu / mutiara
@@ -6542,7 +6492,7 @@ en^pmz^palmar sur airport
 en^pna^pamplona airport
 en^pnb^porto nacional aeroporto
 en^pnc^ponca city regional airport
-en^pnd^punta gorda/bz
+en^pnd^punta gorda airstrip
 en^pne^north philadelphia airport
 en^pnf^peterson's point/ak/us
 en^png^paranagua
@@ -6581,7 +6531,7 @@ en^pop^aeropuerto internacional la union^aeropuerto internacional la unión
 en^poq^polk inlet/ak/us
 en^por^pori airport
 en^pos^piarco international airport
-en^pot^port antonio/jm:ken jones
+en^pot^ken jones
 en^pou^dutchess county airport
 en^pov^presov air base^prešov air base
 en^pow^portoroz
@@ -6592,7 +6542,7 @@ en^ppa^pampa/tx/us:perry lefors field
 en^ppb^presidente prudente airport
 en^ppc^prospect creek airport
 en^ppd^palmas del mar airstrip
-en^ppe^puerto penasco/mx
+en^ppe^punta penasco new
 en^ppf^tri-city airport
 en^ppg^pago pago international airport
 en^pph^perai tepuy airport
@@ -6610,7 +6560,7 @@ en^pps^puerto princesa
 en^ppt^tahiti-faaa
 en^ppu^papun/mm
 en^ppv^port protection seaplane base
-en^ppw^papa westray/gb
+en^ppw^papa westray airport
 en^ppx^param/pg
 en^ppy^pouso alegre airport
 en^ppz^puerto paez/ve
@@ -6632,12 +6582,12 @@ en^prg^praha - ruzyne^praha - ruzyně
 en^prh^phrae
 en^pri^praslin island airport
 en^prj^capri/it:harbour
-en^prk^prieska/za
+en^prk^prieska
 en^prl^port oceanic/ak/us
 en^prm^portimao airport
 en^prn^pristina international airport (pia)
 en^pro^perry municipal airport
-en^prp^propriano/fr
+en^prp^propriano
 en^prq^pres  roque saenz/ch/ar
 en^prr^paruma airport
 en^prs^parasi airport
@@ -6655,8 +6605,8 @@ en^psd^port said airport
 en^pse^mercedita airport
 en^psf^pittsfield municipal airport
 en^psg^petersburg seaplane base
-en^psh^st peter ording/de
-en^psi^pasni/pk
+en^psh^sankt peter-ording
+en^psi^pasni airfield
 en^psj^kasiguncu airport
 en^psk^new river valley airport
 en^psl^perth / scone
@@ -6677,7 +6627,7 @@ en^psz^puerto suarez
 en^pta^port alsworth airport
 en^ptb^petersburg/va/us:municipal
 en^ptc^port alice/ak/us
-en^ptd^port alexander/ak/us
+en^ptd^port alexander seaplane base
 en^ptf^malolo lailai island airport
 en^ptg^pietersburg
 en^pth^port heiden airport
@@ -6685,7 +6635,7 @@ en^pti^port douglas/ql/au:heliport
 en^ptj^portland airport
 en^ptk^oakland county international airport
 en^ptl^port armstrong/ak/us
-en^ptm^palmarito/ve
+en^ptm^palmarito
 en^ptn^harry p williams memorial airport
 en^pto^pato branco airport
 en^ptp^pointe-a-pitre - le raizet^pointe-à-pitre - le raizet
@@ -6765,7 +6715,7 @@ en^pxu^pleiku city
 en^pya^puerto boyaca/co
 en^pyb^jeypore airport
 en^pyc^playon chico/pa
-en^pye^penrhyn atoll/ck
+en^pye^penrhyn airstrip
 en^pyh^puerto ayacucho
 en^pyj^polyarny airport
 en^pyk^karaj/ir:payam
@@ -6778,16 +6728,16 @@ en^pys^paradise/ca/us:skypark
 en^pyv^yaviza/pa
 en^pyx^pattaya/th
 en^pyy^pai
-en^pza^paz de ariporo/co:casanare
+en^pza^paz de ariporo
 en^pzb^pieter maritzburg
 en^pze^penzance heliport
-en^pzh^zhob/pk
+en^pzh^fort sandeman airfield
 en^pzi^pan zhi hua bao an ying airport
 en^pzk^pukapuka island/ck
 en^pzl^zulu inyala airport
 en^pzo^guayana / manuel car
 en^pzu^port sudan international
-en^pzy^piestany/sk
+en^pzy^piestany
 en^qac^castro airport
 en^qad^pordenone/it:pordenone
 en^qae^arzew/dz:off-
@@ -6803,7 +6753,7 @@ en^qan^nedroma/dz:off-
 en^qao^agrigento/it:agrigento
 en^qap^apapa/ng:off-
 en^qaq^l'aquila/it:l'aquila
-en^qar^arnhem/nl:bus station
+en^qar^deelen
 en^qas^chlef international airport
 en^qat^abeokuta/ng:off-
 en^qau^bebedouro/sp/br:off-
@@ -6834,7 +6784,7 @@ en^qbt^bettioua/dz:off-
 en^qbu^bauchi/ng:off-
 en^qbv^benevento/it:benevento
 en^qbw^batemans ba/ns/au:batemans bay
-en^qbx^sobral/ce/br:sobral
+en^qbx^sobral
 en^qby^bistrita/nasa/na/ro:bistrita/n
 en^qbz^bouira/dz:off-
 en^qca^makkah/sa:bus station
@@ -6851,7 +6801,7 @@ en^qck^cabo frio/rj/br:off-
 en^qcl^caltanissetta/it:caltanissetta
 en^qcm^como/it:como
 en^qcn^canela airport
-en^qco^colon/cu:off-
+en^qco^colon
 en^qcp^currais no/rn/br:currais novos
 en^qcq^caraguatatuba/sp/br:off-
 en^qcr^curitibanos airport
@@ -6893,7 +6843,7 @@ en^qeb^maebashi/jp:off-
 en^qec^el merj/ly:el merj
 en^qed^medea/dz:off-
 en^qee^ebeye/mh:off-
-en^qef^egelsbach/de:egelsbach
+en^qef^egelsbach
 en^qeg^ribeira grande/pt
 en^qeh^el hadjar/dz:off-
 en^qei^crailsheim/de:off-
@@ -6986,6 +6936,7 @@ en^qht^terezopolis/rj/br:off-
 en^qhu^husum/de:schwesing
 en^qhv^novo hamburgo airport
 en^qhw^brooklyn/nj/us:brooklyn
+en^qhx^qionghai/cn:railway station
 en^qhy^hachioji city/jp:off-
 en^qhz^hoofddorp/nl:off-
 en^qia^itauna/mg/br:off-
@@ -6994,7 +6945,7 @@ en^qic^siracusa/it:siracusa
 en^qid^melio viana airport^mélio viana airport
 en^qie^istres/fr:off-
 en^qif^isleworth/gb:off-
-en^qig^iguatu/ce/br:iguatu
+en^qig^iguatu
 en^qih^tres rios/rj/br:off-
 en^qii^lindau/de:hbf railway station
 en^qij^gijon/es:off-
@@ -7057,7 +7008,7 @@ en^qkn^kairouan
 en^qko^khoms/ly:off-
 en^qkp^kruger national p/za:off-
 en^qkq^anklam/de:off-
-en^qkr^kourou/gf:off-
+en^qkr^kourou
 en^qks^keystone/co/us:bus station
 en^qkt^kangaamiut/gl:kangaamiut
 en^qku^cologne/bonn/de:messe deutz ra
@@ -7142,7 +7093,7 @@ en^qnx^macon-charnay^mâcon-charnay
 en^qny^new york/ny/us:marine air
 en^qnz^nara city/jp:off-
 en^qoa^mococa airport
-en^qob^ansbach/de:railway station
+en^qob^ansbach-petersdorf
 en^qoc^osasco/sp/br:off-
 en^qod^osvaldo cruz/sp/br:off-
 en^qof^kiev/ua:darnista bus
@@ -7220,7 +7171,7 @@ en^qrb^ravensburg/de:off-
 en^qrc^de la independencia airport
 en^qrd^andradas/mg/br:off-
 en^qre^carazinho airport
-en^qrf^bragado/ba/ar:bragado
+en^qrf^bragado
 en^qrg^ragusa/it:ragusa
 en^qrh^rotterdam/nl:centraal railway
 en^qri^rize/tr:rize
@@ -7240,8 +7191,8 @@ en^qrv^arras-roclincourt
 en^qrw^warri airport
 en^qrx^narooma/ns/au:narooma
 en^qry^ikerasaarsuk/gl:ikerasaarsuk
-en^qrz^resende/rj/br:off-
-en^qsa^sabadell/es:off-
+en^qrz^resende
+en^qsa^sabadell
 en^qsb^sao bernardo do c/sp/br:off-
 en^qsc^sao carlos
 en^qsd^sao goncalo/rj/br:off-
@@ -7425,7 +7376,7 @@ en^qzk^mantsala/fi:mantsala
 en^qzl^zliten/ly:off-
 en^qzm^bullocks flat/ns/au:bus statio
 en^qzn^relizane/dz:off-
-en^qzo^arezzo/it:arezzo
+en^qzo^arezzo
 en^qzp^gc apollo/on/ca:gc apollo
 en^qzq^zahle/lb:zahle
 en^qzr^aprilia/it:aprilia
@@ -7450,7 +7401,7 @@ en^raj^rajkot airport
 en^rak^airport marrakech
 en^ral^riverside municipal airport
 en^ram^ramingining airport
-en^ran^ravenna/it
+en^ran^ravenna
 en^rao^leite lopes airport
 en^rap^rapid city regional airport
 en^raq^sugimanuru airport
@@ -7458,7 +7409,7 @@ en^rar^rarotongan international airport
 en^ras^rasht airport
 en^rat^raduzhny/ru
 en^rau^rangpur/bd
-en^rav^cravo norte/co
+en^rav^cravo norte
 en^raw^arawa/pg
 en^rax^oram/pg
 en^raz^rawalakot airport
@@ -7474,7 +7425,7 @@ en^rbi^rabi/fj
 en^rbj^rebun island
 en^rbk^french valley airport
 en^rbl^red bluff municipal airport
-en^rbm^straubing/de:wallmuehle
+en^rbm^straubing-wallmuhle^straubing-wallmühle
 en^rbn^fort jefferson/fl/us
 en^rbo^robore
 en^rbp^rabaraba/pg
@@ -7513,7 +7464,7 @@ en^rdm^roberts field-redmond municipal airport
 en^rdn^redang airport
 en^rdr^cronquist field
 en^rds^rincon de los sauces airport
-en^rdt^richard-toll/sn
+en^rdt^richard-toll
 en^rdu^raleigh-durham international airport
 en^rdv^red devil airport
 en^rdz^rodez-marcillac airport
@@ -7524,7 +7475,7 @@ en^red^mifflin county airport
 en^ree^lubbock/tx/us:reese afb
 en^reg^reggio calabria airport
 en^reh^rehoboth beach/de/us
-en^rei^regina/gf
+en^rei^regina^régina
 en^rek^reykjavik/is
 en^rel^trelew aerodrome
 en^ren^orenburg / tsentralny
@@ -7560,7 +7511,7 @@ en^rgt^rengat / japura
 en^rha^reykholar airport^reykhólar airport
 en^rhd^las termas airport
 en^rhe^reims-champagne
-en^rhg^ruhengeri/rw
+en^rhg^ruhengeri
 en^rhi^rhinelander-oneida county airport
 en^rhl^roy hill/wa/au
 en^rhn^rosh pinah/na:skorpion mine
@@ -7615,16 +7566,16 @@ en^rla^rolla downtown airport
 en^rld^richland airport
 en^rlg^laage
 en^rli^anniston/al/us:reilly ahp
-en^rlk^bayannaoer/cn:tianjitai
+en^rlk^bayannur/cn:tianjitai
 en^rlo^valle del conlara international airport
 en^rlp^rosella plains/ql/au
 en^rlt^arlit/ne
 en^rlu^bornite/ak/us:bornite upper
 en^rma^roma
-en^rmb^buraimi/om
+en^rmb^buraimi
 en^rmc^machesney rockford/il/us
 en^rmd^ramagundam/in
-en^rme^griffiss air force base / rome
+en^rme^griffiss international airport
 en^rmf^marsa al alam
 en^rmg^richard b russell airport
 en^rmi^federico fellini airport
@@ -7659,7 +7610,7 @@ en^rnz^jasper county airport
 en^roa^roanoke regional airport-woodrum field
 en^rob^roberts international airport
 en^roc^greater rochester international airport
-en^rod^robertson/za
+en^rod^robertson
 en^rof^montague/ca/us:yreka rohrer fi
 en^rog^rogers municipal airport
 en^roh^robinhood airport
@@ -7725,7 +7676,7 @@ en^rtb^roatan
 en^rtc^ratnagiri airport
 en^rtd^rotunda/fl/us
 en^rte^marguerite bay/ak/us
-en^rtg^ruteng/id
+en^rtg^bandar udara satartacik
 en^rti^roti airport
 en^rtl^spirit lake/ia/us
 en^rtm^rotterdam airport zestienhoven
@@ -7758,7 +7709,7 @@ en^rve^los colonizadores airport
 en^rvh^st petersburg/ru:rzhevka
 en^rvk^rorvik airport, ryum^rørvik airport, ryum
 en^rvn^rovaniemi airport
-en^rvo^reivilo/za
+en^rvo^reivilo
 en^rvr^green river municipal airport
 en^rvs^richard lloyd jones jr airport
 en^rvt^ravensthorpe/wa/au
@@ -7797,14 +7748,13 @@ en^saf^santa fe municipal airport
 en^sag^sagwon/ak/us
 en^sah^sana'a
 en^sai^san marino/sm
-en^saj^sirajganj/bd
 en^sak^saudarkrokur airport^sauðárkrókur airport
 en^sal^aeropuerto internacional el salvador
 en^sam^salamo/pg
 en^san^san diego international airport
 en^sao^marte civ / mil
 en^sap^la mesa san pedro sula
-en^saq^san andros/bs
+en^saq^san andros
 en^sar^sparta/il/us:sparta community
 en^sas^salton sea airport
 en^sat^san antonio international airport
@@ -7821,7 +7771,7 @@ en^sbd^san bernardino international airport
 en^sbe^suabi/pg
 en^sbf^sardeh band/af
 en^sbg^sabang / cut bau
-en^sbh^st barthelemy/gp
+en^sbh^gustaf iii airport
 en^sbi^sambailo airport
 en^sbj^sao mateus airport^são mateus airport
 en^sbk^saint-brieuc-armor
@@ -7855,7 +7805,7 @@ en^scl^aeropuerto arturo merino benitez^aeropuerto arturo merino benítez
 en^scm^scammon bay airport
 en^scn^saarbruecken airport^saarbrücken airport
 en^sco^aktau airport
-en^scp^mont dauphin/fr:st crepin
+en^scp^mont-dauphin - saint-crepin^mont-dauphin - saint-crépin
 en^scq^santiago de compostela airport
 en^scr^scranton/pa/us:scranton mnpl
 en^scs^scatsa / shetland island
@@ -7887,7 +7837,6 @@ en^sds^sado airport
 en^sdt^saidu sharif airport
 en^sdu^santos dumont airport
 en^sdv^sde dov airport
-en^sdw^sandwip/bd
 en^sdx^sedona airport
 en^sdy^sidney-richland municipal airport
 en^sdz^shetland islands/gb
@@ -7916,11 +7865,11 @@ en^sey^selibaby airport^sélibaby airport
 en^sez^seychelles inter-national airport
 en^sfa^sfax el-maou
 en^sfb^orlando sanford international airport
-en^sfc^st francois/gp
+en^sfc^saint-francois^saint-françois
 en^sfd^san fernando de apure
-en^sfe^san fernando/ph
+en^sfe^san fernando
 en^sff^felts field
-en^sfg^st martin/gp:esperance
+en^sfg^l'esperance airport^l'espérance airport
 en^sfh^san felipe international airport
 en^sfi^safi
 en^sfj^sdr stroemfjord
@@ -7944,9 +7893,9 @@ en^sga^sheghnan airport
 en^sgb^singaua/pg
 en^sgc^surgut
 en^sgd^soenderborg lufthavn
-en^sge^siegen/de:siegerland
+en^sge^siegerland
 en^sgf^springfield-branson national airport
-en^sgg^simanggang/my
+en^sgg^simanggang
 en^sgh^springfield-beckley municipal airport
 en^sgi^sargodha
 en^sgj^sagarai/pg
@@ -7957,7 +7906,7 @@ en^sgn^tan son nhat international airport
 en^sgo^st george airport
 en^sgp^shay gap airport
 en^sgq^sanggata airport
-en^sgr^sugar land/tx/us:mncpl
+en^sgr^houston, sugar land municipal / hull field airport
 en^sgs^sanga sanga airport
 en^sgt^stuttgart municipal airport
 en^sgu^saint george municipal airport
@@ -7994,7 +7943,7 @@ en^shy^shinyanga airport
 en^shz^seshutes airport
 en^sia^xi'an^xi’an
 en^sib^sibiti
-en^sic^sinop airport
+en^sic^sinop/tr
 en^sid^sal
 en^sie^sines airport
 en^sif^simra airport
@@ -8065,7 +8014,7 @@ en^skr^shakiso/et
 en^sks^skrydstrup
 en^skt^sialkot airport
 en^sku^skiros airport
-en^skv^st catherine/eg:international
+en^skv^saint catherine airfield
 en^skw^skwentna airport
 en^skx^saransk airport
 en^sky^griffing sandusky airport
@@ -8121,7 +8070,7 @@ en^smv^samedan airport
 en^smw^smara airport
 en^smx^santa maria airport
 en^smy^simenti/sn
-en^smz^stoelmans eiland/sr
+en^smz^stoelmanseiland
 en^sna^john wayne-orange county airport
 en^snb^snake bay airport
 en^snc^general ulpiano paez airport
@@ -8130,8 +8079,8 @@ en^sne^preguica airport^preguiça airport
 en^snf^san felipe
 en^sng^san ignacio de velasco
 en^snh^stanthorpe airport
-en^sni^sinoe/lr:r e murray
-en^snj^san julian/cu
+en^sni^murrays airfield
+en^snj^san julian
 en^snk^snyder/tx/us:winston field
 en^snl^shawnee/ok/us:municipal
 en^snm^san ignacio de moxos
@@ -8141,7 +8090,7 @@ en^snp^saint paul island airport
 en^snq^san quintin/mx
 en^snr^saint-nazaire - montoir
 en^sns^salinas municipal airport
-en^snt^sabana de torres/co
+en^snt^las cruces
 en^snu^santa clara/cu
 en^snv^santa elena de uairen
 en^snw^thandwe airport
@@ -8170,7 +8119,7 @@ en^sot^sodankyla
 en^sou^southampton / weather centre
 en^sov^seldovia airport
 en^sow^show low municipal airport
-en^sox^sogamoso/co
+en^sox^sogamosa
 en^soy^stronsay airport
 en^soz^solenzara
 en^spa^spartanburg downtown memorial airport
@@ -8190,7 +8139,7 @@ en^spn^francisco c. ada international airport
 en^spo^san pablo/es:railway station
 en^spp^menongue airport
 en^spq^san pedro/ca/us:catalina spb
-en^spr^san pedro/bz
+en^spr^san pedro airstrip
 en^sps^sheppard air force base/wichita falls municipal airport
 en^spt^sipitang airport
 en^spu^split airport
@@ -8266,7 +8215,7 @@ en^ssp^silver plains/ql/au
 en^ssq^la sarre airport
 en^ssr^sara airport
 en^sss^siassi/pg
-en^sst^santa teresita/ba/ar
+en^sst^santa teresita
 en^ssu^white sulphur/wv/us:greenbrier
 en^ssv^siasi/ph
 en^ssw^stuart island/wa/us
@@ -8305,8 +8254,8 @@ en^suc^sundance/wy/us:schloredt
 en^sud^stroud/ok/us
 en^sue^door county cherryland airport
 en^suf^lamezia terme airport
-en^sug^surigao/ph
-en^suh^sur/om
+en^sug^surigao
+en^suh^sur
 en^sui^sukhumi dranda airport
 en^suj^satu mare
 en^suk^samcheok/kr
@@ -8329,7 +8278,7 @@ en^svb^sambava airport
 en^svc^silver city airport
 en^svd^arnos vale
 en^sve^susanville municipal airport
-en^svf^save/bj
+en^svf^save
 en^svg^stavanger / sola
 en^svh^statesville/nc/us:municipal
 en^svi^eduardo falla solano airport
@@ -8341,7 +8290,6 @@ en^svn^hunter u. s. army airfield
 en^svo^sheremetyevo international airport
 en^svp^bie silva porto
 en^svq^sevilla / san pablo
-en^svr^svay rieng/kh
 en^svs^stevens village airport
 en^svt^savuti/bw
 en^svu^savusavu airport
@@ -8365,7 +8313,7 @@ en^swl^spanish wells/bs
 en^swm^suia missu/mt/br
 en^swn^sahiwal airport
 en^swo^stillwater regional airport
-en^swp^swakopmund/na:airport
+en^swp^swakopmund
 en^swq^sumbawa besar / sumbawa besar
 en^swr^silur/pg
 en^sws^swansea airport
@@ -8436,7 +8384,7 @@ en^szg^salzburg airport
 en^szh^senipah airport
 en^szi^zaisan/kz
 en^szj^siguanea
-en^szk^skukuza/za
+en^szk^skukuza
 en^szl^whiteman air force base
 en^szm^sesriem/na
 en^szn^santa/ca/us:santa cruz island
@@ -8448,7 +8396,7 @@ en^szs^ryans creek aerodrome
 en^szt^san cristobal de las casas airport
 en^szu^segou/ml
 en^szv^guangfu airport
-en^szw^schwerin/de:parchim
+en^szw^parchim
 en^szx^shenzhen bao'an international airport
 en^szy^szymany
 en^szz^szczecin
@@ -8484,7 +8432,7 @@ en^tbb^dong tac airport
 en^tbc^tuba city airport
 en^tbd^timbiqui/co
 en^tbe^timbunke/pg
-en^tbf^tabiteuea north/ki
+en^tbf^tabiteuea north airfield
 en^tbg^tabubil airport
 en^tbh^romblon
 en^tbi^new bight
@@ -8505,7 +8453,7 @@ en^tbw^donskoye airport
 en^tby^tsabong
 en^tbz^tabriz
 en^tca^tennant creek airport
-en^tcb^treasure cay/bs
+en^tcb^treasure cay
 en^tcc^tucumcari municipal airport
 en^tcd^tarapaca airport^tarapacá airport
 en^tce^tulcea airport
@@ -8534,17 +8482,17 @@ en^tda^trinidad/co
 en^tdb^tetabedi/pg
 en^tdd^trinidad
 en^tdf^whitfield farms airport
-en^tdg^tandag/ph
+en^tdg^tandag
 en^tdj^tadjoura airport
 en^tdk^taldykorgan airport
 en^tdl^tandil aerodrome
 en^tdn^theda station/wa/au
-en^tdo^toledo-winlock ed carlson memorial field
+en^tdo^south lewis county airport
 en^tdp^trompeteros/pe
 en^tdr^theodore airport
 en^tds^sasereme airport
 en^tdt^tanda tula airport
-en^tdv^tanandava/mg:samangoky
+en^tdv^tanandava
 en^tdw^tradewind airport
 en^tdx^trat airport
 en^tdz^metcalf field
@@ -8597,6 +8545,7 @@ en^tgl^tagula/pg
 en^tgm^tirgu mures
 en^tgn^traralgon/vi/au:latrobe valley
 en^tgo^tongliao airport
+en^tgp^bor/ru:podkamennaya tungus
 en^tgq^tangara da serra/mt/br:tangara
 en^tgr^touggourt
 en^tgs^chokwe airport^chokwé airport
@@ -8611,6 +8560,7 @@ en^the^teresina
 en^thg^thangool airport
 en^thh^taharoa aerodrome
 en^thi^tichitt airport
+en^thj^tai shan/cn:bus station
 en^thk^thakhek
 en^thl^tachileik airport
 en^thm^thompsonfield/mo/us
@@ -8629,13 +8579,13 @@ en^thy^thohoyandou airport
 en^thz^tahoua airport
 en^tia^tirane/rinas
 en^tib^tibu/co
-en^tic^tinak island/mh
+en^tic^tinak airfield
 en^tid^tiaret
 en^tie^tippi airport
 en^tif^taif
 en^tig^tingwon/pg
 en^tih^tikehau atoll
-en^tii^tarin kot/af:tereen
+en^tii^tirin^tirīn
 en^tij^tijuana international airport
 en^tik^tinker air force base
 en^til^inverlake/ab/ca
@@ -8658,6 +8608,7 @@ en^tjc^ticantiki/pa:ticantiki airport
 en^tjg^warukin airport
 en^tjh^tajima airport
 en^tji^trujillo/hn:capiro
+en^tjj^tainjin/cn:bus station
 en^tjk^tokat airport
 en^tjm^roschino international airport
 en^tjn^takume/pf
@@ -8718,7 +8669,7 @@ en^tly^plastun airport
 en^tlz^catalao airport^catalão airport
 en^tma^henry tift myers airport
 en^tmb^kendall-tamiami executive airport
-en^tmc^tambolaka/id
+en^tmc^lapangan terbang tambolaka
 en^tmd^timbedra airport
 en^tme^aeropuerto gabriel vargas santos
 en^tmg^tomanggong airport
@@ -8728,7 +8679,7 @@ en^tmj^termez airport
 en^tmk^tamky/vn
 en^tml^tamale airport
 en^tmm^tamatave
-en^tmn^tamana island/ki
+en^tmn^tamana airfield
 en^tmo^tumeremo
 en^tmp^tampere-pirkkala airport
 en^tmq^tambao airport
@@ -8761,7 +8712,7 @@ en^tnr^ivato airport
 en^tns^tungsten/nt/ca
 en^tnt^dade-collier training and transition airport
 en^tnu^newton municipal airport
-en^tnv^tabuaeran/ki
+en^tnv^tabouaeran airstrip
 en^tnw^tena/ec:jumandy
 en^tnx^stung treng airport
 en^tnz^tosontsengel/mn
@@ -8781,7 +8732,7 @@ en^tom^tombouctou
 en^ton^tonu/pg
 en^too^san vito de java airport
 en^top^philip billard municipal airport
-en^toq^tocopilla/cl:barriles
+en^toq^barriles
 en^tor^torrington municipal airport
 en^tos^tromso airport^tromsø airport
 en^tot^totness/sr:coronie
@@ -8845,7 +8796,7 @@ en^trz^tiruchchirapalli
 en^tsa^sung-shan chi-ch'ang
 en^tsb^tsumeb airport
 en^tsc^taisha airport
-en^tsd^tshipise/za
+en^tsd^tshipise
 en^tse^astana international airport
 en^tsf^treviso / s. angelo
 en^tsg^tanacross airport
@@ -8862,7 +8813,7 @@ en^tsq^torres/rs/br
 en^tsr^timisoara
 en^tss^east 34th street heliport
 en^tst^trang
-en^tsu^tabiteuea south/ki
+en^tsu^tabiteuea south airfield
 en^tsv^townsville airport
 en^tsw^tsewi/pg
 en^tsx^tanjung santan airport
@@ -8870,7 +8821,7 @@ en^tsy^tasikmalaya / cibeureum
 en^tsz^tsetserleg/mn
 en^tta^tan-tan
 en^ttb^tortoli' / arbatax airport
-en^ttc^taltal/cl
+en^ttc^las breas
 en^ttd^portland-troutdale airport
 en^tte^ternate / babullah
 en^ttg^tartagal aerodrome
@@ -8884,7 +8835,7 @@ en^ttn^trenton mercer airport
 en^tto^britton municipal airport
 en^ttq^aerotortuguero airport
 en^ttr^pongtiku
-en^tts^tsaratanana/mg
+en^tts^tsaratanana
 en^ttt^feng nin tw-afb
 en^ttu^tetuan / sania ramel
 en^ttw^cantwell airport
@@ -8914,7 +8865,7 @@ en^tuw^tubala/pa
 en^tux^tumbler ridge/bc/ca
 en^tuy^tulum naval air station
 en^tuz^tucuma/pa/br
-en^tva^morafenobe/mg
+en^tva^morafenobe
 en^tvc^cherry capital airport
 en^tvf^thief river falls regional airport
 en^tvi^thomasville regional airport
@@ -8957,7 +8908,7 @@ en^tyr^tyler pounds field
 en^tys^mc ghee tyson airport
 en^tyt^treinta y tres
 en^tyz^taylor airport
-en^tza^belize city/bz:municipal
+en^tza^hone park airstrip
 en^tzc^caro/mi/us:tuscola area
 en^tzl^tuzla
 en^tzm^tizimin/mx
@@ -8969,7 +8920,7 @@ en^uab^incirlik hava ussu^incirlik hava üssü
 en^uac^san luis rio colorado airport^san luis río colorado airport
 en^uae^mount aue/pg
 en^uah^ua huka airport
-en^uai^suai/tl
+en^uai^lapangan terbang holbelis
 en^uak^narsarsuaq airport
 en^ual^luau airport
 en^uam^usaf andersen air force base
@@ -9036,7 +8987,7 @@ en^uiq^quion hill airport
 en^uir^quirindi airport
 en^uit^jaluit airport
 en^uiz^utica/mi/us:berz macomb
-en^uje^ujae island/mh
+en^uje^ujae airfield
 en^ujn^uljin/kr
 en^uka^ukunda airstrip
 en^ukb^kobe airport
@@ -9058,7 +9009,7 @@ en^uld^ulundi
 en^ule^sule airport
 en^ulg^oelgii airport^ölgii airport
 en^ulh^al ula/sa:majeed bin abdulaziz
-en^uli^ulithi/fm
+en^uli^ulithi airport
 en^ulk^lensk/ru
 en^ull^glenforsa airfield
 en^ulm^new ulm municipal airport
@@ -9085,7 +9036,7 @@ en^umu^umuarama airport
 en^umy^sumy airport
 en^una^hotel transamerica airport^hotel transamérica airport
 en^unc^unguia/co
-en^und^kunduz/af
+en^und^kunduz airfield
 en^une^qacha's nek airport
 en^ung^kiunga airport
 en^uni^union island/vc
@@ -9137,7 +9088,7 @@ en^usm^samui airport
 en^usn^ulsan airport
 en^uso^usino/pg
 en^usq^usak airport^uşak airport
-en^uss^sancti spiritus/cu
+en^uss^sancti spiritus^sancti spíritus
 en^ust^st augustine airport
 en^usu^francisco b. reyes airport
 en^uta^mutare airport
@@ -9148,7 +9099,7 @@ en^ute^butterworth airport
 en^utg^quthing airport
 en^uth^sanam bin changwat udon thani
 en^uti^utti
-en^utk^utirik island/mh
+en^utk^utrik airfield
 en^utl^torremolinos/es:railway statio
 en^utm^tunica, tunica municipal airport
 en^utn^upington airport
@@ -9252,7 +9203,7 @@ en^vgs^general villegas airport
 en^vgt^north las vegas air terminal
 en^vgz^villa garzon airport^villa garzón airport
 en^vhc^saurimo airport
-en^vhm^vilhelmina/se
+en^vhm^vilhelmina
 en^vhn^culberson county airport
 en^vhy^vichy-charmeil
 en^vhz^vahitahi airport
@@ -9271,7 +9222,7 @@ en^vin^vinnitsa airport
 en^viq^viqueque airport
 en^vir^virginia aerodrome
 en^vis^visalia municipal airport
-en^vit^vitoria airport (vit)
+en^vit^vitoria airport (vit)^gasteizko aireportua / aeropuerto de vitoria
 en^viu^viru harbour airstrip
 en^viv^vivigani/pg
 en^vix^eurico de aguiar salles airport
@@ -9339,7 +9290,7 @@ en^vri^varandey airport
 en^vrk^varkaus airport
 en^vrl^vila real
 en^vrn^verona / villafranca
-en^vro^matanzas/cu:kawama airport
+en^vro^santa marta airport
 en^vrs^versailles/mo/us
 en^vru^vryburg
 en^vry^vaeroy heliport^værøy heliport
@@ -9364,11 +9315,11 @@ en^vuo^pearson airpark
 en^vup^valledupar / alfonso lopez
 en^vus^velikiy ustyug airport
 en^vuu^blantyre/mw:mvuu camp
-en^vvb^mahanoro/mg
+en^vvb^mahanoro
 en^vvc^villavicencio / vanguardia
 en^vve^city n/fr:city name test three
 en^vvi^viru-viru
-en^vvk^vastervik/se
+en^vvk^vastervik
 en^vvn^malvinas/pe
 en^vvo^vladivostok international airport
 en^vvz^illizi
@@ -9383,18 +9334,18 @@ en^wab^wabag/pg
 en^wac^waca airport
 en^wad^andriamena/mg
 en^wae^wadi al dawaser/sa
-en^waf^wana/pk
+en^waf^wana-airfield^wāna-airfield
 en^wag^wanganui airport
 en^wah^breckenridge-wahpeton interstate airport
 en^wai^antsohihy/mg:ambalabe
 en^waj^wawoi falls/pg
-en^wak^ankazoabo/mg
+en^wak^ankazoabo
 en^wal^chincoteague/va/us:wallops flt
 en^wam^ambatondrazaka airport
 en^wan^waverney/ql/au
 en^wao^wabo/pg
 en^wap^alto palena airport
-en^waq^antsalova/mg
+en^waq^antsalova
 en^war^waris airport
 en^was^washington, d. c.
 en^wat^waterford airport
@@ -9432,6 +9383,7 @@ en^wdn^waldron island/wa/us
 en^wdr^barrow county airport
 en^wdy^kodiak/ak/us:kodiak fss
 en^wea^weatherford/tx/us:parker cnty
+en^wec^wenchang/cn:railway station
 en^wed^wedau/pg
 en^wef^weifang airport
 en^weh^weihai airport
@@ -9478,7 +9430,7 @@ en^wio^wilcannia airport
 en^wir^wairoa aerodrome
 en^wit^wittenoom airport
 en^wiu^witu/pg
-en^wja^woja/mh
+en^wja^woja airfield
 en^wjf^general wm j fox airfield
 en^wjr^wajir
 en^wju^wonju airport
@@ -9506,7 +9458,7 @@ en^wlo^waterloo airport
 en^wlr^loring/ak/us
 en^wls^hihifo airport
 en^wlw^willows-glenn county airport
-en^wma^mandritsara/mg
+en^wma^mandritsara
 en^wmb^warrnambool airport
 en^wmc^winnemucca municipal airport
 en^wmd^mandabe airport
@@ -9514,7 +9466,7 @@ en^wme^mount keith airport
 en^wmh^ozark regional airport
 en^wmi^nowy dwor mazowiecki/pl:modlin
 en^wmk^meyers chuck seaplane base
-en^wml^malaimbandy/mg
+en^wml^malaimbandy
 en^wmn^maroantsetra airport
 en^wmo^white mountain airport
 en^wmp^mampikony/mg:mampikony airport
@@ -9535,7 +9487,7 @@ en^wnz^wenzhou yongqiang airport
 en^woa^wonenara/pg
 en^wob^suttonheath/gb:woodbridge
 en^wod^wood river/ak/us
-en^woe^bergen op zoom/nl:woensdrecht
+en^woe^woensdrecht
 en^wog^woodgreen/nt/au
 en^woi^wologissi/lr
 en^wok^wonken airport
@@ -9547,7 +9499,7 @@ en^wos^wonson/kp
 en^wot^wang-an airport
 en^wow^willow/ak/us
 en^wpa^cabo 1° juan roman airport^cabo 1° juan román airport
-en^wpb^port berge vaovao/mg
+en^wpb^port berge
 en^wpc^pincher creek/ab/ca
 en^wpk^wrotham park airport
 en^wpl^powell lake/bc/ca
@@ -9565,14 +9517,14 @@ en^wri^mcguire air force base
 en^wrl^worland municipal airport
 en^wro^wroclaw strachowice
 en^wrw^warrawagine airport
-en^wry^westray/gb
+en^wry^westray airport
 en^wrz^weerawila international airport
 en^wsa^wasua/pg
 en^wsb^steamboat bay/ak/us:spb
 en^wsd^white sands/nm/us:condron aaf
 en^wse^santa cecilia/ec:off-
 en^wsf^sarichef/ak/us
-en^wsg^washington/pa/us:county
+en^wsg^washington county airport
 en^wsh^brookhaven airport
 en^wsj^san juan (uganik) seaplane base
 en^wsm^wiseman/ak/us
@@ -9582,19 +9534,19 @@ en^wsp^waspam airport
 en^wsr^wasior airport
 en^wst^westerly state airport
 en^wsu^wasu/pg
-en^wsx^westsound/wa/us
+en^wsx^westsound
 en^wsy^airlie beach/ql/au:whitsunday
 en^wsz^westport
 en^wta^tambohorano/mg
 en^wtd^west end/bs
-en^wte^wotje island/mh
+en^wte^wotje airfield
 en^wtk^noatak airport
 en^wtl^tuntutuliak airport
 en^wtn^waddington
-en^wto^wotho island/mh
+en^wto^wotho airfield
 en^wtp^woitape/pg
 en^wtr^white river/az/us
-en^wts^tsiroanomandidy/mg
+en^wts^tsiroanomandidy
 en^wtt^wantoat/pg
 en^wtz^whitianga/nz
 en^wua^wuhai
@@ -9611,9 +9563,9 @@ en^wux^wuxi airport
 en^wuz^changzhoudao airport
 en^wvb^walvis bay airport
 en^wvi^watsonville municipal airport
-en^wvk^manakara/mg
+en^wvk^manakara sud
 en^wvl^waterville robert lafleur airport
-en^wvn^wilhelmshaven/de:mariensiel
+en^wvn^wilhelmshaven-mariensiel
 en^wwa^wasilla/ak/us
 en^wwd^cape may county airport
 en^wwg^al koude/om
@@ -9625,6 +9577,7 @@ en^wws^wildwood/ak/us:usaf heliport
 en^wwt^newtok airport
 en^wwy^west wyalong/ns/au
 en^wxf^wethersfield airport
+en^wxj^wanning/cn:railway station
 en^wxn^wanxian airport
 en^wya^whyalla airport
 en^wyb^yes bay/ak/us:spb
@@ -9641,7 +9594,7 @@ en^xah^silkeborg/dk:railway station
 en^xai^aix les bains/fr:off-
 en^xaj^hirtshals/dk:bus station
 en^xak^herning/dk:herning railway stn
-en^xal^alamos/mx
+en^xal^alamos
 en^xam^amboise/fr:amboise
 en^xan^alencon-valframbert^alençon-valframbert
 en^xap^chapeco airport^chapecó airport
@@ -9649,8 +9602,8 @@ en^xaq^broenderslev/dk:bus station
 en^xar^aribinda airport
 en^xas^ales-cevennes^alès-cévennes
 en^xat^antibes/fr:antibes
-en^xau^saul/gf
-en^xav^albertville/fr:albertville
+en^xau^sauel^saül
+en^xav^albertville
 en^xaw^capreol/on/ca:railway station
 en^xax^dorval
 en^xay^xayabury/la
@@ -9704,7 +9657,7 @@ en^xcu^collioure/fr:collioure
 en^xcv^chantilly/fr:chantilly
 en^xcw^chaumont/fr:chaumont
 en^xcx^chatellerault-targe^chatellerault-targé
-en^xcy^chateau thierry/fr:chateau thi
+en^xcy^chateau-thierry - belleau^château-thierry - belleau
 en^xcz^charleville-mezieres^charleville-mézières
 en^xda^dax-seyresse
 en^xdb^gare de lille - europe
@@ -9927,7 +9880,7 @@ en^xls^saint-louis
 en^xlt^ax les thermes/fr:ax les therm
 en^xlu^leo airport
 en^xlv^niagara falls railway station
-en^xlw^lemwerder/de
+en^xlw^lemwerder
 en^xlx^lisieux/fr:lisieux
 en^xly^aldershot/on/ca:railway statio
 en^xlz^truro/ns/ca:railway station
@@ -9951,7 +9904,7 @@ en^xmq^morzine/fr:morzine
 en^xmr^port canaveral north heliport
 en^xms^coronel e carvajal airport
 en^xmt^menton/fr:menton
-en^xmu^moulins/fr
+en^xmu^moulins-montbeugny
 en^xmv^pichanal/sa/ar
 en^xmw^montauban
 en^xmx^ledesma/pj/ar
@@ -10078,9 +10031,9 @@ en^xsj^peronne - saint-quentin^péronne - saint-quentin
 en^xsk^st raphael/fr:st raphael
 en^xsl^sarlat/fr:sarlat
 en^xsm^st marys/md/us
-en^xsn^sallanches/fr:sallanches
+en^xsn^sallanches - mont-blanc
 en^xso^siocon/ph
-en^xsp^singapore/sg:seletar
+en^xsp^seletar airport
 en^xsq^selestat/fr:selestat
 en^xsr^salisbury/gb:railway station
 en^xss^soissons/fr:soissons
@@ -10150,7 +10103,7 @@ en^xvj^stevenage/gb:railway station
 en^xvk^voss/no:railway station
 en^xvl^vinh long/vn
 en^xvm^vuokatti/fi:bus station
-en^xvn^verdun/fr:verdun
+en^xvn^verdun-sommedieue
 en^xvo^vesoul-frotey
 en^xvp^villepinte/fr:villepinte
 en^xvq^venice/it:santa lucia rail stn
@@ -10264,7 +10217,7 @@ en^yad^moose lake/mb/ca
 en^yae^alta lake/bc/ca
 en^yaf^asbestos hill/qc/ca
 en^yag^fort frances municipal airport
-en^yah^lagrande 4/qc/ca
+en^yah^la grande iv, que.
 en^yai^aerodromo bernardo o'higgins^aeródromo bernardo o'higgins
 en^yaj^lyall harbour airport
 en^yak^yakutat airport
@@ -10275,7 +10228,7 @@ en^yao^younde ii
 en^yap^yap international airport
 en^yaq^maple bay/bc/ca
 en^yar^lagrande 3/qc/ca
-en^yas^yasawa/fj
+en^yas^yasawa island
 en^yat^attawapiskat airport
 en^yau^liverpool south shore regional airport
 en^yav^winnipeg st andrews airport
@@ -10331,7 +10284,7 @@ en^yct^coronation airport
 en^ycu^yuncheng
 en^ycv^cartierville/qc/ca
 en^ycw^chilliwack/bc/ca
-en^ycx^gagetown/nb/ca
+en^ycx^gagetown can-mil
 en^ycy^clyde, n. w. t.
 en^ycz^fairmount springs/bc/ca
 en^yda^dawson, y. t.
@@ -10418,7 +10371,7 @@ en^yha^port hope simpson airport
 en^yhb^hudson bay airport
 en^yhc^hakai pass/bc/ca
 en^yhd^dryden airport
-en^yhe^hope/bc/ca
+en^yhe^hope, b. c.
 en^yhf^hearst rene fontaine municipal airport^hearst rené fontaine municipal airport
 en^yhg^charlottetown/nl/ca
 en^yhh^campbell rive/bc/ca:harbor spb
@@ -10443,7 +10396,7 @@ en^yik^ivujivik airport
 en^yin^yining airport
 en^yio^pond inlet airport
 en^yip^willow run airport
-en^yiv^island lk garden hill/mb/ca
+en^yiv^island lake, man.
 en^yiw^yiwu airport
 en^yja^jasper airport
 en^yjb^sants train station barcelona
@@ -10471,7 +10424,7 @@ en^yke^knee lake/mb/ca
 en^ykf^waterloo well
 en^ykg^kangirsuk airport
 en^yki^kennosao lake/mb/ca
-en^ykj^key lake/sk/ca
+en^ykj^key lake
 en^ykk^kitkatla/bc/ca
 en^ykl^schefferville airport
 en^ykm^yakima air terminal airport
@@ -10513,7 +10466,7 @@ en^ymd^mould bay/nu/ca
 en^yme^matane airport
 en^ymf^montague harbour airport
 en^ymg^manitouwadge airport
-en^ymh^mary's harbour/nl/ca
+en^ymh^mary's harbour
 en^ymi^minaki/on/ca
 en^ymj^moose jaw, sask.
 en^ymk^mys kamenny/ru:mys kamenny
@@ -10522,7 +10475,7 @@ en^ymm^fort mcmurray airport
 en^ymn^makkovik airport
 en^ymo^moosonee airport
 en^ymp^port mcneil/bc/ca
-en^ymq^montreal/qc/ca
+en^ymq^montreal^montréal
 en^ymr^merry island/bc/ca
 en^yms^yurimaguas
 en^ymt^chibougamau-chapais, que
@@ -10533,9 +10486,9 @@ en^ymx^montreal / mirabel
 en^ymy^montreal/qc/ca:downtown railwa
 en^yna^natashquan airport
 en^ynb^yenbo
-en^ync^wemindji/qc/ca
+en^ync^wemindji airport
 en^ynd^gatineau airport
-en^yne^norway house/mb/ca
+en^yne^norway house, man.
 en^ynf^corner brook/nl/ca:deer lake
 en^yng^youngstown-warren regional airport
 en^ynh^hudson's hope/bc/ca:hudson hop
@@ -10553,7 +10506,7 @@ en^ynt^laishan
 en^ynx^snap lake/nt/ca:snap lake
 en^yny^yangyang international airport
 en^ynz^yancheng airport
-en^yoa^ekati/nt/ca:ekati airport
+en^yoa^ekati, n. w. t.
 en^yoc^old crow airport
 en^yod^cold lake, alta.
 en^yoe^falher/ab/ca
@@ -10576,7 +10529,7 @@ en^ypd^parry sound/on/ca
 en^ype^peace river, alta.
 en^ypf^esquimalt/bc/ca
 en^ypg^portage southport a
-en^yph^inukjuak/qc/ca
+en^yph^inukjuak airport
 en^ypi^port simpson/bc/ca
 en^ypj^aupaluk, que.
 en^ypl^pickle lake airport
@@ -10590,7 +10543,7 @@ en^yps^port hawkesbury airport
 en^ypt^pender harbour/bc/ca
 en^ypw^powell river airport
 en^ypx^povungnituq
-en^ypy^fort chipewyan/ab/ca
+en^ypy^fort chipewyan, alta.
 en^ypz^burns lake
 en^yqa^muskoka airport
 en^yqb^jean lesage international airport
@@ -10621,7 +10574,7 @@ en^yrb^resolute, n. w. t.
 en^yrc^refuge cove/bc/ca:spb
 en^yrd^dean river/bc/ca
 en^yre^resolution island/nu/ca
-en^yrf^cartwright/nl/ca
+en^yrf^cartwright airport
 en^yrg^rigolet airport
 en^yri^riviere-du-loup airport^rivière-du-loup airport
 en^yrj^roberval airport
@@ -10633,14 +10586,14 @@ en^yrq^trois-rivieres airport^trois-rivières airport
 en^yrr^stuart island airport
 en^yrs^red sucker lake airport
 en^yrt^rankin inlet airport
-en^yrv^revelstoke/bc/ca
+en^yrv^revelstoke, b. c.
 en^ysa^sable island/ns/ca
 en^ysb^greater sudbury airport
 en^ysc^sherbrooke airport
-en^ysd^suffield/ab/ca
+en^ysd^suffield airport
 en^yse^squamish airport, b. c
 en^ysf^stony rapids airport
-en^ysg^lutselke snowdr/nt/ca:lutselke
+en^ysg^lutsel ke, n. w. t.
 en^ysh^smiths falls-montague (russ beach) airport
 en^ysi^sans souci/on/ca
 en^ysj^saint john, n. b.
@@ -10725,7 +10678,7 @@ en^ywo^lupin/nt/ca:lupin
 en^ywp^webequie airport
 en^ywq^chute-des-passes/qc/ca
 en^ywr^white river/on/ca
-en^yws^whistler/bc/ca
+en^yws^whistler green lake water aerodrome
 en^ywv^wainwright airport
 en^ywy^wrigley airport
 en^yxc^cranbrook, b. c.
@@ -10791,7 +10744,7 @@ en^zac^york landing airport
 en^zad^zadar
 en^zae^el eulma/dz:off-
 en^zaf^arles/fr:railway station
-en^zag^zagreb/hr:pleso
+en^zag^zagreb airport
 en^zah^zahedan international airport
 en^zai^embarcacion/sa/ar
 en^zaj^zaranj/af
@@ -10814,7 +10767,7 @@ en^zaz^zaragoza / aeropuerto
 en^zba^basel mulhouse/ch:basel bad ra
 en^zbb^esbjerg/dk:railway station
 en^zbc^birmingham/gb:colmore bus stn
-en^zbd^jiang men/cn:ferry port
+en^zbd^jiangmen/cn:ferry port
 en^zbe^zabreh ostrava airport
 en^zbf^bathurst
 en^zbg^elblag/pl
@@ -10839,7 +10792,7 @@ en^zbz^xin hui/cn:xin hui ferry
 en^zca^tai shan/cn:tai shan ferry
 en^zcb^aschaffenburg/de:hbf railway s
 en^zcc^karlsruhe/baden baden/de:baden
-en^zcd^bamberg/de:off-
+en^zcd^bamberg
 en^zce^berchtesgaden/de:off-
 en^zcf^bergheim/de:off-
 en^zcg^bergisch gladbach/de:off-
@@ -10949,7 +10902,7 @@ en^zgi^gods river airport
 en^zgj^oostende brugge/be:brugge rail
 en^zgk^leuven/be:off-
 en^zgl^south galway airport
-en^zgm^ngoma/zm
+en^zgm^ngoma
 en^zgn^zhongshan/cn:ferry port
 en^zgo^gotha/de:railway station
 en^zgp^zugapa airport
@@ -10970,7 +10923,7 @@ en^zhe^frauenfeld/ch:frauenfeld
 en^zhf^fribourg/ch:fribourg
 en^zhg^glarus/ch:glarus
 en^zhh^gossau sg/ch:gossau sg
-en^zhi^grenchen/ch:sued rail stn
+en^zhi^grenchen
 en^zhj^grindelwald/ch:grindelwald
 en^zhk^gstaad/ch:gstaad
 en^zhl^heerbrugg/ch:heerbrugg
@@ -10982,7 +10935,7 @@ en^zhr^kandersteg/ch:kandersteg
 en^zhs^klosters/ch:klosters
 en^zht^geneva cornavin/ch:railwa
 en^zhu^kreuzlingen/ch:rail st
-en^zhv^la chaux/ch:la chaux de fonds
+en^zhv^les eplatures
 en^zhw^langenthal/ch:langenthal
 en^zhx^tubarao/sc/br:off-
 en^zhy^zhongwei airport
@@ -11100,7 +11053,7 @@ en^zmi^naples/it:mergellina railway s
 en^zmj^naples/it:mergellina harbour
 en^zmk^bintulu/my:bintulu port
 en^zml^milwaukee/wi/us:railway statio
-en^zmm^zamora/mx
+en^zmm^zamora
 en^zmn^monte siao/mg/br:monte siao
 en^zmo^modena/it:modena bus
 en^zmp^manchester/gb:bus station
@@ -11213,10 +11166,11 @@ en^zqr^witten/de:off-
 en^zqs^queen charlotte is/bc/ca
 en^zqt^wolfenbuettel/de:off-
 en^zqu^braunschweig/wolfsburg/de:wolf
-en^zqv^worms/de:hbf railway station
-en^zqw^saarbruecken/de:zweibruecken
+en^zqv^worms
+en^zqw^zweibrucken^zweibrücken
 en^zqx^nias/id:off-
 en^zqy^giessen/de:bus station
+en^zqz^zhangiakou/cn
 en^zra^atlantic city/nj/us:railway st
 en^zrb^frankfurt/de:hbf railway stati
 en^zrc^san pedro alcantara/es:bu
@@ -11319,12 +11273,12 @@ en^zuw^dutch rail zone 24/nl:off-line
 en^zux^dutch rail zone 25/nl:off-line
 en^zuy^dutch rail zone 26/nl:off-line
 en^zuz^dutch rail zone 27/nl:off-line
-en^zva^miandrivazo/mg
+en^zva^miandrivazo
 en^zvb^brumunddal/no:railway station
 en^zvc^villarrica/cl:bus station
 en^zvd^drangedal/no:railway station
 en^zve^new haven/ct/us:railway statio
-en^zvg^springvale/wa/au
+en^zvg^springvale airport
 en^zvh^al ain/ae:ek bus station
 en^zvi^zarand/ir
 en^zvj^abu dhabi/ae:ek bus station
@@ -11372,7 +11326,7 @@ en^zwz^any station/nl:off-line point
 en^zxa^aberdeen/gb:railway station
 en^zxb^jan mayen/no:jan mayen
 en^zxc^bangsund/no:bangsund
-en^zxd^vikna/no:vikna
+en^zxd^san isidro
 en^zxe^edinburgh/gb:waverley railway
 en^zxg^gravvika/no
 en^zxh^sorfjord/no
