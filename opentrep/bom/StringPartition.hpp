@@ -118,7 +118,7 @@ namespace OPENTREP {
     ~StringPartition();
 
 
-  private:
+  public:
     // //////////////// Attributes ///////////////
     /**
      * Partition, i.e., a list containing sub-lists of strings

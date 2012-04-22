@@ -97,7 +97,7 @@ namespace OPENTREP {
     ~StringSet();
 
   
-  private:
+  public:
     // //////////////// Attributes ///////////////
     /**
      * String set, i.e., a list of strings

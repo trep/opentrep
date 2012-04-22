@@ -122,7 +122,7 @@ namespace OPENTREP {
           // within it (with the example above, 'san' and 'francisco').
           lDocument.add_term (lName); ++idx;
           ioDatabase.add_spelling (lName);
-          tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
+          //tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
 
           // OPENTREP_LOG_DEBUG ("Added name: " << lName);
         }

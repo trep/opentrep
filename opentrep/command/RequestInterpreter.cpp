@@ -295,7 +295,7 @@ namespace OPENTREP {
       
     // Main algorithm
     DocumentList_T lDocumentList;
-    lResultHolder.searchString (lDocumentList, ioWordList);
+    lResultHolder.searchStringNew (lDocumentList, ioWordList);
 
     /** Create the list of Result objects corresponding to the list
         of documents. */

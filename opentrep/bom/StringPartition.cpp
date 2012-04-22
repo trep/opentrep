@@ -55,7 +55,7 @@ namespace OPENTREP {
     oStr << describeShortKey();
 
     //
-    oStr << "{" << std::endl;
+    oStr << "{";
 
     short idx_sublist = 0;
     for (StringPartition_T::const_iterator itSet = _partition.begin();
@@ -73,7 +73,7 @@ namespace OPENTREP {
     }
 
     //
-    oStr << std::endl << "}" << std::endl;
+    oStr << " }";
 
     return oStr.str();
   }
