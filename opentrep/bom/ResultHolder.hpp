@@ -98,10 +98,10 @@ namespace OPENTREP {
      *
      * @param DocumentList_T& List of matched documents by the query string.
      * @param const StringSet& The set of strings for the current partition.
-     * @return float Total matching percentage, defined as the product of the
+     * @return double Total matching percentage, defined as the product of the
      *         matching percentages of all the strings of the set.
      */
-    float searchStringNew (DocumentList_T&, const StringSet&) const;
+    double searchStringNew (DocumentList_T&, const StringSet&) const;
 
   public:
     // /////////// Display support methods /////////
