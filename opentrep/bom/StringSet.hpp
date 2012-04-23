@@ -28,12 +28,12 @@ namespace OPENTREP {
     /**
      * Add an item (string) into the list.
      */
-    void push_back (const std::string& iString);
+    void push_back (const std::string&);
   
     /**
      * Add all the items (string) into the list.
      */
-    void push_back (const StringSet& iStringSet);
+    void push_back (const StringSet&);
   
     /**
      * Return the size of the list.
@@ -52,14 +52,14 @@ namespace OPENTREP {
      *
      * @param ostream& the output stream.
      */
-    void toStream (std::ostream& ioOut) const;
+    void toStream (std::ostream&) const;
 
     /**
      * Read a structure from an input stream.
      *
      * @param istream& the input stream.
      */
-    void fromStream (std::istream& ioIn);
+    void fromStream (std::istream&);
 
     /**
      * Get the serialised version of the structure.
@@ -87,9 +87,19 @@ namespace OPENTREP {
   public:
     // //////////////// Constructors and Destructors /////////////
     /**
-     * Constructor.
+     * Default constructor.
      */
-    StringSet (const std::string& iString);
+    StringSet();
+
+    /**
+     * Default copy constructor.
+     */
+    StringSet (const StringSet&);
+
+    /**
+     * Main constructor.
+     */
+    StringSet (const std::string&);
 
     /**
      * Default destructor.

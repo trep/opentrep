@@ -2,8 +2,7 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <istream>
-#include <ostream>
+#include <cassert>
 #include <string>
 #include <vector>
 #include <exception>
@@ -11,6 +10,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 // OpenTrep
+#include <opentrep/bom/StringPartition.hpp>
+#include <opentrep/bom/Utilities.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/factory/FacPlace.hpp>
@@ -49,6 +50,35 @@ namespace OPENTREP {
       ioDocument.add_term (lTerm);
 
       // OPENTREP_LOG_DEBUG ("Added term: " << lTerm);
+    }
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  void tokeniseAndAddToDocumentNew (const std::string& iPhrase,
+                                    Xapian::Document& ioDocument,
+                                    Xapian::WritableDatabase& ioDatabase) {
+
+    // Strip all the special characters (e.g., /, &) from the given string
+    WordList_T lWordList;
+    tokeniseStringIntoWordList (iPhrase, lWordList);
+    const std::string& lPhrase = createStringFromWordList (lWordList);
+
+    // Calculate all the partitions
+    const StringPartition lStringPartition (lPhrase);
+    const StringSet& lWordCombinationList =
+      lStringPartition.calculateUniqueCombinations();
+
+    const StringSet::StringSet_T& lStringSet = lWordCombinationList._set;
+
+    // Browse the list of unique strings (word combinations)
+    for (StringSet::StringSet_T::const_iterator itString = lStringSet.begin();
+         itString != lStringSet.end(); ++itString) {
+      const std::string& lWordCombination = *itString;
+      
+      ioDatabase.add_spelling (lWordCombination);
+      ioDocument.add_term (lWordCombination);
+
+      // OPENTREP_LOG_DEBUG ("Added term: " << lWordCombination);
     }
   }
   
@@ -118,11 +148,12 @@ namespace OPENTREP {
         // extended, alternate, etc.)
         if (lName.empty() == false) {
           // Add the full name (potentially containing spaces, e.g.,
-          // 'san francisco'), as well as each word
-          // within it (with the example above, 'san' and 'francisco').
+          // 'san francisco').
           lDocument.add_term (lName); ++idx;
           ioDatabase.add_spelling (lName);
-          //tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
+
+          // Add, as well, all the strings of all the partitions.
+          tokeniseAndAddToDocumentNew (lName, lDocument, ioDatabase);
 
           // OPENTREP_LOG_DEBUG ("Added name: " << lName);
         }

@@ -4,6 +4,7 @@
 // STL
 #include <cassert>
 #include <sstream>
+#include <set>
 // OpenTrep
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/Utilities.hpp>
@@ -183,6 +184,46 @@ namespace OPENTREP {
     // 2.1. Add the sub-list with the full string (the one given as input) to
     // the back of the list.
     _partition.push_back (oStringSet);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  StringSet StringPartition::calculateUniqueCombinations() const {
+    StringSet oStringSet;
+
+    // Set of unique strings
+    typedef std::set<std::string> StringList_T;
+    StringList_T lStringList;
+
+    // Browse all the word combinations. Then, for every word combination,
+    // add it if not already in the list (STD set) of strings.
+    for (StringPartition_T::const_iterator itSet = _partition.begin();
+         itSet != _partition.end(); ++itSet) {
+      const StringSet& itStringSet = *itSet;
+      
+      const StringSet::StringSet_T& lStringSet = itStringSet._set;
+      for (StringSet::StringSet_T::const_iterator itString = lStringSet.begin();
+           itString != lStringSet.end(); ++itString) {
+        const std::string& lWordCombination = *itString;
+
+        // Check whether that word combination has already been stored once.
+        StringList_T::const_iterator itString =
+          lStringList.find (lWordCombination);
+        if (itString == lStringList.end()) {
+          // If not, add it to the dedicated list (STD set).
+          lStringList.insert (lWordCombination);
+        }
+      }
+    }    
+
+    // Convert the STD set into a StringSet structure
+    for (StringList_T::const_iterator itString = lStringList.begin();
+         itString != lStringList.end(); ++itString) {
+      const std::string& lWordCombination = *itString;
+      oStringSet.push_back (lWordCombination);
+    }
+
+    //
+    return oStringSet;
   }
 
 }

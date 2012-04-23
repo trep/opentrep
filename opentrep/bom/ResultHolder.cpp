@@ -336,9 +336,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  float ResultHolder::searchStringNew (DocumentList_T& ioDocumentList,
-                                       const StringSet& iStringSet) const {
-    float oTotalMatchingPercentage = 100.0;
+  double ResultHolder::searchStringNew (DocumentList_T& ioDocumentList,
+                                        const StringSet& iStringSet) const {
+    double oTotalMatchingPercentage = 100.0;
 
     // Catch any thrown Xapian::Error exceptions
     try {
@@ -364,8 +364,15 @@ namespace OPENTREP {
           lMatchingDocument.setCorrectedQueryString (lMatchedString);
 
           // Retrieve the matching percentage for the corresponding string only
-          const Xapian::percent& lPercentage =
-            lMatchingDocument.getXapianPercentage();
+          Xapian::percent lPercentage = lMatchingDocument.getXapianPercentage();
+
+          // Trick to decrease the overall percentage of word combinations,
+          // when compared to the whole string. For instance, {"san francisco"}
+          // will have a percentage of 99.999, compared to {"san", "francisco"}
+          // which will have a percentage of 99.998.
+          if (lPercentage == 100) {
+            lPercentage = 99.999;
+          }
 
           // "Add" the contribution to the total
           oTotalMatchingPercentage *= lPercentage / 100.0;
@@ -395,7 +402,7 @@ namespace OPENTREP {
           OPENTREP_LOG_DEBUG ("      ==> No match");
 
           // "Add" the contribution to the total
-          oTotalMatchingPercentage = 0.0;
+          oTotalMatchingPercentage = 0.001;
 
           // It is useless to go further: that string set does not lead to
           // a good matching partition.
@@ -427,7 +434,7 @@ namespace OPENTREP {
       OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition.toShortString());
 
       // Calculate the matching percentage of all the partitions
-      float lMaxMatchingPercentage = 0.0;
+      double lMaxMatchingPercentage = 0.0;
       for (StringPartition::StringPartition_T::const_iterator itSet =
              lStringPartition._partition.begin();
            itSet != lStringPartition._partition.end(); ++itSet) {
@@ -438,8 +445,8 @@ namespace OPENTREP {
 
         // Calculate the matching sets for the string set
         DocumentList_T lDocumentList;
-        const float lMatchingPercentage = searchStringNew (lDocumentList,
-                                                           lStringSet);
+        const double lMatchingPercentage = searchStringNew (lDocumentList,
+                                                            lStringSet);
 
         // Keep track of the maximum percentage, if needed
         if (lMatchingPercentage > lMaxMatchingPercentage) {

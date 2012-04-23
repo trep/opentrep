@@ -54,7 +54,25 @@ namespace OPENTREP {
      * Empty the list.
      */
     void clear();
-  
+
+    /**
+     * Return the list of all the unique word combinations, which can be made
+     * from the partitions.
+     *
+     * For instance, with "rio de janeiro", the list of unique strings would be:
+     * <ul>
+     *   <li>"rio"</li>
+     *   <li>"de"</li>
+     *   <li>"janeiro"</li>
+     *   <li>"rio de"</li>
+     *   <li>"de janeiro"</li>
+     *   <li>"rio de janeiro"</li>
+     * </ul>
+     *
+     * @return StringSet The list of unique strings.
+     */
+    StringSet calculateUniqueCombinations() const;
+
 
   private:
     /**
@@ -62,6 +80,7 @@ namespace OPENTREP {
      *
      * That method is called by the main constructor. It should not be called
      * directly.
+     * @param const std::string& The string for which the partitions are sought
      */
     void init (const std::string& iString);
 
