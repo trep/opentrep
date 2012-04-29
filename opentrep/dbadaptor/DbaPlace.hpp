@@ -18,23 +18,28 @@ namespace OPENTREP {
 
 namespace soci {
 
-  /** Specify how the Place class can be converted to (resp. from) values
-      stored into (resp. retrieved from) database, using the SOCI framework. */
+  /**
+   * @brief Specify how the Place class can be converted to (resp. from)
+   *        values stored into (resp. retrieved from) database, using
+   *        the SOCI framework.
+   */
   template <>
   struct type_conversion<OPENTREP::Place> {
 
     typedef values base_type;
 
-    /** Fill an Place object from the database values. */
-    static void from_base (values const& iPlaceValues,
-                           indicator /* ind */,
-                           OPENTREP::Place& ioPlace);
+    /**
+     * Fill an Place object from the database values.
+     */
+    static void from_base (values const& iPlaceValues, indicator,
+                           OPENTREP::Place&);
 
 
-    /** Fill the database values from an Place object. */
-    static void to_base (const OPENTREP::Place& iPlace,
-                         values& ioPlaceValues,
-                         indicator& ioIndicator);
+    /**
+     * Fill the database values from an Place object.
+     */
+    static void to_base (const OPENTREP::Place&, values& ioPlaceValues,
+                         indicator&);
   };
 }
 #endif // __OPENTREP_DBA_DBAPLACE_HPP

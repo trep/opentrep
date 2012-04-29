@@ -15,7 +15,7 @@ namespace OPENTREP {
     _iataCode (""), _icaoCode (""), _faaCode (""), _cityCode (""),
     _stateCode (""), _countryCode (""),
     _regionCode (""), _continentCode (""), _timeZoneGroup (""),
-    _longitude (0.0), _latitude (0.0), _originalKeywords (""),
+    _latitude (0.0), _longitude (0.0), _originalKeywords (""),
     _correctedKeywords (""), _docID (0),
     _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
@@ -28,8 +28,9 @@ namespace OPENTREP {
     _faaCode (iPlace._faaCode), _cityCode (iPlace._cityCode),
     _stateCode (iPlace._stateCode), _countryCode (iPlace._countryCode),
     _regionCode (iPlace._regionCode), _continentCode (iPlace._continentCode),
-    _timeZoneGroup (iPlace._timeZoneGroup), _longitude (iPlace._longitude),
-    _latitude (iPlace._latitude), _nameMatrix (iPlace._nameMatrix),
+    _timeZoneGroup (iPlace._timeZoneGroup),
+    _latitude (iPlace._latitude), _longitude (iPlace._longitude),
+    _nameMatrix (iPlace._nameMatrix),
     _originalKeywords (iPlace._originalKeywords),
     _correctedKeywords (iPlace._correctedKeywords),
     _docID (iPlace._docID), _percentage (iPlace._percentage),
@@ -77,7 +78,7 @@ namespace OPENTREP {
          << ", " << _cityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _continentCode << ", " << _timeZoneGroup
-         << ", " << _longitude << ", " << _latitude
+         << ", " << _latitude << ", " << _longitude
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance
@@ -135,7 +136,7 @@ namespace OPENTREP {
     oStr << ", " << lCityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _continentCode << ", " << _timeZoneGroup
-         << ", " << _longitude << ", " << _latitude
+         << ", " << _latitude << ", " << _longitude
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance;
@@ -188,8 +189,8 @@ namespace OPENTREP {
          << ", region code = " << _regionCode
          << ", continent code = " << _continentCode
          << ", time zone group = " << _timeZoneGroup
-         << ", longitude = " << _longitude
          << ", latitude = " << _latitude
+         << ", longitude = " << _longitude
          << ", original keywords = " << _originalKeywords
          << ", corrected keywords = " << _correctedKeywords
          << ", docID = " << _docID
@@ -271,7 +272,7 @@ namespace OPENTREP {
     Location oLocation (_iataCode, _icaoCode, _faaCode, lCityCode,
                         _stateCode, _countryCode,
                         _regionCode, _continentCode, _timeZoneGroup,
-                        _longitude, _latitude, lNameList,
+                        _latitude, _longitude, lNameList,
                         _originalKeywords, _correctedKeywords,
                         _percentage, _editDistance, _allowableEditDistance);
 

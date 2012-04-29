@@ -21,7 +21,9 @@ namespace OPENTREP {
   class World;
   class PlaceHolder;
   
-  /** Class modelling a place. */
+  /**
+   * @brief Class modelling a place.
+   */
   class Place : public BomAbstract {
     friend class FacWorld;
     friend class FacPlace;
@@ -79,16 +81,16 @@ namespace OPENTREP {
       return _timeZoneGroup;
     }
     
-    /** Get the Longitude. */
-    double getLongitude() const {
-      return _longitude;
-    }
-    
     /** Get the Latitude. */
     double getLatitude() const {
       return _latitude;
     }
 
+    /** Get the Longitude. */
+    double getLongitude() const {
+      return _longitude;
+    }
+    
     /** Get the original keywords. */
     std::string getOriginalKeywords() const {
       return _originalKeywords;
@@ -198,16 +200,16 @@ namespace OPENTREP {
       _timeZoneGroup = iTimeZoneGroup;
     }
     
-    /** Set the Longitude. */
-    void setLongitude (const double& iLongitude) {
-      _longitude = iLongitude;
-    }
-    
     /** Set the Latitude. */
     void setLatitude (const double& iLatitude) {
       _latitude = iLatitude;
     }
 
+    /** Set the Longitude. */
+    void setLongitude (const double& iLongitude) {
+      _longitude = iLongitude;
+    }
+    
     /** Set the original keywords. */
     void setOriginalKeywords (const std::string& iOriginalKeywords) {
       _originalKeywords = iOriginalKeywords;
@@ -330,10 +332,10 @@ namespace OPENTREP {
     std::string _continentCode;
     /** Time-zone group. */
     std::string _timeZoneGroup;
-    /** Longitude. */
-    double _longitude;
     /** Latitude. */
     double _latitude;
+    /** Longitude. */
+    double _longitude;
     /** List of names, for each given language. */
     NameMatrix_T _nameMatrix;
 

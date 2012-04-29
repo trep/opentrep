@@ -258,7 +258,7 @@ namespace OPENTREP {
          <li>One with the orthographic-corrected words, wherever
          relevant (otherwise, the original word is taken)</li>
          </ul>
-         <br>For instance, 'sna francisco' would give the following
+         <br>For instance, 'sna francicso' would give the following
          two strings:
          <br><ul>
          <li>'sna francicso' (original)</li>
@@ -453,6 +453,9 @@ namespace OPENTREP {
          <br>See the comment of the checkAndAlterIfNeeded() function
          for more details.
       */
+      // As of April 2012, commented the following. Indeed, that check/filter
+      // is not compatible with the new algorithm (\see the
+      // OPENTREP::ResultHolder.searchStringNew() method for more details)
       checkAndAlterIfNeeded (lFullWordCorrectedString, lOriginalQueryString,
                              iMaxEditDistance, iDatabase);
 
