@@ -91,19 +91,19 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Longitude. 
-     */
-    double getLongitude() const {
-      return _longitude;
-    }
-    
-    /**
      * Get the Latitude. 
      */
     double getLatitude() const {
       return _latitude;
     }
 
+    /**
+     * Get the Longitude. 
+     */
+    double getLongitude() const {
+      return _longitude;
+    }
+    
     /**
      * Get the list of (American) English names for that location. 
      */
@@ -227,19 +227,19 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the Longitude. 
-     */
-    void setLongitude (const double& iLongitude) {
-      _longitude = iLongitude;
-    }
-    
-    /**
      * Set the Latitude. 
      */
     void setLatitude (const double& iLatitude) {
       _latitude = iLatitude;
     }
 
+    /**
+     * Set the Longitude. 
+     */
+    void setLongitude (const double& iLongitude) {
+      _longitude = iLongitude;
+    }
+    
     /**
      * Set the list of (American) English names for that location. 
      */
@@ -355,7 +355,7 @@ namespace OPENTREP {
               const std::string& iStateCode, const std::string& iCountryCode,
               const std::string& iRegionCode, const std::string& iContinentCode,
               const std::string& iTimeZoneGroup, 
-              const double iLongitude, const double iLatitude,
+              const double iLatitude, const double iLongitude,
               const LocationNameList_T& iNameList,
               const std::string& iOriginalKeywords,
               const std::string& iCorrectedKeywords,
@@ -418,13 +418,13 @@ namespace OPENTREP {
      */
     std::string _timeZoneGroup;
     /**
-     * Longitude. 
-     */
-    double _longitude;
-    /**
      * Latitude. 
      */
     double _latitude;
+    /**
+     * Longitude. 
+     */
+    double _longitude;
     /**
      * List of (American) English names. 
      */

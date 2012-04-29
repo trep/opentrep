@@ -17,7 +17,7 @@ namespace OPENTREP {
       _regionCode ("NA"),
       _continentCode ("NA"),
       _timeZoneGroup ("NA"),
-      _longitude (0), _latitude (0),
+      _latitude (0), _longitude (0),
       _nameList (std::list<std::string> ()),
       _originalKeywords ("NA"), _correctedKeywords ("NA"),
       _percentage (0), _editDistance (0), _allowableEditDistance (0) {
@@ -31,8 +31,8 @@ namespace OPENTREP {
       _regionCode (iLocation._regionCode),
       _continentCode (iLocation._continentCode),
       _timeZoneGroup (iLocation._timeZoneGroup),
-      _longitude (iLocation._longitude),
-      _latitude (iLocation._latitude), _nameList (iLocation._nameList),
+      _latitude (iLocation._latitude), _longitude (iLocation._longitude),
+      _nameList (iLocation._nameList),
       _originalKeywords (iLocation._originalKeywords),
       _correctedKeywords (iLocation._correctedKeywords),
       _percentage (iLocation._percentage),
@@ -52,7 +52,7 @@ namespace OPENTREP {
                       const std::string& iRegionCode, 
                       const std::string& iContinentCode,
                       const std::string& iTimeZoneGroup, 
-                      const double iLongitude, const double iLatitude,
+                      const double iLatitude, const double iLongitude,
                       const LocationNameList_T& iNameList,
                       const std::string& iOriginalKeywords,
                       const std::string& iCorrectedKeywords,
@@ -63,9 +63,9 @@ namespace OPENTREP {
       _cityCode (iCityCode),
       _stateCode (iStateCode), _countryCode (iCountryCode),
       _regionCode (iRegionCode), _continentCode (iContinentCode),
-      _timeZoneGroup (iTimeZoneGroup), _longitude (iLongitude),
-      _latitude (iLatitude), _nameList (iNameList),
-      _originalKeywords (iOriginalKeywords),
+      _timeZoneGroup (iTimeZoneGroup),
+      _latitude (iLatitude), _longitude (iLongitude),
+      _nameList (iNameList), _originalKeywords (iOriginalKeywords),
       _correctedKeywords (iCorrectedKeywords),
       _percentage (iPercentage), _editDistance (iEditDistance),
       _allowableEditDistance (iAllowableEditDistance) {
@@ -91,7 +91,7 @@ namespace OPENTREP {
          << ", " << _cityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _continentCode << ", " << _timeZoneGroup
-         << ", " << _longitude << ", " << _latitude
+         << ", " << _latitude << ", " << _longitude
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance;

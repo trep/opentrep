@@ -45,8 +45,8 @@ namespace soci {
     ioPlace.setCountryCode (iPlaceValues.get<std::string> ("country_code"));
     ioPlace.setRegionCode (iPlaceValues.get<std::string> ("region_code"));
     ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("timezone"));
-    ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
     ioPlace.setLatitude (iPlaceValues.get<double> ("latitude"));
+    ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
     ioPlace.setDocID (iPlaceValues.get<int> ("xapian_docid"));
     
     // Names
@@ -131,8 +131,8 @@ namespace soci {
     ioPlaceValues.set ("country_code", iPlace.getCountryCode());
     ioPlaceValues.set ("region_code", iPlace.getRegionCode());
     ioPlaceValues.set ("timezone", iPlace.getTimeZoneGroup());
-    ioPlaceValues.set ("longitude", iPlace.getLongitude());
     ioPlaceValues.set ("latitude", iPlace.getLatitude());
+    ioPlaceValues.set ("longitude", iPlace.getLongitude());
     ioPlaceValues.set ("xapian_docid", iPlace.getDocID());
     ioIndicator = i_ok;
   }
