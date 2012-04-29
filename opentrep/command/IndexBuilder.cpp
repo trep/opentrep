@@ -10,8 +10,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 // OpenTrep
-#include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/Utilities.hpp>
+#include <opentrep/bom/StringPartition.hpp>
+#include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/factory/FacPlace.hpp>
@@ -28,6 +29,36 @@
 #include <xapian.h>
 
 namespace OPENTREP {
+
+  // //////////////////////////////////////////////////////////////////////
+  bool filter (const std::string& iPhrase, const std::string& iString) {
+    bool isToBeAdded  = true;
+
+    // If the term to be added is equal to the whole phrase (e.g., 'SAN'),
+    // then it should be indexed
+    if (iPhrase == iString) {
+      return isToBeAdded;
+    }
+
+    // If the word has no more than 3 letters (e.g., 'de', 'san'),
+    // it should not be indexed
+    const size_t lWordLength = iString.size();
+    if (lWordLength <= 3) {
+      isToBeAdded = false;
+      return isToBeAdded;
+    }
+
+    // "Black list"
+    if (iString == "airport" || iString == "international"
+        || iString == "intl") {
+      isToBeAdded = false;
+      return isToBeAdded;
+    }
+
+    //
+    return isToBeAdded;
+  }
+
 
   // //////////////////////////////////////////////////////////////////////
   void tokeniseAndAddToDocument (const std::string& iPhrase,
@@ -58,28 +89,30 @@ namespace OPENTREP {
                                     Xapian::Document& ioDocument,
                                     Xapian::WritableDatabase& ioDatabase) {
 
-    // Strip all the special characters (e.g., /, &) from the given string
-    WordList_T lWordList;
-    tokeniseStringIntoWordList (iPhrase, lWordList);
-    const std::string& lPhrase = createStringFromWordList (lWordList);
-
-    // Calculate all the partitions
-    const StringPartition lStringPartition (lPhrase);
-    const StringSet& lWordCombinationList =
-      lStringPartition.calculateUniqueCombinations();
-
-    const StringSet::StringSet_T& lStringSet = lWordCombinationList._set;
+    // Create a list made of all the word combinations of the initial phrase
+    WordCombinationHolder lWordCombinationHolder (iPhrase);
 
     // Browse the list of unique strings (word combinations)
-    for (StringSet::StringSet_T::const_iterator itString = lStringSet.begin();
-         itString != lStringSet.end(); ++itString) {
+    const WordCombinationHolder::StringList_T& lStringList =
+      lWordCombinationHolder._list;
+    for (WordCombinationHolder::StringList_T::const_iterator itString =
+           lStringList.begin();
+         itString != lStringList.end(); ++itString) {
       const std::string& lWordCombination = *itString;
       
-      ioDatabase.add_spelling (lWordCombination);
-      ioDocument.add_term (lWordCombination);
+      // Check whether that word combination should be indexed in Xapian
+      const bool isToBeAdded = filter (iPhrase, lWordCombination);
 
-      // OPENTREP_LOG_DEBUG ("Added term: " << lWordCombination);
-    }
+      if (isToBeAdded == true) {
+        // Add that combination of words into the Xapian index
+        ioDatabase.add_spelling (lWordCombination);
+        ioDocument.add_term (lWordCombination);
+      }
+    } 
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Added terms for '" << iPhrase
+                        << "': " << lWordCombinationHolder.toShortString());
   }
   
   // //////////////////////////////////////////////////////////////////////
