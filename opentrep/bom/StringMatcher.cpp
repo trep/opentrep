@@ -453,9 +453,6 @@ namespace OPENTREP {
          <br>See the comment of the checkAndAlterIfNeeded() function
          for more details.
       */
-      // As of April 2012, commented the following. Indeed, that check/filter
-      // is not compatible with the new algorithm (\see the
-      // OPENTREP::ResultHolder.searchStringNew() method for more details)
       checkAndAlterIfNeeded (lFullWordCorrectedString, lOriginalQueryString,
                              iMaxEditDistance, iDatabase);
 
@@ -620,6 +617,193 @@ namespace OPENTREP {
         }
       }
 
+    } catch (const Xapian::Error& error) {
+      OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
+      throw XapianException (error.get_msg());
+    }
+
+    return oMatchedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string StringMatcher::
+  searchStringNew (Xapian::MSet& ioMatchingSet,
+                   const TravelQuery_T& iQueryString,
+                   Document& ioMatchingDocument,
+                   const Xapian::Database& iDatabase) {
+    std::string oMatchedString;
+
+    // Catch any Xapian::Error exceptions thrown
+    try {
+      
+      // Build the query object
+      Xapian::QueryParser lQueryParser;
+      lQueryParser.set_database (iDatabase);
+
+      /**
+       * As explained in http://www.xapian.org/docs/queryparser.html,
+       * Xapian::Query::OP_ADJ is better than Xapian::Query::OP_PHRASE,
+       * but only available from version 1.0.13 of Xapian.
+       */
+      // lQueryParser.set_default_op (Xapian::Query::OP_ADJ);
+      lQueryParser.set_default_op (Xapian::Query::OP_PHRASE);
+
+      // DEBUG
+      /*
+        OPENTREP_LOG_DEBUG ("Query parser `" << lQueryParser.get_description()
+        << "'");
+      */
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("        --------");
+      OPENTREP_LOG_DEBUG ("        Current query string: `"
+                          << iQueryString << "'");
+        
+      // Start an enquire session
+      Xapian::Enquire enquire (iDatabase);
+
+      /**
+       * The Xapian::QueryParser::parse_query() method aggregates all
+       * the words with operators inbetween them (here, the "PHRASE"
+       * operator).  With the above example ('sna francicso'), it
+       * yields "sna PHRASE 2 francicso".
+       */
+      Xapian::Query lXapianQuery =
+        lQueryParser.parse_query (iQueryString,
+                                  Xapian::QueryParser::FLAG_BOOLEAN
+                                  | Xapian::QueryParser::FLAG_PHRASE
+                                  | Xapian::QueryParser::FLAG_LOVEHATE);
+
+      // Give the query object to the enquire session
+      enquire.set_query (lXapianQuery);
+
+      // Get the top 10 results of the query
+      ioMatchingSet = enquire.get_mset (0, 10);
+
+      // Display the results
+      int nbMatches = ioMatchingSet.size();
+
+      // DEBUG
+      /*
+      OPENTREP_LOG_DEBUG ("Original query `" << iQueryString
+                          << "', i.e., `" << lXapianQuery.get_description()
+                          << "' => " << nbMatches << " results found");
+      */
+
+      if (nbMatches != 0) {
+        // Store the effective (Levenshtein) edit distance/error
+        const NbOfErrors_T lEditDistance = 0;
+        ioMatchingDocument.setEditDistance (lEditDistance);
+
+        // Store the allowable edit distance/error
+        ioMatchingDocument.setAllowableEditDistance (lEditDistance);
+
+        //
+        oMatchedString = iQueryString;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("        Query string: `" << iQueryString
+                            << "' provides " << nbMatches << " exact matches.");
+
+        return oMatchedString;
+      }  
+      assert (ioMatchingSet.empty() == true);
+
+      /**
+       * Since there is no match, we search for a spelling suggestion, if any.
+       * With the above example, 'sna francisco' yields the suggestion
+       * 'san francisco'.
+       */
+      const NbOfErrors_T& lAllowableEditDistance =
+        calculateEditDistance (iQueryString);
+      
+      // Let Xapian find a spelling correction (if any)
+      const std::string& lCorrectedString =
+        iDatabase.get_spelling_suggestion(iQueryString, lAllowableEditDistance);
+
+      // If the correction is no better than the original string, there is
+      // no need to go further: there is no match.
+      if (lCorrectedString.empty() == true
+          || lCorrectedString == iQueryString) {
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("        Query string: `"
+                            << iQueryString << "' provides no match, "
+                            << "and there is no spelling suggestion, "
+                            << "even with an edit distance of "
+                            << lAllowableEditDistance);
+
+        // Leave the string empty
+        return oMatchedString;
+      }
+      assert (lCorrectedString.empty() == false
+              && lCorrectedString != iQueryString);
+
+      // Calculate the effective (Levenshtein) edit distance/error
+      const NbOfErrors_T& lEditDistance =
+        Levenshtein::getDistance (iQueryString, lCorrectedString);
+
+      /**
+       * Since there is no match, we search on the corrected string.       
+       *
+       * As, with the above example, the full corrected string is
+       * 'san francisco', it yields the query "san PHRASE 2 francisco",
+       * which should provide matches.
+       */
+      Xapian::Query lCorrectedXapianQuery = 
+        lQueryParser.parse_query (lCorrectedString,
+                                  Xapian::QueryParser::FLAG_BOOLEAN
+                                  | Xapian::QueryParser::FLAG_PHRASE
+                                  | Xapian::QueryParser::FLAG_LOVEHATE);
+
+      enquire.set_query (lCorrectedXapianQuery);
+      ioMatchingSet = enquire.get_mset (0, 10);
+
+      // Display the results
+      nbMatches = ioMatchingSet.size();
+
+      // DEBUG
+      /*
+      OPENTREP_LOG_DEBUG ("Original query `" << iQueryString
+                          << "', i.e., `" << lXapianQuery.get_description()
+                          << "' => " << nbMatches << " results found");
+      */
+
+      if (nbMatches != 0) {
+        // Store the effective (Levenshtein) edit distance/error
+        ioMatchingDocument.setEditDistance (lEditDistance);
+
+        // Store the allowable edit distance/error
+        ioMatchingDocument.setAllowableEditDistance (lAllowableEditDistance);
+
+        //
+        oMatchedString = lCorrectedString;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("        Query string: `"
+                            << iQueryString << "', spelling suggestion: `"
+                            << lCorrectedString
+                            << "', with a Levenshtein edit distance of "
+                            << lEditDistance
+                            << " over an allowable edit distance of "
+                            << lAllowableEditDistance << ", provides "
+                            << nbMatches << " matches.");
+
+        //
+        return oMatchedString;
+      }
+
+      // Error
+      OPENTREP_LOG_ERROR ("        Query string: `"
+                          << iQueryString << "', spelling suggestion: `"
+                          << lCorrectedString
+                          << "', with a Levenshtein edit distance of "
+                          << lEditDistance
+                          << " over an allowable edit distance of "
+                          << lAllowableEditDistance << ", provides no match, "
+                          << "which is not consistent with the existence of "
+                          << "the spelling correction.");
+      assert (false);
+      
     } catch (const Xapian::Error& error) {
       OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
       throw XapianException (error.get_msg());
