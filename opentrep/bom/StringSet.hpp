@@ -27,6 +27,9 @@ namespace OPENTREP {
   public:
     /**
      * Add an item (string) into the list.
+     *
+     * \note When the given string is empty (zero-length), it is (obviously)
+     *       not added to the list
      */
     void push_back (const std::string&);
   
@@ -39,6 +42,11 @@ namespace OPENTREP {
      * Return the size of the list.
      */
     size_t size() const;
+  
+    /**
+     * Return whether or not the list is empty.
+     */
+    bool empty() const;
   
     /**
      * Empty the list.

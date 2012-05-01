@@ -31,36 +31,6 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  bool filter (const std::string& iPhrase, const std::string& iString) {
-    bool isToBeAdded  = true;
-
-    // If the term to be added is equal to the whole phrase (e.g., 'SAN'),
-    // then it should be indexed
-    if (iPhrase == iString) {
-      return isToBeAdded;
-    }
-
-    // If the word has no more than 3 letters (e.g., 'de', 'san'),
-    // it should not be indexed
-    const size_t lWordLength = iString.size();
-    if (lWordLength <= 3) {
-      isToBeAdded = false;
-      return isToBeAdded;
-    }
-
-    // "Black list"
-    if (iString == "airport" || iString == "international"
-        || iString == "intl") {
-      isToBeAdded = false;
-      return isToBeAdded;
-    }
-
-    //
-    return isToBeAdded;
-  }
-
-
-  // //////////////////////////////////////////////////////////////////////
   void tokeniseAndAddToDocument (const std::string& iPhrase,
                                  Xapian::Document& ioDocument,
                                  Xapian::WritableDatabase& ioDatabase) {
@@ -99,20 +69,16 @@ namespace OPENTREP {
            lStringList.begin();
          itString != lStringList.end(); ++itString) {
       const std::string& lWordCombination = *itString;
-      
-      // Check whether that word combination should be indexed in Xapian
-      const bool isToBeAdded = filter (iPhrase, lWordCombination);
 
-      if (isToBeAdded == true) {
-        // Add that combination of words into the Xapian index
-        ioDatabase.add_spelling (lWordCombination);
-        ioDocument.add_term (lWordCombination);
-      }
+      // Add that combination of words into the Xapian index
+      ioDocument.add_term (lWordCombination);
+      ioDatabase.add_spelling (lWordCombination);
     } 
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("Added terms for '" << iPhrase
-                        << "': " << lWordCombinationHolder.toShortString());
+                        << "': " << lWordCombinationHolder.toShortString()
+                        << " into " << ioDocument.get_description());
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -134,18 +100,15 @@ namespace OPENTREP {
     const std::string& lStateCode = ioPlace.getStateCode();
     const std::string lDBStateCode = (lStateCode.empty())?"NA":lStateCode;
 
-    // Word index/position within the Xapian document
-    unsigned short idx = 1;
-      
     // Add indexing terms
-    lDocument.add_term (lIataCode); ++idx;
+    lDocument.add_term (lIataCode);
     if (lIcaoCode.empty() == false) {
-      lDocument.add_term (lIcaoCode); ++idx;
+      lDocument.add_term (lIcaoCode);
     }
-    lDocument.add_term (lDBStateCode); ++idx;
-    lDocument.add_term (lDBCityCode); ++idx;
-    lDocument.add_term (ioPlace.getCountryCode()); ++idx;
-    lDocument.add_term (ioPlace.getRegionCode()); ++idx;
+    lDocument.add_term (lDBStateCode);
+    lDocument.add_term (lDBCityCode);
+    lDocument.add_term (ioPlace.getCountryCode());
+    lDocument.add_term (ioPlace.getRegionCode());
 
     // Add terms to the spelling dictionary
     ioDatabase.add_spelling (lIataCode);
@@ -168,7 +131,7 @@ namespace OPENTREP {
       const Names& lNames = itNameList->second;
 
       // Add that language code and locale to the Xapian document
-      lDocument.add_term (Language::getLongLabel (lLanguage)); ++idx;
+      lDocument.add_term (Language::getLongLabel (lLanguage));
 
       // For a given language, retrieve the list of place names
       const NameList_T& lNameList = lNames.getNameList();
@@ -181,11 +144,8 @@ namespace OPENTREP {
         // extended, alternate, etc.)
         if (lName.empty() == false) {
           // Add the full name (potentially containing spaces, e.g.,
-          // 'san francisco').
-          lDocument.add_term (lName); ++idx;
-          ioDatabase.add_spelling (lName);
-
-          // Add, as well, all the strings of all the partitions.
+          // 'san francisco'), as well as all the strings of all the
+          // word combinations.
           tokeniseAndAddToDocumentNew (lName, lDocument, ioDatabase);
 
           // OPENTREP_LOG_DEBUG ("Added name: " << lName);

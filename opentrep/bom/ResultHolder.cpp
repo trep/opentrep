@@ -279,15 +279,17 @@ namespace OPENTREP {
     try {
       
       /**
-         A copy of the query is made, as that copy will be altered by
-         the below process, whereas a clean copy needs to be reprocessed
-         for each level of maximal edit distance/error.
-         <br>However, in case of match, the modifications on the query
-         string (lPartialQueryString) must be replicated on the
-         original one (iQueryString).
-         <br>And, in case of no match, that query string must be
-         emptied, so that the caller knows about that match failure.
-      */
+       * A copy of the query is made, as that copy will be altered by
+       * the below process, whereas a clean copy needs to be reprocessed
+       * for each level of maximal edit distance/error.
+       *
+       * However, in case of match, the modifications on the query
+       * string (lPartialQueryString) must be replicated on the
+       * original one (iQueryString).
+       *
+       * And, in case of no match, that query string must be
+       * emptied, so that the caller knows about that match failure.
+       */
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("      ----------------");
@@ -295,12 +297,9 @@ namespace OPENTREP {
                           << "'");
         
       Xapian::MSet lMatchingSet;
-      NbOfErrors_T lEditDistance;
-      NbOfErrors_T lAllowableEditDistance;
       oMatchedString =
-        StringMatcher::searchString (lMatchingSet, iQueryString,
-                                     ioMatchingDocument, lEditDistance,
-                                     lAllowableEditDistance, _database);
+        StringMatcher::searchStringNew (lMatchingSet, iQueryString,
+                                        ioMatchingDocument, _database);
 
       if (oMatchedString.empty() == false) {
         // Create the corresponding document (from the Xapian MSet object)
