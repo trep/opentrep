@@ -642,7 +642,7 @@ namespace OPENTREP {
 
       /**
        * As explained in http://www.xapian.org/docs/queryparser.html,
-       * Xapian::Query::OP_ADJ is better than Xapian::Query::OP_PHRASE,
+       * Xapian::Query::OP_NEAR may be better than Xapian::Query::OP_PHRASE,
        * but only available from version 1.0.13 of Xapian.
        */
       // lQueryParser.set_default_op (Xapian::Query::OP_ADJ);
@@ -656,8 +656,6 @@ namespace OPENTREP {
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("        --------");
-      OPENTREP_LOG_DEBUG ("        Current query string: `"
-                          << iQueryString << "'");
         
       // Start an enquire session
       Xapian::Enquire enquire (iDatabase);
@@ -668,7 +666,7 @@ namespace OPENTREP {
        * operator).  With the above example ('sna francicso'), it
        * yields "sna PHRASE 2 francicso".
        */
-      Xapian::Query lXapianQuery =
+      const Xapian::Query& lXapianQuery =
         lQueryParser.parse_query (iQueryString,
                                   Xapian::QueryParser::FLAG_BOOLEAN
                                   | Xapian::QueryParser::FLAG_PHRASE
@@ -684,11 +682,9 @@ namespace OPENTREP {
       int nbMatches = ioMatchingSet.size();
 
       // DEBUG
-      /*
-      OPENTREP_LOG_DEBUG ("Original query `" << iQueryString
-                          << "', i.e., `" << lXapianQuery.get_description()
-                          << "' => " << nbMatches << " results found");
-      */
+      OPENTREP_LOG_DEBUG ("      Query string: `" << iQueryString
+                          << "', i.e.: `" << lXapianQuery.get_description()
+                          << "' => " << nbMatches << " result(s) found");
 
       if (nbMatches != 0) {
         // Store the effective (Levenshtein) edit distance/error
@@ -749,7 +745,7 @@ namespace OPENTREP {
        * 'san francisco', it yields the query "san PHRASE 2 francisco",
        * which should provide matches.
        */
-      Xapian::Query lCorrectedXapianQuery = 
+      const Xapian::Query& lCorrectedXapianQuery = 
         lQueryParser.parse_query (lCorrectedString,
                                   Xapian::QueryParser::FLAG_BOOLEAN
                                   | Xapian::QueryParser::FLAG_PHRASE
@@ -762,11 +758,10 @@ namespace OPENTREP {
       nbMatches = ioMatchingSet.size();
 
       // DEBUG
-      /*
-      OPENTREP_LOG_DEBUG ("Original query `" << iQueryString
-                          << "', i.e., `" << lXapianQuery.get_description()
-                          << "' => " << nbMatches << " results found");
-      */
+      OPENTREP_LOG_DEBUG ("      Corrected query string: `" << lCorrectedString
+                          << "', i.e.: `"
+                          << lCorrectedXapianQuery.get_description()
+                          << "' => " << nbMatches << " result(s) found");
 
       if (nbMatches != 0) {
         // Store the effective (Levenshtein) edit distance/error

@@ -128,16 +128,19 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void StringPartition::init (const std::string& iPhrase) {
     // 0. Initialisation
-    // 0.1. Create the list with a single sub-list, itself containing only
-    //      the given input string.
-    StringSet oStringSet (iPhrase);
-      
-    // 0.2. Initialisation of the tokenizer
+    // 0.1. Initialisation of the tokenizer
     WordList_T lWordList;
     tokeniseStringIntoWordList (iPhrase, lWordList);
     const short nbOfWords = lWordList.size();
 
-    // 0.3. If the string contains no more than one word, the job is finished.
+    // 0.2. Re-create the initial phrase, without any (potential) seperator
+    const std::string lPhrase = createStringFromWordList (lWordList);
+    
+    // 0.3. Create the list with a single sub-list, itself containing only
+    //      the given input string.
+    StringSet oStringSet (lPhrase);
+      
+    // 0.4. If the string contains no more than one word, the job is finished.
     if (nbOfWords <= 1) {
       _partition.push_back (oStringSet);
       return;
@@ -150,10 +153,10 @@ namespace OPENTREP {
                                                                      idx_word);
 
       // Check whether the left-hand string should be kept / filtered out
-      const bool isLHSToBeAdded = Filter::shouldKeep (iPhrase, lLeftHandString);
+      const bool isLHSToBeAdded = Filter::shouldKeep (lPhrase, lLeftHandString);
 
       // DEBUG
-      // std::cout << "[" << iPhrase << ", " << idx_word
+      // std::cout << "[" << lPhrase << ", " << idx_word
       //          << "] Left-hand string: '" << lLeftHandString << "'"
       //          << std::endl;
         
@@ -163,10 +166,10 @@ namespace OPENTREP {
                                                                       false);
 
       // Check whether the right-hand string should be kept / filtered out
-      const bool isRHSToBeAdded = Filter::shouldKeep(iPhrase, lRightHandString);
+      const bool isRHSToBeAdded = Filter::shouldKeep(lPhrase, lRightHandString);
 
       // DEBUG
-      // std::cout << "[" << iPhrase << ", " << idx_word
+      // std::cout << "[" << lPhrase << ", " << idx_word
       //           << "] Right-hand string: '" << lRightHandString << "'"
       //           << std::endl;
         
