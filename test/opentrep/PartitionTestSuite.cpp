@@ -73,6 +73,7 @@ BOOST_AUTO_TEST_CASE (partition_small_string) {
   const std::string lSfoRio1Str = "san francisco rio de janeiro";
   const std::string lSfoRio2Str = "san francicso rio de janero";
   const std::string lSfoRio3Str = "sna francicso rio de janero";
+  const std::string lChelseaStr = "chelsea municipal airport";
 
   //
   OPENTREP::StringPartition lStringPartition (lSfoRio3Str);
@@ -83,6 +84,10 @@ BOOST_AUTO_TEST_CASE (partition_small_string) {
                        << "', should contain a single list."
                        << " However, its size is " << lStringPartition.size()
                        << ".");
+
+  //
+  OPENTREP::StringPartition lAnotherStringPartition (lChelseaStr);
+  logOutputFile << lAnotherStringPartition << std::endl;
 
   // Close the Log outputFile
   logOutputFile.close();

@@ -42,6 +42,9 @@ namespace OPENTREP {
   public:
     /**
      * Add an item (StringSet) into the list.
+     *
+     * \note When the given string set is empty (zero-length),
+     *       it is (obviously) not added to the list
      */
     void push_back (const StringSet& iStringSet);
   
@@ -49,6 +52,11 @@ namespace OPENTREP {
      * Return the size of the list.
      */
     size_t size() const;
+  
+    /**
+     * Return whether or not the list is empty.
+     */
+    bool empty() const;
   
     /**
      * Empty the list.

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <set>
 // OpenTrep
+#include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/Utilities.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
@@ -119,13 +120,13 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void WordCombinationHolder::init (const std::string& iString) {
+  void WordCombinationHolder::init (const std::string& iPhrase) {
     // Set of unique strings
     typedef std::set<std::string> StringSet_T;
     StringSet_T lStringSet;
 
     // 1. Derive all the partitions of the initial (full) string
-    const StringPartition lStringPartitionHolder (iString);
+    const StringPartition lStringPartitionHolder (iPhrase);
     const StringPartition::StringPartition_T& lStringPartition =
       lStringPartitionHolder._partition;
 
@@ -154,6 +155,8 @@ namespace OPENTREP {
     for (StringSet_T::const_iterator itWordCombination = lStringSet.begin();
          itWordCombination != lStringSet.end(); ++itWordCombination) {
       const std::string& lWordCombination = *itWordCombination;
+
+      // Check whether that word combination should be indexed in Xapian
       _list.push_back (lWordCombination);
     }
 
@@ -163,7 +166,7 @@ namespace OPENTREP {
     // 3.0. Initialisation of the list of words, made of all the words of the
     //      given string.
     WordList_T lWordList;
-    tokeniseStringIntoWordList (iString, lWordList);
+    tokeniseStringIntoWordList (iPhrase, lWordList);
     const short nbOfWords = lWordList.size();
 
     // 3.1. If the string contains no more than two words, the job is finished.
@@ -194,8 +197,12 @@ namespace OPENTREP {
         lConcatenatedStr << lLeftHandString << " " << lRightHandString;
         const std::string& lConcatenatedString = lConcatenatedStr.str();
 
-        // 3.2.4. Add the concatenated string into the list
-        _list.push_back (lConcatenatedString);
+        // 3.2.4. Add the concatenated string into the list, if not filtered out
+        const bool isToBeAdded =
+          Filter::shouldKeep (iPhrase, lConcatenatedString);
+        if (isToBeAdded == true) {
+          _list.push_back (lConcatenatedString);
+        }
       }
     }
   }

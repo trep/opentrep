@@ -31,36 +31,6 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  bool filter (const std::string& iPhrase, const std::string& iString) {
-    bool isToBeAdded  = true;
-
-    // If the term to be added is equal to the whole phrase (e.g., 'SAN'),
-    // then it should be indexed
-    if (iPhrase == iString) {
-      return isToBeAdded;
-    }
-
-    // If the word has no more than 3 letters (e.g., 'de', 'san'),
-    // it should not be indexed
-    const size_t lWordLength = iString.size();
-    if (lWordLength <= 3) {
-      isToBeAdded = false;
-      return isToBeAdded;
-    }
-
-    // "Black list"
-    if (iString == "airport" || iString == "international"
-        || iString == "intl") {
-      isToBeAdded = false;
-      return isToBeAdded;
-    }
-
-    //
-    return isToBeAdded;
-  }
-
-
-  // //////////////////////////////////////////////////////////////////////
   void tokeniseAndAddToDocument (const std::string& iPhrase,
                                  Xapian::Document& ioDocument,
                                  Xapian::WritableDatabase& ioDatabase) {
@@ -100,14 +70,9 @@ namespace OPENTREP {
          itString != lStringList.end(); ++itString) {
       const std::string& lWordCombination = *itString;
       
-      // Check whether that word combination should be indexed in Xapian
-      const bool isToBeAdded = filter (iPhrase, lWordCombination);
-
-      if (isToBeAdded == true) {
-        // Add that combination of words into the Xapian index
-        ioDatabase.add_spelling (lWordCombination);
-        ioDocument.add_term (lWordCombination);
-      }
+      // Add that combination of words into the Xapian index
+      ioDatabase.add_spelling (lWordCombination);
+      ioDocument.add_term (lWordCombination);
     } 
 
     // DEBUG
