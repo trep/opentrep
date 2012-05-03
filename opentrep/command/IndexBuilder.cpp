@@ -146,7 +146,7 @@ namespace OPENTREP {
           // Add the full name (potentially containing spaces, e.g.,
           // 'san francisco'), as well as all the strings of all the
           // word combinations.
-          tokeniseAndAddToDocumentNew (lName, lDocument, ioDatabase);
+          tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
 
           // OPENTREP_LOG_DEBUG ("Added name: " << lName);
         }
