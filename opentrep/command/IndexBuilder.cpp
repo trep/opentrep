@@ -71,8 +71,9 @@ namespace OPENTREP {
       const std::string& lWordCombination = *itString;
 
       // Add that combination of words into the Xapian index
-      ioDocument.add_term (lWordCombination);
-      ioDatabase.add_spelling (lWordCombination);
+      tokeniseAndAddToDocument (lWordCombination, ioDocument, ioDatabase);
+      //ioDocument.add_term (lWordCombination);
+      //ioDatabase.add_spelling (lWordCombination);
     } 
 
     // DEBUG
@@ -146,7 +147,7 @@ namespace OPENTREP {
           // Add the full name (potentially containing spaces, e.g.,
           // 'san francisco'), as well as all the strings of all the
           // word combinations.
-          tokeniseAndAddToDocument (lName, lDocument, ioDatabase);
+          tokeniseAndAddToDocumentNew (lName, lDocument, ioDatabase);
 
           // OPENTREP_LOG_DEBUG ("Added name: " << lName);
         }
