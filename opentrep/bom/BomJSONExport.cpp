@@ -94,12 +94,12 @@ namespace OPENTREP {
     // Fill all the fields of the JSON instance
     ioPTLocation.put ("iata_code", iLocation.getIataCode());
     ioPTLocation.put ("icao_code", iLocation.getIcaoCode());
+    ioPTLocation.put ("geonames_id", iLocation.getGeonamesID());
     ioPTLocation.put ("faa_code", iLocation.getFaaCode());
     ioPTLocation.put ("city_code", iLocation.getCityCode());
     ioPTLocation.put ("state_code", iLocation.getStateCode());
     ioPTLocation.put ("country_code", iLocation.getCountryCode());
     ioPTLocation.put ("region_code", iLocation.getRegionCode());
-    ioPTLocation.put ("continent_code", iLocation.getContinentCode());
     ioPTLocation.put ("tz_group", iLocation.getTimeZoneGroup());
     ioPTLocation.put ("lon", iLocation.getLongitude());
     ioPTLocation.put ("lat", iLocation.getLatitude());

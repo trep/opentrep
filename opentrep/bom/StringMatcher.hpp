@@ -106,19 +106,6 @@ namespace OPENTREP {
     static void
     subtractParsedToRemaining (const std::string& iAlreadyParsedQueryString,
                                std::string& ioRemainingQueryString);
-
-    
-  public:
-    // ///////////////////////////////////////////////
-    /**
-     * Extract the place code from the document data.
-     *
-     * The place code is the first 3-letter string of the Xapian
-     * document data/content.
-     *
-     * @param Document& The matching document.
-     */
-    static std::string getPlaceCode (const Xapian::Document&);
   };
 
 }

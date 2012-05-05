@@ -3,8 +3,13 @@
 // //////////////////////////////////////////////////////////////////////
 // C
 #include <cassert>
+#include <sstream>
+// Boost
+#include <boost/lexical_cast.hpp>
 // OpenTREP
+#include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/bom/Document.hpp>
+#include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
@@ -142,6 +147,28 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   void Document::fromStream (std::istream& ioIn) {
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  PlaceKey Document::getPrimaryKey (const Xapian::Document& iDocument) {
+    // Retrieve the Xapian document data
+    const std::string& lDocumentData = iDocument.get_data();
+
+    // Tokenise the string into words
+    WordList_T lWordList;
+    WordHolder::tokeniseStringIntoWordList (lDocumentData, lWordList);
+    assert (lWordList.size() > 3);
+
+    // By convention (within OpenTrep), the first three words of the Xapian
+    // document data string constitute the primary key of the place
+    WordList_T::const_iterator itWord = lWordList.begin();
+    const std::string& lIataCode = *itWord;
+    ++itWord; const std::string& lIcaoCode = *itWord;
+    ++itWord; const std::string& lGeonamesIDStr = *itWord;
+    const GeonamesID_T lGeonamesID =
+      boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
+
+    return PlaceKey (lIataCode, lIcaoCode, lGeonamesID);
   }
   
   // //////////////////////////////////////////////////////////////////////

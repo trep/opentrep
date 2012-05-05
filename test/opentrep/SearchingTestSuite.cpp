@@ -84,8 +84,9 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
                                 K_MYSQL_DB_DBNAME);
   
   // Initialise the context
+  const OPENTREP::TravelDatabaseName_T lXapianDatabaseName (K_XAPIAN_DB_NAME);
   OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lDBParams,
-                                               K_XAPIAN_DB_NAME);
+                                               lXapianDatabaseName);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;

@@ -22,7 +22,30 @@ namespace OPENTREP {
    * Xapian database name, corresponding to the (potentially relative)
    * directory name (on the filesystem) where Xapian stores its index.
    */
-  typedef std::string TravelDatabaseName_T;
+  struct TravelDatabaseName_T : public std::string {
+  public:
+    explicit TravelDatabaseName_T (const std::string& iValue)
+      : std::string (iValue) {
+    }
+  };
+
+  /**
+   * IATA three-letter code (e.g., ORD).
+   */
+  struct IATACode_T : public std::string {
+  public:
+    explicit IATACode_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
+
+  /**
+   * ICAO four-letter code (e.g., KORD).
+   */
+  struct ICAOCode_T : public std::string {
+  public:
+    explicit ICAOCode_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
 
   /**
    * Xapian document ID.
@@ -33,6 +56,11 @@ namespace OPENTREP {
    * Xapian percentage.
    */
   typedef unsigned int MatchingPercentage_T;
+
+  /**
+   * Geonames ID.
+   */
+  typedef int GeonamesID_T;
 
   /**
    * Travel search query.

@@ -4,8 +4,6 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// STL
-#include <string>
 // OpenTrep
 #include <opentrep/factory/FacServiceAbstract.hpp>
 
@@ -32,7 +30,7 @@ namespace OPENTREP {
     /** Create a new OPENTREP_ServiceContext object.
         <br>This new object is added to the list of instantiated objects.
         @return OPENTREP_ServiceContext& The newly created object. */
-    OPENTREP_ServiceContext& create (const std::string& iTravelDatabaseName);
+    OPENTREP_ServiceContext& create (const TravelDatabaseName_T&);
 
     
   protected:

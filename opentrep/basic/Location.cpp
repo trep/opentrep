@@ -12,11 +12,9 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   Location::Location () 
-    : _iataCode ("AAA"), _icaoCode ("AAAA"), _faaCode ("AAA"),
+    : _iataCode ("AAA"), _icaoCode ("AAAA"), _geonameID (0), _faaCode ("AAA"),
       _cityCode ("AAA"), _stateCode ("NA"), _countryCode ("NA"),
-      _regionCode ("NA"),
-      _continentCode ("NA"),
-      _timeZoneGroup ("NA"),
+      _regionCode ("NA"), _timeZoneGroup ("NA"),
       _latitude (0), _longitude (0),
       _nameList (std::list<std::string> ()),
       _originalKeywords ("NA"), _correctedKeywords ("NA"),
@@ -26,10 +24,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   Location::Location (const Location& iLocation) 
     : _iataCode (iLocation._iataCode), _icaoCode (iLocation._icaoCode),
-      _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
-      _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
+      _geonameID (iLocation._geonameID), _faaCode (iLocation._faaCode),
+      _cityCode (iLocation._cityCode), _stateCode (iLocation._stateCode),
+      _countryCode (iLocation._countryCode),
       _regionCode (iLocation._regionCode),
-      _continentCode (iLocation._continentCode),
       _timeZoneGroup (iLocation._timeZoneGroup),
       _latitude (iLocation._latitude), _longitude (iLocation._longitude),
       _nameList (iLocation._nameList),
@@ -45,12 +43,12 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   Location::Location (const std::string& iIataCode,
                       const std::string& iIcaoCode,
+                      const GeonamesID_T& iGeonamesID,
                       const std::string& iFaaCode,
                       const std::string& iCityCode,
                       const std::string& iStateCode, 
                       const std::string& iCountryCode,
                       const std::string& iRegionCode, 
-                      const std::string& iContinentCode,
                       const std::string& iTimeZoneGroup, 
                       const double iLatitude, const double iLongitude,
                       const LocationNameList_T& iNameList,
@@ -59,10 +57,9 @@ namespace OPENTREP {
                       const MatchingPercentage_T& iPercentage,
                       const NbOfErrors_T& iEditDistance,
                       const NbOfErrors_T& iAllowableEditDistance)
-    : _iataCode (iIataCode), _icaoCode (iIcaoCode), _faaCode (iFaaCode),
-      _cityCode (iCityCode),
-      _stateCode (iStateCode), _countryCode (iCountryCode),
-      _regionCode (iRegionCode), _continentCode (iContinentCode),
+    : _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonameID (iGeonamesID),
+      _faaCode (iFaaCode), _cityCode (iCityCode), _stateCode (iStateCode),
+      _countryCode (iCountryCode), _regionCode (iRegionCode),
       _timeZoneGroup (iTimeZoneGroup),
       _latitude (iLatitude), _longitude (iLongitude),
       _nameList (iNameList), _originalKeywords (iOriginalKeywords),
@@ -87,10 +84,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Location::toBasicString() const {
     std::ostringstream oStr;
-    oStr << _iataCode << ", " << _icaoCode << ", " << _faaCode
-         << ", " << _cityCode << ", " << _stateCode
-         << ", " << _countryCode << ", " << _regionCode
-         << ", " << _continentCode << ", " << _timeZoneGroup
+    oStr << _iataCode << ", " << _icaoCode << ", " << _geonameID
+         << ", " << _faaCode << ", " << _cityCode
+         << ", " << _stateCode << ", " << _countryCode << ", " << _regionCode
+         << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage

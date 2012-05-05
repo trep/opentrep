@@ -51,10 +51,11 @@ namespace OPENTREP {
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const DBParams& The SQL database parameters.
-     * @param const std::string& Filepath of the Xapian index/database. 
+     * @param const TravelDatabaseName_T& File-path of the Xapian
+     *                                    index/database. 
      */
     OPENTREP_Service (std::ostream& ioLogStream, const DBParams&,
-                      const std::string& iXapianDatabaseFilepath);
+                      const TravelDatabaseName_T&);
 
     /** 
      * Destructor. 
@@ -74,10 +75,15 @@ namespace OPENTREP {
     OPENTREP_Service (const OPENTREP_Service&);
 
     /**
-     * Initialise. 
+     * Initialise.
+     *
+     * @param std::ostream& Output log stream (for instance, std::cout).
+     * @param const DBParams& The SQL database parameters.
+     * @param const TravelDatabaseName_T& File-path of the Xapian
+     *                                    index/database. 
      */
     void init (std::ostream& ioLogStream, const DBParams&,
-               const std::string& iXapianDatabaseFilepath);
+               const TravelDatabaseName_T&);
 
     /**
      *  Finalise. 

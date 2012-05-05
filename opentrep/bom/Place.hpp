@@ -7,11 +7,12 @@
 // STL
 #include <iosfwd>
 #include <string>
-#include <map>
-// OpenTrep Bom
+#include <set>
+// OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
+#include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/bom/Names.hpp>
 #include <opentrep/bom/PlaceList.hpp>
 
@@ -22,7 +23,7 @@ namespace OPENTREP {
   class PlaceHolder;
   
   /**
-   * @brief Class modelling a place.
+   * @brief Class modelling a place/POR (point of reference).
    */
   class Place : public BomAbstract {
     friend class FacWorld;
@@ -30,99 +31,146 @@ namespace OPENTREP {
     friend class FacPlaceHolder;
     friend class DbaPlace;
   public:
-    // ///////// Getters ////////
-    /** Get the IATA code. */
+    // /////////// Type definitions //////////
+    /**
+     * (STL) Set of strings, to be added in the Xapian database (for
+     * indexing, spelling, stemming, synonyms, etc).
+     */
+    typedef std::set<std::string> StringSet_T;
+
+
+  public:
+    // //////////////// Getters ///////////////
+    /**
+     * Get the primary key.
+     */
+    const PlaceKey& getKey() const {
+      return _key;
+    }
+    
+    /**
+     * Get the IATA code.
+     */
     const std::string& getIataCode() const {
-      return _iataCode;
+      return _key.getIataCode();
     }
     
-    /** Get the ICAO code. */
+    /**
+     * Get the ICAO code.
+     */
     const std::string& getIcaoCode() const {
-      return _icaoCode;
+      return _key.getIcaoCode();
     }
     
-    /** Get the FAA code. */
+    /**
+     * Get the Geonames ID.
+     */
+    const GeonamesID_T& getGeonamesID() const {
+      return _key.getGeonamesID();
+    }
+
+    /**
+     * Get the FAA code.
+     */
     const std::string& getFaaCode() const {
       return _faaCode;
     }
     
-    /** Get the City code. */
+    /**
+     * Get the related/served IATA city code.
+     */
     std::string getCityCode() const {
       return _cityCode;
     }
 
-    /** Get the City name. */
-    const std::string& getCityName() const {
-      return _cityName;
-    }
-    
-    /** Get the State code. */
+    /**
+     * Get the state code.
+     */
     const std::string& getStateCode() const {
       return _stateCode;
     }
     
-    /** Get the Country code. */
+    /**
+     * Get the country code.
+     */
     const std::string& getCountryCode() const {
       return _countryCode;
     }
     
-    /** Get the Region code. */
+    /**
+     * Get the region code.
+     */
     const std::string& getRegionCode() const {
       return _regionCode;
     }
     
-    /** Get the Continent code. */
-    const std::string& getContinentCode() const {
-      return _continentCode;
-    }
-    
-    /** Get the Time-zone group. */
+    /**
+     * Get the time-zone group.
+     */
     const std::string& getTimeZoneGroup() const {
       return _timeZoneGroup;
     }
     
-    /** Get the Latitude. */
+    /**
+     * Get the geographical latitude.
+     */
     double getLatitude() const {
       return _latitude;
     }
 
-    /** Get the Longitude. */
+    /**
+     * Get the geographical longitude.
+     */
     double getLongitude() const {
       return _longitude;
     }
     
-    /** Get the original keywords. */
+    /**
+     * Get the original keywords.
+     */
     std::string getOriginalKeywords() const {
       return _originalKeywords;
     }
     
-    /** Get the corrected keywords. */
+    /**
+     * Get the corrected keywords.
+     */
     std::string getCorrectedKeywords() const {
       return _correctedKeywords;
     }
     
-    /** Get the Xapian document ID. */
+    /**
+     * Get the Xapian document ID.
+     */
     const XapianDocID_T& getDocID() const {
       return _docID;
     }
 
-    /** Get the matching percentage. */
+    /**
+     * Get the matching percentage.
+     */
     const MatchingPercentage_T& getPercentage() const {
       return _percentage;
     }
 
-    /** Get the allowed edit distance/error. */
+    /**
+     * Get the allowed edit distance/error.
+     */
     const NbOfErrors_T& getEditDistance() const {
       return _editDistance;
     }
 
-    /** Get the maximal allowable edit distance/error, with which the
-        matching has been made. */
+    /**
+     * Get the maximal allowable edit distance/error, with which the
+     * matching has been made.
+     */
     const NbOfErrors_T& getAllowableEditDistance () const {
       return _allowableEditDistance;
     }
     
-    /** Get the map of name lists. */
+    /**
+     * Get the map of name lists.
+     */
     const NameMatrix_T& getNameMatrix () const {
       return _nameMatrix;
     }
@@ -138,105 +186,145 @@ namespace OPENTREP {
      */
     bool getNameList (const Language::EN_Language&, NameList_T&) const;
 
-    /** Get the list of extra matching (similar) places. */
+    /**
+     * Get the list of extra matching (similar) places.
+     */
     const PlaceOrderedList_T& getExtraPlaceList() const {
       return _extraPlaceList;
     }
 
-    /** Get the list of alternate matching (less similar) places. */
+    /**
+     * Get the list of alternate matching (less similar) places.
+     */
     const PlaceOrderedList_T& getAlternatePlaceList() const {
       return _alternatePlaceList;
     }
 
     
-    // ///////// Setters ////////
-    /** Set the IATA code. */
+    // ////////////////// Setters /////////////////
+    /**
+     * Set the primary key.
+     */
+    void setKey (const PlaceKey& iKey) {
+      _key = iKey;
+    }
+    
+    /**
+     * Set the IATA code.
+     */
     void setIataCode (const std::string& iIataCode) {
-      _iataCode = iIataCode;
+      _key.setIataCode (iIataCode);
     }
     
-    /** Set the ICAO code. */
+    /**
+     * Set the ICAO code.
+     */
     void setIcaoCode (const std::string& iIcaoCode) {
-      _icaoCode = iIcaoCode;
+      _key.setIcaoCode (iIcaoCode);
     }
     
-    /** Set the FAA code. */
+    /**
+     * Get the Geonames ID.
+     */
+    void setGeonamesID (const GeonamesID_T& iGeonamesID) {
+      _key.setGeonamesID (iGeonamesID);
+    }
+
+    /**
+     * Set the FAA code.
+     */
     void setFaaCode (const std::string& iFaaCode) {
       _faaCode = iFaaCode;
     }
     
-    /** Set the City code. */
+    /**
+     * Set the related/served IATA city code.
+     */
     void setCityCode (const std::string& iCityCode) {
       _cityCode = iCityCode;
     }
     
-    /** Set the City name. */
-    void setCityName (const std::string& iCityName) {
-      _cityName = iCityName;
-    }
-    
-    /** Set the State code. */
+    /**
+     * Set the state code.
+     */
     void setStateCode (const std::string& iStateCode) {
       _stateCode = iStateCode;
     }
     
-    /** Set the Country code. */
+    /**
+     * Set the country code.
+     */
     void setCountryCode (const std::string& iCountryCode) {
       _countryCode = iCountryCode;
     }
     
-    /** Set the Region code. */
+    /**
+     * Set the region code.
+     */
     void setRegionCode (const std::string& iRegionCode) {
       _regionCode = iRegionCode;
     }
     
-    /** Set the Continent code. */
-    void setContinentCode (const std::string& iContinentCode) {
-      _continentCode = iContinentCode;
-    }
-    
-    /** Set the Time-zone group. */
+    /**
+     * Set the time-zone group.
+     */
     void setTimeZoneGroup (const std::string& iTimeZoneGroup) {
       _timeZoneGroup = iTimeZoneGroup;
     }
     
-    /** Set the Latitude. */
+    /**
+     * Set the geographical latitude.
+     */
     void setLatitude (const double& iLatitude) {
       _latitude = iLatitude;
     }
 
-    /** Set the Longitude. */
+    /**
+     * Set the geographical longitude.
+     */
     void setLongitude (const double& iLongitude) {
       _longitude = iLongitude;
     }
     
-    /** Set the original keywords. */
+    /**
+     * Set the original keywords.
+     */
     void setOriginalKeywords (const std::string& iOriginalKeywords) {
       _originalKeywords = iOriginalKeywords;
     }
     
-    /** Set the corrected keywords. */
+    /**
+     * Set the corrected keywords.
+     */
     void setCorrectedKeywords (const std::string& iCorrectedKeywords) {
       _correctedKeywords = iCorrectedKeywords;
     }
     
-    /** Set the Xapian document ID. */
+    /**
+     * Set the Xapian document ID.
+     */
     void setDocID (const XapianDocID_T& iDocID) {
       _docID = iDocID;
     }
 
-    /** Set the Xapian matching percentage. */
+    /**
+     * Set the Xapian matching percentage.
+     */
     void setPercentage (const MatchingPercentage_T& iPercentage) {
       _percentage = iPercentage;
     }
 
-    /** Set the allowed edit distance/error. */
+    /**
+     * Set the allowed edit distance/error.
+     */
     void setEditDistance (const NbOfErrors_T& iEditDistance) {
       _editDistance = iEditDistance;
     }
 
-    /** Set the maxiaml allowable edit distance/error, with which the
-        matching has been made. */
+    /**
+     * Set the maxiaml allowable edit distance/error, with which the
+     * matching has been made.
+     */
     void setAllowableEditDistance (const NbOfErrors_T& iAllowableEditDistance) {
       _allowableEditDistance = iAllowableEditDistance;
     }
@@ -244,125 +332,243 @@ namespace OPENTREP {
     
   public:
     // ////////// Setters in underlying names ////////
-    /** Add a name to the place. */
+    /**
+     * Add a name for the place.
+     */
     void addName (const Language::EN_Language&, const std::string& iName);
 
-    /** Reset the map of name lists. */
+    /**
+     * Reset the map of name lists.
+     */
     void resetMatrix();
 
     
   public:
     // /////////// Business methods /////////
-    /** Create a Location structure, which is a light copy
-        of the Place object. That (Location) structure is passed
-        back to the caller of the service. */
+    /**
+     * Create a Location structure, which is a light copy of the Place
+     * object. That (Location) structure is passed back to the caller
+     * of the service.
+     *
+     * @return Location The Location structure just created and filled
+     *                  with the parameters of the Place object.
+     */
     Location createLocation() const;
+
+    /**
+     * Build the (STL) sets of (Xapian-related) terms, spelling,
+     * synonyms, etc.
+     */
+    void buildIndexSets();
 
 
   public:
     // ///////// Display methods ////////
-    /** Dump a Business Object into an output stream.
-        @param ostream& the output stream. */
+    /**
+     * Dump a Business Object into an output stream.
+     *
+     * @param ostream& the output stream.
+     */
     void toStream (std::ostream&) const;
 
-    /** Read a Business Object from an input stream.
-        @param istream& the input stream. */
+    /**
+     * Read a Business Object from an input stream.
+     *
+     * @param istream& the input stream.
+     */
     void fromStream (std::istream&);
 
-    /** Get the serialised version of the Place object. */
+    /**
+     * Get the serialised version of the Place object.
+     */
     std::string toString() const;
 
-    /** Get a short display of the Business Object. */
+    /**
+     * Get a short display of the Business Object.
+     */
     std::string toShortString() const;
     
-    /** Get a string describing the whole key (differentiating two objects
-        at any level). */
+    /**
+     * Get a string describing the whole key (differentiating two
+     * objects at any level).
+     */
     std::string describeKey() const;
 
-    /** Get a string describing the short key (differentiating two objects
-        at the same level). */
+    /**
+     * Get a string describing the short key (differentiating two
+     * objects at the same level).
+     */
     std::string describeShortKey() const;
     
-    /** Display the full Place context. */
+    /**
+     * Display the full Place context.
+     */
     std::string display() const;
 
-    /** Display a short Place context. */
+    /**
+     * Display a short Place context.
+     */
     std::string shortDisplay() const;
 
     
   private:
-    /** Constructor. */
-    Place ();
+    /**
+     * Default constructor.
+     */
+    Place();
+    /**
+     * Default copy constructor.
+     */
     Place (const Place&);
     
-    /** Destructor. */
+    /**
+     * Destructor.
+     */
     virtual ~Place();
 
+
   private:
-    /** Parent World. */
+    // ////////////////////// Parent objects ////////////////////
+    /**
+     * Parent: World object.
+     */
     World* _world;
     
-    /** Parent PlaceHolder (not always defined,for instance if the
-        current Place object is an extra or alternate one). */
+    /**
+     * Parent PlaceHolder (not always defined,for instance if the
+     * current Place object is an extra or alternate one).
+     */
     PlaceHolder* _placeHolder;
     
-    /** Parent (main) Place (not always defined,for instance if the
-        current Place object is itself a main one). */
+    /**
+     * Parent (main) Place (not always defined,for instance if the
+     * current Place object is itself a main one).
+     */
     Place* _mainPlace;
+
     
   private:
-    // /////// Attributes /////////
-    /** IATA code. */
-    std::string _iataCode;
-    /** ICAO code. */
-    std::string _icaoCode;
-    /** FAA code. */
+    // ///////////////// Attributes ///////////////////////
+    /**
+     * Primary key, made of the IATA and ICAO codes, as well as Geonames ID.
+     */
+    PlaceKey _key;
+
+    /**
+     * FAA code (e.g., ORD).
+     */
     std::string _faaCode;
-    /** City code. */
+
+    /**
+     * Related IATA city code (e.g., CHI).
+     */
     std::string _cityCode;
-    /** City name. */
-    std::string _cityName;
-    /** State code. */
+
+    /**
+     * State code (e.g., IL).
+     */
     std::string _stateCode;
-    /** Country code. */
+
+    /**
+     * Country code (e.g., US).
+     */
     std::string _countryCode;
-    /** Region code. */
+
+    /**
+     * Region code (e.g., NAMER).
+     */
     std::string _regionCode;
-    /** Continent code. */
-    std::string _continentCode;
-    /** Time-zone group. */
+
+    /**
+     * Time-zone group (e.g., America/Chicago).
+     */
     std::string _timeZoneGroup;
-    /** Latitude. */
+
+    /**
+     * Geographical latitude (e.g., 41.978603).
+     */
     double _latitude;
-    /** Longitude. */
+
+    /**
+     * Geographical longitude (e.g., -87.904842).
+     */
     double _longitude;
-    /** List of names, for each given language. */
+
+    /**
+     * List of names, for each given language.
+     */
     NameMatrix_T _nameMatrix;
 
-    /** Original keywords. */
+
+  private:
+    // ///////////// Full-text matching process support attributes //////////
+    /**
+     * Original keywords.
+     */
     std::string _originalKeywords;
     
-    /** Original keywords. */
+    /**
+     * Original keywords.
+     */
     std::string _correctedKeywords;
     
-    /** Xapian document ID. */
+    /**
+     * Xapian document ID.
+     *
+     * That ID is set only when inserting the Document structure into
+     * the Xapian index (database).
+     */
     XapianDocID_T _docID;
 
-    /** Matching percentage. */
+    /**
+     * Matching percentage.
+     */
     MatchingPercentage_T _percentage;
 
-    /** Allowed edit error/distance. */
+    /**
+     * Allowed edit error/distance.
+     */
     NbOfErrors_T _editDistance;
 
-    /** Maximum allowable edit distance/error, with which the matching
-        has been made. */
+    /**
+     * Maximum allowable edit distance/error, with which the matching
+     * has been made.
+     */
     NbOfErrors_T _allowableEditDistance;
     
-    /** List of extra matching (similar) places. */
+    /**
+     * List of extra matching (similar) places.
+     */
     PlaceOrderedList_T _extraPlaceList;
 
-    /** List of alternate matching (less similar) places. */
+    /**
+     * List of alternate matching (less similar) places.
+     */
     PlaceOrderedList_T _alternatePlaceList;
+
+    /**
+     * Set of unique terms (strings), which serve as indexing the
+     * Xapian document corresponding to the current Place object.
+     */
+    StringSet_T _termSet;
+
+    /**
+     * Set of unique terms (strings), which serve as basis for right
+     * spelling. They are added to the Xapian database.
+     */
+    StringSet_T _spellingSet;
+
+    /**
+     * Set of unique terms (strings), which serve as basis for
+     * stemming. They are added to the Xapian database.
+     */
+    StringSet_T _stemmingSet;
+
+    /**
+     * Set of unique terms (strings), which serve as basis for
+     * synonyms. They are added to the Xapian database.
+     */
+    StringSet_T _synonymSet;
   };
 
 }

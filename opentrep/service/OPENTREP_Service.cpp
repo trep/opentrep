@@ -26,7 +26,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_Service::
   OPENTREP_Service (std::ostream& ioLogStream, const DBParams& iDBParams,
-                    const std::string& iXapianDatabaseFilepath)
+                    const TravelDatabaseName_T& iXapianDatabaseFilepath)
     : _opentrepServiceContext (NULL) {
     init (ioLogStream, iDBParams, iXapianDatabaseFilepath);
   }
@@ -55,9 +55,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OPENTREP_Service::init (std::ostream& ioLogStream,
-                               const DBParams& iDBParams,
-                               const std::string& iTravelDatabaseName) {
+  void OPENTREP_Service::init(std::ostream& ioLogStream,
+                              const DBParams& iDBParams,
+                              const TravelDatabaseName_T& iTravelDatabaseName) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 

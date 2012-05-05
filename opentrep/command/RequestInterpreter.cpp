@@ -76,31 +76,29 @@ namespace OPENTREP {
     ioPlace.setPercentage (iDocPercentage);
     
     // Retrieve the parameters of the best matching document
-    const std::string& lPlaceCode = StringMatcher::getPlaceCode (iDocument);
+    const PlaceKey& lKey = Document::getPrimaryKey (iDocument);
 
     // DEBUG
     const Xapian::docid& lDocID = iDocument.get_docid();
     const std::string& lDocData = iDocument.get_data();
-    OPENTREP_LOG_DEBUG ("Place code: " << lPlaceCode << " - Document ID "
-                        << lDocID << ", " << iDocPercentage
-                        << "% [" << lDocData << "]");
+    OPENTREP_LOG_DEBUG ("Place key: " << lKey << " - Xapian ID " << lDocID
+                        << ", " << iDocPercentage << "% [" << lDocData << "]");
 
     // Fill the Place object with the row retrieved from the
     // (MySQL) database and corresponding to the given place code
     // (e.g., 'sfo' for the San Francisco Intl airport).
-    hasRetrievedPlace = DBManager::retrievePlace (ioSociSession, lPlaceCode,
-                                                  ioPlace);
+    hasRetrievedPlace = DBManager::retrievePlace (ioSociSession, lKey, ioPlace);
 
     if (hasRetrievedPlace == false) {
       /**
-         The Xapian database/index should contain only places
-         available within the SQL database, as the first is built from
-         the latter.  If that happens, it means that the user gave a
-         wrong Xapian database.
-      */
+       * The Xapian database/index should contain only places
+       * available within the SQL database, as the first is built from
+       * the latter.  If that happens, it means that the user gave a
+       * wrong Xapian database.
+       */
       std::ostringstream errorStr;
-      errorStr << "There is no document corresponding to "
-               << lPlaceCode << " (Xapian document ID" << lDocID
+      errorStr << "There is no document corresponding to " << lKey
+               << " (Xapian document ID" << lDocID
                << " [" << lDocData << "]) in the SQL database. "
                << "It usually means that the Xapian index/database "
                << "is not synchronised with the SQL database. "

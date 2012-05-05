@@ -159,6 +159,8 @@ namespace OPENTREP {
   prepareSelectOnPlaceCodeStatement (soci::session& ioSociSession,
                                      soci::statement& ioSelectStatement,
                                      const std::string& iIataCode,
+                                     const std::string& iIcaoCode,
+                                     const GeonamesID_T& iGeonamesID,
                                      Place& ioPlace) {
   
     try {
@@ -180,6 +182,8 @@ namespace OPENTREP {
          alternate_name10 
          from place_details rpd, place_names pn 
          where rpd.iata_code = iIataCode
+           and rpd.icao_code = iIcaoCode
+           and rpd.geonameid = iGeonamesID
            and pn.iata_code = rpd.iata_code;
       */
 
@@ -199,9 +203,12 @@ namespace OPENTREP {
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10 "
          << "from place_details rpd, place_names pn "
-         << "where rpd.iata_code = :place_code "
+         << "where rpd.iata_code = :place_iata_code "
+         << "and rpd.icao_code = :place_icao_code "
+         << "and rpd.geonameid = :place_geonameid "
          << "and pn.iata_code = rpd.iata_code",
-         soci::into (ioPlace), soci::use (iIataCode));
+         soci::into (ioPlace), soci::use (iIataCode), soci::use (iIcaoCode),
+         soci::use (iGeonamesID));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -343,17 +350,20 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::retrievePlace (soci::session& ioSociSession,
-                                 const std::string& iIataCode,
-                                 Place& ioPlace) {
+                                 const PlaceKey& iPlaceKey, Place& ioPlace) {
     bool oHasRetrievedPlace = false;
       
     try {
 
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (ioSociSession);
+      const std::string& lIataCode = iPlaceKey.getIataCode();
+      const std::string& lIcaoCode = iPlaceKey.getIcaoCode();
+      const GeonamesID_T& lGeonamesID = iPlaceKey.getGeonamesID();
       DBManager::prepareSelectOnPlaceCodeStatement (ioSociSession,
                                                     lSelectStatement,
-                                                    iIataCode, ioPlace);
+                                                    lIataCode, lIcaoCode,
+                                                    lGeonamesID, ioPlace);
       const bool shouldDoReset = true;
       bool hasStillData = iterateOnStatement (lSelectStatement, ioPlace,
                                               shouldDoReset);
@@ -367,7 +377,7 @@ namespace OPENTREP {
                                          shouldNotDoReset);
       if (hasStillData == true) {
         std::ostringstream errorStr;
-        errorStr << "Error - There are multiple entries for the " << iIataCode
+        errorStr << "Error - There are multiple entries for the " << iPlaceKey
                  << " place code in the MySQL database.";
         OPENTREP_LOG_ERROR (errorStr.str());
         throw MultipleRowsForASingleDocIDException (errorStr.str());
@@ -378,8 +388,8 @@ namespace OPENTREP {
       
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to retrieve " << iIataCode
-               << "from the MySQL database: " << lException.what();
+      errorStr << "Error when trying to retrieve " << iPlaceKey
+               << " from the MySQL database: " << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }

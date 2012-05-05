@@ -941,21 +941,4 @@ namespace OPENTREP {
       WordHolder::createStringFromWordList (lRemainingWordList);
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  std::string StringMatcher::getPlaceCode (const Xapian::Document& iDocument) {
-    // Retrieve the Xapian document data
-    const std::string& lDocumentData = iDocument.get_data();
-
-    // Tokenise the string into words
-    WordList_T lWordList;
-    WordHolder::tokeniseStringIntoWordList (lDocumentData, lWordList);
-    assert (lWordList.empty() == false);
-
-    // By convention (within OpenTrep), the first word of the Xapian
-    // document data string is the place code
-    const std::string& lPlaceCode = lWordList.front();
-
-    return lPlaceCode;
-  }
-  
 }

@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_BOMABSTRACT_HPP
-#define __OPENTREP_BOM_BOMABSTRACT_HPP
+#ifndef __OPENTREP_KEY_KEYABSTRACT_HPP
+#define __OPENTREP_KEY_KEYABSTRACT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -12,10 +12,9 @@
 namespace OPENTREP {
 
   /**
-   * @brief Base class for the Business Object Model (BOM) layer.
+   * @brief Base class for the Business Object Model (KEY) layer.
    */
-  class BomAbstract {
-    friend class FacBomAbstract;
+  class KeyAbstract {
   public:
     // /////////// Display support methods /////////
     /**
@@ -38,29 +37,23 @@ namespace OPENTREP {
     virtual std::string toString() const = 0;
     
     /**
-     * Get a string describing the whole key (differentiating two objects
+     * Get a string describing the key (differentiating two objects
      * at any level).
      */
-    virtual std::string describeKey() const = 0;
-
-    /**
-     * Get a string describing the short key (differentiating two objects
-     * at the same level).
-     */
-    virtual std::string describeShortKey() const = 0;
+    virtual std::string describe() const = 0;
 
     
   protected:
     /**
      * Protected Default Constructor to ensure this class is abtract.
      */
-    BomAbstract() {}
-    BomAbstract (const BomAbstract&) {}
+    KeyAbstract() {}
+    KeyAbstract (const KeyAbstract&) {}
 
     /**
      * Destructor.
      */
-    virtual ~BomAbstract() {}
+    virtual ~KeyAbstract() {}
   };
 }
 
@@ -73,7 +66,7 @@ template <class charT, class traits>
 inline
 std::basic_ostream<charT, traits>&
 operator<< (std::basic_ostream<charT, traits>& ioOut,
-            const OPENTREP::BomAbstract& iBom) {
+            const OPENTREP::KeyAbstract& iKey) {
   /**
    *  string stream:
    *  - with same format
@@ -84,7 +77,7 @@ operator<< (std::basic_ostream<charT, traits>& ioOut,
   ostr.width (0);
 
   // Fill string stream
-  iBom.toStream (ostr);
+  iKey.toStream (ostr);
 
   // Print string stream
   ioOut << ostr.str();
@@ -101,10 +94,10 @@ template <class charT, class traits>
 inline
 std::basic_istream<charT, traits>&
 operator>> (std::basic_istream<charT, traits>& ioIn,
-            OPENTREP::BomAbstract& ioBom) {
-  // Fill Bom object with input stream
-  ioBom.fromStream (ioIn);
+            OPENTREP::KeyAbstract& ioKey) {
+  // Fill Key object with input stream
+  ioKey.fromStream (ioIn);
   return ioIn;
 }
 
-#endif // __OPENTREP_BOM_BOMABSTRACT_HPP
+#endif // __OPENTREP_KEY_KEYABSTRACT_HPP
