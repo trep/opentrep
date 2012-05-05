@@ -114,6 +114,10 @@ namespace soci {
     const std::string& lAlternateName10 =
       iPlaceValues.get<std::string> ("alternate_name10", "");
     ioPlace.addName (lLanguageCode, lAlternateName10);
+
+    // Re-set the (STL) sets of terms for the Xapian index, spelling
+    // dictionary, etc.
+    ioPlace.resetIndexSets();
   }
 
   // //////////////////////////////////////////////////////////////////////

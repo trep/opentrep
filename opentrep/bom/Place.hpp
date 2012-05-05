@@ -200,7 +200,36 @@ namespace OPENTREP {
       return _alternatePlaceList;
     }
 
-    
+    /**
+     * Get the (STL) set of terms (for the Xapian index).
+     */
+    const StringSet_T& getTermSet() const {
+      return _termSet;
+    }
+
+    /**
+     * Get the (STL) set of spelling terms (for the Xapian spelling dictionary).
+     */
+    const StringSet_T& getSpellingSet() const {
+      return _spellingSet;
+    }
+
+    /**
+     * Get the (STL) set of stemming terms (for the Xapian stemming dictionary).
+     */
+    const StringSet_T& getStemmingSet() const {
+      return _stemmingSet;
+    }
+
+    /**
+     * Get the (STL) set of synonym terms (for the Xapian synonym dictionary).
+     */
+    const StringSet_T& getSynonymSet() const {
+      return _synonymSet;
+    }
+
+
+  public:
     // ////////////////// Setters /////////////////
     /**
      * Set the primary key.
@@ -342,6 +371,11 @@ namespace OPENTREP {
      */
     void resetMatrix();
 
+    /**
+     * Reset the index/spelling (STL) sets.
+     */
+    void resetIndexSets();
+
     
   public:
     // /////////// Business methods /////////
@@ -400,6 +434,11 @@ namespace OPENTREP {
      */
     std::string describeShortKey() const;
     
+    /**
+     * Get a string describing the (STL) sets of terms for the Xapian database.
+     */
+    std::string describeSets() const;
+
     /**
      * Display the full Place context.
      */

@@ -35,33 +35,6 @@ namespace OPENTREP {
      * Search, within the Xapian database, for occurrences of the
      * words of the search string.
      *
-     * @param Xapian::MSet& The Xapian matching set. It can be empty.
-     * @param const TravelQuery_T& The query string.
-     * @param Document& The matching document, if any.
-     * @param NbOfErrors_T& The effective allowable Levenshtein edit
-     *        distance/error, as calculated as a function of the number
-     *        of letters.
-     * @param NbOfErrors_T& The maximal allowable Levenshtein edit
-     *        distance/error for that step/call. We always have:
-     *        ioEditDistance <= ioAllowableEditDistance <= iMaxEditDistance
-     * @param bool& Whether or not the maximal allowable edit distance/error
-     *        has become greater than the maximum of the edit distance/errors
-     *        calculated on the phrase.
-     * @param const Xapian::Database& The Xapian index/database.
-     * @return std::string The query string, potentially corrected,
-     *         which has yielded matches.
-     */
-    static std::string searchString (Xapian::MSet&,
-                                     const TravelQuery_T& iQueryString,
-                                     Document& ioMatchingDocument,
-                                     NbOfErrors_T& ioEditDistance,
-                                     NbOfErrors_T& ioAllowableEditDistance,
-                                     const Xapian::Database&);
-    
-    /**
-     * Search, within the Xapian database, for occurrences of the
-     * words of the search string.
-     *
      * The algorithm is much simpler than the above one.
      *
      * @param Xapian::MSet& The Xapian matching set. It can be empty.
@@ -71,10 +44,10 @@ namespace OPENTREP {
      * @return std::string The query string, potentially corrected,
      *         which has yielded matches.
      */
-    static std::string searchStringNew (Xapian::MSet&,
-                                        const TravelQuery_T& iQueryString,
-                                        Document& ioMatchingDocument,
-                                        const Xapian::Database&);
+    static std::string searchString (Xapian::MSet&,
+                                     const TravelQuery_T& iQueryString,
+                                     Document& ioMatchingDocument,
+                                     const Xapian::Database&);
     
     /**
      * Extract the best matching Xapian document.

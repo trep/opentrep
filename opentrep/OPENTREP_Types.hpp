@@ -53,11 +53,6 @@ namespace OPENTREP {
   typedef int XapianDocID_T;
 
   /**
-   * Xapian percentage.
-   */
-  typedef unsigned int MatchingPercentage_T;
-
-  /**
    * Geonames ID.
    */
   typedef int GeonamesID_T;
@@ -66,6 +61,16 @@ namespace OPENTREP {
    * Travel search query.
    */
   typedef std::string TravelQuery_T;
+
+  /**
+   * Xapian percentage.
+   */
+  typedef double MatchingPercentage_T;
+
+  /**
+   * Matching percentage for a Xapian document.
+   */
+  typedef double Percentage_T;
 
   /**
    * Number of entries in the Xapian database.
@@ -83,7 +88,7 @@ namespace OPENTREP {
   typedef std::list<Word_T> WordList_T;
 
   /**
-   * List of words.
+   * List of (black-listed) words.
    */
   typedef std::list<std::string> BlackList_T;
 

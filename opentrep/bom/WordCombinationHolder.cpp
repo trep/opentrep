@@ -141,11 +141,9 @@ namespace OPENTREP {
            itWordCombination != lStringList.end(); ++itWordCombination) {
         const std::string& lWordCombination = *itWordCombination;
 
-        // Check whether that word combination has already been stored once.
-        StringSet_T::const_iterator itString =
-          lStringSet.find (lWordCombination);
-        if (itString == lStringSet.end()) {
-          // If not, add it to the dedicated list (STL set).
+        // Check whether the word combination should be filtered out
+        const bool isToBeAdded = Filter::shouldKeep (iPhrase, lWordCombination);
+        if (isToBeAdded == true) {
           lStringSet.insert (lWordCombination);
         }
       }

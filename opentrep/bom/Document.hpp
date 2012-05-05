@@ -27,7 +27,7 @@ namespace OPENTREP {
   /**
    * Pair of a Xapian document and its associated matching percentage.
    */
-  typedef std::pair<Xapian::percent, Xapian::Document> XapianDocumentPair_T;
+  typedef std::pair<Percentage_T, Xapian::Document> XapianDocumentPair_T;
 
   /**
    * List of Xapian documents.
@@ -69,7 +69,7 @@ namespace OPENTREP {
     /**
      * Get the matching percentage associated to the Xapian document.
      */
-    const Xapian::percent& getXapianPercentage() const {
+    const Percentage_T& getXapianPercentage() const {
      return _percentage;
     }
 
@@ -130,7 +130,7 @@ namespace OPENTREP {
     /**
      * Set the matching percentage associated to the Xapian document.
      */
-    void setXapianPercentage (const Xapian::percent& iPercentage) {
+    void setXapianPercentage (const Percentage_T& iPercentage) {
       _percentage = iPercentage;
     }
 
@@ -159,7 +159,7 @@ namespace OPENTREP {
     /**
      * Add a matching Xapian document (having a lower matching percentage).
      */
-    void addAlternateDocument (const Xapian::percent& iMatchingPercentage,
+    void addAlternateDocument (const Percentage_T& iMatchingPercentage,
                                const Xapian::Document& iMatchingDocument) {
       _alternateDocumentList.
         push_back (XapianDocumentPair_T (iMatchingPercentage,
@@ -200,14 +200,14 @@ namespace OPENTREP {
      *
      * @param ostream& the output stream.
      */
-    void toStream (std::ostream& ioOut) const;
+    void toStream (std::ostream&) const;
 
     /**
      * Read a structure from an input stream.
      *
      * @param istream& the input stream.
      */
-    void fromStream (std::istream& ioIn);
+    void fromStream (std::istream&);
 
     /**
      * Get the serialised version of the structure.
@@ -263,7 +263,7 @@ namespace OPENTREP {
      *
      * Generally, that percentage is equal to, or close to, 100%.
      */
-    Xapian::percent _percentage;
+    Percentage_T _percentage;
 
     /**
      * Matching document, as returned by the Xapian full text search.

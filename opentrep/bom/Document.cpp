@@ -6,10 +6,10 @@
 #include <sstream>
 // Boost
 #include <boost/lexical_cast.hpp>
-// OpenTREP
+// OpenTrep
 #include <opentrep/bom/PlaceKey.hpp>
-#include <opentrep/bom/Document.hpp>
 #include <opentrep/bom/WordHolder.hpp>
+#include <opentrep/bom/Document.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {

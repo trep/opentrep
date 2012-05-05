@@ -52,47 +52,18 @@ namespace OPENTREP {
      */
     void searchString (DocumentList_T&, WordList_T&);
 
-    /**
-     * Retrieve the list of documents matching the query string.
-     * That is a new version of the algorithm, supposeddly more efficient.
-     *
-     * @param DocumentList_T& List of matched documents by the query string.
-     * @param WordList_T& List of non-matched words of the query string.
-     */
-    void searchStringNew (DocumentList_T&, WordList_T&);
 
-    
   private:
     /**
      * Retrieve the document best matching the query string.
      *
-     * @param Xapian::MSet& The Xapian matching set. It can be empty.
-     * @param TravelQuery_T& The partial query string.
-     * @param MatchingDocument_T& The best matching Xapian document (if found).
-     * @return bool Whether such a best matching document has been found.
-     */
-    std::string searchString (Xapian::MSet&, TravelQuery_T&, Document&);
-    
-    /**
-     * Retrieve the document best matching the query string.
-     *
      * @param TravelQuery_T& The partial query string.
      * @param MatchingDocument_T& The best matching Xapian document (if found).
      * @return std::string The matching string, if any. It can be empty when
      *         there is no match.
      */
-    std::string searchString (TravelQuery_T&, Document&);
-    
-    /**
-     * Retrieve the document best matching the query string.
-     *
-     * @param TravelQuery_T& The partial query string.
-     * @param MatchingDocument_T& The best matching Xapian document (if found).
-     * @return std::string The matching string, if any. It can be empty when
-     *         there is no match.
-     */
-    std::string searchStringNew (const TravelQuery_T&, Document&) const;
-    
+    std::string searchString (const TravelQuery_T&, Document&) const;
+
     /**
      * Retrieve the document best matching the query string.
      *
@@ -101,7 +72,8 @@ namespace OPENTREP {
      * @return double Total matching percentage, defined as the product of the
      *         matching percentages of all the strings of the set.
      */
-    double searchStringNew (DocumentList_T&, const StringSet&) const;
+    Percentage_T searchString (DocumentList_T&, const StringSet&) const;
+
 
   public:
     // /////////// Display support methods /////////

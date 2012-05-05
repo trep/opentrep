@@ -83,6 +83,38 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  void addToXapian (const Place& iPlace, Xapian::Document& ioDocument,
+                    Xapian::WritableDatabase& ioDatabase) {
+
+    // Build a Xapian TermGenerator:
+    // http://xapian.org/docs/apidoc/html/classXapian_1_1TermGenerator.html
+    // It is an helper to insert terms into the Xapian index for the given
+    // document.
+    Xapian::TermGenerator lTermGenerator;
+    lTermGenerator.set_database (ioDatabase);
+    lTermGenerator.set_document (ioDocument);
+
+    const Place::StringSet_T& lTermSet = iPlace.getTermSet();
+    for (Place::StringSet_T::const_iterator itString = lTermSet.begin();
+         itString != lTermSet.end(); ++itString) {
+      const std::string& lString = *itString;
+      lTermGenerator.index_text (lString);
+    }
+
+    const Place::StringSet_T& lSpellingSet = iPlace.getSpellingSet();
+    for (Place::StringSet_T::const_iterator itTerm = lSpellingSet.begin();
+         itTerm != lSpellingSet.end(); ++itTerm) {
+      const std::string& lTerm = *itTerm;
+      ioDatabase.add_spelling (lTerm);
+    }
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Added terms for '" << iPlace.describeKey()
+                        << "': " << iPlace.describeSets()
+                        << " into " << ioDocument.get_description());
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void IndexBuilder::
   addDocumentToIndex (Xapian::WritableDatabase& ioDatabase,
                       Place& ioPlace) {
@@ -94,66 +126,13 @@ namespace OPENTREP {
     // to read it
     lDocument.set_data (ioPlace.toString());
       
-    const std::string& lIataCode = ioPlace.getIataCode();
-    const std::string& lIcaoCode = ioPlace.getIcaoCode();
-    const std::string& lCityCode = ioPlace.getCityCode();
-    const std::string& lDBCityCode = (lCityCode.empty())?lIataCode:lCityCode;
-    const std::string& lStateCode = ioPlace.getStateCode();
-    const std::string lDBStateCode = (lStateCode.empty())?"NA":lStateCode;
+    // Build the (STL) sets of terms to be added to the Xapian index and
+    // spelling dictionary
+    ioPlace.buildIndexSets();
 
-    // Add indexing terms
-    lDocument.add_term (lIataCode);
-    if (lIcaoCode.empty() == false) {
-      lDocument.add_term (lIcaoCode);
-    }
-    lDocument.add_term (lDBStateCode);
-    lDocument.add_term (lDBCityCode);
-    lDocument.add_term (ioPlace.getCountryCode());
-    lDocument.add_term (ioPlace.getRegionCode());
+    // Add the (STL) sets of terms to the Xapian index and spelling dictionary
+    addToXapian (ioPlace, lDocument, ioDatabase);
 
-    // Add terms to the spelling dictionary
-    ioDatabase.add_spelling (lIataCode);
-    if (lIataCode != lDBCityCode) {
-      ioDatabase.add_spelling (lDBCityCode);
-    }
-    if (lIcaoCode.empty() == false) {
-      ioDatabase.add_spelling (lIcaoCode);
-    }
-    if (lStateCode.empty() == false) {
-      ioDatabase.add_spelling (lStateCode);
-    }
-      
-    // Retrieve the place names in all the available languages
-    const NameMatrix_T& lNameMatrix = ioPlace.getNameMatrix ();
-    for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
-         itNameList != lNameMatrix.end(); ++itNameList) {
-      // Retrieve the language code and locale
-      const Language::EN_Language& lLanguage = itNameList->first;
-      const Names& lNames = itNameList->second;
-
-      // Add that language code and locale to the Xapian document
-      lDocument.add_term (Language::getLongLabel (lLanguage));
-
-      // For a given language, retrieve the list of place names
-      const NameList_T& lNameList = lNames.getNameList();
-        
-      for (NameList_T::const_iterator itName = lNameList.begin();
-           itName != lNameList.end(); ++itName) {
-        const std::string& lName = *itName;
-
-        // Add the place name (it can be the classical one, or
-        // extended, alternate, etc.)
-        if (lName.empty() == false) {
-          // Add the full name (potentially containing spaces, e.g.,
-          // 'san francisco'), as well as all the strings of all the
-          // word combinations.
-          tokeniseAndAddToDocumentNew (lName, lDocument, ioDatabase);
-
-          // OPENTREP_LOG_DEBUG ("Added name: " << lName);
-        }
-      }
-    }
-      
     // Add the document to the database
     const Xapian::docid& lDocID = ioDatabase.add_document (lDocument);
       
