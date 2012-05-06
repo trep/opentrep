@@ -41,7 +41,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Result::toString() const {
     std::ostringstream oStr;
-    oStr << _matchingDocument.toString();
+    oStr << _matchingDocument.describe();
     return oStr.str();
   }   
 

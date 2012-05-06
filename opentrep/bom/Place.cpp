@@ -90,7 +90,7 @@ namespace OPENTREP {
     for (NameMatrix_T::const_iterator itNameList = _nameMatrix.begin();
          itNameList != _nameMatrix.end(); ++itNameList) {
       const Names& lNameList = itNameList->second;
-      oStr << lNameList.toString();
+      oStr << lNameList.describe();
     }
     
     if (_extraPlaceList.empty() == false) {

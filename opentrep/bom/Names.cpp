@@ -40,37 +40,35 @@ namespace OPENTREP {
     const std::string& lName = *itName;
     return lName;
   }
-  
+
   // //////////////////////////////////////////////////////////////////////
-  std::string Names::describeShortKey() const {
+  std::string Names::describeKey() const {
     std::ostringstream oStr;
     oStr << "[" << Language::getLongLabel (_languageCode) << "]: ";
     return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Names::describeKey() const {
-    return describeShortKey();
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  std::string Names::toString() const {
+  std::string Names::describe() const {
     std::ostringstream oStr;
-    oStr << describeShortKey();
+    oStr << describeKey();
 
+    unsigned short idx = 0;
     for (NameList_T::const_iterator itName = _nameList.begin();
-         itName != _nameList.end(); ++itName) {
+         itName != _nameList.end(); ++itName, ++idx) {
+      if (idx != 0) {
+        oStr << ", ";
+      }
       const std::string& lName = *itName;
-      oStr << lName << ", ";
+      oStr << lName;
     }
-    oStr << std::endl;
-    
+
     return oStr.str();
   }
     
   // //////////////////////////////////////////////////////////////////////
   void Names::toStream (std::ostream& ioOut) const {
-    ioOut << toString();
+    ioOut << describe();
   }
   
   // //////////////////////////////////////////////////////////////////////

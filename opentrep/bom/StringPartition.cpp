@@ -45,13 +45,6 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string StringPartition::describeShortKey() const {
-    std::ostringstream oStr;
-    oStr << "";
-    return oStr.str();
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
   std::string StringPartition::describeKey() const {
     std::ostringstream oStr;
     oStr << "";
@@ -59,9 +52,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string StringPartition::toShortString() const {
+  std::string StringPartition::describe() const {
     std::ostringstream oStr;
-    oStr << describeShortKey();
+    oStr << describeKey();
 
     //
     oStr << "{";
@@ -78,7 +71,7 @@ namespace OPENTREP {
       const StringSet& lStringSet = *itSet;
 
       //
-      oStr << lStringSet.toShortString();
+      oStr << lStringSet;
     }
 
     //
@@ -88,37 +81,8 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string StringPartition::toString() const {
-    std::ostringstream oStr;
-    oStr << describeKey();
-    
-    //
-    oStr << "{" << std::endl;
-
-    short idx_sublist = 0;
-    for (StringPartition_T::const_iterator itSet = _partition.begin();
-         itSet != _partition.end(); ++itSet, ++idx_sublist) {
-      //
-      if (idx_sublist != 0) {
-        oStr << "," << std::endl;
-      }
-      
-      //
-      const StringSet& lStringSet = *itSet;
-
-      //
-      oStr << lStringSet.toString();
-    }
-
-    //
-    oStr << std::endl << "}" << std::endl;
-    
-    return oStr.str();
-  }   
-
-  // //////////////////////////////////////////////////////////////////////
   void StringPartition::toStream (std::ostream& ioOut) const {
-    ioOut << toString();
+    ioOut << describe();
   }
   
   // //////////////////////////////////////////////////////////////////////

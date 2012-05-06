@@ -8,7 +8,7 @@
 #include <list>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/bom/BomAbstract.hpp>
+#include <opentrep/basic/StructAbstract.hpp>
 // Xapian
 #include <xapian.h>
 
@@ -37,16 +37,18 @@ namespace OPENTREP {
 
   // //////////////// Main Class /////////////////
   /**
-   * Structure wrapping a Xapian document having matched part of a
-   * given query string.
+   * @brief Structure wrapping a Xapian document having matched part
+   *        of a given query string.
    *
    * It is a structure, as it is aimed to be temporary, the time
    * a Result object be created with the corresponding content.
    */
-  struct Document : public BomAbstract {
+  struct Document : public StructAbstract {
   public:
     // ////////////////// Getters ////////////////
-    /** Get the query string. */
+    /**
+     * Get the query string.
+     */
     const TravelQuery_T& getTravelQuery() const {
      return _queryString;
     }
@@ -105,6 +107,7 @@ namespace OPENTREP {
     }
 
 
+  public:
     // ////////////////// Setters ////////////////
     /**
      * Set the query string.
@@ -210,26 +213,18 @@ namespace OPENTREP {
     void fromStream (std::istream&);
 
     /**
-     * Get the serialised version of the structure.
-     */
-    std::string toString() const;
-    
-    /**
-     * Get a shorter serialised version of the structure.
-     */
-    std::string toShortString() const;
-    
-    /**
-     * Get a string describing the whole key (differentiating two objects
-     * at any level).
+     * Display the key of the structure.
+     *
+     * @return std::string Dump of the structure.
      */
     std::string describeKey() const;
 
     /**
-     * Get a string describing the short key (differentiating two objects
-     * at the same level).
+     * Display of the structure.
+     *
+     * @return std::string Dump of the structure.
      */
-    std::string describeShortKey() const;
+    std::string describe() const;
 
 
   public:

@@ -77,9 +77,9 @@ namespace OPENTREP {
     } 
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Added terms for '" << iPhrase
-                        << "': " << lWordCombinationHolder.toShortString()
-                        << " into " << ioDocument.get_description());
+    OPENTREP_LOG_DEBUG ("Added terms for '" << iPhrase << "': "
+                        << lWordCombinationHolder << " into "
+                        << ioDocument.get_description());
   }
   
   // //////////////////////////////////////////////////////////////////////

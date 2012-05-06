@@ -79,19 +79,6 @@ namespace OPENTREP {
     // Catch any Xapian::Error exceptions thrown
     try {
       
-      /**
-       * A copy of the query is made, as that copy will be altered by
-       * the below process, whereas a clean copy needs to be reprocessed
-       * for each level of maximal edit distance/error.
-       *
-       * However, in case of match, the modifications on the query
-       * string (lPartialQueryString) must be replicated on the
-       * original one (iQueryString).
-       *
-       * And, in case of no match, that query string must be
-       * emptied, so that the caller knows about that match failure.
-       */
-
       // DEBUG
       OPENTREP_LOG_DEBUG ("      ----------------");
       OPENTREP_LOG_DEBUG ("      Current query string: `" << iQueryString
@@ -210,18 +197,17 @@ namespace OPENTREP {
 
         } else {
           // "Add" the contribution to the total
-          lPercentage = 0.001;
+          lPercentage = 0.05;
           oTotalMatchingPercentage *= lPercentage;
 
           // DEBUG
           OPENTREP_LOG_DEBUG ("      ==> No match, i.e., " << lPercentage
                               << "%, giving a cumulative of "
                               << oTotalMatchingPercentage << "%");
-          OPENTREP_LOG_DEBUG ("      discarding any other string of the set");
 
-          // It is useless to go further: that string set does not lead to
-          // a good matching partition.
-          break;
+          // As there may be unmatched terms in the query string,
+          // those will turn down the matching percentage. At the end,
+          // the string set with the greatest percentage will be selected.
         }
       }
 
@@ -246,7 +232,7 @@ namespace OPENTREP {
       // DEBUG
       OPENTREP_LOG_DEBUG ("+++++++++++++++++++++");
       OPENTREP_LOG_DEBUG ("Query string: `" << _queryString << "'");
-      OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition.toShortString());
+      OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
 
       // Calculate the matching percentage of all the partitions
       double lMaxMatchingPercentage = 0.0;
@@ -257,7 +243,7 @@ namespace OPENTREP {
 
         // DEBUG
         OPENTREP_LOG_DEBUG ("  ==========");
-        OPENTREP_LOG_DEBUG ("  String set: " << lStringSet.toShortString());
+        OPENTREP_LOG_DEBUG ("  String set: " << lStringSet);
 
         // Calculate the matching sets for the string set
         DocumentList_T lDocumentList;

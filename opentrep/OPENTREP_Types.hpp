@@ -73,6 +73,11 @@ namespace OPENTREP {
   typedef double Percentage_T;
 
   /**
+   * Score (e.g., matching percentage) for a document/POR (point of reference).
+   */
+  typedef double Score_T;
+
+  /**
    * Number of entries in the Xapian database.
    */
   typedef unsigned int NbOfDBEntries_T;
