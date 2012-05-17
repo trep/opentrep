@@ -1,21 +1,21 @@
 iata_code^xapian_docid^icao_code^is_geonames^geonameid^latitude^longitude^fclass^fcode^country_code^cc2^admin1^admin2^admin3^admin4^population^elevation^gtopo30^timezone^gmt_offset^dst_offset^raw_offset^moddate^is_airport^is_commercial^city_code^state_code^region_code^location_type
 aaa^0^ntga^y^6947726^-17.352606^-145.509956^s^airp^pf^^^^^^0^0^8^pacific/tahiti^-10.0^-10.0^-10.0^2012-04-29^y^y^aaa^^pacif^ca
-aab^0^yary^y^7730796^-26.75^141^s^airp^au^^04^30450^^^0^0^102^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^y^aab^ql^austl^ca
+aab^0^yary^y^7730796^-26.75^141^s^airp^au^^04^30450^^^0^0^69^australia/brisbane^10.0^10.0^10.0^2012-05-12^y^y^aab^ql^austl^ca
 aac^0^hear^y^6297289^31.073333^33.835833^s^airp^eg^^^^^^0^36^36^africa/cairo^2.0^2.0^2.0^2007-01-03^y^n^aac^^afric^ca
 aae^0^dabb^y^2570559^36.822225^7.809167^s^airp^dz^^37^^^^0^0^4^africa/algiers^1.0^1.0^1.0^2011-03-18^y^y^aae^^afric^ca
 aaf^0^kaaf^y^4146153^29.73^-85.03^s^airp^us^^fl^037^^^0^4^10^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^aaf^fl^namer^ca
 aag^0^zzzz^y^3471795^-22.87^-43.27^p^ppl^br^br^18^^^^0^0^860^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^y^n^aag^pr^samer^ca
 aah^0^edka^y^3207669^50.75^6.133^s^airf^de^^07^^^^0^0^190^europe/berlin^1.0^2.0^1.0^2012-01-19^y^n^aah^^europ^ca
 aai^0^swra^y^7668483^-12.92^-46.93^s^airp^br^^31^^^^0^0^559^america/araguaina^-3.0^-3.0^-3.0^2011-02-17^y^n^aai^to^samer^ca
-aaj^0^zzzz^y^7730797^3.9^-55.37^s^airp^sr^^18^^^^0^0^208^america/paramaribo^-3.0^-3.0^-3.0^2011-03-17^y^n^aaj^^samer^ca
+aaj^0^zzzz^y^7730797^3.9^-55.37^s^airp^sr^^18^^^^0^0^208^america/paramaribo^-3.0^-3.0^-3.0^2012-05-12^y^n^aaj^^samer^ca^awaradam
 aak^0^nguk^y^7521791^0.2167^174^s^airp^ki^^01^ak^^^0^0^13^pacific/tarawa^12.0^12.0^12.0^2010-08-20^y^n^aak^^austl^ca
 aal^0^ekyt^y^2624887^57.092789^9.849164^s^airp^dk^^19^851^^^0^3^2^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^y^aal^^europ^ca
 aam^0^famd^y^7668229^-24.8^31.53^s^airp^za^^^^^^0^0^329^africa/johannesburg^2.0^2.0^2.0^2011-02-17^y^n^aam^^afric^ca
 aan^0^omal^y^6300095^24.261667^55.609167^s^airp^ae^^^^^^0^264^248^asia/dubai^4.0^4.0^4.0^2007-01-03^y^y^aan^^meast^ca
 aao^0^svan^y^3649283^9.430225^-64.470725^s^airf^ve^^02^^^^0^0^204^america/caracas^-4.5^-4.5^-4.5^2012-05-01^y^n^aao^^samer^ca
-aap^0^zzzz^n^0^29.65^-95.3^s^airp^us^^^^^^^^^us107^^^^-1^y^n^hou^tx^namer^a
+aap^0^kaap^y^8288516^29.65^-95.3^s^airf^us^^tx^201^^^0^0^14^america/chicago^-6.0^-5.0^-6.0^2012-05-12^y^n^hou^tx^namer^a
 aaq^0^urka^y^6300989^45.002097^37.347272^s^airp^ru^^^^^^0^53^43^europe/moscow^4.0^4.0^4.0^2011-03-28^y^y^aaq^^euras^ca^anapa airport
-aar^0^ekah^y^2611665^56.300017^10.619008^s^airp^dk^^18^706^^^0^24^25^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^y^aar^^europ^ca^tirstrup^aarhus airport
+aar^0^ekah^y^2611665^56.300017^10.619008^s^airp^dk^^18^706^^^0^24^25^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^y^aar^^europ^ca^aarhus airport^tirstrup
 aas^0^zzzz^y^7730799^-3.917^139.3^s^airp^id^^36^^^^0^0^1825^asia/jayapura^9.0^9.0^9.0^2011-03-17^y^n^aas^^seasi^ca
 aat^0^zwat^y^7910421^43.93^89.5^s^airp^cn^^13^^^^0^750^762^asia/urumqi^8.0^8.0^8.0^2011-07-25^y^y^aat^^asia^ca
 aau^0^nsau^y^7667905^-13.45^-172.6^s^airp^ws^^^^^^0^0^14^pacific/apia^14.0^13.0^13.0^2011-02-14^y^n^aau^^austl^ca
@@ -30,7 +30,7 @@ abc^0^leab^y^6299323^38.9486^-15.1803^s^airp^es^^54^ab^02003^^0^701^699^europe/m
 abd^0^oiaa^y^6300034^30.371111^48.228333^s^airp^ir^^^^^^0^5^1^asia/tehran^3.5^4.5^3.5^2007-01-03^y^y^abd^^meast^ca
 abe^0^kabe^y^5200013^40.652083^-75.440806^s^airp^us^^pa^077^^^0^116^117^america/new_york^-5.0^-4.0^-5.0^2011-07-22^y^y^abe^pa^namer^ca^allentown-bethlehem-easton international airport
 abf^0^ngab^y^7521786^1.417^172.8^s^airf^ki^^01^ag^^^0^0^10^pacific/tarawa^12.0^12.0^12.0^2011-03-16^y^n^abf^^austl^ca
-abg^0^zzzz^n^0^-17.67^143.2^s^airp^au^^^^^^^^^au131^^^^-1^y^n^abg^ql^austl^ca
+abg^0^zzzz^y^8288517^-17.67^143.2^s^airp^au^^04^33100^^^0^0^228^australia/brisbane^10.0^10.0^10.0^2012-05-12^y^n^abg^ql^austl^ca^abingdon downs
 abh^0^yaph^y^7668679^-23.646111^146.583611^s^airp^au^^04^30410^^^0^0^380^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^abh^ql^austl^ca
 abi^0^kabi^y^4669647^32.411319^-99.681897^s^airp^us^^tx^441^^^0^545^542^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^abi^tx^namer^ca
 abj^0^diap^y^6296433^5.261386^-3.926294^s^airp^ci^^^^^^0^6^4^africa/abidjan^0.0^0.0^0.0^2009-10-28^y^y^abj^^afric^ca
@@ -99,7 +99,7 @@ adz^0^sksp^y^6300759^12.583594^-81.711192^s^airp^co^^^^^^0^5^6^america/bogota^-5
 aea^0^ngtb^y^7521789^0.4833^173.9^s^airp^ki^^01^am^^^0^0^8^pacific/tarawa^12.0^12.0^12.0^2010-08-20^y^n^aea^^austl^ca
 aeb^0^zzzz^y^7910245^23.72^107^s^airp^cn^^16^^^^0^0^149^asia/chongqing^8.0^8.0^8.0^2011-07-20^y^y^aeb^^asia^ca
 aed^0^zzzz^y^5879155^58.03^-152.9^p^ppl^us^^ak^150^^^37^191^187^america/anchorage^-9.0^-8.0^-9.0^2011-05-14^y^n^aed^ak^namer^ca
-aee^0^zzzz^n^0^10.06^32.95^s^airp^ss^^^^^^^^^ss210^^^^-1^y^n^aee^^meast^ca
+aee^0^zzzz^y^8288524^10.06^32.95^s^airp^ss^^26^^^^0^397^395^africa/juba^3.0^3.0^3.0^2012-05-13^y^n^aee^^meast^ca
 aeg^0^zzzz^n^0^1.383^99.45^s^airp^id^^^^^^^^^id061^^^^-1^y^y^aeg^^seasi^ca
 aeh^0^fttc^y^245786^13.847^20.844333^s^airp^td^^12^^^^0^0^544^africa/ndjamena^1.0^1.0^1.0^2011-03-17^y^n^aeh^^afric^ca
 aei^0^zzzz^y^2522013^36.18^-5.45^p^ppla3^es^^51^ca^11004^^116209^0^29^europe/madrid^1.0^2.0^1.0^2012-03-04^y^y^aei^^europ^cr
@@ -142,7 +142,7 @@ agl^0^zzzz^y^2132313^-9.333^149.2^p^ppl^pg^^01^^^^0^0^5^pacific/port_moresby^10.
 agm^0^bgam^y^6295687^65.58^-38^s^airp^gl^^^^^^0^50^-9999^america/godthab^-3.0^-2.0^-3.0^2006-10-29^y^y^agm^^europ^ca
 agn^0^pagn^y^5844358^57.5^-134.6^s^airp^us^^ak^232^^^0^12^8^america/juneau^-9.0^-8.0^-9.0^2006-10-29^y^y^agn^ak^namer^ca
 ago^0^kago^y^4120332^33.23^-93.22^s^airp^us^^ar^027^^^0^97^100^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^n^ago^ar^namer^ca
-agp^0^lemg^y^6299346^36.6749^-4.499106^s^airp^es^^51^ma^29067^^0^15^10^europe/madrid^1.0^2.0^1.0^2011-03-28^y^y^agp^^europ^ca^malaga airport
+agp^0^lemg^y^6299346^36.6749^-4.499106^s^airp^es^^51^ma^29067^^0^15^10^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^agp^^europ^ca^málaga airport
 agq^0^lgag^y^7668309^38.602022^21.351208^s^airp^gr^^esye23^31^9123^^0^0^20^europe/athens^2.0^3.0^2.0^2012-01-17^y^n^agq^^europ^ca
 agr^0^viag^y^6301090^27.155831^77.960892^s^airp^in^^^^^^0^167^161^asia/kolkata^5.5^5.5^5.5^2011-12-20^y^n^agr^^asia^ca
 ags^0^kags^y^4185424^33.369944^-81.9645^s^airp^us^^ga^245^^^0^42^41^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^y^ags^ga^namer^ca
@@ -232,7 +232,7 @@ akx^0^uatt^y^6300922^50.245833^57.206667^s^airp^kz^^04^^^^0^224^218^asia/aqtobe^
 aky^0^vysw^y^1329416^20.132708^92.872628^s^airp^mm^^01^^^^0^8^4^asia/rangoon^6.5^6.5^6.5^2007-01-03^y^y^aky^^seasi^ca
 ala^0^uaaa^y^6300913^43.352072^77.040508^s^airp^kz^^^^^^0^680^678^asia/almaty^6.0^6.0^6.0^2007-01-03^y^y^ala^^euras^ca
 alb^0^kalb^y^5106842^42.748267^-73.801692^s^airp^us^^ny^001^^^0^84^83^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^y^alb^ny^namer^ca
-alc^0^leal^y^6255112^38.282169^-0.558156^s^airp^es^^60^a^03065^^0^43^27^europe/madrid^1.0^2.0^1.0^2007-01-03^y^y^alc^^europ^ca
+alc^0^leal^y^6255112^38.282169^-0.558156^s^airp^es^^60^a^03065^^0^43^27^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^alc^^europ^ca
 ald^0^spar^y^6453428^-11.7^-69.35^s^airp^pe^^17^^^^0^243^267^america/lima^-5.0^-5.0^-5.0^2007-03-30^y^n^ald^^samer^ca
 ale^0^ke38^y^5516210^30.38^-103.7^s^airp^us^^tx^043^^^0^1357^1357^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^n^ale^tx^namer^ca
 alf^0^enat^y^6296721^69.976111^23.371667^s^airp^no^^^^^^0^2^1^europe/oslo^1.0^2.0^1.0^2007-01-03^y^y^alf^^europ^ca
@@ -412,7 +412,7 @@ asy^0^zzzz^n^0^46.03^-99.37^s^airp^us^^^^^^^^^us107^^^^-1^y^n^asy^nd^namer^ca
 asz^0^zzzz^n^0^-5.867^150.4^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^asz^^austl^ca
 ata^0^sphz^y^6300805^-9.347444^-77.598392^s^airp^pe^^02^^^^0^2772^2724^america/lima^-5.0^-5.0^-5.0^2011-11-21^y^y^ata^^samer^ca
 atb^0^hsat^y^6297335^17.7^33.98^s^airp^sd^^30^^^^0^347^372^africa/khartoum^3.0^3.0^3.0^2012-03-26^y^n^atb^^afric^ca
-atc^0^myca^y^3572898^24.629417^-75.673775^s^airf^bs^^06^^^^0^0^4^america/nassau^-5.0^-4.0^-5.0^2011-04-01^y^n^atc^^carib^ca
+atc^0^myca^y^3572898^24.629417^-75.673775^s^airf^bs^^06^^^^0^0^4^america/nassau^-5.0^-4.0^-5.0^2012-05-12^y^n^atc^^carib^ca
 atd^0^agat^y^7730402^-8.867^161^s^airp^sb^^^^^^0^0^8^pacific/guadalcanal^11.0^11.0^11.0^2011-03-17^y^y^atd^^austl^ca
 ate^0^zzzz^y^4529419^34.23^-95.62^s^airp^us^^ok^127^^^0^174^178^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^n^ate^ok^namer^ca
 atf^0^seam^y^6300709^-1.212067^-78.574636^s^airp^ec^^^^^^0^2591^2571^america/guayaquil^-5.0^-5.0^-5.0^2007-01-03^y^n^atf^^samer^ca
@@ -655,7 +655,7 @@ ben^0^hllb^y^6297330^32.096786^20.269472^s^airp^ly^^^^^^0^131^121^africa/tripoli
 beo^0^ypec^y^7668757^-33.03^151.7^s^airp^au^^02^14650^^^0^0^2^australia/sydney^11.0^10.0^10.0^2011-06-04^y^n^ntl^ns^austl^a
 bep^0^vobi^y^6301119^15.162783^76.882775^s^airp^in^^^^^^0^9^467^asia/kolkata^5.5^5.5^5.5^2011-03-28^y^n^bep^^asia^ca
 beq^0^egxh^y^6296669^52.342611^0.772939^s^airb^gb^^eng^n5^42uf^^0^53^49^europe/london^0.0^1.0^0.0^2010-05-24^y^n^beq^^europ^ca
-ber^0^zzzz^y^8181624^52.516^13.3769^s^airp^de^^11^^^^0^0^48^europe/berlin^1.0^2.0^1.0^2012-01-25^y^y^ber^^europ^ca
+ber^0^eddb^y^8181624^52.516^13.3769^s^airp^de^^11^^^^0^0^48^europe/berlin^1.0^2.0^1.0^2012-05-13^y^y^ber^^europ^ca^berlin willy brandt airport^berlin brandenburg airport
 bes^0^lfrb^y^6299451^48.447911^-4.418539^s^airp^fr^^a2^29^291^29075^0^99^90^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^bes^^europ^ca
 bet^0^pabe^y^5880572^60.779778^-161.838^s^airp^us^^ak^050^^^0^31^38^america/anchorage^-9.0^-8.0^-9.0^2006-10-29^y^y^bet^ak^namer^ca
 beu^0^ybie^y^7730242^-24.346111^139.460278^s^airp^au^^04^32750^^^0^0^91^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^y^beu^ql^austl^ca
@@ -752,7 +752,7 @@ bik^0^wabb^y^6301180^-1.190017^136.107997^s^airp^id^^^^^^0^14^13^asia/jayapura^9
 bil^0^kbil^y^5663220^45.807667^-108.542889^s^airp^us^^mt^111^^^0^1091^1087^america/denver^-7.0^-6.0^-7.0^2009-09-14^y^y^bil^mt^namer^ca
 bim^0^mybs^y^6299936^25.699881^-79.264656^s^airp^bs^^05^^^^0^3^9^america/nassau^-5.0^-4.0^-5.0^2011-02-17^y^y^bim^^carib^ca^bimini international airport
 bin^0^oabn^y^7668387^34.8^67.82^s^airp^af^^05^^^^0^0^2523^asia/kabul^4.5^4.5^4.5^2011-02-17^y^n^bin^^meast^ca
-bio^0^lebb^y^6299328^43.301097^-2.910608^s^airp^es^^59^bi^48903^^0^42^35^europe/madrid^1.0^2.0^1.0^2012-04-13^y^y^bio^^europ^ac
+bio^0^lebb^y^6299328^43.301097^-2.910608^s^airp^es^^59^bi^48903^^0^42^35^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^bio^^europ^ac
 bip^0^zzzz^y^2207247^-16.15^143.8^p^pplx^au^^04^31000^^^0^0^17^australia/brisbane^10.0^10.0^10.0^2012-01-19^y^n^bip^ql^austl^ca
 biq^0^lfbz^y^6299382^43.468419^-1.523325^s^airp^fr^^97^64^641^64024^0^74^69^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^biq^^europ^ca
 bir^0^vnvt^y^6301117^26.481453^87.264036^s^airp^np^^^^^^0^71^74^asia/kathmandu^5.8^5.8^5.8^2007-01-03^y^y^bir^^asia^ca
@@ -891,7 +891,7 @@ bnu^0^ssbl^y^7730875^-26.93^-49.05^s^airp^br^^26^^^^0^0^19^america/sao_paulo^-2.
 bnv^0^zzzz^y^2099315^-6.417^146.8^p^ppl^pg^^14^^^^0^0^909^pacific/port_moresby^10.0^10.0^10.0^2012-05-05^y^n^bnv^^austl^ca
 bnw^0^kbnw^y^4849071^42.07^-93.88^s^airp^us^^ia^015^^^0^347^345^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^n^bnw^ia^namer^ca
 bnx^0^lqbk^y^6299693^44.77^17.18^s^airp^ba^^^^^^0^121^114^europe/sarajevo^1.0^2.0^1.0^2007-01-03^y^y^bnx^^europ^ca
-bny^0^zzzz^n^0^-11.3^159.8^s^airp^sb^^^^^^^^^sb^^^^-1^y^y^bny^^austl^ca
+bny^0^zzzz^n^0^-11.30247^159.79887^s^airp^sb^^^^^^^^^sb^^^^-1^y^y^bny^^austl^ca
 bnz^0^zzzz^y^2099887^-5.783^144.6^p^ppl^pg^^16^^^^0^0^1639^pacific/port_moresby^10.0^10.0^10.0^2012-05-05^y^n^bnz^^austl^ca
 boa^0^fzaj^y^7730552^-5.817^13.07^s^airp^cd^^08^^^^0^0^7^africa/kinshasa^1.0^1.0^1.0^2011-03-17^y^n^boa^^afric^ca
 bob^0^nttb^y^6299965^-16.444378^-151.751286^s^airp^pf^^^^^^0^3^6^pacific/tahiti^-10.0^-10.0^-10.0^2007-01-03^y^y^bob^^pacif^ca
@@ -990,7 +990,7 @@ bsh^0^zzzz^y^2654710^50.83^-0.1333^p^ppl^gb^^eng^e2^^^139001^0^29^europe/london^
 bsi^0^zzzz^n^0^40.43^-79.27^s^airp^us^^^^^^^^^us105^^^^-1^y^n^bsi^pa^namer^ca
 bsj^0^ybns^y^7668688^-37.8875^147.567778^s^airp^au^^07^22110^^^0^0^52^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^n^bsj^vi^austl^ca
 bsk^0^daub^y^6296387^34.793289^5.738231^s^airp^dz^^^^^^0^88^76^africa/algiers^1.0^1.0^1.0^2011-03-28^y^y^bsk^^afric^ca
-bsl^0^lfsb^y^6299466^47.6^7.533^s^airp^fr^^c1^68^^^0^269^263^europe/paris^1.0^2.0^1.0^2011-06-15^y^y^eap^^europ^a^euroairport basel-mulhouse-freiburg^basel-mulhouse
+bsl^0^lfsb^y^6299466^47.6^7.533^s^airp^fr^^c1^68^^^0^269^263^europe/paris^1.0^2.0^1.0^2011-06-15^y^y^eap^^europ^a^basel-mulhouse^euroairport basel-mulhouse-freiburg
 bsm^0^oinj^y^7730746^36.65^52.35^s^airp^ir^^35^^^^0^0^235^asia/tehran^3.5^4.5^3.5^2011-03-17^y^n^bsm^^meast^ca
 bsn^0^fefs^y^6296979^6.5^17.43^s^airp^cf^^^^^^0^464^468^africa/bangui^1.0^1.0^1.0^2011-03-28^y^n^bsn^^afric^ca
 bso^0^rpuo^y^6300486^20.451322^121.979883^s^airp^ph^^^^^^0^88^68^asia/manila^8.0^8.0^8.0^2011-03-28^y^y^bso^^pacif^ca
@@ -1204,7 +1204,7 @@ cbk^0^kcbk^y^5445199^39.42^-101.1^s^airf^us^^ks^193^^^0^966^970^america/chicago^
 cbl^0^svcb^y^3645533^8.121898^-63.537353^s^airp^ve^^06^0705^^^0^60^49^america/caracas^-4.5^-4.5^-4.5^2012-01-03^y^n^cbl^^samer^ca
 cbm^0^kcbm^y^6297932^33.643833^-88.443833^s^airb^us^^ms^^^^0^66^59^america/chicago^-6.0^-5.0^-6.0^2009-11-14^y^n^ubs^ms^namer^a
 cbn^0^wicd^y^6785165^-6.75^108.5^s^airp^id^^30^^^^0^0^19^asia/jakarta^7.0^7.0^7.0^2011-03-28^y^n^cbn^^seasi^ca
-cbo^0^rpwc^y^1716767^7.2^124.2^s^airf^ph^^14^56^^^0^0^50^asia/manila^8.0^8.0^8.0^2011-04-11^y^y^cbo^^pacif^ca^awang airport
+cbo^0^rpwc^y^1716767^7.2^124.2^s^airp^ph^^14^56^^^0^0^50^asia/manila^8.0^8.0^8.0^2012-05-13^y^y^cbo^^pacif^ca^cotabato airport^awang airport
 cbp^0^lpco^y^7730101^40.15^-8.467^s^airp^pt^^07^0603^060304^^0^0^169^europe/lisbon^0.0^1.0^0.0^2011-08-28^y^n^cbp^^europ^ca
 cbq^0^dnca^y^2346228^4.976019^8.347197^s^airp^ng^^00^^^^0^64^63^africa/lagos^1.0^1.0^1.0^2007-01-03^y^y^cbq^^afric^ca
 cbr^0^yscb^y^6301342^-35.306944^149.195^s^airp^au^^01^^^^0^574^569^australia/sydney^11.0^10.0^10.0^2009-03-13^y^y^cbr^ac^austl^ca^canberra international airport
@@ -1266,7 +1266,7 @@ cdw^0^kcdw^y^5097708^40.87^-74.28^s^airp^us^^nj^013^^^0^54^51^america/new_york^-
 cdy^0^rpmu^y^7730761^7.017^118.5^s^airp^ph^^^^^^0^0^32^asia/manila^8.0^8.0^8.0^2011-03-17^y^n^cdy^^pacif^ca
 cdz^0^zzzz^y^2520600^36.53^-6.3^p^ppla2^es^^51^ca^11012^^126766^0^21^europe/madrid^1.0^2.0^1.0^2012-04-29^y^y^cdz^^europ^cr
 cea^0^zzzz^y^7730910^37.65^-97.25^s^airh^co^^29^^^^0^0^1008^america/bogota^-5.0^-5.0^-5.0^2011-03-17^y^n^ict^ks^namer^a
-ceb^0^rpvm^y^6452620^7.165242^124.209619^s^airp^ph^^00^d4^^^0^9^10^asia/manila^8.0^8.0^8.0^2010-08-14^y^y^ceb^^pacif^ca
+ceb^0^rpvm^y^6452620^10.3085^123.98028^s^airp^ph^^00^d4^^^0^9^10^asia/manila^8.0^8.0^8.0^2012-05-13^y^y^ceb^^pacif^ca
 cec^0^kcec^y^5565800^41.780158^-124.236533^s^airf^us^^ca^015^^^0^17^18^america/los_angeles^-8.0^-7.0^-8.0^2012-04-09^y^y^cec^ca^namer^ca
 ced^0^ypcd^y^6301325^-32.13^133.7^s^airp^au^^05^41010^^^0^23^19^australia/adelaide^10.5^9.5^9.5^2011-06-04^y^y^ced^sa^austl^ca
 cee^0^ulbc^y^7730189^59.28^38.07^s^airp^ru^^85^^^^0^0^111^europe/moscow^4.0^4.0^4.0^2011-03-16^y^y^cee^^euras^ca
@@ -1299,7 +1299,7 @@ cff^0^fncf^y^7730517^-12.78^15.72^s^airp^ao^^17^^^^0^0^845^africa/luanda^1.0^1.0
 cfg^0^mucf^y^6299918^22.15^-80.414167^s^airp^cu^^^^^^0^31^31^america/havana^-5.0^-4.0^-5.0^2007-01-03^y^y^cfg^^carib^ca
 cfh^0^zzzz^n^0^-26.52^139.5^s^airp^au^^^^^^^^^au009^^^^-1^y^n^cfh^sa^austl^ca
 cfi^0^ycfd^y^7730911^-17.15^131.4^s^airp^au^^03^74500^^^0^0^128^australia/darwin^9.5^9.5^9.5^2011-06-04^y^n^cfi^nt^austl^ca
-cfk^0^daoi^y^6296379^36.21266^1.33178^s^airp^dz^^^^^^0^141^141^africa/algiers^1.0^1.0^1.0^2012-04-23^y^y^cfk^^afric^ca^aboubakr belkaid airport^ech cheliff airport
+cfk^0^daoi^y^6296379^36.21266^1.33178^s^airp^dz^^^^^^0^141^141^africa/algiers^1.0^1.0^1.0^2012-04-23^y^y^cfk^^afric^ca^ech cheliff airport^aboubakr belkaid airport
 cfn^0^eidl^y^7668216^55.05^-8.333^s^airp^ie^^^^^^0^0^3^europe/dublin^0.0^1.0^0.0^2011-02-17^y^y^cfn^^europ^ca
 cfo^0^sjhg^y^7730912^-10.63^-51.57^s^airp^br^^14^^^^0^0^234^america/cuiaba^-3.0^-4.0^-4.0^2011-03-17^y^n^cfo^mt^samer^ca
 cfp^0^zzzz^n^0^-18.78^144.4^s^airp^au^^^^^^^^^au131^^^^-1^y^n^cfp^ql^austl^ca
@@ -1420,7 +1420,7 @@ cla^0^vgcm^y^7730922^23.43^91.18^s^airp^bd^^^^^^0^0^11^asia/dhaka^6.0^6.0^6.0^20
 clc^0^zzzz^n^0^29.55^-95.13^s^airp^us^^^^^^^^^us107^^^^-1^y^n^clc^tx^namer^ca
 cld^0^kcrq^y^5371378^33.13^-117.3^s^airp^us^^ca^073^^^0^97^98^america/los_angeles^-8.0^-7.0^-8.0^2010-12-29^y^y^san^ca^namer^a
 cle^0^kcle^y^5150584^41.411689^-81.849794^s^airp^us^^oh^035^^^0^238^235^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^y^cle^oh^namer^ca
-clf^0^zzzz^y^2652525^64.2567900^-149.1870900^p^ppl^gb^^eng^i9^33uc^^2209^0^16^europe/london^0.0^1.0^0.0^2011-03-03^n^n^clf^^europ^o
+clf^0^zzzz^y^2652525^64.2567900^-149.1870900^p^ppl^gb^^eng^i9^33uc^^2209^0^16^europe/london^0.0^1.0^0.0^2012-05-12^n^n^clf^^europ^o
 clg^0^zzzz^y^5338207^36.15^-120.4^s^airp^us^^ca^019^^^0^213^215^america/los_angeles^-8.0^-7.0^-8.0^2011-03-25^y^n^clg^ca^namer^ca
 clh^0^ycah^y^7730923^-31.83^149.7^s^airp^au^^02^18020^^^0^0^505^australia/sydney^11.0^10.0^10.0^2011-06-04^y^n^clh^ns^austl^ca
 cli^0^zzzz^y^7730924^44.62^-88.77^s^airh^co^^34^^^^0^0^2549^america/bogota^-5.0^-5.0^-5.0^2011-03-17^y^n^cli^wi^namer^ca
@@ -1525,7 +1525,7 @@ cpd^0^ycbp^y^7668697^-29.04^134.720833^s^airp^au^^05^41330^^^0^0^225^australia/a
 cpe^0^mmcp^y^6299835^19.816794^-90.500314^s^airp^mx^^^^^^0^10^4^america/merida^-6.0^-5.0^-6.0^2007-01-03^y^y^cpe^^namer^ca
 cpf^0^warc^y^7730935^-7.183^111.5^s^airp^id^^07^^^^0^0^45^asia/jakarta^7.0^7.0^7.0^2011-03-17^y^n^cpf^^seasi^ca
 cpg^0^zzzz^n^0^-40.8^-62.98^s^airp^ar^^^^^^^^^ar003^^^^-1^y^n^cpg^ba^samer^ca
-cph^0^ekch^y^2619034^55.617917^12.655972^s^airp^dk^^17^185^^^0^5^3^europe/copenhagen^1.0^2.0^1.0^2012-04-30^y^y^cph^^europ^ca^copenhagen airport^kastrup airport
+cph^0^ekch^y^2619034^55.617917^12.655972^s^airp^dk^^17^185^^^0^5^3^europe/copenhagen^1.0^2.0^1.0^2012-04-30^y^y^cph^^europ^ca^kastrup airport^copenhagen airport
 cpi^0^zzzz^n^0^-5.433^152.1^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^cpi^^austl^ca
 cpl^0^skha^y^7730936^3.7^-75.75^s^airp^co^^28^^^^0^0^814^america/bogota^-5.0^-5.0^-5.0^2011-03-17^y^n^cpl^^samer^ca
 cpm^0^kcpm^y^5339068^33.9^-118.2^s^airp^us^^ca^037^^^0^28^35^america/los_angeles^-8.0^-7.0^-8.0^2011-12-12^y^n^cpm^ca^namer^ca
@@ -1919,7 +1919,7 @@ dnf^0^zzzz^y^7730981^32.55^22.77^s^airp^ly^^55^^^^0^0^327^africa/tripoli^2.0^2.0
 dng^0^zzzz^n^0^55.044192^-8.341^s^airp^au^^^^^^^^^au011^^^^-1^y^n^dng^wa^austl^ca
 dnh^0^zldh^y^7730287^40.1611^94.8092^s^airp^cn^^15^^^^0^0^1126^asia/urumqi^8.0^8.0^8.0^2011-03-16^y^y^dnh^^asia^ca
 dni^0^zzzz^y^8260921^14.38^33.53^s^airp^sd^^27^^^^0^0^405^africa/khartoum^3.0^3.0^3.0^2012-04-29^y^n^dni^^afric^ca
-dnk^0^ukdd^y^6300954^48.357222^35.100556^s^airp^ua^^^^^^0^146^147^europe/zaporozhye^2.0^3.0^2.0^2007-01-03^y^y^dnk^^euras^ca
+dnk^0^ukdd^y^6300954^48.357222^35.100556^s^airp^ua^^^^^^0^146^147^europe/zaporozhye^2.0^3.0^2.0^2012-05-12^y^y^dnk^^euras^ca^dnepropetrovsk international airport
 dnl^0^kdnl^y^4190665^33.47^-82.04^s^airp^us^^ga^245^^^0^131^125^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^ags^ga^namer^a
 dnm^0^yshk^y^7730274^-25.92^113.5^s^airp^au^^08^57770^^^0^0^37^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^dnm^wa^austl^ca
 dnn^0^kdnn^y^4190591^34.72^-84.87^s^airp^us^^ga^313^^^0^214^211^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^dnn^ga^namer^ca
@@ -2023,7 +2023,7 @@ duk^0^zzzz^n^0^-28.37^32.23^s^airp^za^^^^^^^^^za^^^^-1^y^n^duk^^afric^ca
 dum^0^wibd^y^7668672^1.609194^101.433558^s^airp^id^^37^^^^0^0^15^asia/jakarta^7.0^7.0^7.0^2011-02-17^y^n^dum^^seasi^ca
 dun^0^zzzz^n^0^76.57^-68.8^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^dun^^europ^ca
 duq^0^zzzz^n^0^48.78^-123.7^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^duq^bc^namer^ca
-dur^0^fale^y^984894^-29.61667^31.11667^s^airp^za^^02^^^^0^0^94^africa/johannesburg^2.0^2.0^2.0^2010-06-04^y^y^dur^^afric^ca^king shaka airport^king shaka international airport
+dur^0^fale^y^984894^-29.61667^31.11667^s^airp^za^^02^^^^0^0^94^africa/johannesburg^2.0^2.0^2.0^2010-06-04^y^y^dur^^afric^ca^king shaka international airport^king shaka airport
 dus^0^eddl^y^3206096^51.289453^6.766775^s^airp^de^^07^^^^0^44^39^europe/berlin^1.0^2.0^1.0^2011-03-28^y^y^dus^^europ^ca^düsseldorf international airport^airport dusseldorf
 dut^0^padu^y^5877197^53.900139^-166.5435^s^airp^us^^ak^016^^^0^23^18^america/nome^-9.0^-8.0^-9.0^2011-12-12^y^y^dut^ak^namer^ca
 dux^0^kdux^y^5526590^35.85782^-102.01351^s^airp^us^^tx^341^^^0^1128^1129^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^z^dux^tx^namer^a
@@ -2069,9 +2069,9 @@ eae^0^zzzz^y^6621049^-17.07^168.4^s^airf^vu^^14^^^^0^0^7^pacific/efate^11.0^11.0
 eal^0^zzzz^y^7303964^8.717^167.7^s^airf^mh^^150^^^^0^0^4^pacific/kwajalein^12.0^12.0^12.0^2010-08-05^y^y^eal^^pacif^ca
 eam^0^oeng^y^6300023^17.611436^44.419169^s^airp^sa^^^^^^0^1213^1211^asia/riyadh^3.0^3.0^3.0^2007-01-03^y^y^eam^^meast^ca
 ean^0^zzzz^n^0^42.05^-104.9^s^airp^us^^^^^^^^^us108^^^^-1^y^n^ean^wy^namer^ca
-eap^0^lfsb^y^6299466^47.6^7.533^s^airp^fr^^c1^68^^^0^269^263^europe/paris^1.0^2.0^1.0^2011-06-15^n^n^eap^^europ^c^basel-mulhouse^euroairport basel-mulhouse-freiburg
+eap^0^lfsb^y^6299466^47.6^7.533^s^airp^fr^^c1^68^^^0^269^263^europe/paris^1.0^2.0^1.0^2011-06-15^n^n^eap^^europ^c^euroairport basel-mulhouse-freiburg^basel-mulhouse
 ear^0^kear^y^5071377^40.73^-99.02^s^airp^us^^ne^019^^^0^648^649^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^ear^ne^namer^ca
-eas^0^leso^y^6299355^43.356519^-1.790611^s^airp^es^^59^ss^20036^^0^4^20^europe/madrid^1.0^2.0^1.0^2012-04-13^y^y^eas^^europ^ca
+eas^0^leso^y^6299355^43.356519^-1.790611^s^airp^es^^59^ss^20036^^0^4^20^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^eas^^europ^ca^san sebastián airport
 eat^0^keat^y^5806110^47.4^-120.2^s^airp^us^^wa^017^^^0^374^371^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^y^eat^wa^namer^ca
 eau^0^keau^y^5248531^44.865806^-91.484256^s^airp^us^^wi^017^^^0^270^266^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^eau^wi^namer^ca
 eba^0^lirj^y^6299623^42.760277^10.239445^s^airp^it^^16^li^049003^^0^9^3^europe/rome^1.0^2.0^1.0^2011-02-25^y^y^eba^^europ^ca
@@ -2088,7 +2088,7 @@ ebr^0^zzzz^n^0^30.53^-91.15^s^airp^us^^^^^^^^^us107^^^^-1^y^n^btr^la^namer^a
 ebs^0^kebs^y^4881106^42.47^-93.8^s^airp^us^^ia^079^^^0^340^337^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^n^ebs^ia^namer^ca
 ebu^0^lfmh^y^6299414^45.540554^4.296389^s^airp^fr^^b9^42^421^42005^0^403^397^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^ebu^^europ^ca
 ebw^0^fkkw^y^7668243^2.85^11.18^s^airp^cm^^14^^^^0^0^616^africa/douala^1.0^1.0^1.0^2011-02-17^y^n^ebw^^afric^ca
-eca^0^zzzz^y^4991692^-50.280322^-72.053103^p^ppl^us^^mi^069^^^2808^178^181^america/detroit^-5.0^-4.0^-5.0^2011-05-14^y^n^eca^mi^namer^ca
+eca^0^zzzz^y^4991692^44.2794600^-83.49025^p^ppl^us^^mi^069^^^2808^178^181^america/detroit^-5.0^-4.0^-5.0^2012-05-13^y^n^eca^mi^namer^ca
 ecg^0^kecg^y^4465092^36.260581^-76.174572^s^airp^us^^nc^139^^^0^2^5^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^ecg^nc^namer^ca
 ech^0^yech^y^7668709^-36.157222^144.761944^s^airp^au^^07^21370^^^0^0^101^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^n^ech^vi^austl^ca
 ecn^0^lcen^y^6299311^35.15^33.5^s^airp^cy^^04^^^^0^91^119^asia/nicosia^2.0^3.0^2.0^2011-11-21^y^y^ecn^^europ^ca
@@ -2220,7 +2220,7 @@ ena^0^paen^y^5866068^60.573111^-151.245^s^airp^us^^ak^122^^^0^29^28^america/anch
 enb^0^yeeb^y^7731004^-30.08^115^s^airp^au^^08^51470^^^0^0^80^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^enb^wa^austl^ca
 enc^0^lfsn^y^6299471^48.692069^6.230458^s^airp^fr^^b2^54^543^54526^0^228^213^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^etz^^europ^a
 end^0^kend^y^4554366^36.339167^-97.9165^s^airb^us^^ok^047^^^0^391^394^america/chicago^-6.0^-5.0^-6.0^2009-11-14^y^n^wdg^ok^namer^a
-ene^0^wate^y^7338057^-8.833^121.7^s^airp^id^^18^^^^0^0^13^asia/makassar^8.0^8.0^8.0^2012-01-21^y^y^ene^^seasi^ca^isi airport^h. hasan aroeboesman airport^ende airport
+ene^0^wate^y^7338057^-8.833^121.7^s^airp^id^^18^^^^0^0^13^asia/makassar^8.0^8.0^8.0^2012-01-21^y^y^ene^^seasi^ca^h. hasan aroeboesman airport^ende airport^isi airport
 enf^0^efet^y^6296537^68.362586^23.424322^s^airp^fi^^06^19^047^^0^306^300^europe/helsinki^2.0^3.0^2.0^2011-12-31^y^y^enf^^europ^ca
 enh^0^zhes^y^7731005^30.3203^109.485^s^airp^cn^^12^^^^0^0^488^asia/shanghai^8.0^8.0^8.0^2011-03-17^y^y^enh^^asia^ca
 eni^0^zzzz^y^7731006^10.33^123.8^s^airp^ph^^^^^^0^0^4^asia/manila^8.0^8.0^8.0^2011-03-17^y^y^eni^^pacif^ca
@@ -2378,7 +2378,7 @@ fba^0^zzzz^y^8260811^-2.53361^-66.0672^s^airp^br^^04^^^^0^0^66^america/manaus^-4
 fbd^0^oafz^y^6300000^37.08^70.5^s^airp^af^^^^^^0^1200^1167^asia/kabul^4.5^4.5^4.5^2006-10-28^y^n^fbd^^meast^ca
 fbe^0^ssfb^y^7731020^-26.08^-53.07^s^airp^br^^18^^^^0^0^644^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-17^y^y^fbe^pr^samer^ca
 fbg^0^kfbg^y^4454240^35.131828^-78.936694^s^airp^us^^nc^051^^^0^56^65^america/new_york^-5.0^-4.0^-5.0^2010-02-16^y^n^fbg^nc^namer^ca
-fbk^0^pafb^y^5877545^64.83179^-147.61601^s^airf^us^^ak^090^^^0^136^134^america/anchorage^-9.0^-8.0^-9.0^2012-04-09^y^n^fai^ak^namer^a^fairbanks airfield^ladd aff^fort jonathan wainwright airfield
+fbk^0^pafb^y^5877545^64.83179^-147.61601^s^airf^us^^ak^090^^^0^136^134^america/anchorage^-9.0^-8.0^-9.0^2012-04-09^y^n^fai^ak^namer^a^ladd aff^fort jonathan wainwright airfield^fairbanks airfield
 fbl^0^kfbl^y^5026298^44.33^-93.32^s^airp^us^^mn^131^^^0^319^317^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^n^fbl^mn^namer^ca
 fbm^0^fzqa^y^6297154^-11.591333^27.530889^s^airp^cd^^^^^^0^1309^1297^africa/lubumbashi^2.0^2.0^2.0^2007-01-03^y^y^fbm^^afric^ca
 fbr^0^zzzz^y^5825393^41.32^-110.4^p^ppl^us^^wy^041^^^345^2034^2041^america/denver^-7.0^-6.0^-7.0^2011-05-14^y^n^fbr^wy^namer^ca
@@ -2638,7 +2638,7 @@ gax^0^zzzz^y^7731042^-2.77^9.98^s^airp^ga^^08^^^^0^0^27^africa/libreville^1.0^1.
 gay^0^vegy^y^6301072^24.75^84.95^s^airp^in^^^^^^0^115^115^asia/kolkata^5.5^5.5^5.5^2011-03-28^y^y^gay^^asia^ca
 gaz^0^zzzz^y^8260823^-9.23^153^s^airp^pg^^^^^^0^0^-9999^pacific/port_moresby^10.0^10.0^10.0^2012-04-29^y^n^gaz^^austl^ca
 gba^0^zzzz^n^0^-16.05^167.4^s^airp^vu^^^^^^^^^vu115^^^^-1^y^n^gba^^austl^ca
-gbb^0^ubbq^y^8181785^26.15^-7.35^s^airp^az^^^^^^0^0^344^asia/baku^4.0^5.0^4.0^2012-02-05^y^n^gbb^^euras^ca^gabala^qabala
+gbb^0^ubbq^y^8181785^26.15^-7.35^s^airp^az^^^^^^0^0^344^asia/baku^4.0^5.0^4.0^2012-02-05^y^n^gbb^^euras^ca^qabala^gabala
 gbc^0^zzzz^n^0^-6.1^141.7^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^gbc^^austl^ca
 gbd^0^kgbd^y^4272345^38.35^-98.87^s^airp^us^^ks^009^^^0^576^582^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^gbd^ks^namer^ca
 gbe^0^fbsk^y^6296949^-24.55^25.92^s^airp^bw^^^^^^0^1005^1007^africa/gaborone^2.0^2.0^2.0^2007-01-03^y^y^gbe^^afric^ca
@@ -3067,7 +3067,7 @@ hei^0^zzzz^n^0^54.15^8.9^s^airp^de^^^^^^^^^de040^^^^-1^y^n^hei^^europ^ca
 hek^0^zyhe^y^7730308^50.25^127.3^s^airp^cn^^08^^^^0^0^317^asia/harbin^8.0^8.0^8.0^2011-03-16^y^y^hek^^asia^ca
 hel^0^efhk^y^6301511^60.317222^24.963333^s^airp^fi^^13^01^092^^0^54^54^europe/helsinki^2.0^3.0^2.0^2011-12-31^y^y^hel^^europ^ca
 hem^0^efhf^y^6296539^60.254558^25.042828^s^airp^fi^^13^01^091^^0^17^17^europe/helsinki^2.0^3.0^2.0^2011-12-31^y^n^hel^^europ^a
-hen^0^efhe^y^8181797^51.58^-0.2333^s^airh^fi^^13^01^091^^0^5^-9999^europe/helsinki^2.0^3.0^2.0^2012-02-02^y^y^hel^^europ^h
+hen^0^efhe^y^8181797^60.14768^24.92437^s^airh^fi^^13^01^091^^0^5^-9999^europe/helsinki^2.0^3.0^2.0^2012-02-02^y^y^hel^^europ^h
 heo^0^zzzz^n^0^-9.133^147.6^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^heo^^austl^ca
 her^0^lgir^y^6299488^35.339719^25.180297^s^airp^gr^^esye43^45^9305^^0^35^22^europe/athens^2.0^3.0^2.0^2012-01-17^y^y^her^^europ^ca^heraklion international airport nikos kazantzakis
 hes^0^zzzz^y^5731070^45.85^-119.3^p^ppl^us^^or^059^^^16745^140^140^america/los_angeles^-8.0^-7.0^-8.0^2011-05-14^y^n^hes^or^namer^ca
@@ -3396,7 +3396,7 @@ ifn^0^oifm^y^6300052^32.750836^51.861267^s^airp^ir^^^^^^0^1541^1542^asia/tehran^
 ifo^0^ukli^y^6300962^48.884167^24.686111^s^airp^ua^^^^^^0^280^276^europe/uzhgorod^2.0^3.0^2.0^2011-03-28^y^y^ifo^^euras^ca^ivano-frankivsk
 ifp^0^kifp^y^5301601^35.15^-114.6^s^airp^us^^az^015^^^0^193^194^america/phoenix^-7.0^-7.0^-7.0^2006-10-29^y^n^ifp^az^namer^ca
 ifr^0^lfmi^y^6299415^43.5227400^4.9238400^s^airp^fr^^b8^13^134^13047^0^24^19^europe/paris^1.0^2.0^1.0^2012-02-27^y^z^ifr^b8^europ^a
-iga^0^myig^y^3572153^20.975^-73.666862^s^airp^bs^^13^^^^0^0^8^america/nassau^-5.0^-4.0^-5.0^2011-03-28^y^y^iga^^carib^ca^inagua airport^matthew town airport
+iga^0^myig^y^3572153^20.975^-73.666862^s^airp^bs^^13^^^^0^0^8^america/nassau^-5.0^-4.0^-5.0^2011-03-28^y^y^iga^^carib^ca^matthew town airport^inagua airport
 igb^0^savj^y^7730771^-41.3^-69.58^s^airp^ar^^16^^^^0^0^886^america/argentina/salta^-3.0^-3.0^-3.0^2011-03-17^y^n^igb^rn^samer^ca
 igc^0^kigc^y^6301615^32.9000000^-80.0500000^s^airb^us^^sc^^^^0^14^14^america/new_york^-5.0^-4.0^-5.0^2011-03-13^y^n^igc^sc^namer^a
 ige^0^zzzz^n^0^-1.917^9.317^s^airp^ga^^^^^^^^^ga^^^^-1^y^n^ige^^afric^ca
@@ -3439,12 +3439,12 @@ ila^0^wabl^y^7731113^-3.833^137.6^s^airp^id^^36^^^^0^0^1920^asia/jayapura^9.0^9.
 ilb^0^zzzz^n^0^-20.33^-51.33^s^airp^br^^^^^^^^^br017^^^^-1^y^n^ilb^ms^samer^ca
 ild^0^zzzz^y^3118514^41.7281^0.53528^p^ppla2^es^^56^l^25120^^135919^155^183^europe/madrid^1.0^2.0^1.0^2011-07-02^y^y^ild^^europ^ca
 ile^0^kile^y^6298447^31.15^-97.72^s^airp^us^^tx^^^^0^259^249^america/chicago^-6.0^-5.0^-6.0^2007-03-30^y^n^ile^tx^namer^ca
-ilf^0^zzzz^n^0^56.07^-95.58^s^airp^ca^^^^^^^^^ca027^^^^-1^y^y^ilf^mb^namer^ca
+ilf^0^zzzz^n^0^56.05148^-95.61401^s^airp^ca^^^^^^^^^ca027^^^^-1^y^y^ilf^mb^namer^ca
 ilg^0^kilg^y^4142728^39.678722^-75.606528^s^airp^us^^de^003^^^0^22^20^america/new_york^-5.0^-4.0^-5.0^2010-07-31^y^n^ilg^de^namer^ca
 ilh^0^zzzz^y^2896543^50.93^6.95^p^ppla4^de^^02^095^09575^09575133^824^0^332^europe/berlin^1.0^2.0^1.0^2011-04-25^y^n^ilh^^europ^ca
 ili^0^pail^y^5864632^59.754356^-154.910961^s^airp^us^^ak^164^^^0^46^52^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^ili^ak^namer^ca
 ilk^0^fmmq^y^7730509^-19.75^48.82^s^airp^mg^^^^^^0^0^9^indian/antananarivo^3.0^3.0^3.0^2011-03-17^y^n^ilk^^afric^ca
-ill^0^bgll^y^7730418^45.12^-95.1^s^airh^gl^^03^^^^0^0^516^america/godthab^-3.0^-2.0^-3.0^2011-03-17^y^n^ill^mn^namer^ca
+ill^0^kbdh^y^5052922^45.11485^-95.13126^s^airf^us^^mn^067^^^0^342^338^america/chicago^-6.0^-5.0^-6.0^2012-05-13^y^n^ill^mn^namer^ca^willmar municipal airport^willmar airport
 ilm^0^kilm^y^6301617^34.270615^-77.902569^s^airp^us^^nc^^^^0^10^1^america/new_york^-5.0^-4.0^-5.0^2010-12-29^y^y^ilm^nc^namer^ca
 iln^0^kiln^y^4505054^39.42^-83.8^s^airp^us^^oh^027^^^0^321^319^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^n^iln^oh^namer^ca
 ilo^0^rpvi^y^6300496^10.713044^122.545297^s^airp^ph^^^^^^0^8^39^asia/manila^8.0^8.0^8.0^2012-01-25^y^y^ilo^^pacif^ca
@@ -3467,7 +3467,7 @@ imm^0^kimm^y^4159554^26.42^-81.42^s^airp^us^^fl^021^^^0^9^12^america/new_york^-5
 imn^0^zzzz^n^0^-6.7^146.1^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^imn^^austl^ca
 imo^0^fefz^y^7668234^5.033^25.13^s^airp^cf^^05^^^^0^0^610^africa/bangui^1.0^1.0^1.0^2011-02-17^y^n^imo^^afric^ca
 imp^0^sbiz^y^6300634^-5.531292^-47.46005^s^airp^br^^^^^^0^131^131^america/araguaina^-3.0^-3.0^-3.0^2007-01-03^y^y^imp^ma^samer^ca
-imr^0^zzzz^n^0^45.4333^9.23833^s^airp^it^^^^^^^^^it067^^^^-1^y^y^mil^^europ^r
+imr^0^zzzz^y^3173421^45.4333^9.23833^s^rstn^it^it^09^mi^015146^^0^0^110^europe/rome^1.0^2.0^1.0^2012-05-14^y^y^mil^^europ^r
 imt^0^kimt^y^4993069^45.82^-88.12^s^airp^us^^mi^043^^^0^343^341^america/menominee^-6.0^-5.0^-6.0^2011-12-12^y^y^imt^mi^namer^ca
 ina^0^uuyi^y^7668557^66.07^60.1^s^airp^ru^^34^^^^0^0^45^europe/moscow^4.0^4.0^4.0^2011-02-17^y^n^ina^^euras^ca
 inb^0^zzzz^y^3581743^16.53^-88.43^s^airf^bz^^05^^^^0^0^14^america/belize^-6.0^-6.0^-6.0^2011-04-10^y^y^inb^^camer^ca^independence airport
@@ -3504,7 +3504,7 @@ ior^0^eiim^y^7668217^53.12^-9.75^s^airp^ie^^^^^^0^0^5^europe/dublin^0.0^1.0^0.0^
 ios^0^sbil^y^6300633^-14.815964^-39.033197^s^airp^br^^^^^^0^4^3^america/bahia^-2.0^-3.0^-3.0^2006-10-29^y^y^ios^ba^samer^ca
 iou^0^nwwo^y^7730724^-22.42^166.8^s^airp^nc^^^^^^0^0^0^pacific/noumea^11.0^11.0^11.0^2011-03-17^y^n^iou^^austl^ca
 iow^0^kiow^y^4862048^41.67^-91.53^s^airp^us^^ia^103^^^0^198^198^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^n^iow^ia^namer^ca
-ipa^0^zzzz^n^0^-18.75^169.2^s^airp^vu^^^^^^^^^vu115^^^^-1^y^y^ipa^^austl^ca
+ipa^0^zzzz^n^0^-18.85675^169.28267^s^airp^vu^^^^^^^^^vu115^^^^-1^y^y^ipa^^austl^ca
 ipc^0^scip^y^4030749^-27.164792^-109.421831^s^airp^cl^^01^^^^0^69^61^pacific/easter^-5.0^-6.0^-6.0^2007-01-03^y^y^ipc^^samer^ca
 ipe^0^zzzz^n^0^7.783^122.6^s^airp^ph^^^^^^^^^ph^^^^-1^y^n^ipe^^pacif^ca
 ipg^0^swii^y^7731118^-3.333^-69.42^s^airp^br^^04^^^^0^0^71^america/manaus^-4.0^-4.0^-4.0^2011-03-17^y^n^ipg^am^samer^ca
@@ -3616,7 +3616,7 @@ ixy^0^vake^y^7668573^23.112719^70.100289^s^airp^in^^09^^^^0^0^30^asia/kolkata^5.
 ixz^0^vopb^y^7910160^11.641161^92.729744^s^airp^in^^01^^^^0^0^12^asia/kolkata^5.5^5.5^5.5^2011-07-20^y^y^ixz^^asia^ca^port blair
 iyk^0^kiyk^y^5359624^35.65^-117.8^s^airp^us^^ca^029^^^0^745^748^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^y^iyk^ca^namer^ca
 iys^0^paws^y^5869877^61.57194^-149.54056^s^airp^us^^ak^170^^^0^108^105^america/anchorage^-9.0^-8.0^-9.0^2006-10-29^y^z^iys^ak^namer^a
-iza^0^fawk^y^941772^-25.83^28.2225^s^airp^za^^06^^^^0^1505^1496^africa/johannesburg^2.0^2.0^2.0^2007-01-03^y^y^jdf^mg^samer^a
+iza^0^sbzm^y^8288520^-25.83^28.2225^s^airp^br^^15^^^^0^0^519^america/sao_paulo^-2.0^-3.0^-3.0^2012-05-13^y^y^jdf^mg^samer^a^presidente itamar franco airport^zona da mata regional airport
 izg^0^kizg^y^4963465^43.99063^-70.94646^s^airp^us^^me^017^^^0^133^131^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^z^izg^me^namer^a
 izm^0^zzzz^y^311046^38.52^27.02^p^ppla^tr^^35^^^^2500603^0^122^europe/istanbul^2.0^3.0^2.0^2012-01-18^n^n^izm^^euras^c
 izo^0^rjoc^y^6300373^35.413611^132.89^s^airp^jp^^^^^^0^4^254^asia/tokyo^9.0^9.0^9.0^2007-01-03^y^y^izo^^asia^ca
@@ -3671,7 +3671,7 @@ jcx^0^zzzz^n^0^34.05^-118.3^s^airp^us^^^^^^^^^us110^^^^-1^y^n^lax^ca^namer^a
 jcy^0^zzzz^n^0^32.33^-97.33^s^airp^us^^^^^^^^^us107^^^^-1^y^n^jcy^tx^namer^ca
 jda^0^kgcd^y^6457343^44.42^-119^s^airp^us^^or^023^^^0^1127^1121^america/los_angeles^-8.0^-7.0^-8.0^2007-04-05^y^n^jda^or^namer^ca
 jdb^0^zzzz^n^0^32.77^-97.32^s^airp^us^^^^^^^^^us107^^^^-1^y^n^dfw^tx^namer^h
-jdf^0^sbjf^y^6301854^-21.7915^-43.386778^s^airp^br^^^^^^0^911^915^america/sao_paulo^-2.0^-3.0^-3.0^2007-01-03^y^y^jdf^mg^samer^ca
+jdf^0^sbjf^y^6301854^-21.7915^-43.386778^s^airp^br^^^^^^0^911^915^america/sao_paulo^-2.0^-3.0^-3.0^2012-05-13^y^y^jdf^mg^samer^ca
 jdg^0^rkpd^y^8224621^33.3983^126.713^s^airp^kr^^01^^^^0^0^347^asia/seoul^9.0^9.0^9.0^2012-03-24^y^n^jdg^^asia^c,a^jungseok airport
 jdh^0^vijo^y^6301100^26.251092^73.048869^s^airp^in^^^^^^0^218^215^asia/kolkata^5.5^5.5^5.5^2011-03-28^y^y^jdh^^asia^ca
 jdk^0^zzzz^n^0^40.6386^-73.7622^s^airp^us^^^^^^^^^us105^^^^-1^y^n^jdk^ny^namer^ca
@@ -3924,7 +3924,7 @@ kcg^0^zzzz^y^5859197^56.3^-158.4^s^airp^us^^ak^164^^^0^7^5^america/anchorage^-9.
 kch^0^wbgg^y^1734503^1.484697^110.346933^s^airp^my^^11^^^^0^27^27^asia/kuching^8.0^8.0^8.0^2007-01-03^y^y^kch^^seasi^ca
 kci^0^zzzz^y^7731161^-2.533^140.7^s^airp^tl^^^^^^0^0^12^asia/dili^9.0^9.0^9.0^2011-03-17^y^n^kci^^seasi^ca
 kcj^0^zzzz^y^2093635^-7.267^143.6^p^ppl^pg^^02^^^^0^0^31^pacific/port_moresby^10.0^10.0^10.0^2012-05-05^y^n^kcj^^austl^ca
-kck^0^zzzz^y^2022083^39.12^-94.65^p^ppl^ru^^20^^^^13308^0^254^asia/irkutsk^9.0^9.0^9.0^2012-01-17^y^n^kck^^euras^ca
+kck^0^uikk^y^6300948^57.77273^108.06461^s^airf^ru^^20^^^^0^258^260^asia/irkutsk^9.0^9.0^9.0^2012-05-14^y^n^kck^^euras^ca
 kcl^0^zzzz^y^5859203^56.3^-158.5^s^airp^us^^ak^164^^^0^2^6^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^kcl^ak^namer^ca
 kcm^0^ltcn^y^7591522^37.538967^36.953411^s^airp^tr^^46^^^^0^0^504^europe/istanbul^2.0^3.0^2.0^2011-03-28^y^y^kcm^^euras^ca
 kcn^0^zzzz^y^5859091^53.4^-167.6^p^ppl^us^^ak^016^^^0^0^-9999^america/nome^-9.0^-8.0^-9.0^2010-01-30^y^n^kcn^ak^namer^ca
@@ -4334,7 +4334,7 @@ kwb^0^wicm^y^7731199^-5.85^110.5^s^airp^id^^^^^^0^0^8^asia/jakarta^7.0^7.0^7.0^2
 kwd^0^zzzz^n^0^-8^23.23^s^airp^cf^^^^^^^^^cf^^^^-1^y^n^kwd^^afric^ca
 kwe^0^zugy^y^6301391^26.538522^106.800703^s^airp^cn^^^^^^0^1138^1130^asia/chongqing^8.0^8.0^8.0^2007-01-03^y^y^kwe^^asia^ca
 kwf^0^zzzz^y^5558363^55.3^-133.3^s^airp^us^^ak^198^^^0^10^-9999^america/metlakatla^-8.0^-8.0^-8.0^2011-12-12^y^y^kwf^ak^namer^ca
-kwg^0^ukdr^y^6300956^48.043333^33.21^s^airp^ua^^^^^^0^124^118^europe/zaporozhye^2.0^3.0^2.0^2007-01-03^y^y^kwg^^euras^ca
+kwg^0^ukdr^y^6300956^48.043333^33.21^s^airp^ua^^^^^^0^124^118^europe/zaporozhye^2.0^3.0^2.0^2012-05-12^y^y^kwg^^euras^ca^lozovatka international airport^krivoy rog international airport
 kwh^0^oahn^y^7730738^37.88^70.2^s^airp^af^^01^^^^0^0^1010^asia/kabul^4.5^4.5^4.5^2011-03-17^y^n^kwh^^meast^ca
 kwi^0^okbk^y^6300091^29.226567^47.968928^s^airp^kw^^^^^^0^62^43^asia/kuwait^3.0^3.0^3.0^2007-01-03^y^y^kwi^^meast^ca
 kwj^0^rkjj^y^6300415^35.126389^126.808889^s^airp^kr^^^^^^0^11^13^asia/seoul^9.0^9.0^9.0^2007-01-03^y^y^kwj^^asia^ca
@@ -4443,7 +4443,7 @@ lcc^0^libn^y^6299539^40.239228^18.133325^s^airp^it^^13^le^075029^^0^47^46^europe
 lcd^0^falo^y^981825^-23.02^29.72^s^airf^za^za^09^^^^0^0^916^africa/johannesburg^2.0^2.0^2.0^2011-06-15^y^n^lcd^^afric^ca
 lce^0^mhlc^y^6299812^15.742481^-86.853036^s^airp^hn^^^^^^0^14^17^america/tegucigalpa^-6.0^-6.0^-6.0^2007-01-03^y^y^lce^^camer^ca
 lcf^0^zzzz^y^7731211^15.67^-88.95^s^airp^gt^^09^^^^0^0^15^america/guatemala^-6.0^-6.0^-6.0^2011-03-17^y^n^lcf^^camer^ca
-lcg^0^leco^y^6299332^43.302061^-8.377256^s^airp^es^^58^c^15031^^0^99^90^europe/madrid^1.0^2.0^1.0^2011-03-28^y^y^lcg^^europ^ca
+lcg^0^leco^y^6299332^43.302061^-8.377256^s^airp^es^^58^c^15031^^0^99^90^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^lcg^^europ^ca^a coruña airport
 lch^0^klch^y^4330249^30.126112^-93.223335^s^airp^us^^la^019^^^0^4^6^america/chicago^-6.0^-5.0^-6.0^2010-12-29^y^y^lch^la^namer^ca
 lci^0^klci^y^5088444^43.57^-71.42^s^airp^us^^nh^001^^^0^160^161^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^n^lci^nh^namer^ca
 lcj^0^epll^y^3093127^51.72^19.4^s^airp^pl^^74^^^^0^0^173^europe/warsaw^1.0^2.0^1.0^2012-01-19^y^y^lcj^^eeuro^ca^lodz wladyslaw reymont airport
@@ -4554,7 +4554,7 @@ lhr^0^egll^y^2647216^51.4775^-0.461389^s^airp^gb^^eng^gla^f9^^0^0^27^europe/lond
 lhs^0^savh^y^7730150^-46.533056^-68.951111^s^airp^ar^^20^^^^0^0^335^america/argentina/rio_gallegos^-3.0^-3.0^-3.0^2011-03-16^y^n^lhs^sc^samer^ca
 lhu^0^zzzz^n^0^-18.1^23.39^s^airp^na^^^^^^^^^na004^^^^-1^y^n^lhu^^afric^ca
 lhv^0^klhv^y^5217321^41.13^-77.45^s^airp^us^^pa^035^^^0^169^171^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^n^lhv^pa^namer^ca
-lhw^0^zzzz^n^0^36.02^103.8^s^airp^cn^^^^^^^^^cn035^^^^-1^y^y^lhw^^asia^ca
+lhw^0^zzzz^n^0^36.05639^103.79222^s^airp^cn^^^^^^^^^cn035^^^^-1^y^y^lhw^^asia^ca
 lhx^0^klhx^y^5427708^38.0466700^-103.5196600^s^airp^us^^co^089^^^0^1285^1285^america/denver^-7.0^-6.0^-7.0^2006-10-29^y^z^lhx^co^namer^a
 lia^0^zulp^y^7731222^30.82^107.7^s^airp^cn^^32^^^^0^0^452^asia/chongqing^8.0^8.0^8.0^2011-03-17^y^n^lia^^asia^ca
 lib^0^zzzz^y^7731223^-17.33^129.8^s^airp^au^^03^74500^^^0^0^370^australia/darwin^9.5^9.5^9.5^2011-06-04^y^n^lib^nt^austl^ca
@@ -4590,7 +4590,7 @@ lka^0^wrkl^y^6301269^-8.35^123^s^airp^id^^^^^^0^9^154^asia/makassar^8.0^8.0^8.0^
 lkb^0^nfnk^y^6299947^-18.19918^-178.81694^s^airp^fj^^^^^^0^2^234^pacific/fiji^13.0^12.0^12.0^2012-02-26^y^y^lkb^^austl^ca
 lkc^0^zzzz^y^2568803^-2.317^14.6^p^ppl^cg^^07^^^^0^0^467^africa/brazzaville^1.0^1.0^1.0^2012-05-06^y^n^lkc^^afric^ca
 lkd^0^zzzz^n^0^26.760594^80.889339^s^airp^au^^^^^^^^^au131^^^^-1^y^n^lkd^ql^austl^ca
-lke^0^zzzz^y^5799589^47.5^-122.3^s^airp^us^^wa^033^^^0^5^1^america/los_angeles^-8.0^-7.0^-8.0^2011-07-20^y^y^sea^wa^namer^a^kenmore air harbor seaplane base
+lke^0^zzzz^y^5799589^47.62799^-122.33933^s^airp^us^^wa^033^^^0^5^1^america/los_angeles^-8.0^-7.0^-8.0^2011-07-20^y^y^sea^wa^namer^a^kenmore air harbor seaplane base
 lkg^0^hklk^y^7730094^4.233^34.35^s^airp^ke^^08^^^^0^0^640^africa/nairobi^3.0^3.0^3.0^2011-03-16^y^y^lkg^^afric^ca
 lkh^0^wbgl^y^7731226^3.3^114.8^s^airp^my^^11^^^^0^0^90^asia/kuching^8.0^8.0^8.0^2011-03-17^y^y^lkh^^seasi^ca
 lki^0^zzzz^n^0^46.84^-92.19^s^airp^us^^^^^^^^^us107^^^^-1^y^n^dlh^mn^namer^a
@@ -4886,7 +4886,7 @@ maj^0^pkmj^y^4040398^7.064758^171.272022^s^airp^mh^mh^190^^^^0^0^6^pacific/majur
 mak^0^hssm^y^6297349^9.558969^31.652242^s^airp^ss^^^^^^0^393^401^africa/juba^3.0^3.0^3.0^2011-08-10^y^y^mak^^meast^ca
 mal^0^wape^y^7731255^-1.883^125.8^s^airp^id^^28^^^^0^0^284^asia/jayapura^9.0^9.0^9.0^2011-03-17^y^n^mal^^seasi^ca
 mam^0^mmma^y^3523465^25.769894^-97.525311^s^airp^mx^^28^^^^0^7^9^america/matamoros^-6.0^-5.0^-6.0^2007-01-03^y^y^mam^^namer^ca
-man^0^egcc^y^6296575^53.353744^-2.27495^s^airp^gb^^eng^i2^^^0^78^76^europe/london^0.0^1.0^0.0^2010-05-25^y^y^man^^europ^ca^manchester airport^ringway airport
+man^0^egcc^y^6296575^53.353744^-2.27495^s^airp^gb^^eng^i2^^^0^78^76^europe/london^0.0^1.0^0.0^2010-05-25^y^y^man^^europ^ca^ringway airport^manchester airport
 mao^0^sbeg^y^6300620^-3.038611^-60.049721^s^airp^br^^^^^^0^80^69^america/manaus^-4.0^-4.0^-4.0^2011-03-28^y^y^mao^am^samer^ca
 map^0^zzzz^y^8260958^-10.3^149.5^s^airp^pg^^01^^^^0^0^37^pacific/port_moresby^10.0^10.0^10.0^2012-04-29^y^n^map^^austl^ca
 maq^0^vtpm^y^1115776^16.72^98.57^s^airp^th^^08^^^^0^0^214^asia/bangkok^7.0^7.0^7.0^2011-03-17^y^y^maq^^seasi^ca
@@ -5181,7 +5181,7 @@ mlw^0^glmr^y^2570351^6.289061^-10.758722^s^airf^lr^^14^^^^0^8^11^africa/monrovia
 mlx^0^ltat^y^6299737^38.435347^38.091006^s^airp^tr^^^^^^0^861^851^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^y^mlx^^euras^ca
 mly^0^paml^y^5868236^65^-150.6^s^airp^us^^ak^290^^^0^82^87^america/anchorage^-9.0^-8.0^-9.0^2006-10-29^y^y^mly^ak^namer^ca
 mlz^0^sumo^y^6300832^-32.33^-54.2^s^airp^uy^^^^^^0^100^111^america/montevideo^-2.0^-3.0^-3.0^2006-10-29^y^n^mlz^^samer^ca
-mma^0^zzzz^y^2692969^55.6^13.07^p^ppla^se^^27^1280^^^261548^10^12^europe/stockholm^1.0^2.0^1.0^2010-03-28^n^n^mma^^europ^c
+mma^0^zzzz^y^2692969^55.6^13.07^p^ppla^se^^27^1280^^^261548^10^12^europe/stockholm^1.0^2.0^1.0^2012-05-14^n^n^mma^^europ^c
 mmb^0^rjcm^y^6300325^43.880606^144.164053^s^airp^jp^^^^^^0^41^30^asia/tokyo^9.0^9.0^9.0^2007-01-03^y^y^mmb^^asia^ca
 mmc^0^mmdm^y^7730664^22.75^-99^s^airp^mx^^28^^^^0^0^95^america/monterrey^-6.0^-5.0^-6.0^2011-03-17^y^n^mmc^^namer^ca
 mmd^0^romd^y^6300463^25.846533^131.263494^s^airp^jp^^^^^^0^50^46^asia/tokyo^9.0^9.0^9.0^2007-01-03^y^n^mmd^^asia^ca
@@ -5271,7 +5271,7 @@ mpj^0^kmpj^y^4125926^35.1454400^-92.9058200^s^airp^us^^ar^029^^^0^281^283^americ
 mpk^0^rkjm^y^7668416^34.758906^126.379872^s^airp^kr^^16^^^^0^0^1^asia/seoul^9.0^9.0^9.0^2011-02-17^y^n^mpk^^asia^ca
 mpl^0^lfmt^y^6299421^43.576194^3.963014^s^airp^fr^^a9^34^343^34154^0^5^2^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^mpl^^europ^ca
 mpm^0^fqma^y^1106276^-25.920836^32.572606^s^airp^mz^mz^04^^^^0^44^36^africa/maputo^2.0^2.0^2.0^2007-01-03^y^y^mpm^^afric^ca
-mpn^0^egyp^y^6296679^-51.822777^-58.447222^s^airp^fk^^^^^^0^74^68^atlantic/stanley^-3.0^-3.0^-3.0^2011-01-27^y^y^mpn^^atlan^ca^raf mount pleasant^mpa^mount pleasent complex
+mpn^0^egyp^y^6296679^-51.822777^-58.447222^s^airp^fk^^^^^^0^74^68^atlantic/stanley^-3.0^-3.0^-3.0^2011-01-27^y^y^mpn^^atlan^ca^mpa^mount pleasent complex^raf mount pleasant
 mpo^0^kmpo^y^5206715^41.13^-75.37^s^airp^us^^pa^089^^^0^576^575^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^mpo^pa^namer^ca
 mpp^0^zzzz^n^0^8.933^-77.77^s^airp^pa^^^^^^^^^pa^^^^-1^y^y^mpp^^camer^ca
 mpq^0^zzzz^y^6695518^30.17^35.8^p^ppl^jo^^19^^^^0^0^1112^asia/amman^2.0^3.0^2.0^2008-08-01^y^n^mpq^^meast^ca
@@ -5481,7 +5481,7 @@ mxl^0^mmml^y^7910158^32.630634^-115.241637^s^airp^mx^^02^^^^0^0^19^america/tijua
 mxm^0^fmsr^y^1058391^-21.753867^43.375533^s^airp^mg^^06^^^^0^0^7^indian/antananarivo^3.0^3.0^3.0^2011-03-18^y^y^mxm^^afric^ca
 mxn^0^lfru^y^6299463^48.603222^-3.815783^s^airp^fr^^a2^29^293^29151^0^82^82^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^mxn^^europ^ca
 mxo^0^zzzz^y^4867814^41.65^-74.68^s^airp^us^^ia^105^^^0^252^251^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^n^mxo^ia^namer^ca
-mxp^0^limc^y^3174133^45.630606^8.728111^s^airp^it^^09^va^012068^^0^233^228^europe/rome^1.0^2.0^1.0^2011-09-11^y^y^mil^^europ^a^malpensa international airport^airport milan malpensa
+mxp^0^limc^y^3174133^45.630606^8.728111^s^airp^it^^09^va^012068^^0^233^228^europe/rome^1.0^2.0^1.0^2011-09-11^y^y^mil^^europ^a^airport milan malpensa^malpensa international airport
 mxr^0^zzzz^y^8260989^49.97^33.6^s^airp^ua^^18^^^^0^0^98^europe/kiev^2.0^3.0^2.0^2012-04-29^y^n^mxr^^euras^ca
 mxs^0^nsma^y^7667898^-13.73^-172.3^s^airp^ws^^^^^^0^0^33^pacific/apia^14.0^13.0^13.0^2011-02-14^y^n^mxs^^austl^ca
 mxt^0^fmmo^y^1061913^-18.05^44.03^s^airp^mg^^03^^^^0^0^26^indian/antananarivo^3.0^3.0^3.0^2011-03-17^y^n^mxt^^afric^ca
@@ -5538,7 +5538,7 @@ mzs^0^zzzz^y^7731320^3.8^103.3^s^airp^my^^16^^^^0^0^65^asia/kuching^8.0^8.0^8.0^
 mzt^0^mmmz^y^6299861^23.161356^-106.266072^s^airp^mx^^^^^^0^11^11^america/mazatlan^-7.0^-6.0^-7.0^2007-01-03^y^y^mzt^^namer^ca
 mzu^0^vemz^y^7668594^26.33^85.5^s^airp^in^^34^^^^0^0^54^asia/kolkata^5.5^5.5^5.5^2011-02-17^y^n^mzu^^asia^ca
 mzv^0^wbmu^y^6354945^4.04655^114.80567^s^airp^my^^11^^^^0^24^33^asia/kuching^8.0^8.0^8.0^2012-03-25^y^y^mzv^^seasi^ca
-mzw^0^zzzz^y^2489865^26.224153^120.00275^p^ppl^dz^^49^^^^0^0^1158^africa/algiers^1.0^1.0^1.0^2012-01-19^y^y^mzw^^afric^ca
+mzw^0^daay^y^6296369^33.53585^-0.24235^s^airp^dz^^^^^^0^1175^1110^africa/algiers^1.0^1.0^1.0^2012-05-13^y^y^mzw^^afric^ca
 mzx^0^zzzz^y^331064^6.35^39.72^p^ppl^et^^51^^^^0^0^1262^africa/addis_ababa^3.0^3.0^3.0^2012-01-19^y^n^mzx^^afric^ca
 mzy^0^famo^y^6296911^-34.18^22.13^s^airp^za^^^^^^0^59^36^africa/johannesburg^2.0^2.0^2.0^2006-10-29^y^n^mzy^^afric^ca
 mzz^0^kmzz^y^4923214^40.48^-85.68^s^airp^us^^in^053^^^0^261^258^america/indiana/indianapolis^-5.0^-4.0^-5.0^2011-12-11^y^n^mzz^in^namer^ca
@@ -5669,7 +5669,7 @@ nhx^0^zzzz^n^0^30.42^-87.68^s^airp^us^^^^^^^^^us107^^^^-1^y^n^nhx^al^namer^ca
 nhz^0^knhz^y^6298757^43.892223^-69.938614^s^airp^us^^me^^^^0^22^17^america/new_york^-5.0^-4.0^-5.0^2007-01-03^y^n^nhz^me^namer^ca
 nia^0^glna^y^2570473^7.5^-8.583^s^airf^lr^^09^^^^0^0^491^africa/monrovia^0.0^0.0^0.0^2012-01-19^y^n^nia^^afric^ca
 nib^0^pafs^y^5869964^63.02^-154.4^s^airp^us^^ak^290^^^0^130^129^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^nib^ak^namer^ca
-nic^0^zzzz^y^146268^35.17^33.37^p^pplc^cy^^04^^^^200452^0^149^asia/nicosia^2.0^3.0^2.0^2012-01-17^y^n^nic^^europ^ca
+nic^0^zzzz^y^146268^35.17^33.37^p^pplc^cy^^04^^^^200452^0^149^asia/nicosia^2.0^3.0^2.0^2012-05-15^y^n^nic^^europ^ca
 nid^0^knid^y^5387500^35.6407900^-117.6722900^s^airh^us^^ca^029^^^0^697^700^america/los_angeles^-8.0^-7.0^-8.0^2011-03-10^y^z^nid^ca^namer^a
 nie^0^zzzz^n^0^55.07^-132.2^s^airp^us^^^^^^^^^us111^^^^-1^y^n^nie^ak^namer^ca
 nif^0^ycnf^y^7731333^-21.67^121.6^s^airp^au^^08^53220^^^0^0^300^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^nif^wa^austl^ca
@@ -5694,7 +5694,7 @@ nkb^0^zzzz^y^7731334^-18.5^124.8^s^airp^au^^08^52800^^^0^0^84^australia/perth^8.
 nkc^0^gqnn^y^6297240^18.097856^-15.947956^s^airp^mr^^^^^^0^2^6^africa/nouakchott^0.0^0.0^0.0^2007-01-03^y^y^nkc^^afric^ca
 nkd^0^zzzz^n^0^-3.833^137.9^s^airp^id^^^^^^^^^id063^^^^-1^y^n^nkd^^seasi^ca
 nkg^0^zsnj^y^6301384^31.742042^118.862025^s^airp^cn^^^^^^0^14^14^asia/shanghai^8.0^8.0^8.0^2007-01-03^y^y^nkg^^asia^ca
-nki^0^zzzz^n^0^55.85^-133.2^s^airp^us^^^^^^^^^us111^^^^-1^y^y^nki^ak^namer^ca
+nki^0^zzzz^n^0^55.36643^-133.21661^s^airp^us^^^^^^^^^us111^^^^-1^y^y^nki^ak^namer^ca
 nkl^0^fzar^y^7730554^-1.983^16.47^s^airp^cd^^08^^^^0^0^404^africa/kinshasa^1.0^1.0^1.0^2011-03-17^y^n^nkl^^afric^ca
 nkm^0^rjnn^y^6301826^35.25^136.9^s^airp^jp^^01^^^^0^14^7^asia/tokyo^9.0^9.0^9.0^2011-01-16^y^y^ngo^^asia^a
 nkn^0^zzzz^n^0^-5.833^146.5^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^nkn^^austl^ca
@@ -6506,7 +6506,7 @@ pnr^0^fcpp^y^6296967^-4.816028^11.886597^s^airp^cg^^^^^^0^16^18^africa/brazzavil
 pns^0^kpns^y^4168192^30.473425^-87.186611^s^airp^us^^fl^033^^^0^30^31^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^pns^fl^namer^ca
 pnt^0^scnt^y^7730166^-51.671475^-72.52835^s^airp^cl^^10^124^12401^^0^0^68^america/santiago^-3.0^-4.0^-4.0^2012-05-03^y^y^pnt^^samer^ca
 pnu^0^zzzz^y^5544525^37.83^-112.4^p^ppla2^us^^ut^017^^^1520^2019^2021^america/denver^-7.0^-6.0^-7.0^2011-05-14^y^n^pnu^ut^namer^ca
-pnv^0^eypp^y^596129^46.07^-11.13^s^airp^lt^^00^^^^0^0^58^europe/vilnius^2.0^3.0^2.0^2012-01-17^y^n^pnv^^eeuro^ca^pajuostis^tulpe
+pnv^0^eypp^y^596129^46.07^-11.13^s^airp^lt^^00^^^^0^0^58^europe/vilnius^2.0^3.0^2.0^2012-01-17^y^n^pnv^^eeuro^ca^tulpe^pajuostis
 pnx^0^kgyi^y^4694711^33.63^-96.58^s^airp^us^^tx^181^^^0^228^230^america/chicago^-6.0^-5.0^-6.0^2011-07-26^y^n^pnx^tx^namer^ca
 pny^0^vopc^y^7730221^11.93^79.88^s^airp^in^^25^^^^0^0^43^asia/kolkata^5.5^5.5^5.5^2011-03-16^y^n^pny^^asia^ca
 pnz^0^sbpl^y^6300656^-9.362411^-40.569097^s^airp^br^^^^^^0^384^385^america/bahia^-2.0^-3.0^-3.0^2007-01-03^y^y^pnz^pe^samer^ca
@@ -6737,16 +6737,16 @@ pzu^0^hspn^y^6297346^19.433639^37.234075^s^airp^sd^^^^^^0^138^44^africa/khartoum
 pzy^0^lzpp^y^6301801^48.625247^17.828444^s^airf^sk^^^^^^0^163^162^europe/bratislava^1.0^2.0^1.0^2011-03-20^y^n^pzy^^eeuro^ca
 qac^0^ssqt^y^7731422^-24.8075000^-49.9603000^s^airp^br^^18^^^^0^0^1000^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qac^pr^samer^o
 qad^0^zzzz^y^3170147^45.9639^12.6575^p^ppla2^it^^06^pn^093033^^49122^0^31^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qad^^europ^o
-qae^0^zzzz^y^2506385^0^0^p^ppl^dz^^09^^^^0^0^10^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qae^^afric^o
+qae^0^zzzz^y^2506385^35.8477300^-0.3146800^p^ppl^dz^^09^^^^0^0^10^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qae^^afric^o
 qaf^0^zzzz^n^0^48.82^2.283^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^qaf^^europ^ca
-qag^0^zzzz^y^2496042^0^0^p^ppl^dz^^15^^^^0^0^9^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qag^^afric^o
+qag^0^zzzz^y^2496042^35.1022500^-1.8568000^p^ppl^dz^^15^^^^0^0^9^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qag^^afric^o
 qah^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qah^rj^samer^o
 qai^0^zzzz^y^3038426^45.55^6.65^p^ppl^fr^^b9^73^731^73006^3507^0^678^europe/paris^1.0^2.0^1.0^2011-11-02^y^n^qai^^europ^o
 qaj^0^zzzz^n^0^0^0^x^xxxx^ae^^^^^^^^^ae^^^^-1^n^n^qaj^^meast^o
 qak^0^sbbq^y^6300604^-21.267167^-43.761056^s^airp^br^^^^^^0^1114^1112^america/sao_paulo^-2.0^-3.0^-3.0^2007-01-03^n^n^qak^mg^samer^o
 qal^0^zzzz^y^3183299^44.9^8.61667^p^ppla2^it^^12^al^006003^^85438^0^101^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qal^^europ^o
 qam^0^lfay^y^6694530^49.9^2.295^s^airp^fr^^b6^80^802^80379^0^0^57^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^qam^^europ^o
-qan^0^zzzz^y^2486284^0^0^p^ppl^dz^^15^^^^36995^0^355^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qan^^afric^o
+qan^0^zzzz^y^2486284^35.0136100^-1.7479900^p^ppl^dz^^15^^^^36995^0^355^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qan^^afric^o
 qao^0^zzzz^y^2525764^37.3167^13.5667^p^ppla2^it^^15^ag^084001^^54619^0^227^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qao^^europ^o
 qap^0^zzzz^n^0^0^0^x^xxxx^ng^^^^^^^^^ng^^^^-1^n^n^qap^^afric^o
 qaq^0^zzzz^n^0^42.379886^13.309231^s^airp^it^^^^^^^^^it067^^^^-1^y^n^qaq^^europ^o
@@ -6756,18 +6756,18 @@ qau^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qau^sp^samer^o
 qav^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br018^^^^-1^n^n^qav^am^samer^o
 qaw^0^zzzz^n^0^33.59^-85.86^s^airp^us^^^^^^^^^us107^^^^-1^y^n^anb^al^namer^b
 qax^0^zzzz^n^0^0^0^x^xxxx^ng^^^^^^^^^ng^^^^-1^n^n^qax^^afric^o
-qay^0^zzzz^y^686578^0^0^p^ppla^ro^^01^^^^66085^0^219^europe/bucharest^2.0^3.0^2.0^2012-01-18^n^n^qay^^eeuro^o
-qaz^0^zzzz^y^3080866^0^0^p^ppl^pl^^77^1217^121701^^27580^0^819^europe/warsaw^1.0^2.0^1.0^2010-09-12^n^n^qaz^^eeuro^o
+qay^0^zzzz^y^686578^46.0666700^23.5833300^p^ppla^ro^^01^^^^66085^0^219^europe/bucharest^2.0^3.0^2.0^2012-01-18^n^n^qay^^eeuro^o
+qaz^0^zzzz^y^3080866^49.2989900^19.9488500^p^ppl^pl^^77^1217^121701^^27580^0^819^europe/warsaw^1.0^2.0^1.0^2010-09-12^n^n^qaz^^eeuro^o
 qba^0^zzzz^y^3203106^42.28^18.83^p^ppl^me^^05^^^^4684^0^7^europe/podgorica^1.0^2.0^1.0^2012-01-19^y^n^qba^^europ^o
 qbc^0^cybd^y^6296158^52.38^-126.8^s^airp^ca^^^^^^0^35^34^america/vancouver^-8.0^-7.0^-8.0^2007-01-03^y^y^qbc^bc^namer^ca
 qbd^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qbd^rj^samer^o
-qbe^0^zzzz^y^2176401^0^0^p^ppl^au^^02^10550^^^4537^0^80^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qbe^ns^austl^o
+qbe^0^zzzz^y^2176401^-36.67392^149.84178^p^ppl^au^^02^10550^^^4537^0^80^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qbe^ns^austl^o
 qbf^0^zzzz^n^0^39.63^-106.9^s^airp^us^^^^^^^^^us108^^^^-1^y^n^ege^co^namer^b
 qbg^0^zzzz^n^0^0^0^x^xxxx^rs^^^^^^^^^rs189^^^^-1^n^n^qbg^^europ^o
 qbh^0^zzzz^y^2998975^48.9^2.28333^p^ppl^fr^^a8^92^922^92044^62178^0^38^europe/paris^1.0^2.0^1.0^2012-01-18^y^n^qbh^^europ^o
-qbi^0^zzzz^y^792578^0^0^p^ppla^mk^^06^^^^86528^0^607^europe/skopje^1.0^2.0^1.0^2012-01-19^n^n^qbi^^europ^o
-qbj^0^zzzz^y^2503701^0^0^p^ppla^dz^^39^^^^0^0^906^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qbj^^afric^o
-qbk^0^zzzz^y^3470044^0^0^p^ppl^br^^15^^^^384000^0^834^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qbk^mg^samer^o
+qbi^0^zzzz^y^792578^41.0311100^21.3402800^p^ppla^mk^^06^^^^86528^0^607^europe/skopje^1.0^2.0^1.0^2012-01-19^n^n^qbi^^europ^o
+qbj^0^zzzz^y^2503701^36.0732200^4.7610800^p^ppla^dz^^39^^^^0^0^906^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qbj^^afric^o
+qbk^0^zzzz^y^3470044^-19.9677800^-44.1983300^p^ppl^br^^15^^^^384000^0^834^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qbk^mg^samer^o
 qbl^0^zzzz^n^0^0^0^x^xxxx^ly^^^^^^^^^ly122^^^^-1^n^n^qbl^^afric^o
 qbm^0^zzzz^n^0^45.6167^6.76667^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^qbm^^europ^o
 qbn^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qbn^rj^samer^o
@@ -6776,20 +6776,20 @@ qbp^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qbp^^afric^o
 qbq^0^lfsa^y^6299465^47.2053100^6.0804200^s^airp^fr^^a6^25^^^0^307^381^europe/paris^1.0^2.0^1.0^2008-07-09^y^n^qbq^^europ^o
 qbr^0^zzzz^n^0^0^0^x^xxxx^ir^^^^^^^^^ir120^^^^-1^n^n^qbr^^meast^o
 qbs^0^zzzz^y^3181554^45.54^10.222^p^ppla2^it^^09^bs^017029^^187567^0^132^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qbs^^europ^o
-qbt^0^zzzz^y^2503998^0^0^p^ppl^dz^^09^^^^0^0^45^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qbt^^afric^o
+qbt^0^zzzz^y^2503998^35.8005800^-0.2651000^p^ppl^dz^^09^^^^0^0^45^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qbt^^afric^o
 qbu^0^zzzz^n^0^0^0^x^xxxx^ng^^^^^^^^^ng^^^^-1^n^n^qbu^^afric^o
 qbv^0^zzzz^y^3182179^41.1333^14.75^p^ppla2^it^^04^bn^062008^^61791^0^164^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qbv^^europ^o
-qbw^0^zzzz^y^2176639^0^0^p^ppl^au^^02^12750^^^10557^0^-9999^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qbw^ns^austl^o
+qbw^0^zzzz^y^2176639^-35.70658^150.17542^p^ppl^au^^02^12750^^^10557^0^-9999^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qbw^ns^austl^o
 qbx^0^snob^y^3387297^-3.66667^-40.3333^s^airf^br^^06^^^^0^0^59^america/fortaleza^-3.0^-3.0^-3.0^2012-01-19^n^n^qbx^ce^samer^o
 qby^0^zzzz^n^0^0^0^x^xxxx^ro^^^^^^^^^ro094^^^^-1^n^n^qby^^eeuro^o
 qbz^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qbz^^afric^o
 qca^0^zzzz^n^0^21.5^39.2^s^airp^sa^^^^^^^^^sa^^^^-1^y^n^qca^^meast^cb
 qcb^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qcb^^asia^o
 qcc^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qcc^ba^samer^o
-qcd^0^zzzz^y^3467791^0^0^p^ppl^br^^23^^^^0^0^20^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qcd^rs^samer^o
+qcd^0^zzzz^y^3467791^-29.6788900^-51.0533300^p^ppl^br^^23^^^^0^0^20^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qcd^rs^samer^o
 qce^0^zzzz^y^5417975^39.6^-106.1^p^ppl^us^^co^117^^^385^2955^2958^america/denver^-7.0^-6.0^-7.0^2011-05-14^y^n^qce^co^namer^cb
-qcf^0^zzzz^y^3469989^0^0^p^ppl^br^^27^^^^102277^0^409^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qcf^sp^samer^o
-qcg^0^zzzz^y^3466698^0^0^p^ppl^br^^15^^^^62618^0^180^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qcg^mg^samer^o
+qcf^0^zzzz^y^3469989^-21.2886100^-50.3400000^p^ppl^br^^27^^^^102277^0^409^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qcf^sp^samer^o
+qcg^0^zzzz^y^3466698^-21.3891700^-42.6966700^p^ppl^br^^15^^^^62618^0^180^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qcg^mg^samer^o
 qch^0^sncx^y^7731423^-19.4870000^-40.5794000^s^airp^br^^08^^^^0^0^150^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qch^es^samer^o
 qci^0^zzzz^y^2514741^28.07^-16.58^p^ppl^es^^53^tf^38006^^23^0^89^atlantic/canary^0.0^1.0^0.0^2012-01-19^y^n^qci^^europ^o
 qcj^0^sdbk^y^7731424^-22.9395000^-48.4680000^s^airp^br^^27^^^^0^0^887^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qcj^sp^samer^o
@@ -6798,13 +6798,13 @@ qcl^0^zzzz^y^2525448^37.4833^14.0667^p^ppla2^it^^15^cl^085004^^61438^0^608^europ
 qcm^0^zzzz^y^3178229^45.7833^9.08333^p^ppla2^it^^09^co^013075^^78680^0^211^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qcm^^europ^o
 qcn^0^sscn^y^7731425^-29.3702000^-50.8320000^s^airp^br^^23^^^^0^0^825^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qcn^rs^samer^o
 qco^0^muco^y^3563851^22.7^-80.9167^s^airf^cu^^03^^^^0^0^43^america/havana^-5.0^-4.0^-5.0^2012-01-18^n^n^qco^^carib^o
-qcp^0^zzzz^y^3401283^0^0^p^ppl^br^^22^^^^35560^0^361^america/fortaleza^-3.0^-3.0^-3.0^2006-12-13^n^n^qcp^rn^samer^o
-qcq^0^zzzz^y^3467081^0^0^p^ppla2^br^^27^3510500^^^90843^0^2^america/sao_paulo^-2.0^-3.0^-3.0^2012-03-10^n^n^qcq^sp^samer^o
+qcp^0^zzzz^y^3401283^-6.2608300^-36.5177800^p^ppl^br^^22^^^^35560^0^361^america/fortaleza^-3.0^-3.0^-3.0^2006-12-13^n^n^qcp^rn^samer^o
+qcq^0^zzzz^y^3467081^-23.6202800^-45.4130600^p^ppla2^br^^27^3510500^^^90843^0^2^america/sao_paulo^-2.0^-3.0^-3.0^2012-03-10^n^n^qcq^sp^samer^o
 qcr^0^ssku^y^7731426^-27.2825000^-50.6114000^s^airp^br^^26^^^^0^0^959^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qcr^sc^samer^o
 qcs^0^zzzz^y^2524907^39.3^16.25^p^ppla2^it^^03^cs^078045^^72998^0^235^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qcs^^europ^o
-qct^0^zzzz^y^2348411^0^0^p^ppl^ng^ng^00^^^^0^0^84^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qct^^afric^o
+qct^0^zzzz^y^2348411^9.0833300^4.9500000^p^ppl^ng^ng^00^^^^0^0^84^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qct^^afric^o
 qcu^0^zzzz^y^3424720^68.75^-52.33^p^ppl^gl^^05^^^^107^0^-9999^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qcu^^europ^ch
-qcv^0^zzzz^y^3461786^0^0^p^ppl^br^^27^^^^1169577^0^774^america/sao_paulo^-2.0^-3.0^-3.0^2010-08-30^n^n^qcv^sp^samer^o
+qcv^0^zzzz^y^3461786^-23.4627800^-46.5333300^p^ppl^br^^27^^^^1169577^0^774^america/sao_paulo^-2.0^-3.0^-3.0^2010-08-30^n^n^qcv^sp^samer^o
 qcw^0^zzzz^n^0^40.78^-73.83^s^airp^us^^^^^^^^^us105^^^^-1^y^n^qcw^ct^namer^o
 qcx^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qcx^sp^samer^o
 qcy^0^egxc^y^6296664^53.093014^-0.166014^s^airb^gb^^eng^h7^32uc^^0^7^12^europe/london^0.0^1.0^0.0^2010-05-24^y^n^qcy^^europ^ca
@@ -6831,35 +6831,35 @@ qds^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qds^mg^samer^o
 qdt^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qdt^^afric^o
 qdu^0^zzzz^n^0^51.32^6.833^s^airp^de^^^^^^^^^de040^^^^-1^y^y^dus^^europ^r
 qdv^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qdv^sp^samer^o
-qdw^0^zzzz^y^3464739^0^0^p^ppl^br^^27^^^^390633^0^784^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qdw^sp^samer^o
-qdx^0^zzzz^y^358048^0^0^p^ppla^eg^^20^^^^76839^0^16^africa/cairo^2.0^2.0^2.0^2012-01-19^n^n^qdx^^afric^o
+qdw^0^zzzz^y^3464739^-23.6861100^-46.6227800^p^ppl^br^^27^^^^390633^0^784^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qdw^sp^samer^o
+qdx^0^zzzz^y^358048^31.4164800^31.8133200^p^ppla^eg^^20^^^^76839^0^16^africa/cairo^2.0^2.0^2.0^2012-01-19^n^n^qdx^^afric^o
 qdy^0^zzzz^n^0^0^0^x^xxxx^kr^^^^^^^^^kr^^^^-1^n^n^qdy^^asia^o
 qdz^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qdz^^afric^o
 qea^0^zzzz^y^3165803^42.65^13.7^p^ppla2^it^^01^te^067041^^51023^0^280^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qea^^europ^o
 qeb^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qeb^^asia^o
 qec^0^zzzz^n^0^0^0^x^xxxx^ly^^^^^^^^^ly122^^^^-1^n^n^qec^^afric^o
 qed^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qed^^afric^o
-qee^0^zzzz^y^6806225^0^0^p^ppl^mh^^150^^^^0^0^8^pacific/kwajalein^12.0^12.0^12.0^2010-07-08^n^n^qee^^pacif^o
+qee^0^zzzz^y^6806225^8.77889^167.73806^p^ppl^mh^^150^^^^0^0^8^pacific/kwajalein^12.0^12.0^12.0^2010-07-08^n^n^qee^^pacif^o
 qef^0^edfe^y^3272939^49.32^8.433^s^airf^de^^05^^^^0^0^112^europe/berlin^1.0^2.0^1.0^2012-01-19^y^n^qef^^europ^ca^frankfurt egelsbach airport
 qeg^0^zzzz^n^0^37.57^-25.53^s^airp^pt^^^^^^^^^pt158^^^^-1^y^n^qeg^^europ^ca
-qeh^0^zzzz^y^2498183^0^0^p^ppl^dz^^37^^^^46656^0^13^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qeh^^afric^o
-qei^0^zzzz^y^2939797^0^0^p^ppl^de^^01^^^^32262^0^409^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^qei^^europ^o
+qeh^0^zzzz^y^2498183^36.8037700^7.7368400^p^ppl^dz^^37^^^^46656^0^13^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qeh^^afric^o
+qei^0^zzzz^y^2939797^49.1344400^10.0719300^p^ppl^de^^01^^^^32262^0^409^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^qei^^europ^o
 qej^0^zzzz^n^0^0^0^x^xxxx^ly^^^^^^^^^ly122^^^^-1^n^n^qej^^afric^o
 qek^0^zzzz^n^0^0^0^x^xxxx^eg^^^^^^^^^eg044^^^^-1^n^n^qek^^afric^o
 qel^0^zzzz^n^0^0^0^x^xxxx^au^^^^^^^^^au007^^^^-1^n^n^qel^ns^austl^o
 qem^0^zzzz^n^0^0^0^x^xxxx^eg^^^^^^^^^eg044^^^^-1^n^n^qem^^afric^o
 qeo^0^zzzz^n^0^49.82^19.057^x^xxxx^pl^^^^^^^^^pl089^^^^-1^n^n^qeo^^eeuro^o
-qep^0^zzzz^y^757033^0^0^p^ppla2^pl^^80^1864^186401^^50459^0^162^europe/warsaw^1.0^2.0^1.0^2010-10-16^n^n^qep^^eeuro^o
+qep^0^zzzz^y^757033^50.5730400^21.6793700^p^ppla2^pl^^80^1864^186401^^50459^0^162^europe/warsaw^1.0^2.0^1.0^2010-10-16^n^n^qep^^eeuro^o
 qeq^0^zzzz^n^0^47.5^8.6^s^airp^ch^^^^^^^^^ch032^^^^-1^y^n^qeq^^europ^cr
 qer^0^zzzz^n^0^0^0^x^xxxx^ye^^^^^^^^^ye^^^^-1^n^n^qer^^meast^o
 qet^0^zzzz^n^0^39.92^125.5^s^airp^kr^^^^^^^^^kr^^^^-1^y^n^qet^^asia^o
 qeu^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br016^^^^-1^n^n^qeu^rn^samer^o
 qev^0^zzzz^y^3023141^48.9^2.26667^p^ppl^fr^^a8^92^922^92026^85158^0^49^europe/paris^1.0^2.0^1.0^2011-12-08^y^n^qev^^europ^o
 qew^0^zzzz^y^2644668^52.63^-1.083^p^ppla2^gb^^eng^h4^31uc^^339239^0^65^europe/london^0.0^1.0^0.0^2011-03-03^n^n^qew^^europ^o
-qex^0^zzzz^y^2930509^0^0^p^ppl^de^^07^^^^29289^0^18^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qex^^europ^o
+qex^0^zzzz^y^2930509^51.8333300^6.2500000^p^ppl^de^^07^^^^29289^0^18^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qex^^europ^o
 qey^0^zzzz^y^3423823^63.08^-50.67^p^ppl^gl^^07^^^^261^0^1^america/godthab^-3.0^-2.0^-3.0^2011-02-16^y^n^qey^^europ^ca
 qez^0^zzzz^y^3170342^41.6667^12.5^p^ppla3^it^^07^rm^058079^^43960^0^99^europe/rome^1.0^2.0^1.0^2012-02-15^y^n^qez^^europ^o
-qfa^0^zzzz^y^2760134^0^0^p^ppl^nl^^07^0358^^^22991^0^252^europe/amsterdam^1.0^2.0^1.0^2010-01-29^n^n^qfa^^europ^o
+qfa^0^zzzz^y^2760134^52.2591700^4.7597200^p^ppl^nl^^07^0358^^^22991^0^252^europe/amsterdam^1.0^2.0^1.0^2010-01-29^n^n^qfa^^europ^o
 qfb^0^zzzz^n^0^48.022653^7.832583^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qfb^^europ^cr
 qfc^0^zzzz^n^0^48.78^2.467^x^xxxx^fr^^^^^^^^^fr052^^^^-1^n^n^qfc^^europ^o
 qfd^0^daak^y^7730063^36.5458000^2.8761100^s^airp^dz^^20^^^^0^0^93^africa/algiers^1.0^1.0^1.0^2011-03-16^n^n^qfd^^afric^o
@@ -6870,7 +6870,7 @@ qfh^0^zzzz^y^2621927^57.43^10.53^p^ppla2^dk^^19^813^^^24103^0^8^europe/copenhage
 qfi^0^zzzz^y^3423337^68.17^-53.25^p^ppl^gl^^05^^^^103^0^-9999^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qfi^^europ^ch
 qfj^0^zzzz^n^0^60.5^-45.58^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qfj^^europ^ca
 qfk^0^zzzz^y^3139914^62.05^5.367^p^ppla2^no^^15^1441^^^694^0^160^europe/oslo^1.0^2.0^1.0^2010-12-07^y^n^qfk^^europ^ca
-qfl^0^zzzz^y^2925080^0^0^p^ppl^de^^02^^^^15909^0^417^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qfl^^europ^o
+qfl^0^zzzz^y^2925080^47.8500000^12.9833300^p^ppl^de^^02^^^^15909^0^417^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qfl^^europ^o
 qfm^0^zzzz^n^0^30.7^31.27^s^airp^eg^^^^^^^^^eg044^^^^-1^y^n^qfm^^afric^o
 qfn^0^zzzz^n^0^60.02^-44.52^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qfn^^europ^ca
 qfo^0^egsu^y^7668211^52.090833^0.131944^s^airp^gb^^eng^c3^12ug^^0^0^33^europe/london^0.0^1.0^0.0^2011-02-17^n^n^qfo^^europ^o
@@ -6889,12 +6889,12 @@ qga^0^ssgy^y^7731430^-24.0811000^-54.1917000^s^airp^br^^18^^^^0^0^269^america/sa
 qgb^0^sdym^y^7731431^-22.6038900^-47.4119400^s^airp^br^^27^^^^0^0^653^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qgb^sp^samer^o
 qgc^0^sdlp^y^7731432^-22.5784000^-48.7746000^s^airp^br^^27^^^^0^0^620^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qgc^sp^samer^o
 qgd^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qgd^pr^samer^o
-qge^0^zzzz^y^2495662^0^0^p^ppla^dz^^23^^^^123590^0^305^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qge^^afric^o
+qge^0^zzzz^y^2495662^36.4621400^7.4260800^p^ppla^dz^^23^^^^123590^0^305^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qge^^afric^o
 qgf^0^ssng^y^7731433^-29.7194000^-51.4894000^s^airp^br^^23^^^^0^0^18^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qgf^rs^samer^o
 qgg^0^zzzz^n^0^0^0^x^xxxx^ly^^^^^^^^^ly122^^^^-1^n^n^qgg^^afric^o
 qgh^0^zzzz^n^0^0^0^x^xxxx^ly^^^^^^^^^ly122^^^^-1^n^n^qgh^^afric^o
 qgi^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qgi^rj^samer^o
-qgj^0^zzzz^y^3456166^0^0^p^ppla2^br^^21^3303401^^^153361^0^858^america/sao_paulo^-2.0^-3.0^-3.0^2012-03-10^n^n^qgj^rj^samer^o
+qgj^0^zzzz^y^3456166^-22.2819400^-42.5311100^p^ppla2^br^^21^3303401^^^153361^0^858^america/sao_paulo^-2.0^-3.0^-3.0^2012-03-10^n^n^qgj^rj^samer^o
 qgk^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br016^^^^-1^n^n^qgk^pe^samer^o
 qgl^0^zzzz^y^8260517^47.43^9.376^s^rstn^ch^^sg^1721^3203^^0^0^740^europe/zurich^1.0^2.0^1.0^2012-04-22^y^n^qgl^^europ^cr
 qgm^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qgm^^afric^o
@@ -6904,7 +6904,7 @@ qgp^0^sngn^y^7731434^-8.8342800^-36.4716000^s^airp^br^^30^^^^0^0^757^america/rec
 qgq^0^zzzz^y^3424408^68^-53.58^p^ppl^gl^^05^^^^281^0^1^america/godthab^-3.0^-2.0^-3.0^2011-02-16^y^n^qgq^^europ^ch
 qgr^0^zzzz^n^0^69.5^-53.92^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qgr^^europ^o
 qgs^0^sduo^y^7731435^-12.1751000^-38.3802000^s^airp^br^^05^^^^0^0^159^america/bahia^-2.0^-3.0^-3.0^2011-03-18^n^n^qgs^ba^samer^o
-qgt^0^zzzz^y^1856584^0^0^p^ppl^jp^^32^^^^148350^0^3^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qgt^^asia^o
+qgt^0^zzzz^y^1856584^34.7333300^135.5666700^p^ppl^jp^^32^^^^148350^0^3^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qgt^^asia^o
 qgu^0^zzzz^n^0^35.394078^136.869667^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qgu^^asia^o
 qgv^0^zzzz^n^0^50.03^8.567^s^airp^de^^^^^^^^^de040^^^^-1^y^n^fra^^europ^r
 qgx^0^zzzz^n^0^0^0^x^xxxx^eg^^^^^^^^^eg044^^^^-1^n^n^qgx^^afric^o
@@ -6917,43 +6917,43 @@ qhd^0^zzzz^n^0^49.42^8.717^s^airp^de^^^^^^^^^de040^^^^-1^y^n^hdb^^europ^r
 qhe^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qhe^sc^samer^o
 qhf^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qhf^rs^samer^o
 qhg^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qhg^mg^samer^o
-qhh^0^zzzz^y^2498614^0^0^p^ppl^dz^^31^^^^0^0^132^africa/algiers^1.0^1.0^1.0^2012-05-06^n^n^qhh^^afric^o
+qhh^0^zzzz^y^2498614^36.6530600^6.8363900^p^ppl^dz^^31^^^^0^0^132^africa/algiers^1.0^1.0^1.0^2012-05-06^n^n^qhh^^afric^o
 qhi^0^zzzz^n^0^0^0^x^xxxx^th^^^^^^^^^th^^^^-1^n^n^qhi^^seasi^o
 qhj^0^zzzz^n^0^57.47^9.983^s^airp^dk^^^^^^^^^dk041^^^^-1^y^n^qhj^^europ^cb
 qhk^0^zzzz^n^0^32.297222^50.842222^x^xxxx^ir^^^^^^^^^ir120^^^^-1^n^n^qhk^^meast^o
 qhl^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br016^^^^-1^n^n^qhl^pa^samer^o
 qhm^0^zzzz^n^0^0^0^x^xxxx^sy^^^^^^^^^sy098^^^^-1^n^n^qhm^^meast^o
 qhn^0^swty^y^7731437^-12.4338900^-46.4005500^s^airp^br^^31^^^^0^0^580^america/araguaina^-3.0^-3.0^-3.0^2011-03-18^n^n^qhn^go^samer^o
-qho^0^zzzz^y^4904277^0^0^p^ppl^us^^il^043^^^7883^202^204^america/chicago^-6.0^-5.0^-6.0^2011-05-14^n^n^qho^il^namer^o
+qho^0^zzzz^y^4904277^41.8328100^-87.9289500^p^ppl^us^^il^043^^^7883^202^204^america/chicago^-6.0^-5.0^-6.0^2011-05-14^n^n^qho^il^namer^o
 qhp^0^sbta^y^7730161^-23.040133^-45.516011^s^airp^br^^27^^^^0^0^579^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-16^n^n^qhp^sp^samer^o
-qhq^0^zzzz^y^2940204^0^0^p^ppl^de^^02^^^^17314^0^422^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qhq^^europ^o
+qhq^0^zzzz^y^2940204^49.2255600^12.6636100^p^ppl^de^^02^^^^17314^0^422^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qhq^^europ^o
 qhr^0^hahm^y^6297271^8.7333300^39.0000000^s^airp^et^^^^^^0^1876^1885^africa/addis_ababa^3.0^3.0^3.0^2006-10-28^n^n^qhr^^afric^o
-qhs^0^zzzz^y^169577^0^0^p^ppla^sy^^11^^^^775404^0^513^asia/damascus^2.0^3.0^2.0^2012-03-27^n^n^qhs^^meast^o
+qhs^0^zzzz^y^169577^34.7268200^36.7233900^p^ppla^sy^^11^^^^775404^0^513^asia/damascus^2.0^3.0^2.0^2012-03-27^n^n^qhs^^meast^o
 qht^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qht^rj^samer^o
 qhu^0^zzzz^n^0^54.5^9.133^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qhu^^europ^ca
 qhv^0^ssnh^y^7731438^-29.81^-51.217^s^airp^br^^23^^^^0^0^16^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qhv^rs^samer^o
 qhw^0^zzzz^n^0^0^0^x^xxxx^us^^^^^^^^^us105^^^^-1^n^n^qhw^nj^namer^o
 qhx^0^zzzz^n^0^null^null^s^airp^cn^^^^^^^^^cn035^^^^-1^y^n^qhx^^asia^cr
 qhy^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qhy^^asia^o
-qhz^0^zzzz^y^2753801^0^0^p^ppl^nl^^07^0394^^^132734^0^254^europe/amsterdam^1.0^2.0^1.0^2010-03-18^n^n^qhz^^europ^o
+qhz^0^zzzz^y^2753801^52.3025000^4.6888900^p^ppl^nl^^07^0394^^^132734^0^254^europe/amsterdam^1.0^2.0^1.0^2010-03-18^n^n^qhz^^europ^o
 qia^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qia^mg^samer^o
 qib^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qib^rs^samer^o
 qic^0^zzzz^y^2523083^37.0667^15.3^p^ppla2^it^^15^sr^089017^^123657^0^65^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qic^^europ^o
 qid^0^snvi^y^7731439^-21.7906000^-45.2692000^s^airp^br^^15^^^^0^0^975^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qid^mg^samer^o
 qie^0^zzzz^y^3012647^43.522736^4.923844^p^ppla3^fr^^b8^13^134^13047^44373^0^24^europe/paris^1.0^2.0^1.0^2011-11-02^n^n^qie^^europ^o
-qif^0^zzzz^y^2646004^0^0^p^ppl^gb^^eng^gla^g1^^0^0^21^europe/london^0.0^1.0^0.0^2011-02-08^n^n^qif^^europ^o
+qif^0^zzzz^y^2646004^51.4751800^-0.3424600^p^ppl^gb^^eng^gla^g1^^0^0^21^europe/london^0.0^1.0^0.0^2011-02-08^n^n^qif^^europ^o
 qig^0^snig^y^3398333^-6.33333^-39.2833^s^airf^br^^06^^^^0^0^214^america/fortaleza^-3.0^-3.0^-3.0^2012-01-19^n^n^qig^ce^samer^o
 qih^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qih^rj^samer^o
 qii^0^zzzz^n^0^47.55^9.68333^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qii^^europ^cr
 qij^0^zzzz^n^0^43.54^-5.662^x^xxxx^es^^^^^^^^^es045^^^^-1^n^n^qij^^europ^o
 qik^0^zzzz^n^0^0^0^x^xxxx^ng^^^^^^^^^ng^^^^-1^n^n^qik^^afric^o
-qil^0^zzzz^y^2479609^0^0^p^ppl^dz^^26^^^^58877^0^62^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qil^^afric^o
+qil^0^zzzz^y^2479609^35.5283200^-0.1936900^p^ppl^dz^^26^^^^58877^0^62^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qil^^afric^o
 qim^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qim^^afric^o
 qin^0^zzzz^n^0^0^0^x^xxxx^tr^^^^^^^^^tr101^^^^-1^n^n^qin^^euras^o
 qio^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qio^^afric^o
 qip^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qip^^europ^o
 qiq^0^sdrk^y^7731440^-22.4311000^-47.5642000^s^airp^br^^27^^^^0^0^608^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qiq^sp^samer^o
-qir^0^zzzz^y^248946^0^0^p^ppla^jo^^18^^^^307480^0^570^asia/amman^2.0^3.0^2.0^2012-01-14^n^n^qir^^meast^o
+qir^0^zzzz^y^248946^32.5555600^35.8500000^p^ppla^jo^^18^^^^307480^0^570^asia/amman^2.0^3.0^2.0^2012-01-14^n^n^qir^^meast^o
 qis^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qis^^asia^o
 qit^0^snip^y^7731441^-15.2445000^-40.2772000^s^airp^br^^05^^^^0^0^267^america/bahia^-2.0^-3.0^-3.0^2011-03-18^n^n^qit^ba^samer^o
 qiu^0^zzzz^n^0^0^0^x^xxxx^es^^^^^^^^^es045^^^^-1^n^n^qiu^^europ^o
@@ -6967,12 +6967,12 @@ qjb^0^zzzz^n^0^27.039028^49.405083^x^xxxx^sa^^^^^^^^^sa^^^^-1^n^n^qjb^^meast^o
 qjc^0^zzzz^n^0^0^0^x^xxxx^bt^^^^^^^^^bt^^^^-1^n^n^qjc^^asia^o
 qjd^0^yjin^y^7731442^-36.37^148.6^s^airp^au^^02^17050^^^0^0^1026^australia/sydney^11.0^10.0^10.0^2011-06-04^y^n^qjd^ns^austl^o
 qje^0^zzzz^n^0^68.83^-53.17^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qje^^europ^ch
-qjf^0^zzzz^y^3424424^0^0^p^ppl^gl^^06^^^^250^0^-9999^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qjf^^europ^o
+qjf^0^zzzz^y^3424424^64.8000000^-52.2166700^p^ppl^gl^^06^^^^250^0^-9999^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qjf^^europ^o
 qjg^0^zzzz^n^0^66.58^-53.42^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qjg^^europ^o
 qjh^0^zzzz^y^3420739^60.58^-47.25^p^ppl^gl^^04^^^^49^0^-9999^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qjh^^europ^ca
 qji^0^zzzz^y^3423313^68.83^-52^p^ppl^gl^^05^^^^92^0^-9999^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qji^^europ^ch
 qjj^0^zzzz^n^0^34.72^-84.87^s^airp^us^^^^^^^^^us105^^^^-1^y^n^dnn^ga^namer^b
-qjk^0^zzzz^y^2351470^0^0^p^ppl^ng^^41^^^^15144^0^52^africa/lagos^1.0^1.0^1.0^2011-10-30^n^n^qjk^^afric^o
+qjk^0^zzzz^y^2351470^7.5622900^6.6549700^p^ppl^ng^^41^^^^15144^0^52^africa/lagos^1.0^1.0^1.0^2011-10-30^n^n^qjk^^afric^o
 qjl^0^zzzz^n^0^70.93^27.45^s^airp^no^^^^^^^^^no083^^^^-1^y^n^qjl^^europ^o
 qjm^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qjm^sc^samer^o
 qjn^0^zzzz^n^0^0^0^x^xxxx^lb^^^^^^^^^lb072^^^^-1^n^n^qjn^^meast^o
@@ -6981,7 +6981,7 @@ qjp^0^zzzz^n^0^0^0^x^xxxx^kr^^^^^^^^^kr^^^^-1^n^n^qjp^^asia^o
 qjq^0^zzzz^n^0^0^0^x^xxxx^lb^^^^^^^^^lb072^^^^-1^n^n^qjq^^meast^o
 qjr^0^zzzz^n^0^0^0^x^xxxx^es^^^^^^^^^es045^^^^-1^n^n^qjr^^europ^o
 qjs^0^zzzz^n^0^57.33^10.53^s^airp^dk^^^^^^^^^dk041^^^^-1^y^n^qjs^^europ^cb
-qjt^0^zzzz^y^3421750^0^0^p^ppl^gl^^06^^^^99^0^1^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qjt^^europ^o
+qjt^0^zzzz^y^3421750^65.0500000^-52.4000000^p^ppl^gl^^06^^^^99^0^1^america/godthab^-3.0^-2.0^-3.0^2012-01-18^y^n^qjt^^europ^o
 qju^0^zzzz^n^0^31.33^75.577^x^xxxx^in^^^^^^^^^in^^^^-1^n^n^qju^^asia^o
 qjv^0^zzzz^y^2613939^57.72^10.58^p^ppl^dk^^19^813^^^9747^0^3^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^n^qjv^^europ^cb
 qjw^0^zzzz^y^2618814^56.48^9.726^p^ppl^dk^^18^740^^^4514^0^63^europe/copenhagen^1.0^2.0^1.0^2012-01-17^y^n^qjw^^europ^cb
@@ -6996,15 +6996,15 @@ qke^0^flkw^y^6297013^-14.4500000^28.4666700^s^airp^zm^^^^^^0^1206^1211^africa/lu
 qkf^0^zzzz^y^2884509^51.38^6.583^p^ppl^de^^07^^^^237984^0^44^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qkf^^europ^o
 qkg^0^zzzz^n^0^37.75^21.75^s^airp^gr^^^^^^^^^gr058^^^^-1^y^n^qkg^^europ^o
 qkh^0^zzzz^n^0^0^0^x^xxxx^pk^^^^^^^^^pk163^^^^-1^n^n^qkh^^asia^o
-qki^0^zzzz^y^769250^0^0^p^ppla^pl^^84^^^^208598^0^267^europe/warsaw^1.0^2.0^1.0^2010-07-15^n^n^qki^^eeuro^o
-qkj^0^zzzz^y^2491889^0^0^p^ppla^dz^^47^^^^0^0^1128^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qkj^^afric^o
+qki^0^zzzz^y^769250^50.8703300^20.6275200^p^ppla^pl^^84^^^^208598^0^267^europe/warsaw^1.0^2.0^1.0^2010-07-15^n^n^qki^^eeuro^o
+qkj^0^zzzz^y^2491889^35.4358300^7.1433300^p^ppla^dz^^47^^^^0^0^1128^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qkj^^afric^o
 qkk^0^zzzz^y^779350^69.45^25.5^p^ppla2^no^^05^2021^^^1908^0^145^europe/oslo^1.0^2.0^1.0^2010-12-07^y^n^qkk^^europ^o
 qkl^0^zzzz^n^0^50.93^6.95^s^airp^de^^^^^^^^^de040^^^^-1^y^y^cgn^^europ^r
 qkm^0^zzzz^n^0^0^0^x^xxxx^kr^^^^^^^^^kr^^^^-1^n^n^qkm^^asia^o
 qkn^0^dttk^y^6296471^35.6666700^10.1000000^s^airp^tn^^^^^^0^60^64^africa/tunis^1.0^1.0^1.0^2006-10-28^n^n^qkn^^afric^o
 qko^0^zzzz^n^0^32.65^14.266^x^xxxx^ly^^^^^^^^^ly122^^^^-1^n^n^qko^^afric^o
 qkp^0^zzzz^n^0^0^0^x^xxxx^za^^^^^^^^^za^^^^-1^n^n^qkp^^afric^o
-qkq^0^zzzz^y^2956018^0^0^p^ppl^de^^12^^^^14694^0^8^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^qkq^^europ^o
+qkq^0^zzzz^y^2956018^53.8563700^13.6896500^p^ppl^de^^12^^^^14694^0^8^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^qkq^^europ^o
 qkr^0^zzzz^y^3381304^5.15^-52.467^s^airf^gf^^gf^973^9731^^0^0^12^america/cayenne^-3.0^-3.0^-3.0^2012-01-18^n^n^qkr^^samer^o
 qks^0^zzzz^n^0^39.83^-106^s^airp^us^^^^^^^^^us108^^^^-1^y^n^qks^co^namer^cb
 qkt^0^zzzz^y^3422700^65.92^-53^p^ppl^gl^^06^^^^396^0^-9999^america/godthab^-3.0^-2.0^-3.0^2011-02-16^y^n^qkt^^europ^ca
@@ -7012,11 +7012,11 @@ qku^0^zzzz^n^0^50.93^6.95^s^airp^de^^^^^^^^^de040^^^^-1^y^n^cgn^^europ^r
 qkv^0^zzzz^n^0^34.8^135.5^s^airp^jp^^^^^^^^^jp^^^^-1^y^n^qkv^^asia^ca
 qkw^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qkw^^asia^o
 qkx^0^zzzz^y^779330^63.98^23.7^p^ppla2^no^^05^2011^^^2000^0^319^europe/oslo^1.0^2.0^1.0^2011-08-31^y^n^qkx^^europ^o
-qky^0^zzzz^y^1926019^0^0^p^ppl^jp^^05^^^^0^0^-9999^asia/tokyo^9.0^9.0^9.0^2012-05-06^n^n^qky^^asia^o
-qkz^0^zzzz^y^2885679^0^0^p^ppl^de^^01^^^^81275^0^402^europe/berlin^1.0^2.0^1.0^2010-02-01^n^n^qkz^^europ^o
+qky^0^zzzz^y^1926019^34.2166700^133.1833300^p^ppl^jp^^05^^^^0^0^-9999^asia/tokyo^9.0^9.0^9.0^2012-05-06^n^n^qky^^asia^o
+qkz^0^zzzz^y^2885679^47.6603300^9.1758200^p^ppl^de^^01^^^^81275^0^402^europe/berlin^1.0^2.0^1.0^2010-02-01^n^n^qkz^^europ^o
 qla^0^eghl^y^7668208^51.187167^-1.0335^s^airp^gb^^eng^f2^24uc^^0^0^179^europe/london^0.0^1.0^0.0^2011-02-17^n^n^qla^^europ^o
 qlb^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qlb^rs^samer^o
-qlc^0^zzzz^y^3099230^0^0^p^ppla3^pl^^83^2466^246601^^198835^200^219^europe/warsaw^1.0^2.0^1.0^2011-07-31^n^n^qlc^^eeuro^o
+qlc^0^zzzz^y^3099230^50.2976100^18.6765800^p^ppla3^pl^^83^2466^246601^^198835^200^219^europe/warsaw^1.0^2.0^1.0^2011-07-31^n^n^qlc^^eeuro^o
 qld^0^daab^y^7668171^36.503613^2.814167^s^airp^dz^^20^^^^0^0^161^africa/algiers^1.0^1.0^1.0^2011-02-17^n^n^qld^^afric^o
 qle^0^zzzz^y^2160413^-34.55^146.4^p^ppl^au^^02^14750^^^7299^0^152^australia/sydney^11.0^10.0^10.0^2012-02-28^y^n^qle^ns^austl^cb
 qlf^0^efla^y^7730472^60.98^25.661^s^airp^fi^^13^07^016^^0^0^152^europe/helsinki^2.0^3.0^2.0^2012-04-14^n^n^qlf^^europ^o
@@ -7024,18 +7024,18 @@ qlg^0^zzzz^y^2881485^48.53^12.15^p^ppla2^de^^02^092^^^60488^0^399^europe/berlin^
 qlh^0^zzzz^y^2891742^50.06^8.53^p^ppl^de^^05^^^^13836^0^111^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qlh^^europ^o
 qli^0^zzzz^y^146384^34.59^32.989^p^ppla^cy^^05^^^^154000^0^14^asia/nicosia^2.0^3.0^2.0^2012-02-05^y^n^qli^^europ^o
 qlj^0^zzzz^n^0^47.05^8.283^s^airp^ch^^^^^^^^^ch032^^^^-1^y^n^qlj^^europ^cr
-qlk^0^zzzz^y^2497988^0^0^p^ppl^dz^^44^^^^35449^0^21^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qlk^^afric^o
+qlk^0^zzzz^y^2497988^36.8955600^8.4433300^p^ppl^dz^^44^^^^35449^0^21^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qlk^^afric^o
 qll^0^zzzz^n^0^-29.75^-51.18^s^airp^br^^^^^^^^^br015^^^^-1^y^n^qll^rs^samer^o
 qlm^0^zzzz^n^0^0^0^x^xxxx^es^^^^^^^^^es045^^^^-1^n^n^qlm^^europ^o
 qln^0^zzzz^y^3166034^42.05^13.9167^p^ppla3^it^^01^aq^066098^^25304^0^401^europe/rome^1.0^2.0^1.0^2012-02-15^y^n^qln^^europ^o
 qlo^0^zzzz^n^0^33.9167^-118.383^s^airp^us^^^^^^^^^us110^^^^-1^y^n^lax^ca^namer^p
 qlp^0^zzzz^y^3175081^44.1167^9.83333^p^ppla2^it^^08^sp^011015^^91391^0^3^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qlp^^europ^o
 qlq^0^zzzz^n^0^41.62^0.6333^s^airp^es^^^^^^^^^es045^^^^-1^y^y^ild^^europ^r
-qlr^0^zzzz^y^2267095^0^0^p^ppla^pt^^13^1009^100912^^45112^0^33^europe/lisbon^0.0^1.0^0.0^2011-08-28^n^n^qlr^^europ^o
+qlr^0^zzzz^y^2267095^39.7436200^-8.8070500^p^ppla^pt^^13^1009^100912^^45112^0^33^europe/lisbon^0.0^1.0^0.0^2011-08-28^n^n^qlr^^europ^o
 qls^0^lsgl^y^6299715^46.53^6.65^s^airp^ch^^vd^2225^5586^^0^616^606^europe/zurich^1.0^2.0^1.0^2011-03-19^y^n^qls^^europ^cr
 qlt^0^lirl^y^6299625^41.542436^12.909019^s^airp^it^^07^lt^059011^^0^28^21^europe/rome^1.0^2.0^1.0^2011-03-28^y^n^qlt^^europ^o
 qlu^0^zzzz^y^765876^51.24^22.572^p^ppla^pl^^75^^^^360044^0^183^europe/warsaw^1.0^2.0^1.0^2012-01-19^n^n^qlu^^eeuro^o
-qlv^0^zzzz^y^3430310^0^0^p^ppl^ar^^01^3427504^^^0^0^23^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2012-01-18^n^n^qlv^ba^samer^o
+qlv^0^zzzz^y^3430310^-34.5074700^-58.4870200^p^ppl^ar^^01^3427504^^^0^0^23^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2012-01-18^n^n^qlv^ba^samer^o
 qlw^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qlw^mg^samer^o
 qlx^0^zzzz^y^2772827^47.38^15.1^p^ppla3^at^^08^802^80224^^9212^0^412^europe/vienna^1.0^2.0^1.0^2011-07-31^y^n^qlx^^europ^o
 qly^0^lire^y^6299618^41.6545200^12.4451800^s^airp^it^^07^rm^058079^^0^12^9^europe/rome^1.0^2.0^1.0^2011-02-25^n^n^qly^^europ^o
@@ -7046,12 +7046,12 @@ qmc^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qmc^sp^samer^o
 qmd^0^zzzz^n^0^0^0^x^xxxx^jo^^^^^^^^^jo068^^^^-1^n^n^qmd^^meast^o
 qme^0^zzzz^y^2524170^38.1833^15.5667^p^ppla2^it^^15^me^083048^^252026^0^66^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qme^^europ^o
 qmf^0^ssmf^y^7731443^-26.1589000^-49.8322000^s^airp^br^^26^^^^0^0^816^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qmf^sc^samer^o
-qmg^0^zzzz^y^2490584^0^0^p^ppl^dz^^15^^^^0^0^395^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qmg^^afric^o
-qmh^0^zzzz^y^2484620^0^0^p^ppla^dz^^29^^^^100821^0^925^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qmh^^afric^o
+qmg^0^zzzz^y^2490584^34.8496900^-1.7275300^p^ppl^dz^^15^^^^0^0^395^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qmg^^afric^o
+qmh^0^zzzz^y^2484620^35.8754100^7.1135300^p^ppla^dz^^29^^^^100821^0^925^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qmh^^afric^o
 qmi^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qmi^sp^samer^o
 qmj^0^zzzz^n^0^32.002372^49.270364^x^xxxx^ir^^^^^^^^^ir120^^^^-1^n^n^qmj^^meast^o
 qmk^0^zzzz^y^3421608^68.25^-52.83^p^ppl^gl^^05^^^^336^0^-9999^america/godthab^-3.0^-2.0^-3.0^2011-02-16^y^n^qmk^^europ^ch
-qml^0^zzzz^y^1170298^0^0^p^ppl^pk^^02^^^^0^0^65^asia/karachi^5.0^5.0^5.0^2012-01-17^n^n^qml^^asia^o
+qml^0^zzzz^y^1170298^28.5287400^67.7336500^p^ppl^pk^^02^^^^0^0^65^asia/karachi^5.0^5.0^5.0^2012-01-17^n^n^qml^^asia^o
 qmm^0^lilq^y^7730632^42.77^10.23^s^airp^it^^16^ms^045010^^0^0^4^europe/rome^1.0^2.0^1.0^2011-03-17^y^n^qmm^^europ^o
 qmn^0^zzzz^y^934985^-26.32^31.14^p^pplc^sz^^01^^^^76218^0^1209^africa/mbabane^2.0^2.0^2.0^2012-01-18^n^n^qmn^^afric^o
 qmo^0^zzzz^n^0^0.8411^0.06611^s^airp^be^^^^^^^^^be012^^^^-1^y^n^qmo^^europ^cr
@@ -7061,20 +7061,20 @@ qmr^0^zzzz^y^2524245^37.8^12.4333^p^ppla3^it^^15^tp^081011^^77784^0^12^europe/ro
 qms^0^zzzz^n^0^0^0^x^xxxx^kr^^^^^^^^^kr^^^^-1^n^n^qms^^asia^o
 qmu^0^zzzz^n^0^45.4833^6.53333^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^qmu^^europ^o
 qmv^0^zzzz^n^0^38.4^-113^s^airp^us^^^^^^^^^us105^^^^-1^y^n^qmv^nj^namer^ca
-qmw^0^zzzz^y^2487293^0^0^p^ppl^dz^dz^26^^^^0^0^43^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qmw^^afric^o
+qmw^0^zzzz^y^2487293^35.5886100^0.0686100^p^ppl^dz^dz^26^^^^0^0^43^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qmw^^afric^o
 qmx^0^zzzz^n^0^41.78^-88.15^s^airp^zz^^^^^^^^^zz207^^^^-1^y^y^qmx^^none^ca
 qmy^0^zzzz^n^0^42.35^-88.05^s^airp^zz^^^^^^^^^zz209^^^^-1^y^y^qmy^^none^ca
 qmz^0^zzzz^n^0^50^8.267^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qmz^^europ^cr
 qnb^0^zzzz^n^0^0^0^x^xxxx^in^^^^^^^^^in^^^^-1^n^n^qnb^^asia^o
 qnc^0^zzzz^n^0^47^6.96667^s^airp^ch^^^^^^^^^ch032^^^^-1^y^n^qnc^^europ^cr
 qnd^0^lyns^y^7668337^45.25^19.98^s^airp^rs^^^^^^0^0^76^europe/belgrade^1.0^2.0^1.0^2011-02-17^y^n^qnd^^europ^o
-qne^0^zzzz^y^3451124^0^0^p^ppl^br^^26^^^^41914^0^793^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qne^sc^samer^o
+qne^0^zzzz^y^3451124^-26.2544400^-49.5183300^p^ppl^br^^26^^^^41914^0^793^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qne^sc^samer^o
 qnf^0^zzzz^n^0^0^0^x^xxxx^in^^^^^^^^^in^^^^-1^n^n^qnf^^asia^o
 qng^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qng^^asia^o
 qnh^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qnh^sc^samer^o
-qni^0^zzzz^y^2326016^0^0^p^ppl^ng^^25^^^^561066^0^59^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qni^^afric^o
+qni^0^zzzz^y^2326016^6.1454300^6.7884500^p^ppl^ng^^25^^^^561066^0^59^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qni^^afric^o
 qnj^0^lfli^y^6694616^46.191972^6.268386^s^airp^fr^^b9^74^743^74298^0^0^487^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^qnj^^europ^o
-qnk^0^zzzz^y^2328684^0^0^p^ppl^ng^^47^^^^111017^0^441^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qnk^^afric^o
+qnk^0^zzzz^y^2328684^6.8561000^7.3927000^p^ppl^ng^^47^^^^111017^0^441^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qnk^^afric^o
 qnl^0^zzzz^y^2990611^48.8833^2.26667^p^ppl^fr^^a8^92^922^92051^61300^0^45^europe/paris^1.0^2.0^1.0^2012-01-18^y^n^qnl^^europ^o
 qnm^0^ebnm^y^7668191^0.8411^0.08111^s^airp^be^^wal^wna^^^0^0^176^europe/brussels^1.0^2.0^1.0^2011-02-17^y^n^qnm^^europ^cr
 qnn^0^zzzz^n^0^0^0^x^xxxx^ng^^^^^^^^^ng^^^^-1^n^n^qnn^^afric^o
@@ -7091,7 +7091,7 @@ qny^0^zzzz^n^0^40.68^-74.17^s^airp^us^^^^^^^^^us105^^^^-1^y^n^nyc^ny^namer^a
 qnz^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qnz^^asia^o
 qoa^0^sdkk^y^7731445^-21.4878000^-47.0344000^s^airp^br^^27^^^^0^0^640^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qoa^sp^samer^o
 qob^0^edqf^y^3207010^49.28^10.57^s^airf^de^^02^^^^0^0^423^europe/berlin^1.0^2.0^1.0^2012-01-19^y^n^qob^^europ^cr
-qoc^0^zzzz^y^3455775^0^0^p^ppl^br^^27^^^^677856^0^750^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qoc^sp^samer^o
+qoc^0^zzzz^y^3455775^-23.5325000^-46.7916700^p^ppl^br^^27^^^^677856^0^750^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qoc^sp^samer^o
 qod^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qod^sp^samer^o
 qof^0^zzzz^n^0^50.4^30.47^s^airp^ua^^^^^^^^^ua127^^^^-1^y^n^iev^^euras^b
 qog^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qog^^europ^o
@@ -7099,20 +7099,20 @@ qoh^0^zzzz^n^0^50.4^30.47^s^airp^ua^^^^^^^^^ua127^^^^-1^y^n^iev^^euras^b
 qoi^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qoi^sp^samer^o
 qoj^0^sssb^y^7731446^-28.6549000^-56.0346000^s^airp^br^^23^^^^0^0^84^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qoj^rs^samer^o
 qok^0^zzzz^n^0^70.23^22.37^s^airp^no^^^^^^^^^no083^^^^-1^y^n^qok^^europ^o
-qol^0^zzzz^y^2501162^0^0^p^ppl^dz^^31^^^^0^0^12^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qol^^afric^o
+qol^0^zzzz^y^2501162^37.0071700^6.5609900^p^ppl^dz^^31^^^^0^0^12^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qol^^afric^o
 qom^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qom^^asia^o
-qon^0^zzzz^y^2803073^0^0^p^ppl^be^^wal^wlx^81^81001^26179^0^421^europe/brussels^1.0^2.0^1.0^2008-06-16^n^n^qon^^europ^o
+qon^0^zzzz^y^2803073^49.6833300^5.8166700^p^ppl^be^^wal^wlx^81^81001^26179^0^421^europe/brussels^1.0^2.0^1.0^2008-06-16^n^n^qon^^europ^o
 qoo^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qoo^^asia^o
 qop^0^zzzz^y^3178496^45.96^12.9792^p^ppla3^it^^06^ud^030027^^14421^0^39^europe/rome^1.0^2.0^1.0^2012-02-15^y^n^qop^^europ^o
 qoq^0^zzzz^n^0^60.58^-46^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qoq^^europ^ca
 qor^0^zzzz^n^0^0^0^x^xxxx^tr^^^^^^^^^tr101^^^^-1^n^n^qor^^euras^o
-qot^0^zzzz^y^2128574^0^0^p^ppl^jp^^12^^^^143792^0^30^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qot^^asia^o
-qou^0^zzzz^y^2485582^0^0^p^ppl^dz^^51^^^^59864^0^97^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qou^^afric^o
+qot^0^zzzz^y^2128574^43.1894400^141.0022200^p^ppl^jp^^12^^^^143792^0^30^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qot^^asia^o
+qou^0^zzzz^y^2485582^35.9612400^0.9189600^p^ppl^dz^^51^^^^59864^0^97^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qou^^afric^o
 qov^0^zzzz^n^0^0^0^x^xxxx^cl^^^^^^^^^cl033^^^^-1^n^n^qov^^samer^o
 qow^0^dnim^y^7730065^5.406^7.201^s^airp^ng^^28^^^^0^0^114^africa/lagos^1.0^1.0^1.0^2011-03-16^y^y^qow^^afric^ca
 qox^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qox^^europ^o
 qoy^0^zzzz^n^0^53.18^22.08^s^airp^pl^^^^^^^^^pl089^^^^-1^y^n^qoy^^eeuro^o
-qoz^0^zzzz^y^2485551^0^0^p^ppl^dz^^23^^^^0^0^620^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qoz^^afric^o
+qoz^0^zzzz^y^2485551^36.3161100^7.1636400^p^ppl^dz^^23^^^^0^0^620^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qoz^^afric^o
 qpa^0^zzzz^y^3171728^45.395767^11.847903^p^ppla2^it^^20^pd^028060^^204870^0^16^europe/rome^1.0^2.0^1.0^2012-01-05^y^y^qpa^^europ^cr
 qpb^0^zzzz^y^3180991^41.5667^14.65^p^ppla^it^^11^cb^070006^^50762^0^685^europe/rome^1.0^2.0^1.0^2007-02-17^y^n^qpb^^europ^o
 qpc^0^zzzz^n^0^0^0^x^xxxx^pl^^^^^^^^^pl089^^^^-1^n^n^qpc^^eeuro^o
@@ -7129,7 +7129,7 @@ qpm^0^zzzz^n^0^0^0^x^xxxx^pl^^^^^^^^^pl089^^^^-1^n^n^qpm^^eeuro^o
 qpn^0^zzzz^n^0^0^0^x^xxxx^ro^^^^^^^^^ro094^^^^-1^n^n^qpn^^eeuro^o
 qpo^0^zzzz^y^3170027^40.6333^15.8^p^ppla^it^^02^pz^076063^^69060^0^726^europe/rome^1.0^2.0^1.0^2007-02-17^y^n^qpo^^europ^o
 qpp^0^zzzz^n^0^52.57^13.3^s^airp^de^^^^^^^^^de040^^^^-1^y^n^ber^^europ^r
-qpq^0^zzzz^y^3429971^0^0^p^ppla2^ar^^01^^^^0^0^15^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2011-11-19^n^n^qpq^ba^samer^o
+qpq^0^zzzz^y^3429971^-37.1079400^-56.8614000^p^ppla2^ar^^01^^^^0^0^15^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2011-11-19^n^n^qpq^ba^samer^o
 qpr^0^zzzz^n^0^43.8833^11.1^s^airp^it^^^^^^^^^it067^^^^-1^y^n^qpr^^europ^o
 qps^0^sbys^y^6300688^-21.984561^-47.334764^s^airp^br^^^^^^0^599^609^america/sao_paulo^-2.0^-3.0^-3.0^2007-01-03^n^n^qps^sp^samer^o
 qpu^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qpu^sc^samer^o
@@ -7164,31 +7164,31 @@ qqx^0^zzzz^y^2656173^51.38^-2.367^p^ppla2^gb^^eng^a4^00ha001^^93238^0^24^europe/
 qqy^0^zzzz^y^2633352^53.97^-1.083^p^ppla2^gb^^eng^q5^^^144202^0^17^europe/london^0.0^1.0^0.0^2012-03-30^y^n^qqy^^europ^cr
 qqz^0^zzzz^n^0^0^0^x^xxxx^gb^^^^^^^^^gb053^^^^-1^n^n^qqz^^europ^o
 qra^0^fagm^y^963244^-26.242506^28.151169^s^airp^za^^06^^^^0^0^1670^africa/johannesburg^2.0^2.0^2.0^2012-01-18^y^n^jnb^^afric^a
-qrb^0^zzzz^y^2849802^0^0^p^ppl^de^^01^^^^48825^0^457^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qrb^^europ^o
+qrb^0^zzzz^y^2849802^47.7833300^9.6166700^p^ppl^de^^01^^^^48825^0^457^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qrb^^europ^o
 qrc^0^scrg^y^7730167^-34.173694^-70.775694^s^airp^cl^^08^61^06101^^0^0^489^america/santiago^-3.0^-4.0^-4.0^2012-05-03^n^n^qrc^^samer^o
 qrd^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qrd^mg^samer^o
 qre^0^sskz^y^7731447^-28.3225000^-52.8162000^s^airp^br^^23^^^^0^0^582^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^n^n^qre^rs^samer^o
 qrf^0^zzzz^y^3863883^-35.15^-60.4833^s^airf^ar^^01^^^^0^0^60^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2012-01-18^n^n^qrf^ba^samer^o
 qrg^0^zzzz^y^2523650^36.9167^14.7333^p^ppla2^it^^15^rg^088009^^68956^0^591^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qrg^^europ^o
 qrh^0^zzzz^n^0^51.92^4.467^s^airp^nl^^^^^^^^^nl082^^^^-1^y^n^rtm^^europ^r
-qri^0^zzzz^y^740483^0^0^p^ppla^tr^^53^^^^92772^0^63^europe/istanbul^2.0^3.0^2.0^2012-01-18^n^n^qri^^euras^o
-qrj^0^zzzz^y^3466954^0^0^p^ppl^br^^08^^^^0^0^72^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qrj^es^samer^o
-qrk^0^zzzz^y^3471683^0^0^p^ppl^br^^15^^^^33355^0^737^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qrk^mg^samer^o
-qrl^0^zzzz^y^2514169^0^0^p^ppla3^es^^51^ma^29069^^134623^0^57^europe/madrid^1.0^2.0^1.0^2012-03-04^n^n^qrl^^europ^o
+qri^0^zzzz^y^740483^41.0208300^40.5219400^p^ppla^tr^^53^^^^92772^0^63^europe/istanbul^2.0^3.0^2.0^2012-01-18^n^n^qri^^euras^o
+qrj^0^zzzz^y^3466954^-20.2638900^-40.4200000^p^ppl^br^^08^^^^0^0^72^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qrj^es^samer^o
+qrk^0^zzzz^y^3471683^-20.2819400^-45.5394400^p^ppl^br^^15^^^^33355^0^737^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qrk^mg^samer^o
+qrl^0^zzzz^y^2514169^36.5154300^-4.8858300^p^ppla3^es^^51^ma^29069^^134623^0^57^europe/madrid^1.0^2.0^1.0^2012-03-04^n^n^qrl^^europ^o
 qrm^0^ynrm^y^7668750^-32.214722^148.225^s^airp^au^^02^15850^^^0^0^237^australia/sydney^11.0^10.0^10.0^2011-06-04^n^n^qrm^ns^austl^o
-qrn^0^zzzz^y^2129101^0^0^p^ppl^jp^^12^^^^96197^0^8^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qrn^^asia^o
+qrn^0^zzzz^y^2129101^42.3172200^140.9880600^p^ppl^jp^^12^^^^96197^0^8^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qrn^^asia^o
 qro^0^mmqt^y^6299869^20.617289^-100.185658^s^airp^mx^^^^^^0^1919^1911^america/mexico_city^-6.0^-5.0^-6.0^2007-01-03^y^y^qro^^namer^ca
 qrp^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qrp^rs^samer^o
-qrq^0^zzzz^y^304782^0^0^p^ppl^tr^^48^^^^33731^0^8^europe/istanbul^2.0^3.0^2.0^2012-01-18^n^n^qrq^^euras^o
+qrq^0^zzzz^y^304782^36.8550000^28.2741700^p^ppl^tr^^48^^^^33731^0^8^europe/istanbul^2.0^3.0^2.0^2012-01-18^n^n^qrq^^euras^o
 qrr^0^ywrn^y^7730280^-31.7333000^147.8029900^s^airp^au^^02^17950^^^0^0^200^australia/sydney^11.0^10.0^10.0^2011-06-04^n^n^qrr^ns^austl^o
 qrs^0^zzzz^n^0^0^0^x^xxxx^ro^^^^^^^^^ro094^^^^-1^n^n^qrs^^eeuro^o
 qrt^0^zzzz^y^3169412^42.4^12.85^p^ppla2^it^^07^ri^057059^^43785^0^390^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qrt^^europ^o
 qru^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qru^sc^samer^o
 qrv^0^lfqd^y^6694647^50.3250000^2.8040000^s^airp^fr^^b4^62^621^62714^0^0^100^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^qrv^^europ^o
 qrw^0^dnsu^y^7668189^6.583^3.333^s^airp^ng^^36^^^^0^0^8^africa/lagos^1.0^1.0^1.0^2011-02-17^y^y^qrw^^afric^ca
-qrx^0^zzzz^y^2155750^0^0^p^ppl^au^^02^12750^^^2499^0^1^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qrx^ns^austl^o
+qrx^0^zzzz^y^2155750^-36.22101^150.13062^p^ppl^au^^02^12750^^^2499^0^1^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qrx^ns^austl^o
 qry^0^zzzz^n^0^70.47^-51.5^s^airp^gl^^^^^^^^^gl055^^^^-1^y^n^qry^^europ^ch
-qrz^0^sbrs^y^6300666^0^0^s^airp^br^^21^^^^0^440^376^america/sao_paulo^-2.0^-3.0^-3.0^2012-04-13^n^n^qrz^rj^samer^o
+qrz^0^sbrs^y^6300666^-22.4782600^-44.4790900^s^airp^br^^21^^^^0^440^376^america/sao_paulo^-2.0^-3.0^-3.0^2012-04-13^n^n^qrz^rj^samer^o
 qsa^0^lell^y^6299342^41.5167^2.1^s^airf^es^^56^b^08205^^0^250^135^europe/madrid^1.0^2.0^1.0^2011-03-20^n^n^qsa^^europ^o
 qsb^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qsb^sp^samer^o
 qsc^0^sbsa^y^6300667^-22.0166700^-47.8833300^s^airp^br^^^^^^0^856^859^america/sao_paulo^-2.0^-3.0^-3.0^2006-10-29^y^n^qsc^sp^samer^ca
@@ -7199,17 +7199,17 @@ qsg^0^zzzz^n^0^33.149722^130.302222^s^airp^dk^^^^^^^^^dk041^^^^-1^y^n^sgd^^europ
 qsh^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qsh^^europ^o
 qsi^0^htms^y^6297362^-3.3500000^37.3333300^s^airp^tz^^^^^^0^854^854^africa/dar_es_salaam^3.0^3.0^3.0^2006-10-29^n^n^qsi^^afric^o
 qsj^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qsj^mg^samer^o
-qsk^0^zzzz^y^2479215^0^0^p^ppla^dz^^52^^^^0^0^697^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qsk^^afric^o
-qsl^0^zzzz^y^2322733^0^0^p^ppl^ng^^05^^^^0^0^11^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qsl^^afric^o
-qsm^0^zzzz^y^2818067^0^0^p^ppl^de^^10^^^^17921^0^3^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qsm^^europ^o
+qsk^0^zzzz^y^2479215^36.2863900^7.9511100^p^ppla^dz^^52^^^^0^0^697^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^qsk^^afric^o
+qsl^0^zzzz^y^2322733^6.5143600^3.3583600^p^ppl^ng^^05^^^^0^0^11^africa/lagos^1.0^1.0^1.0^2012-01-18^n^n^qsl^^afric^o
+qsm^0^zzzz^y^2818067^53.6833300^9.6666700^p^ppl^de^^10^^^^17921^0^3^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qsm^^europ^o
 qsn^0^munb^y^7730116^22.7561000^-81.9209000^s^airp^cu^^11^^^^0^0^19^america/havana^-5.0^-4.0^-5.0^2011-03-16^n^n^qsn^^carib^o
 qso^0^zzzz^y^2464915^35.82^10.638^p^ppla^tn^^23^^^^164123^0^24^africa/tunis^1.0^1.0^1.0^2012-01-18^n^n^qso^^afric^o
-qsq^0^zzzz^y^268064^0^0^p^ppla^lb^^06^^^^163554^0^12^asia/beirut^2.0^3.0^2.0^2012-02-02^n^n^qsq^^meast^o
+qsq^0^zzzz^y^268064^33.5630600^35.3688900^p^ppla^lb^^06^^^^163554^0^12^asia/beirut^2.0^3.0^2.0^2012-02-02^n^n^qsq^^meast^o
 qsr^0^liri^y^6299622^40.6204^14.911294^s^airp^it^^04^sa^065099^^0^37^31^europe/rome^1.0^2.0^1.0^2011-02-25^y^n^qsr^^europ^ca
 qss^0^zzzz^y^3167096^40.7272^8.56028^p^ppla2^it^^14^ss^090064^^120729^0^211^europe/rome^1.0^2.0^1.0^2012-04-28^y^n^qss^^europ^o
 qst^0^zzzz^n^0^40.735028^30.083336^x^xxxx^tr^^^^^^^^^tr101^^^^-1^n^n^qst^^euras^o
 qsu^0^zzzz^n^0^30.97^31.433^x^xxxx^eg^^^^^^^^^eg044^^^^-1^n^n^qsu^^afric^o
-qsv^0^zzzz^y^666395^0^0^p^ppl^ro^^00^^^^11465^0^454^europe/bucharest^2.0^3.0^2.0^2012-01-18^n^n^qsv^^eeuro^o
+qsv^0^zzzz^y^666395^46.5833300^25.0666700^p^ppl^ro^^00^^^^11465^0^454^europe/bucharest^2.0^3.0^2.0^2012-01-18^n^n^qsv^^eeuro^o
 qsw^0^zzzz^n^0^0^0^x^xxxx^sy^^^^^^^^^sy098^^^^-1^n^n^qsw^^meast^o
 qsx^0^syna^y^7731448^6.24^-57.52^s^airp^gy^^13^^^^0^0^5^america/guyana^-4.0^-4.0^-4.0^2011-03-18^n^n^qsx^^samer^o
 qsy^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qsy^^europ^o
@@ -7218,26 +7218,26 @@ qtc^0^zzzz^y^3179866^41.0667^14.3333^p^ppla2^it^^04^ce^061022^^75208^0^81^europe
 qtd^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br016^^^^-1^n^n^qtd^pe^samer^o
 qte^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br016^^^^-1^n^n^qte^rn^samer^o
 qtf^0^zzzz^n^0^0^0^x^xxxx^sa^^^^^^^^^sa^^^^-1^n^n^qtf^^meast^o
-qtg^0^zzzz^y^3445922^0^0^p^ppl^br^^27^^^^10877^0^383^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qtg^sp^samer^o
+qtg^0^zzzz^y^3445922^-21.3811100^-51.5705600^p^ppl^br^^27^^^^10877^0^383^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qtg^sp^samer^o
 qth^0^zzzz^n^0^-36.5^148.3^s^airp^au^^^^^^^^^au007^^^^-1^y^n^qth^ns^austl^cb
 qti^0^zzzz^y^2522960^37.9833^13.7^p^ppla3^it^^15^pa^082070^^26958^0^69^europe/rome^1.0^2.0^1.0^2012-02-15^y^n^qti^^europ^o
 qtj^0^lfor^y^6299436^48.4569400^1.5201700^s^airp^fr^^a3^28^281^28085^0^155^151^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^qtj^^europ^o
 qtk^0^zzzz^n^0^51.363167^14.95^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qtk^^europ^o
-qtl^0^zzzz^y^3466988^0^0^p^ppl^br^^15^^^^60066^0^586^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qtl^mg^samer^o
-qtm^0^zzzz^y^2127733^0^0^p^ppl^jp^^12^^^^174806^0^7^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qtm^^asia^o
+qtl^0^zzzz^y^3466988^-19.7897200^-42.1391700^p^ppl^br^^15^^^^60066^0^586^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qtl^mg^samer^o
+qtm^0^zzzz^y^2127733^42.6369400^141.6033300^p^ppl^jp^^12^^^^174806^0^7^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^qtm^^asia^o
 qtn^0^zzzz^n^0^0^0^x^xxxx^cl^^^^^^^^^cl033^^^^-1^n^n^qtn^^samer^o
 qto^0^zzzz^n^0^-36.47^148.5^s^airp^au^^^^^^^^^au007^^^^-1^y^n^qto^ns^austl^o
 qtp^0^zzzz^n^0^70.47^28.3^s^airp^no^^^^^^^^^no083^^^^-1^y^n^qtp^^europ^o
 qtr^0^zzzz^n^0^34.94^36.042^x^xxxx^sy^^^^^^^^^sy098^^^^-1^n^n^qtr^^meast^o
 qts^0^zzzz^n^0^0^0^x^xxxx^us^^^^^^^^^us108^^^^-1^n^n^qts^co^namer^o
 qtt^0^zzzz^n^0^30.79^31.001^x^xxxx^eg^^^^^^^^^eg044^^^^-1^n^n^qtt^^afric^o
-qtu^0^zzzz^y^3460535^0^0^p^ppl^br^^27^^^^137586^0^594^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qtu^sp^samer^o
+qtu^0^zzzz^y^3460535^-23.2641700^-47.2991700^p^ppl^br^^27^^^^137586^0^594^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qtu^sp^samer^o
 qtv^0^zzzz^n^0^46^6.167^s^airp^zz^^^^^^^^^zz205^^^^-1^y^y^qtv^^none^ca
-qtw^0^zzzz^y^1835235^0^0^p^ppla^kr^^19^^^^1475221^0^71^asia/seoul^9.0^9.0^9.0^2012-02-28^n^n^qtw^^asia^o
+qtw^0^zzzz^y^1835235^36.3213900^127.4197200^p^ppla^kr^^19^^^^1475221^0^71^asia/seoul^9.0^9.0^9.0^2012-02-28^n^n^qtw^^asia^o
 qtx^0^zzzz^n^0^39.9344^9.70556^s^airp^it^^^^^^^^^it067^^^^-1^y^n^qtx^^europ^o
 qty^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qty^^asia^o
-qtz^0^zzzz^y^3530517^0^0^p^ppl^mx^^30^^^^230717^0^21^america/mexico_city^-6.0^-5.0^-6.0^2012-01-18^n^n^qtz^^namer^o
-qua^0^zzzz^y^2851594^0^0^p^ppl^de^^10^^^^0^0^0^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qua^^europ^o
+qtz^0^zzzz^y^3530517^18.1500000^-94.4166700^p^ppl^mx^^30^^^^230717^0^21^america/mexico_city^-6.0^-5.0^-6.0^2012-01-18^n^n^qtz^^namer^o
+qua^0^zzzz^y^2851594^54.5000000^11.2166700^p^ppl^de^^10^^^^0^0^0^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qua^^europ^o
 qub^0^zzzz^y^7731449^26.6^12.77^s^airp^ly^^52^^^^0^0^468^africa/tripoli^2.0^2.0^2.0^2011-03-18^y^y^qub^^afric^ca
 quc^0^zzzz^n^0^0^0^x^xxxx^ve^^^^^^^^^ve194^^^^-1^n^n^quc^^samer^o
 qud^0^zzzz^n^0^30.47^31.05^s^airp^eg^^^^^^^^^eg044^^^^-1^y^n^qud^^afric^o
@@ -7245,12 +7245,12 @@ que^0^zzzz^y^3420388^65.33^-37.83^p^ppl^gl^^05^^^^0^0^58^america/godthab^-3.0^-2
 quf^0^zzzz^y^588409^50.47^24.8^p^pplc^ee^^01^0784^^^394024^0^12^europe/tallinn^2.0^3.0^2.0^2012-04-23^n^n^quf^01^europ^c
 qug^0^eghr^y^7730473^50.83^-0.8^s^airp^gb^^eng^p6^45ud^45ud062^0^0^30^europe/london^0.0^1.0^0.0^2011-03-17^y^n^qug^^europ^ca
 quh^0^zzzz^n^0^30.93^31^s^airp^eg^^^^^^^^^eg044^^^^-1^y^n^quh^^afric^o
-qui^0^zzzz^y^3894689^0^0^p^ppl^cl^^03^22^02201^^0^0^2740^america/santiago^-3.0^-4.0^-4.0^2012-05-03^n^n^qui^^samer^o
+qui^0^zzzz^y^3894689^-22.3166700^-68.9333300^p^ppl^cl^^03^22^02201^^0^0^2740^america/santiago^-3.0^-4.0^-4.0^2012-05-03^n^n^qui^^samer^o
 quj^0^zzzz^n^0^37.73^127^s^airp^kr^^^^^^^^^kr^^^^-1^y^n^quj^^asia^o
 quk^0^zzzz^n^0^51^-2.167^s^airp^zz^^^^^^^^^zz205^^^^-1^y^y^quk^^none^ca
 qul^0^zzzz^n^0^48.4^10^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qul^^europ^cr
-qum^0^zzzz^y^119208^0^0^p^ppla^ir^^39^^^^900000^0^935^asia/tehran^3.5^4.5^3.5^2012-01-16^n^n^qum^^meast^o
-qun^0^zzzz^y^1845136^0^0^p^ppla^kr^^06^^^^209746^0^92^asia/seoul^9.0^9.0^9.0^2012-02-28^n^n^qun^^asia^o
+qum^0^zzzz^y^119208^34.6401000^50.8764000^p^ppla^ir^^39^^^^900000^0^935^asia/tehran^3.5^4.5^3.5^2012-01-16^n^n^qum^^meast^o
+qun^0^zzzz^y^1845136^37.8747200^127.7341700^p^ppla^kr^^06^^^^209746^0^92^asia/seoul^9.0^9.0^9.0^2012-02-28^n^n^qun^^asia^o
 quo^0^zzzz^y^2319480^-6.58333^3.33333^p^ppla^ng^^21^^^^0^0^72^africa/lagos^1.0^1.0^1.0^2012-01-18^y^y^quo^^afric^ca
 qup^0^bgsq^y^7730420^70.05^-52^s^airh^gl^^03^^^^0^0^18^america/godthab^-3.0^-2.0^-3.0^2011-03-17^y^n^qup^^europ^ch
 quq^0^zzzz^n^0^0^0^x^xxxx^es^^^^^^^^^es045^^^^-1^n^n^quq^^europ^o
@@ -7279,7 +7279,7 @@ qvm^0^zzzz^n^0^61^24.42^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^qvm^^europ^o
 qvn^0^zzzz^y^3182650^40.9^14.7833^p^ppla2^it^^04^av^064008^^52703^0^357^europe/rome^1.0^2.0^1.0^2011-02-23^y^n^qvn^^europ^o
 qvo^0^zzzz^n^0^71.05^24.67^s^airp^no^^^^^^^^^no083^^^^-1^y^n^qvo^^europ^o
 qvp^0^sdrr^y^7668447^-23.0925000^-48.9874000^s^airp^br^^27^^^^0^0^800^america/sao_paulo^-2.0^-3.0^-3.0^2011-02-17^n^n^qvp^sp^samer^o
-qvq^0^zzzz^y^2817599^0^0^p^ppl^de^^06^^^^26924^0^24^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qvq^^europ^o
+qvq^0^zzzz^y^2817599^52.9166700^9.2333300^p^ppl^de^^06^^^^26924^0^24^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^qvq^^europ^o
 qvr^0^zzzz^n^0^0^0^x^xxxx^br^^^^^^^^^br015^^^^-1^n^n^qvr^rj^samer^o
 qvs^0^zzzz^y^634651^60.82^24.62^p^ppl^fi^^13^05^165^^4753^0^98^europe/helsinki^2.0^3.0^2.0^2012-01-18^y^n^qvs^^europ^o
 qvt^0^zzzz^n^0^60.75^24.75^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^qvt^^europ^o
@@ -7289,28 +7289,28 @@ qvw^0^zzzz^n^0^60.43^26.92^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^qvw^^europ^o
 qvx^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^qvx^^afric^o
 qvy^0^zzzz^n^0^60.896394^26.938353^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^qvy^^europ^cb
 qvz^0^zzzz^n^0^60.55^27.25^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^qvz^^europ^o
-qwa^0^zzzz^y^6094578^0^0^p^ppl^ca^^08^^^^247989^0^105^america/toronto^-5.0^-4.0^-5.0^2006-01-22^n^n^qwa^on^namer^o
+qwa^0^zzzz^y^6094578^43.9001200^-78.8495700^p^ppl^ca^^08^^^^247989^0^105^america/toronto^-5.0^-4.0^-5.0^2006-01-22^n^n^qwa^on^namer^o
 qwb^0^zzzz^n^0^52.57^13.3^s^airp^de^^^^^^^^^de040^^^^-1^y^n^ber^^europ^r
 qwc^0^zzzz^n^0^52.57^13.3^s^airp^de^^^^^^^^^de040^^^^-1^y^n^ber^^europ^r
-qwd^0^zzzz^y^2870482^0^0^p^ppl^de^^02^^^^7996^0^915^europe/berlin^1.0^2.0^1.0^2009-06-16^n^n^qwd^^europ^o
+qwd^0^zzzz^y^2870482^47.4422000^11.2618700^p^ppl^de^^02^^^^7996^0^915^europe/berlin^1.0^2.0^1.0^2009-06-16^n^n^qwd^^europ^o
 qwf^0^zzzz^n^0^40.58^-105.1^s^airp^us^^^^^^^^^us108^^^^-1^y^n^fnl^co^namer^b
 qwg^0^zzzz^y^4499115^35.21^-80.67^s^airp^us^^nc^119^^^0^243^243^america/new_york^-5.0^-4.0^-5.0^2011-12-11^y^n^clt^nc^namer^a
 qwh^0^zzzz^n^0^40.4^-105.1^s^airp^us^^^^^^^^^us108^^^^-1^y^n^fnl^co^namer^b
 qwi^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qwi^^europ^o
-qwj^0^zzzz^y^3472343^0^0^p^ppl^br^^27^^^^196022^0^563^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qwj^sp^samer^o
+qwj^0^zzzz^y^3472343^-22.7391700^-47.3313900^p^ppl^br^^27^^^^196022^0^563^america/sao_paulo^-2.0^-3.0^-3.0^2010-01-29^n^n^qwj^sp^samer^o
 qwk^0^zzzz^n^0^0^0^x^xxxx^pl^^^^^^^^^pl089^^^^-1^n^n^qwk^^eeuro^o
 qwl^0^zzzz^n^0^-36.47^148.5^s^airp^au^^^^^^^^^au007^^^^-1^y^n^qwl^ns^austl^cb
 qwm^0^zzzz^n^0^40.18^-105.1^s^airp^us^^^^^^^^^us108^^^^-1^y^n^qwm^co^namer^cb
-qwn^0^zzzz^y^3471368^0^0^p^ppl^br^^18^^^^20128^0^688^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qwn^pr^samer^o
+qwn^0^zzzz^y^3471368^-23.2325000^-51.6655600^p^ppl^br^^18^^^^20128^0^688^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qwn^pr^samer^o
 qwo^0^zzzz^y^2620046^56.37^-8.633^p^ppla2^dk^^18^661^^^32072^0^16^europe/copenhagen^1.0^2.0^1.0^2011-03-01^y^n^qwo^^europ^cb
 qwp^0^zzzz^n^0^39.9^-105.8^s^airp^us^^^^^^^^^us108^^^^-1^y^n^qwp^co^namer^ca
 qwq^0^zzzz^y^2612204^56.48^8.6^p^ppla2^dk^^18^671^^^11317^0^12^europe/copenhagen^1.0^2.0^1.0^2011-03-01^y^n^qwq^^europ^cb
 qwr^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qwr^^europ^o
 qws^0^zzzz^n^0^49.47^20^s^airp^pl^^^^^^^^^pl089^^^^-1^y^n^qws^^eeuro^o
-qwt^0^zzzz^y^2510693^0^0^p^ppla3^es^^54^to^45165^^88856^0^380^europe/madrid^1.0^2.0^1.0^2012-03-29^n^n^qwt^^europ^o
+qwt^0^zzzz^y^2510693^39.9634800^-4.8307600^p^ppla3^es^^54^to^45165^^88856^0^380^europe/madrid^1.0^2.0^1.0^2012-03-29^n^n^qwt^^europ^o
 qwu^0^zzzz^n^0^49.8^9.933^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qwu^^europ^cr
 qwv^0^zzzz^y^3188402^44.27^19.93^p^ppla2^rs^^se^9^70360^^61035^0^180^europe/belgrade^1.0^2.0^1.0^2012-04-15^y^n^qwv^^europ^o
-qww^0^zzzz^y^2513324^0^0^p^ppla3^es^^57^cc^10131^^17228^0^295^europe/madrid^1.0^2.0^1.0^2012-03-04^n^n^qww^^europ^o
+qww^0^zzzz^y^2513324^39.8915800^-5.5406400^p^ppla3^es^^57^cc^10131^^17228^0^295^europe/madrid^1.0^2.0^1.0^2012-03-04^n^n^qww^^europ^o
 qwx^0^zzzz^n^0^0^0^x^xxxx^es^^^^^^^^^es045^^^^-1^n^n^qwx^^europ^o
 qwy^0^zzzz^n^0^44.5^-123.3^s^airp^us^^^^^^^^^us110^^^^-1^y^n^cvo^or^namer^b
 qwz^0^zzzz^y^2759040^51.5^5.4^p^ppl^nl^^06^0753^^^29074^0^17^europe/amsterdam^1.0^2.0^1.0^2007-06-03^y^n^ein^^europ^b
@@ -7326,11 +7326,11 @@ qxk^0^zzzz^n^0^44.38^5.75^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^qxk^^europ^cb
 qxl^0^zzzz^n^0^57^-2^s^airp^zz^^^^^^^^^zz205^^^^-1^y^y^qxl^^none^ca
 qxm^0^zzzz^n^0^57.17^-2.2^s^airp^zz^^^^^^^^^zz205^^^^-1^y^y^qxm^^none^ca
 qxo^0^zzzz^n^0^0^0^x^xxxx^jp^^^^^^^^^jp^^^^-1^n^n^qxo^^asia^o
-qxp^0^zzzz^y^785387^0^0^p^ppla^mk^^e6^^^^37387^0^696^europe/skopje^1.0^2.0^1.0^2012-04-06^n^n^qxp^^europ^o
+qxp^0^zzzz^y^785387^41.1780600^20.6761100^p^ppla^mk^^e6^^^^37387^0^696^europe/skopje^1.0^2.0^1.0^2012-04-06^n^n^qxp^^europ^o
 qxq^0^zzzz^y^758445^53.18^22.08^p^ppla2^pl^^80^1818^181801^^66495^0^162^europe/warsaw^1.0^2.0^1.0^2010-10-14^y^y^qxq^^eeuro^o
 qxr^0^zzzz^y^760772^51.4000000^21.2166700^s^airp^pl^^78^^^^0^0^171^europe/warsaw^1.0^2.0^1.0^2012-02-02^n^n^qxr^^eeuro^o
 qxv^0^zzzz^y^2612045^55.07^10.63^p^ppla2^dk^^21^479^^^27553^0^14^europe/copenhagen^1.0^2.0^1.0^2011-03-01^y^n^qxv^^europ^cr
-qxw^0^zzzz^y^3472603^0^0^p^ppl^br^^15^^^^71406^0^887^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qxw^mt^samer^o
+qxw^0^zzzz^y^3472603^-21.4291700^-45.9472200^p^ppl^br^^15^^^^71406^0^887^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^n^n^qxw^mt^samer^o
 qxx^0^zzzz^n^0^41.7833^-87.75^s^airp^us^^^^^^^^^us107^^^^-1^y^y^qxx^il^namer^ca
 qxy^0^zzzz^n^0^41.7833^-87.75^s^airp^us^^^^^^^^^us107^^^^-1^y^n^qxy^il^namer^ca
 qxz^0^zzzz^n^0^47.48^12.07^s^airp^at^^^^^^^^^at005^^^^-1^y^n^qxz^^europ^cb
@@ -7344,10 +7344,10 @@ qyg^0^zzzz^n^0^54^13^s^airp^de^^^^^^^^^de040^^^^-1^y^y^qyg^^europ^cr
 qyh^0^zzzz^n^0^52.27^6.767^s^airp^nl^^^^^^^^^nl082^^^^-1^y^n^qyh^^europ^cr
 qyi^0^zzzz^y^2754064^52.23^5.167^p^ppl^nl^nl^07^0402^^^83640^0^7^europe/amsterdam^1.0^2.0^1.0^2008-06-03^y^y^qyi^^europ^cr
 qyj^0^zzzz^n^0^49^8^s^airp^de^^^^^^^^^de040^^^^-1^y^n^qyj^^europ^o
-qyk^0^zzzz^y^1842485^-1.75^41.48^p^ppl^kr^^13^^^^1073069^0^19^asia/seoul^9.0^9.0^9.0^2010-08-17^y^n^qyk^^asia^o
+qyk^0^zzzz^y^1842485^37.6563900^126.835^p^ppl^kr^^13^^^^1073069^0^19^asia/seoul^9.0^9.0^9.0^2010-08-17^y^n^qyk^^asia^o
 qyl^0^zzzz^y^2759887^52.35^6.667^p^ppl^nl^^15^0141^^^72725^0^15^europe/amsterdam^1.0^2.0^1.0^2010-01-29^y^n^qyl^^europ^cr
 qym^0^zzzz^y^2759821^52.15^5.383^p^ppl^nl^^09^0307^^^139914^0^8^europe/amsterdam^1.0^2.0^1.0^2010-01-29^y^n^qym^^europ^cr
-qyn^0^zzzz^y^2172880^0^0^p^ppl^au^^02^11350^^^6764^0^1^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qyn^ns^austl^o
+qyn^0^zzzz^y^2172880^-28.64201^153.61194^p^ppl^au^^02^11350^^^6764^0^1^australia/sydney^11.0^10.0^10.0^2012-02-28^n^n^qyn^ns^austl^o
 qyo^0^zzzz^n^0^53.8^20.48^s^airp^pl^^^^^^^^^pl089^^^^-1^y^n^qyo^^eeuro^o
 qyp^0^zzzz^y^2759706^52.22^5.95^p^ppl^nl^^03^0200^^^136670^12^18^europe/amsterdam^1.0^2.0^1.0^2012-02-06^y^n^qyp^^europ^cr
 qyq^0^zzzz^y^2612130^57.17^9.983^p^ppl^dk^^19^851^^^0^0^14^europe/copenhagen^1.0^2.0^1.0^2012-01-17^y^n^qyq^^europ^cb
@@ -7391,7 +7391,7 @@ rab^0^aytk^y^7668087^-4.335^152.4^s^airp^pg^^10^^^^0^0^13^pacific/port_moresby^1
 rac^0^krac^y^5281338^42.75^-87.82^s^airf^us^^wi^101^^^0^201^203^america/chicago^-6.0^-5.0^-6.0^2012-04-09^y^n^rac^wi^namer^ca
 rad^0^zzzz^n^0^18.49^-64.67^s^airp^vg^^^^^^^^^vg^^^^-1^y^n^tov^^carib^a
 rae^0^oerr^y^6300025^30.906589^41.138217^s^airp^sa^^^^^^0^552^554^asia/riyadh^3.0^3.0^3.0^2007-01-03^y^y^rae^^meast^ca
-raf^0^zzzz^y^3839479^29.6^34.85^p^ppl^ar^^21^^^^88713^0^103^america/argentina/cordoba^-3.0^-3.0^-3.0^2012-01-18^y^n^raf^sf^samer^ca
+raf^0^safr^y^3839476^-31.28333^-61.5^s^airp^ar^^21^^^^0^0^101^america/argentina/cordoba^-3.0^-3.0^-3.0^2012-05-13^y^n^raf^sf^samer^ca
 rag^0^nzra^y^7730731^-37.8^174.9^s^airp^nz^^g1^013^^^0^0^7^pacific/auckland^13.0^12.0^12.0^2011-08-01^y^n^rag^^austl^ca
 rah^0^oerf^y^393877^29.626419^43.490614^s^airp^sa^^00^^^^0^449^442^asia/riyadh^3.0^3.0^3.0^2007-01-03^y^y^rah^^meast^ca
 rai^0^gvnp^y^6453410^14.92^-23.5^s^airp^cv^^^^^^0^70^66^atlantic/cape_verde^-1.0^-1.0^-1.0^2007-03-30^y^y^rai^^afric^ca
@@ -7434,7 +7434,7 @@ rbt^0^hkmb^y^6297316^2.333^37.98^s^airp^ke^^^^^^0^1219^1150^africa/nairobi^3.0^3
 rbu^0^yroe^y^7731456^-20.77^117.2^s^airp^au^^08^57560^^^0^0^11^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^rbu^wa^austl^ca
 rbv^0^agrm^y^7668074^-8.15^157.6^s^airp^sb^^^^^^0^0^18^pacific/guadalcanal^11.0^11.0^11.0^2011-02-17^y^y^rbv^^austl^ca
 rbw^0^zzzz^y^4600065^32.9^-80.67^p^ppla2^us^^sc^029^^^5398^21^25^america/new_york^-5.0^-4.0^-5.0^2011-05-14^y^n^rbw^sc^namer^ca
-rbx^0^zzzz^y^8260728^6.843^29.65^s^airp^ss^^32^^^^0^0^421^africa/juba^3.0^3.0^3.0^2012-04-29^y^y^rbx^^meast^ca
+rbx^0^zzzz^y^8260728^6.843^29.65^s^airp^ss^^32^^^^0^0^403^africa/juba^3.0^3.0^3.0^2012-05-13^y^y^rbx^^meast^ca
 rby^0^pary^y^5873031^64.73^-155.5^s^airp^us^^ak^290^^^0^187^122^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^rby^ak^namer^ca
 rca^0^krca^y^6301703^44.145042^-103.103567^s^airb^us^^sd^^^^0^999^978^america/denver^-7.0^-6.0^-7.0^2009-11-14^y^n^rap^sd^namer^a
 rcb^0^farb^y^6296925^-28.78^32.1^s^airp^za^^^^^^0^33^30^africa/johannesburg^2.0^2.0^2.0^2007-01-03^y^y^rcb^^afric^ca
@@ -7459,7 +7459,7 @@ rdd^0^krdd^y^5570166^40.509^-122.293389^s^airp^us^^ca^089^^^0^151^149^america/lo
 rde^0^wasm^y^7731459^-1.583^133.3^s^airp^id^^36^^^^0^0^135^asia/jayapura^9.0^9.0^9.0^2011-03-18^y^n^rde^^seasi^ca
 rdg^0^krdg^y^5207738^40.3785^-75.96525^s^airp^us^^pa^011^^^0^98^99^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^rdg^pa^namer^ca
 rdm^0^krdm^y^5748654^44.254066^-121.149964^s^airp^us^^or^017^^^0^937^933^america/los_angeles^-8.0^-7.0^-8.0^2007-01-03^y^y^rdm^or^namer^ca
-rdn^0^wmpr^y^7731460^5.76528^103.007^s^airp^my^^^^^^0^0^13^asia/kuala_lumpur^8.0^8.0^8.0^2012-03-05^y^y^rdn^^seasi^ca^pulau redang airport^redang island airport
+rdn^0^wmpr^y^7731460^5.76528^103.007^s^airp^my^^^^^^0^0^13^asia/kuala_lumpur^8.0^8.0^8.0^2012-03-05^y^y^rdn^^seasi^ca^redang island airport^pulau redang airport
 rdr^0^krdr^y^5058780^47.96^-97.4^s^airf^us^^nd^035^^^0^266^263^america/chicago^-6.0^-5.0^-6.0^2012-04-09^y^n^rdr^nd^namer^ca
 rds^0^sahs^y^7730147^-37.390617^-68.904211^s^airp^ar^^15^^^^0^0^587^america/argentina/salta^-3.0^-3.0^-3.0^2011-03-16^y^n^rds^ne^samer^ca
 rdt^0^gosr^y^2246545^16.43^-15.65^s^airf^sn^^14^^^^0^0^8^africa/dakar^0.0^0.0^0.0^2012-01-17^y^n^rdt^^afric^ca
@@ -7547,7 +7547,7 @@ rjn^0^oikr^y^7668390^30.297714^56.051139^s^airp^ir^^29^^^^0^0^1605^asia/tehran^3
 rka^0^zzzz^n^0^-15.48^-145.5^s^airp^pf^^^^^^^^^pf087^^^^-1^y^y^rka^^pacif^ca
 rkc^0^zzzz^y^5568159^41.73^-122.6^s^airf^us^^ca^093^^^0^770^771^america/los_angeles^-8.0^-7.0^-8.0^2012-04-09^y^n^rkc^ca^namer^ca
 rkd^0^krkd^y^4968998^44.07^-69.1^s^airp^us^^me^013^^^0^17^16^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^y^rkd^me^namer^ca
-rke^0^ekrk^y^6949457^55.585567^12.131428^s^airp^dk^^20^265^^^0^0^38^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^n^cph^^europ^a^roskilde airport^copenhagen airport, roskilde
+rke^0^ekrk^y^6949457^55.585567^12.131428^s^airp^dk^^20^265^^^0^0^38^europe/copenhagen^1.0^2.0^1.0^2012-05-13^y^n^cph^^europ^a^copenhagen airport, roskilde^roskilde airport
 rkh^0^kuza^y^6299232^34.93^-81.02^s^airp^us^^sc^^^^0^204^194^america/new_york^-5.0^-4.0^-5.0^2011-02-16^y^n^rkh^sc^namer^ca
 rki^0^zzzz^y^7612808^-0.95^100.8^p^ppl^id^^18^^^^0^0^25^asia/makassar^8.0^8.0^8.0^2012-01-21^y^n^rki^^seasi^ca
 rko^0^wibr^y^7731464^-2.083^99.68^s^airp^id^^24^^^^0^0^10^asia/jakarta^7.0^7.0^7.0^2011-03-18^y^n^rko^^seasi^ca
@@ -7602,7 +7602,7 @@ rno^0^krno^y^5501263^39.499108^-119.768108^s^airp^us^^nv^031^^^0^1342^1342^ameri
 rnp^0^zzzz^y^7303968^11.15^166.9^s^airp^mh^^350^^^^0^0^8^pacific/kwajalein^12.0^12.0^12.0^2010-08-05^y^y^rnp^^pacif^ca
 rnr^0^zzzz^y^8260897^-10.15^148.8^s^airp^pg^^01^^^^0^0^14^pacific/port_moresby^10.0^10.0^10.0^2012-04-29^y^n^rnr^^austl^ca
 rns^0^lfrn^y^6301774^48.069508^-1.734794^s^airp^fr^^a2^35^353^35281^0^37^36^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^rns^^europ^ca
-rnt^0^krnt^y^5808194^47.47^-122.2^s^airp^us^^wa^033^^^0^8^1^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^rnt^wa^namer^ca
+rnt^0^krnt^y^5808194^47.49288^-122.21568^s^airp^us^^wa^033^^^0^8^1^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^rnt^wa^namer^ca
 rnu^0^wbkr^y^7731465^5.95^116.7^s^airp^my^^16^^^^0^0^544^asia/kuching^8.0^8.0^8.0^2011-03-18^y^n^rnu^^seasi^ca
 rnz^0^krzl^y^4922008^40.95^-87.15^s^airp^us^^in^073^^^0^206^207^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^n^rnz^in^namer^ca
 roa^0^kroa^y^4782228^37.325472^-79.975417^s^airp^us^^va^161^^^0^355^353^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^y^roa^va^namer^ca
@@ -7830,7 +7830,7 @@ sdn^0^ensd^y^6296767^61.78^6.233^s^airp^no^^^^^^0^6^80^europe/oslo^1.0^2.0^1.0^2
 sdo^0^zzzz^n^0^38.08^138.4^s^airp^jp^^^^^^^^^jp^^^^-1^y^n^sdo^^asia^ca
 sdp^0^pasd^y^5873350^55.32^-160.5^s^airp^us^^ak^013^^^0^17^9^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^sdp^ak^namer^ca
 sdq^0^mdsd^y^3500854^18.429664^-69.668925^s^airp^do^do^34^^^^0^17^21^america/santo_domingo^-4.0^-4.0^-4.0^2011-03-28^y^y^sdq^^carib^ca
-sdr^0^lexj^y^6299361^43.427064^-3.820006^s^airp^es^^39^s^39016^^0^4^0^europe/madrid^1.0^2.0^1.0^2011-03-28^y^y^sdr^^europ^ca
+sdr^0^lexj^y^3114305^43.427064^-3.820006^s^airp^es^^39^s^39016^^0^0^0^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^sdr^^europ^ca^santander airport^parayas airport
 sds^0^rjsd^y^6300390^43^142.7^s^airp^jp^^^^^^0^26^20^asia/tokyo^9.0^9.0^9.0^2007-01-03^y^n^sds^^asia^ca
 sdt^0^opss^y^7668407^34.813556^72.352814^s^airp^pk^^03^^^^0^0^952^asia/karachi^5.0^5.0^5.0^2011-02-17^y^n^sdt^^asia^ca
 sdu^0^sbrj^y^6300664^-22.910461^-43.163133^s^airp^br^^21^3304557^^^0^3^5^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-28^y^y^rio^rj^samer^a
@@ -7840,7 +7840,7 @@ sdy^0^ksdy^y^5677750^47.72^-104.2^s^airp^us^^mt^083^^^0^603^599^america/denver^-
 sdz^0^zzzz^n^0^60.432778^-1.296111^p^pplc^gb^^^^^^^^^gb053^^^^-1^n^n^sdz^^europ^c
 sea^0^ksea^y^5809876^47.449^-122.309306^s^airp^us^^wa^033^^^0^120^113^america/los_angeles^-8.0^-7.0^-8.0^2007-02-17^y^y^sea^wa^namer^ca^seattle-tacoma international airport
 seb^0^hlls^y^6297331^26.986964^14.472525^s^airp^ly^^^^^^0^434^436^africa/tripoli^2.0^2.0^2.0^2007-01-03^y^y^seb^^afric^ca
-sec^0^zzzz^y^6559498^44.88^6.683^p^ppl^fr^^b8^05^051^05161^0^0^1475^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^sec^^europ^o
+sec^0^zzzz^y^6559498^44.88^6.683^p^ppl^fr^^b8^05^051^05161^0^0^1475^europe/paris^1.0^2.0^1.0^2012-05-12^y^n^sec^^europ^o
 sed^0^zzzz^y^293611^31.15^35.38^p^ppl^il^il^01^^^^0^0^-391^asia/jerusalem^2.0^3.0^2.0^2012-01-18^y^n^sed^^meast^ca
 see^0^ksee^y^5352179^32.83^-116.9^s^airp^us^^ca^073^^^0^113^108^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^san^ca^namer^a
 sef^0^ksef^y^4172388^27.45^-81.35^s^airp^us^^fl^055^^^0^18^20^america/new_york^-5.0^-4.0^-5.0^2011-12-11^y^n^sef^fl^namer^ca
@@ -7865,10 +7865,10 @@ sfa^0^dttx^y^6296475^34.717953^10.690972^s^airp^tn^^^^^^0^25^17^africa/tunis^1.0
 sfb^0^ksfb^y^6299061^28.777639^-81.237489^s^airp^us^^fl^^^^0^16^17^america/new_york^-5.0^-4.0^-5.0^2011-03-28^y^y^orl^fl^namer^a
 sfc^0^tffc^y^3578440^16.25^-61.28^s^airf^gp^^gp^971^^^0^0^-9999^america/guadeloupe^-4.0^-4.0^-4.0^2008-07-09^y^n^sfc^^carib^ca
 sfd^0^svsr^y^6300872^7.883317^-67.444025^s^airp^ve^^^^^^0^46^50^america/caracas^-4.5^-4.5^-4.5^2007-04-04^y^n^sfd^^samer^ca
-sfe^0^rpus^y^1690063^30.930222^-114.808639^s^airf^ph^^01^36^^^0^0^30^asia/manila^8.0^8.0^8.0^2012-01-17^y^n^sfe^^pacif^ca
+sfe^0^rpus^y^1690063^16.594^120.3033^s^airf^ph^^01^36^^^0^0^30^asia/manila^8.0^8.0^8.0^2012-05-12^y^n^sfe^^pacif^ca
 sff^0^ksff^y^5794246^47.682819^-117.322558^s^airp^us^^wa^063^^^0^595^593^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^geg^wa^namer^a
 sfg^0^tffg^y^3578420^18.099914^-63.047197^s^airf^mf^^00^^^^0^0^0^america/guadeloupe^-4.0^-4.0^-4.0^2011-03-16^y^y^sfg^^carib^ca
-sfh^0^mmsf^y^7668349^31.17^-114.8^s^airp^mx^^02^^^^0^0^28^america/tijuana^-8.0^-7.0^-8.0^2011-02-17^y^n^sfh^^namer^ca
+sfh^0^mmsf^y^7668349^30.9302^-114.809^s^airp^mx^^02^^^^0^0^28^america/tijuana^-8.0^-7.0^-8.0^2011-02-17^y^n^sfh^^namer^ca
 sfi^0^gmms^y^6297213^32.33^-9.283^s^airp^ma^^^^^^0^52^53^africa/casablanca^0.0^1.0^0.0^2006-10-29^y^z^sfi^^africa^a
 sfj^0^bgsf^y^6295704^67.016969^-50.689325^s^airp^gl^^^^^^0^50^296^america/godthab^-3.0^-2.0^-3.0^2007-01-03^y^y^sfj^^europ^ca
 sfk^0^zzzz^y^3387204^-0.6667^-48.5^p^ppl^br^^16^^^^18212^0^17^america/santarem^-3.0^-3.0^-3.0^2006-12-13^y^n^sfk^pa^samer^ca
@@ -8146,7 +8146,7 @@ spw^0^kspw^y^4877156^43.17^-95.18^s^airp^us^^ia^041^^^0^407^407^america/chicago^
 spx^0^zzzz^n^0^29.52^-95.24^s^airp^us^^^^^^^^^us107^^^^-1^y^n^hou^tx^namer^a
 spy^0^disp^y^6296442^4.746717^-6.660817^s^airp^ci^^^^^^0^7^9^africa/abidjan^0.0^0.0^0.0^2007-01-03^y^n^spy^^afric^ca
 spz^0^kasg^y^4132103^36.18^-94.13^s^airp^us^^ar^143^^^0^411^412^america/chicago^-6.0^-5.0^-6.0^2011-08-12^y^n^spz^ar^namer^ca
-sqa^0^kiza^y^5393389^34.62^-120.1^s^airp^us^^ca^083^^^0^202^202^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^sqa^ca^namer^ca
+sqa^0^kiza^y^5393389^34.62^-120.1^s^airp^us^^ca^083^^^0^202^202^america/los_angeles^-8.0^-7.0^-8.0^2012-05-13^y^n^sqa^ca^namer^ca
 sqb^0^zzzz^n^0^4.767^-75.95^s^airp^co^^^^^^^^^co132^^^^-1^y^n^sqb^^samer^ca
 sqc^0^yscr^y^7731503^0.063619^111.473428^s^airp^au^^08^59660^^^0^0^354^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^sqc^wa^austl^ca
 sqe^0^zzzz^n^0^5.4^-71.7^s^airp^co^^^^^^^^^co132^^^^-1^y^n^sqe^^samer^ca
@@ -8326,7 +8326,7 @@ sxb^0^lfst^y^6299475^48.538319^7.628233^s^airp^fr^^c1^67^676^67124^0^153^148^eur
 sxc^0^zzzz^n^0^33.4^-118.4^s^airp^us^^^^^^^^^us110^^^^-1^y^n^avx^ca^namer^a
 sxd^0^zzzz^y^6640252^43.62^7.05^p^ppl^fr^^b8^06^061^06152^0^0^167^europe/paris^1.0^2.0^1.0^2011-11-02^y^n^sxd^^europ^o
 sxe^0^ymes^y^6301312^-38.08^147^s^airp^au^^07^26810^^^0^7^5^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^n^sxe^vi^austl^ca
-sxf^0^eddb^y^3208733^52.380001^13.5225^s^airp^de^^11^^^^0^47^45^europe/berlin^1.0^2.0^1.0^2011-02-19^y^y^ber^^europ^a
+sxf^0^eddb^y^3208733^52.380001^13.5225^s^airp^de^^11^^^^0^47^45^europe/berlin^1.0^2.0^1.0^2012-05-14^y^y^ber^^europ^a
 sxg^0^flsn^y^6297027^-16.1^23.27^s^airp^zm^^^^^^0^1027^1000^africa/lusaka^2.0^2.0^2.0^2006-10-29^y^n^sxg^^afric^ca
 sxh^0^zzzz^y^2086997^-10.22^150.4^p^ppl^pg^^03^^^^0^0^11^pacific/port_moresby^10.0^10.0^10.0^2012-05-05^y^n^sxh^^austl^ca
 sxi^0^oibs^y^6300045^25.908869^54.5394^s^airp^ir^^^^^^0^13^22^asia/tehran^3.5^4.5^3.5^2006-10-28^y^n^sxi^^meast^ca
@@ -8464,7 +8464,7 @@ tcl^0^ktcl^y^4094473^33.220627^-87.611403^s^airp^us^^al^125^^^0^49^49^america/ch
 tcm^0^ktcm^y^5790367^47.137678^-122.476475^s^airp^us^^wa^053^^^0^84^81^america/los_angeles^-8.0^-7.0^-8.0^2007-01-03^y^n^tiw^wa^namer^a
 tcn^0^mmhc^y^7668348^18.497189^-97.419942^s^airp^mx^^21^^^^0^0^1684^america/mexico_city^-6.0^-5.0^-6.0^2011-02-17^y^n^tcn^^namer^ca
 tco^0^skco^y^7668456^1.814417^-78.749228^s^airp^co^^20^^^^0^0^0^america/bogota^-5.0^-5.0^-5.0^2011-02-17^y^y^tco^^samer^ca
-tcp^0^hetb^y^6297300^29.587778^34.778056^s^airp^eg^^^^^^0^736^738^africa/cairo^2.0^2.0^2.0^2007-01-03^y^y^tcp^^afric^ca
+tcp^0^hetb^y^6297300^29.587778^34.778056^s^airp^eg^^^^^^0^736^738^africa/cairo^2.0^2.0^2.0^2012-05-13^y^y^tcp^^afric^ca
 tcq^0^sptn^y^3928129^-18.053333^-70.275833^s^airp^pe^^23^^^^0^0^456^america/lima^-5.0^-5.0^-5.0^2011-03-17^y^y^tcq^^samer^ca
 tcr^0^zzzz^y^7910377^8.717^78.03^s^airp^in^^25^^^^0^39^26^asia/kolkata^5.5^5.5^5.5^2011-07-24^y^y^tcr^^asia^ca
 tcs^0^ktcs^y^5495296^33.236944^-107.27175^s^airp^us^^nm^051^^^0^1472^1470^america/denver^-7.0^-6.0^-7.0^2011-12-11^y^n^tcs^nm^namer^ca
@@ -8484,7 +8484,7 @@ tdj^0^hdtj^y^7668295^11.8^42.9^s^airp^dj^^05^^^^0^0^28^africa/djibouti^3.0^3.0^3
 tdk^0^uaat^y^7730182^45.15^78.43^s^airp^kz^^01^^^^0^0^588^asia/almaty^6.0^6.0^6.0^2011-03-16^y^n^tdk^^euras^ca
 tdl^0^sazt^y^6300591^-37.237392^-59.227922^s^airp^ar^^^^^^0^174^179^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2007-01-03^y^n^tdl^ba^samer^ca
 tdn^0^zzzz^n^0^-14.75^126.5^s^airp^au^^^^^^^^^au011^^^^-1^y^n^tdn^wa^austl^ca
-tdo^0^ktdo^y^5813686^46.47733^-122.80706^s^airp^us^^wa^041^^^0^110^110^america/los_angeles^-8.0^-7.0^-8.0^2012-04-08^y^n^tdo^wa^namer^ca^ed carlson memorial field^winlock county airport^toledo county airport
+tdo^0^ktdo^y^5813686^46.47733^-122.80706^s^airp^us^^wa^041^^^0^110^110^america/los_angeles^-8.0^-7.0^-8.0^2012-04-08^y^n^tdo^wa^namer^ca^winlock county airport^toledo county airport^ed carlson memorial field
 tdp^0^zzzz^y^8260913^-3.8075^-75.0478^s^airp^pe^^16^^^^0^0^138^america/lima^-5.0^-5.0^-5.0^2012-04-29^n^n^tdp^^samer^c
 tdr^0^ytdr^y^7731537^-24.98^150.1^s^airp^au^^04^30370^^^0^0^171^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^tdr^ql^austl^ca
 tds^0^zzzz^y^8224680^-7.62281^142.86896^s^airp^pg^^06^^^^0^0^49^pacific/port_moresby^10.0^10.0^10.0^2012-03-26^y^z^tds^06^pacif^a
@@ -8649,7 +8649,7 @@ tlg^0^zzzz^n^0^-9.1^160.2^s^airp^sb^^^^^^^^^sb^^^^-1^y^n^tlg^^austl^ca
 tlh^0^ktlh^y^6299173^30.396528^-84.350333^s^airp^us^^fl^^^^0^24^22^america/new_york^-5.0^-4.0^-5.0^2007-03-30^y^y^tlh^fl^namer^ca
 tli^0^zzzz^n^0^1.033^120.8^s^airp^id^^^^^^^^^id062^^^^-1^y^n^tli^^seasi^ca
 tlj^0^patl^y^5875863^62.894369^-155.976525^s^airp^us^^ak^290^^^0^263^243^america/anchorage^-9.0^-8.0^-9.0^2006-10-29^y^y^tlj^ak^namer^ca
-tll^0^eetn^y^588404^59.413317^24.832844^s^airp^ee^^01^0784^^^0^39^46^europe/tallinn^2.0^3.0^2.0^2010-10-29^y^y^tll^^eeuro^ca^ülemiste airport^tallinn airport^tallinn airfield^lennart meri tallinn airport^lennart meri international airport
+tll^0^eetn^y^588404^59.413317^24.832844^s^airp^ee^^01^0784^^^0^39^46^europe/tallinn^2.0^3.0^2.0^2010-10-29^y^y^tll^^eeuro^ca^lennart meri tallinn airport^lennart meri international airport^ülemiste airport^tallinn airport^tallinn airfield
 tlm^0^daon^y^6296381^35.016667^-1.45^s^airp^dz^^^^^^0^248^241^africa/algiers^1.0^1.0^1.0^2007-01-03^y^y^tlm^^afric^ca
 tln^0^lfth^y^6299477^43.097344^6.146028^s^airp^fr^^b8^83^832^83069^0^2^2^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^tln^^europ^ca
 tlo^0^zzzz^y^7731550^-4.983^152^s^airp^pg^^^^^^0^0^14^pacific/port_moresby^10.0^10.0^10.0^2011-03-18^y^n^tlo^^austl^ca
@@ -8885,7 +8885,7 @@ twz^0^zzzz^n^0^-37.02^174.8^s^airp^nz^^^^^^^^^nz084^^^^-1^y^n^mon^^austl^a
 txf^0^zzzz^y^6318755^-39.67^-17.52^p^ppl^br^^05^^^^0^0^118^america/bahia^-2.0^-3.0^-3.0^2006-12-14^y^n^txf^ba^samer^ca
 txg^0^zzzz^n^0^24.15^120.6^p^pplc^tw^^^^^^^^^tw^^^^-1^n^n^txg^^asia^c
 txk^0^ktxk^y^4133371^33.453722^-93.991028^s^airp^us^^ar^091^^^0^113^118^america/chicago^-6.0^-5.0^-6.0^2010-09-05^y^y^txk^ar^namer^ca
-txl^0^eddt^y^3208806^52.559686^13.287711^s^airp^de^^16^^^^0^37^32^europe/berlin^1.0^2.0^1.0^2011-02-19^y^y^ber^^europ^a
+txl^0^eddt^y^3208806^52.559686^13.287711^s^airp^de^^16^^^^0^37^32^europe/berlin^1.0^2.0^1.0^2012-05-13^y^y^ber^^europ^a
 txm^0^wast^y^7731567^-1.45^132^s^airp^id^^36^^^^0^0^46^asia/jayapura^9.0^9.0^9.0^2011-03-18^y^n^txm^^seasi^ca
 txn^0^zstx^y^6324611^29.73^118.3^s^airp^cn^^01^^^^0^0^136^asia/shanghai^8.0^8.0^8.0^2011-02-18^y^y^txn^^asia^ca^huangshan airport
 txr^0^zzzz^n^0^-25.92^141.9^s^airp^au^^^^^^^^^au131^^^^-1^y^n^txr^ql^austl^ca
@@ -8917,7 +8917,7 @@ uab^0^ltag^y^319675^37^3.882^s^airb^tr^^81^^^^0^0^59^europe/istanbul^2.0^3.0^2.0
 uac^0^mm76^y^7731570^32.45^-114.8^s^airp^mx^^26^^^^0^0^32^america/hermosillo^-7.0^-7.0^-7.0^2011-03-18^y^n^uac^^namer^ca
 uae^0^zzzz^n^0^-6.233^144.7^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^uae^^austl^ca
 uah^0^ntmu^y^7730706^-8.933^-139.6^s^airp^pf^^^^^^0^0^38^pacific/marquesas^-9.5^-9.5^-9.5^2011-03-17^y^y^uah^^pacif^ca
-uai^0^wpdb^y^1945696^-9.3^125.3^s^airf^tl^^00^^^^0^0^22^asia/dili^9.0^9.0^9.0^2012-01-20^y^n^uai^^asia^ca^covalima airport^suai airport
+uai^0^wpdb^y^1945696^-9.3^125.3^s^airf^tl^^00^^^^0^0^22^asia/dili^9.0^9.0^9.0^2012-01-20^y^n^uai^^asia^ca^suai airport^covalima airport
 uak^0^bgbw^y^6295690^61.160517^-45.425978^s^airp^gl^^^^^^0^34^16^america/godthab^-3.0^-2.0^-3.0^2011-03-28^y^y^uak^^europ^ca
 ual^0^fnua^y^7668256^-10.78^20.5^s^airp^ao^^14^^^^0^0^1106^africa/luanda^1.0^1.0^1.0^2011-02-17^y^n^ual^^afric^ca
 uam^0^pgua^y^7269457^13.583953^144.930025^s^airb^gu^^yg^^^^0^180^166^pacific/guam^10.0^10.0^10.0^2011-06-22^y^n^gum^^pacif^a
@@ -9195,7 +9195,7 @@ vga^0^vobz^y^6301120^16.530433^80.796847^s^airp^in^^^^^^0^24^25^asia/kolkata^5.5
 vgd^0^zzzz^y^8260920^59.28^39.95^s^airp^ru^^85^^^^0^0^116^europe/moscow^4.0^4.0^4.0^2012-04-29^y^n^vgd^^euras^ca
 vgg^0^zzzz^n^0^17.97^102.6^s^airp^la^^^^^^^^^la^^^^-1^y^n^vgg^^seasi^ca
 vgn^0^rpuq^y^1679982^17.5500000^120.3500000^s^airp^ph^^01^29^^^0^0^5^asia/manila^8.0^8.0^8.0^2011-03-18^y^z^vgn^01^asia^a
-vgo^0^levx^y^6299360^42.2318^-8.626775^s^airp^es^^58^po^36057^^0^260^256^europe/madrid^1.0^2.0^1.0^2007-01-03^y^y^vgo^^europ^ca
+vgo^0^levx^y^6299360^42.2318^-8.626775^s^airp^es^^58^po^36057^^0^260^256^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^vgo^^europ^ca
 vgs^0^zzzz^y^7731600^-35.03^-63.02^s^airp^ar^^01^^^^0^0^118^america/argentina/buenos_aires^-3.0^-3.0^-3.0^2011-03-18^y^n^vgs^ba^samer^ca
 vgt^0^kvgt^y^5509404^36.22^-115.2^s^airp^us^^nv^003^^^0^670^669^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^las^nv^namer^a
 vgz^0^skvg^y^7910375^1.067^-76.72^s^airp^co^^22^^^^0^380^378^america/bogota^-5.0^-5.0^-5.0^2011-07-24^y^y^vgz^^samer^ca
@@ -9234,7 +9234,7 @@ vks^0^kvks^y^4449628^32.23^-90.93^s^airp^us^^ms^149^^^0^30^32^america/chicago^-6
 vkt^0^uuyw^y^7668560^67.48^63.98^s^airp^ru^^34^^^^0^0^175^europe/moscow^4.0^4.0^4.0^2011-02-17^y^y^vkt^^euras^ca
 vkw^0^zzzz^y^8260922^69.67^-146.9^s^airp^us^^ak^185^^^0^0^192^america/anchorage^-9.0^-8.0^-9.0^2012-04-29^y^n^vkw^ak^namer^ca
 vla^0^zzzz^n^0^38.95^-89.08^s^airp^us^^^^^^^^^us107^^^^-1^y^n^vla^il^namer^ca
-vlc^0^levc^y^6299357^39.489314^-0.481625^s^airp^es^^60^v^46102^^0^68^61^europe/madrid^1.0^2.0^1.0^2007-01-03^y^y^vlc^^europ^ca
+vlc^0^levc^y^6299357^39.489314^-0.481625^s^airp^es^^60^v^46102^^0^68^61^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^vlc^^europ^ca
 vld^0^kvld^y^4228158^30.7825^-83.276722^s^airp^us^^ga^185^^^0^61^63^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^y^vld^ga^namer^ca
 vle^0^zzzz^y^5319342^35.65^-112.2^p^ppl^us^^az^005^^^832^1827^1827^america/phoenix^-7.0^-7.0^-7.0^2011-05-14^y^n^vle^az^namer^ca
 vlf^0^zzzz^n^0^53^-2.233^s^airp^gb^^^^^^^^^gb053^^^^-1^y^n^vlf^^europ^ca
@@ -9461,7 +9461,7 @@ wmc^0^kwmc^y^5710371^40.97^-117.7^s^airp^us^^nv^013^^^0^1311^1313^america/los_an
 wmd^0^fmsc^y^7730513^-21.03^44.95^s^airp^mg^^^^^^0^0^297^indian/antananarivo^3.0^3.0^3.0^2011-03-17^y^n^wmd^^afric^ca
 wme^0^ymne^y^7730265^-38.295278^142.446667^s^airp^au^^08^59250^^^0^0^546^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^wme^wa^austl^ca
 wmh^0^kbpk^y^4100583^36.37^-92.47^s^airp^us^^ar^005^^^0^279^281^america/chicago^-6.0^-5.0^-6.0^2012-02-26^y^n^wmh^ar^namer^ca
-wmi^0^zzzz^n^0^52.4511^20.6517^s^airp^pl^^^^^^^^^pl089^^^^-1^y^y^wmi^^eeuro^ca
+wmi^0^zzzz^n^0^52.45117^20.65271^s^airp^pl^^^^^^^^^pl089^^^^-1^y^y^wmi^^eeuro^ca
 wmk^0^zzzz^y^5555701^55.73^-132.2^s^airp^us^^ak^275^^^0^6^-9999^america/juneau^-9.0^-8.0^-9.0^2011-12-12^y^y^wmk^ak^namer^ca
 wml^0^fmmc^y^1061832^-20.35^45.55^s^airf^mg^^06^^^^0^0^171^indian/antananarivo^3.0^3.0^3.0^1993-12-08^y^n^wml^^afric^ca
 wmn^0^fmnr^y^7730077^-15.436666^49.688332^s^airp^mg^^^^^^0^0^8^indian/antananarivo^3.0^3.0^3.0^2011-03-16^y^y^wmn^^afric^ca
@@ -9519,7 +9519,7 @@ wrz^0^vccw^y^7668582^6.252^81.24^s^airp^lk^^^^^^0^0^44^asia/colombo^5.5^5.5^5.5^
 wsa^0^zzzz^y^2083705^-8.283^142.9^p^ppl^pg^^06^^^^0^0^21^pacific/port_moresby^10.0^10.0^10.0^2012-05-05^y^n^wsa^^austl^ca
 wsb^0^zzzz^n^0^55.53^-133.6^s^airp^us^^^^^^^^^us111^^^^-1^y^n^wsb^ak^namer^ca
 wsd^0^zzzz^n^0^32.34^-106.4^s^airp^us^^^^^^^^^us108^^^^-1^y^n^wsd^nm^namer^ca
-wse^0^zzzz^y^3651459^0^0^p^ppl^ec^ec^22^^^^0^0^316^america/guayaquil^-5.0^-5.0^-5.0^2012-01-18^n^n^wse^^samer^o
+wse^0^zzzz^y^3651459^0.0850000^-76.9925000^p^ppl^ec^ec^22^^^^0^0^316^america/guayaquil^-5.0^-5.0^-5.0^2012-01-18^n^n^wse^^samer^o
 wsf^0^zzzz^n^0^65.02^-147.7^s^airp^us^^^^^^^^^us111^^^^-1^y^n^wsf^ak^namer^ca
 wsg^0^kafj^y^5218077^40.13618^-80.29201^s^airp^us^^pa^125^^^0^358^355^america/new_york^-5.0^-4.0^-5.0^2012-04-21^y^n^wsg^pa^namer^ca
 wsh^0^khwv^y^5110293^40.78^-72.92^s^airp^us^^ny^103^^^0^21^24^america/new_york^-5.0^-4.0^-5.0^2011-12-11^y^n^wsh^ny^namer^ca
@@ -9641,7 +9641,7 @@ xch^0^ypxm^y^6301340^-10.450556^105.690278^s^airp^cx^^^^^^0^279^261^indian/chris
 xci^0^zzzz^y^5919569^48.42^-72.1^p^ppl^ca^^10^02^^^0^0^141^america/montreal^-5.0^-4.0^-5.0^2006-01-18^y^y^xci^qc^namer^cr
 xck^0^zzzz^n^0^48.2833^6.95^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^xck^^europ^o
 xcl^0^zzzz^y^8260797^58.38^-109.5^s^airp^ca^^11^^^^0^0^347^america/regina^-6.0^-6.0^-6.0^2012-04-29^y^n^xcl^sk^namer^ca
-xcm^0^zzzz^n^0^42.4^-82.18^s^airp^ca^^^^^^^^^ca025^^^^-1^y^y^xcm^on^namer^ca
+xcm^0^zzzz^n^0^42.3081^-82.07894^s^airp^ca^^^^^^^^^ca025^^^^-1^y^y^xcm^on^namer^ca
 xcn^0^zzzz^y^1716834^12^120.2^p^ppla3^ph^^41^49^1716835^^8723^0^10^asia/manila^8.0^8.0^8.0^2011-07-31^y^n^xcn^^pacif^ca
 xco^0^yola^y^7731634^-38.33^143.6^s^airp^au^^07^21750^^^0^0^123^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^n^xco^vi^austl^ca
 xcp^0^zzzz^n^0^49.4167^2.83333^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^xcp^^europ^o
@@ -9686,7 +9686,7 @@ xee^0^zzzz^n^0^47.67^-72.27^s^airp^ca^^^^^^^^^ca025^^^^-1^y^y^xee^qc^namer^cr
 xef^0^zzzz^n^0^49.9^-97.23^s^airp^ca^^^^^^^^^ca027^^^^-1^y^y^ywg^mb^namer^r
 xeg^0^zzzz^n^0^44.23^-76.58^s^airp^ca^^^^^^^^^ca025^^^^-1^y^y^ygk^on^namer^r
 xeh^0^zzzz^n^0^48.95^-123.8^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^xeh^bc^namer^cr
-xei^0^zzzz^y^2110683^0^0^p^ppl^jp^^14^^^^175589^0^33^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^xei^^asia^o
+xei^0^zzzz^y^2110683^36.2000000^140.1000000^p^ppl^jp^^14^^^^175589^0^33^asia/tokyo^9.0^9.0^9.0^2012-01-19^n^n^xei^^asia^o
 xej^0^zzzz^y^6049388^48.92^-77.17^p^ppl^ca^^02^^^^22459^0^80^america/vancouver^-8.0^-7.0^-8.0^2010-09-22^y^n^xej^bc^namer^cr
 xek^0^zzzz^n^0^50.95^-102.8^s^airp^ca^^^^^^^^^ca028^^^^-1^y^y^xek^sk^namer^cr
 xel^0^zzzz^y^6943833^48^-65.37^p^ppl^ca^^10^11^^^0^0^29^america/montreal^-5.0^-4.0^-5.0^2010-10-02^y^y^xel^qc^namer^cr
@@ -9849,7 +9849,7 @@ xkp^0^zzzz^y^3142657^59.14^9.658^p^ppla2^no^no^17^0805^^^34377^0^9^europe/oslo^1
 xkq^0^zzzz^y^3140084^59.29^11.12^p^ppla2^no^^13^0105^^^52159^0^54^europe/oslo^1.0^2.0^1.0^2010-12-07^y^n^xkq^^europ^cr
 xkr^0^zzzz^n^0^58.2^8.1^s^airp^no^^^^^^^^^no083^^^^-1^y^n^krs^^europ^r
 xks^0^cyaq^y^7668110^53.53^-88.75^s^airp^ca^^08^^^^0^0^196^america/winnipeg^-6.0^-5.0^-6.0^2011-02-17^y^y^xks^on^namer^ca
-xkt^0^zzzz^y^1819638^0^0^p^pplx^hk^^00^^^^0^0^-9999^asia/hong_kong^8.0^8.0^8.0^2012-02-02^n^n^xkt^^seasi^o
+xkt^0^zzzz^y^1819638^22.2833300^114.1166700^p^pplx^hk^^00^^^^0^0^-9999^asia/hong_kong^8.0^8.0^8.0^2012-02-02^n^n^xkt^^seasi^o
 xku^0^zzzz^n^0^0^0^x^xxxx^tr^^^^^^^^^tr101^^^^-1^n^n^xku^^euras^o
 xkv^0^zzzz^y^6137063^45.9^-64.38^p^ppl^ca^^04^^^^5411^0^13^america/moncton^-4.0^-3.0^-4.0^2010-06-08^y^y^xkv^nb^namer^cr
 xkw^0^zzzz^n^0^59.27^10.41^s^airp^no^^^^^^^^^no083^^^^-1^y^n^xkw^^europ^cr
@@ -9976,7 +9976,7 @@ xpy^0^zzzz^n^0^61.02^27.15^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^xpy^^europ^cb
 xpz^0^zzzz^n^0^43.2^6.483^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^ltt^^europ^h
 xqa^0^zzzz^n^0^37.3942^-5.97417^s^airp^es^^^^^^^^^es045^^^^-1^y^y^svq^^europ^r
 xqb^0^zzzz^y^2656192^51.88^0.2333^p^ppl^gb^^eng^f2^24ub^^96348^0^96^europe/london^0.0^1.0^0.0^2011-03-03^y^n^xqb^^europ^cr
-xqc^0^zzzz^y^98112^0^0^p^ppl^iq^^18^^^^42088^0^53^asia/baghdad^3.0^3.0^3.0^2012-02-28^n^n^xqc^^meast^o
+xqc^0^zzzz^y^98112^34.0148500^44.1457400^p^ppl^iq^^18^^^^42088^0^53^asia/baghdad^3.0^3.0^3.0^2012-02-28^n^n^xqc^^meast^o
 xqd^0^zzzz^y^2656046^51.88^0.2333^p^ppla2^gb^^eng^z5^^^86658^0^30^europe/london^0.0^1.0^0.0^2010-10-22^y^n^xqd^^europ^cr
 xqe^0^zzzz^n^0^51.44^0.3225^s^airp^gb^^^^^^^^^gb053^^^^-1^y^y^lon^^europ^r
 xqg^0^zzzz^n^0^55.95^-3.35^s^airp^gb^^^^^^^^^gb053^^^^-1^y^n^xqg^^europ^cr
@@ -10013,7 +10013,7 @@ xrs^0^zzzz^y^3002138^45.57^6.2^p^ppl^fr^^b8^83^831^83004^5910^0^72^europe/paris^
 xrt^0^zzzz^y^2984513^48.65^1.83333^p^ppla3^fr^^a8^78^782^78517^26674^0^158^europe/paris^1.0^2.0^1.0^2011-11-02^y^n^xrt^^europ^o
 xru^0^zzzz^y^2638978^51.88^0.2333^p^ppl^gb^^eng^p3^44ud^^63323^0^120^europe/london^0.0^1.0^0.0^2011-03-03^y^n^xru^^europ^cr
 xrx^0^zzzz^y^2982681^50.7^3.16667^p^ppl^fr^^b4^59^595^59512^95721^0^33^europe/paris^1.0^2.0^1.0^2012-01-18^y^n^xrx^^europ^o
-xry^0^lejr^y^6299340^36.744622^-6.060111^s^airp^es^^51^ca^11020^^0^28^25^europe/madrid^1.0^2.0^1.0^2011-03-28^y^y^xry^^europ^ca
+xry^0^lejr^y^6299340^36.744622^-6.060111^s^airp^es^^51^ca^11020^^0^28^25^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^xry^^europ^ca^jerez airport
 xsa^0^zzzz^n^0^5.036^-9.052^s^airp^lr^^^^^^^^^lr^^^^-1^y^n^sni^^afric^a
 xsb^0^zzzz^n^0^0^0^x^xxxx^fr^^^^^^^^^fr052^^^^-1^n^n^xsb^^europ^o
 xsc^0^mbsc^y^7668341^21.515739^-71.528528^s^airp^tc^^^^^^0^0^6^america/grand_turk^-5.0^-4.0^-5.0^2011-02-17^y^y^xsc^^carib^ca
@@ -10053,7 +10053,7 @@ xtj^0^zzzz^y^2510409^39.8625^-4.01111^p^ppla^es^^54^to^45168^^82291^0^533^europe
 xtk^0^zzzz^y^2636021^51.88^0.2333^p^ppl^gb^^eng^j7^36uc^^9302^0^37^europe/london^0.0^1.0^0.0^2010-05-24^y^n^xtk^^europ^cr
 xtl^0^cybq^y^7668114^58.6^-98.33^s^airp^ca^^03^^^^0^0^272^america/winnipeg^-6.0^-5.0^-6.0^2011-02-17^y^n^xtl^mb^namer^ca
 xtm^0^zzzz^n^0^0^0^x^xxxx^iq^^^^^^^^^iq066^^^^-1^n^n^xtm^^meast^o
-xtn^0^zzzz^y^2972284^0^0^p^ppl^fr^^b4^59^595^59599^91574^0^49^europe/paris^1.0^2.0^1.0^2012-01-18^n^n^xtn^^europ^o
+xtn^0^zzzz^y^2972284^50.7239100^3.1611700^p^ppl^fr^^b4^59^595^59599^91574^0^49^europe/paris^1.0^2.0^1.0^2012-01-18^n^n^xtn^^europ^o
 xto^0^ytam^y^7731640^-25.67^149.8^s^airp^au^^04^30370^^^0^0^231^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^xto^ql^austl^ca
 xtp^0^zzzz^n^0^61.49^23.77^s^airp^fi^^^^^^^^^fi047^^^^-1^y^n^tmp^^europ^b
 xtr^0^ytaa^y^7731641^-27.28^150.5^s^airp^au^^04^37310^^^0^0^362^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^xtr^ql^austl^ca
@@ -10368,7 +10368,7 @@ yhc^0^zzzz^y^8260824^51.73^-128.1^s^airp^ca^^^^^^0^0^1^america/vancouver^-8.0^-7
 yhd^0^cyhd^y^6296200^49.78^-92.83^s^airp^ca^^^^^^0^412^411^america/winnipeg^-6.0^-5.0^-6.0^2007-01-03^y^y^yhd^on^namer^ca
 yhe^0^cyhe^y^6296201^49.38^-121.4^s^airf^ca^^^^^^0^39^38^america/vancouver^-8.0^-7.0^-8.0^2011-03-20^y^n^yhe^bc^namer^ca
 yhf^0^cyhf^y^7730035^49.68^-83.67^s^airp^ca^^08^^^^0^0^249^america/toronto^-5.0^-4.0^-5.0^2011-03-16^y^n^yhf^on^namer^ca
-yhg^0^zzzz^n^0^52.77^-56.1^s^airp^ca^^^^^^^^^ca022^^^^-1^y^y^yhg^nl^namer^ca
+yhg^0^zzzz^n^0^52.76489^-56.11731^s^airp^ca^^^^^^^^^ca022^^^^-1^y^y^yhg^nl^namer^ca
 yhh^0^zzzz^n^0^50.02^-125.3^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^ybl^bc^namer^a
 yhi^0^cyhi^y^6296203^70.72^-117.7^s^airp^ca^^^^^^0^35^31^america/yellowknife^-7.0^-6.0^-7.0^2007-01-03^y^y^yhi^nt^namer^ca
 yhk^0^cyhk^y^6296204^68.63^-95.95^s^airp^ca^^^^^^0^46^45^america/cambridge_bay^-7.0^-6.0^-7.0^2007-01-03^y^y^yhk^nu^namer^ca
@@ -10395,13 +10395,13 @@ yiv^0^cyiv^y^6296211^54.2^-94.78^s^airf^ca^^^^^^0^237^225^america/winnipeg^-6.0^
 yiw^0^zsyw^y^7668807^29.32^120.1^s^airp^cn^^02^^^^0^0^82^asia/shanghai^8.0^8.0^8.0^2011-02-17^y^y^yiw^^asia^ca
 yja^0^cyja^y^7873819^52.88^-118.1^s^airp^ca^^01^^^^0^0^1010^america/edmonton^-7.0^-6.0^-7.0^2011-06-25^y^n^yja^ab^namer^ca
 yjb^0^zzzz^y^6452690^41.37908^2.13997^s^rstn^es^^56^b^08019^^0^0^47^europe/madrid^1.0^2.0^1.0^2012-01-26^y^y^bcn^^europ^r^sants barcelona railway station
-yjc^0^zzzz^n^0^43.3528^-8.41056^s^airp^es^^^^^^^^^es045^^^^-1^y^y^lcg^^europ^r
-yjd^0^zzzz^n^0^41.3842^-2.18611^s^airp^es^^^^^^^^^es045^^^^-1^y^n^bcn^^europ^r
+yjc^0^zzzz^y^8288523^43.3528^-8.41056^s^rstn^es^^58^c^15030^^0^0^5^europe/madrid^1.0^2.0^1.0^2012-05-13^y^y^lcg^^europ^r
+yjd^0^zzzz^y^3213012^41.3842^-2.18611^s^rstn^es^^56^b^08019^^0^0^22^europe/madrid^1.0^2.0^1.0^2012-05-13^y^n^bcn^^europ^r
 yje^0^zzzz^n^0^38.345^-0.49583^s^airp^es^^^^^^^^^es045^^^^-1^y^y^alc^^europ^r
 yjf^0^cyjf^y^6296212^60.25^-123.5^s^airp^ca^^^^^^0^215^224^america/yellowknife^-7.0^-6.0^-7.0^2011-02-16^y^n^yjf^nt^namer^ca
 yjg^0^zzzz^n^0^37.1839^-3.61056^s^airp^es^^^^^^^^^es045^^^^-1^y^n^grx^^europ^r
 yjh^0^zzzz^n^0^43.3178^-1.97639^s^airp^es^^^^^^^^^es045^^^^-1^y^y^eas^^europ^r
-yji^0^zzzz^n^0^43.2608^-2.9275^s^airp^es^^^^^^^^^es045^^^^-1^y^n^bio^^europ^r
+yji^0^zzzz^y^6452773^43.2608^-2.9275^s^rstn^es^^59^bi^48020^^0^0^26^europe/madrid^1.0^2.0^1.0^2012-05-13^y^n^bio^^europ^r
 yjl^0^zzzz^n^0^43.4578^-3.81222^s^airp^es^^^^^^^^^es045^^^^-1^y^n^sdr^^europ^r
 yjm^0^zzzz^y^6947719^36.7117^-4.43194^s^rstn^es^^51^ma^29067^^0^0^6^europe/madrid^1.0^2.0^1.0^2012-01-26^y^y^agp^^europ^r^railway station maría zambrano
 yjn^0^cyjn^y^7730323^45.32^-73.27^s^airp^ca^^10^16^^^0^0^38^america/montreal^-5.0^-4.0^-5.0^2011-03-16^y^n^yjn^qc^namer^ca
@@ -10469,7 +10469,7 @@ yml^0^cyml^y^6296232^47.65^-70.17^s^airp^ca^^^^^^0^297^291^america/montreal^-5.0
 ymm^0^cymm^y^6301465^56.65^-111.2^s^airp^ca^^^^^^0^369^365^america/edmonton^-7.0^-6.0^-7.0^2011-03-28^y^y^ymm^ab^namer^ca
 ymn^0^cyft^y^6296188^55.08^-59.17^s^airp^ca^^^^^^0^71^60^america/goose_bay^-4.0^-3.0^-4.0^2011-02-16^y^y^ymn^nl^namer^ca
 ymo^0^cymo^y^6296233^51.28^-80.63^s^airp^ca^^^^^^0^9^8^america/toronto^-5.0^-4.0^-5.0^2011-03-28^y^y^ymo^on^namer^ca
-ymp^0^zzzz^n^0^50.58^-127.1^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^ymp^bc^namer^ca
+ymp^0^zzzz^n^0^50.59179^-127.08856^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^ymp^bc^namer^ca
 ymq^0^zzzz^y^6077243^45.47^-73.75^p^ppl^ca^^10^06^^^3268513^0^216^america/montreal^-5.0^-4.0^-5.0^2010-09-13^n^n^ymq^qc^namer^c
 ymr^0^zzzz^n^0^54.32^-130.3^s^airp^ca^^^^^^^^^ca031^^^^-1^y^n^ymr^bc^namer^ca
 yms^0^spms^y^6300813^-5.9^-76.1^s^airp^pe^^^^^^0^178^142^america/lima^-5.0^-5.0^-5.0^2007-01-03^y^n^yms^^samer^ca
@@ -10535,7 +10535,7 @@ ypp^0^zzzz^y^6105173^61.02^-114.3^p^ppll^ca^^13^^^^0^0^252^america/yellowknife^-
 ypq^0^cypq^y^6296252^44.23^-78.363333^s^airp^ca^^^^^^0^191^189^america/toronto^-5.0^-4.0^-5.0^2007-01-03^y^n^ypq^on^namer^ca
 ypr^0^cypr^y^6296253^54.28611^-130.444722^s^airp^ca^^^^^^0^35^33^america/vancouver^-8.0^-7.0^-8.0^2007-01-03^y^y^ypr^bc^namer^ca
 yps^0^cypd^y^6296249^50.3025^-122.737778^s^airp^ca^^^^^^0^114^107^america/halifax^-4.0^-3.0^-4.0^2011-03-28^y^n^yps^ns^namer^ca
-ypt^0^zzzz^n^0^41.778333^-82.678056^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^ypt^bc^namer^ca
+ypt^0^zzzz^n^0^49.62375^-124.02487^s^airp^ca^^^^^^^^^ca031^^^^-1^y^y^ypt^bc^namer^ca
 ypw^0^cypw^y^6296254^49.847778^-124.499167^s^airp^ca^^^^^^0^112^148^america/vancouver^-8.0^-7.0^-8.0^2007-01-03^y^y^ypw^bc^namer^ca
 ypx^0^cypx^y^6296255^60.050556^-77.286944^s^airp^ca^^^^^^0^22^1^america/montreal^-5.0^-4.0^-5.0^2007-01-03^y^y^ypx^qc^namer^ca
 ypy^0^cypy^y^6301470^58.767223^-111.117222^s^airf^ca^^^^^^0^232^223^america/edmonton^-7.0^-6.0^-7.0^2011-03-20^y^y^ypy^ab^namer^ca
@@ -10738,7 +10738,7 @@ zaa^0^zzzz^y^5883655^55.48^-129.5^p^ppll^ca^^02^^^^0^0^26^america/vancouver^-8.0
 zab^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^zab^^afric^o
 zac^0^czac^y^7668151^56.08^-96.08^s^airp^ca^^03^^^^0^0^186^america/winnipeg^-6.0^-5.0^-6.0^2011-02-17^y^n^zac^mb^namer^ca
 zad^0^ldzd^y^3220360^44.108269^15.346697^s^airp^hr^^19^^^^0^88^76^europe/zagreb^1.0^2.0^1.0^2007-01-03^y^y^zad^^eeuro^ca
-zae^0^zzzz^y^2498392^0^0^p^ppl^dz^^12^^^^128351^0^959^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zae^^afric^o
+zae^0^zzzz^y^2498392^36.1528100^5.6901600^p^ppl^dz^^12^^^^128351^0^959^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zae^^afric^o
 zaf^0^zzzz^n^0^43.68^4.633^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^zaf^^europ^cr
 zag^0^ldza^y^3215877^45.742931^16.068778^s^airf^hr^^20^^^^0^107^103^europe/zagreb^1.0^2.0^1.0^2011-03-28^y^y^zag^^eeuro^ca
 zah^0^oizh^y^1336272^29.475686^60.906189^s^airp^ir^^04^^^^0^1391^1369^asia/tehran^3.5^4.5^3.5^2007-01-03^y^y^zah^^meast^ca
@@ -10790,28 +10790,28 @@ zca^0^zzzz^n^0^51.483333^7.899333^s^airp^cn^^^^^^^^^cn035^^^^-1^y^n^zca^^asia^cb
 zcb^0^zzzz^y^2955272^49.97^9.15^p^ppl^de^^02^096^09661^^68551^0^135^europe/berlin^1.0^2.0^1.0^2012-02-28^y^n^zcb^^europ^cr
 zcc^0^zzzz^n^0^48.77^8.25^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zcc^^europ^cr
 zcd^0^etej^y^3207012^49.9198^10.9128^s^airf^de^^02^094^^^0^0^246^europe/berlin^1.0^2.0^1.0^2011-04-10^n^n^zcd^^europ^o^bamberg-breitenau airfield
-zce^0^zzzz^y^2950881^0^0^p^ppl^de^^02^^^^7655^0^605^europe/berlin^1.0^2.0^1.0^2007-02-17^n^n^zce^^europ^o
+zce^0^zzzz^y^2950881^47.6333300^13.0000000^p^ppl^de^^02^^^^7655^0^605^europe/berlin^1.0^2.0^1.0^2007-02-17^n^n^zce^^europ^o
 zcf^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zcf^^europ^o
-zcg^0^zzzz^y^2950349^0^0^p^ppl^de^^07^^^^106184^0^94^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcg^^europ^o
-zch^0^zzzz^y^2950344^0^0^p^ppl^de^^07^^^^52329^0^67^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zch^^europ^o
-zci^0^zzzz^y^2947421^0^0^p^ppl^de^^07^^^^73943^0^23^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zci^^europ^o
-zcj^0^zzzz^y^2945756^0^0^p^ppl^de^^07^^^^119909^0^80^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcj^^europ^o
+zcg^0^zzzz^y^2950349^50.9833300^7.1333300^p^ppl^de^^07^^^^106184^0^94^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcg^^europ^o
+zch^0^zzzz^y^2950344^51.6333300^7.6333300^p^ppl^de^^07^^^^52329^0^67^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zch^^europ^o
+zci^0^zzzz^y^2947421^51.8333300^6.6000000^p^ppl^de^^07^^^^73943^0^23^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zci^^europ^o
+zcj^0^zzzz^y^2945756^51.5166700^6.9166700^p^ppl^de^^07^^^^119909^0^80^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcj^^europ^o
 zck^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zck^^europ^o
 zcl^0^mmzc^y^6299883^22.897112^-102.68689^s^airp^mx^^^^^^0^2176^2171^america/monterrey^-6.0^-5.0^-6.0^2007-01-03^y^y^zcl^^namer^ca
-zcm^0^zzzz^y^2940231^0^0^p^ppl^de^^07^^^^77924^0^114^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcm^^europ^o
+zcm^0^zzzz^y^2940231^51.5500000^7.3166700^p^ppl^de^^07^^^^77924^0^114^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcm^^europ^o
 zcn^0^ethc^y^3208633^52.5912^10.022133^s^airp^de^^06^^^^0^0^35^europe/berlin^1.0^2.0^1.0^2012-01-22^n^n^zcn^^europ^o
 zco^0^sctc^y^6300707^-38.766819^-72.637097^s^airp^cl^^04^91^09112^^0^92^100^america/santiago^-3.0^-4.0^-4.0^2012-05-03^y^y^zco^^samer^ca
 zcp^0^zzzz^n^0^23.05^113.1^s^airp^cn^^^^^^^^^cn035^^^^-1^y^n^fuo^^asia^b
 zcq^0^scic^y^6300701^-46.55^-71.7^s^airp^cl^^11^73^07301^^0^228^217^america/santiago^-3.0^-4.0^-4.0^2012-05-03^n^n^zcq^^samer^o
-zcr^0^zzzz^y^2939623^0^0^p^ppl^de^^02^^^^39740^0^502^europe/berlin^1.0^2.0^1.0^2011-10-17^n^n^zcr^^europ^o
+zcr^0^zzzz^y^2939623^48.2600000^11.4340200^p^ppl^de^^02^^^^39740^0^502^europe/berlin^1.0^2.0^1.0^2011-10-17^n^n^zcr^^europ^o
 zcs^0^zzzz^y^2938913^49.88^8.65^p^ppla2^de^^05^064^^^140385^0^145^europe/berlin^1.0^2.0^1.0^2010-11-21^n^n^zcs^^europ^o
-zct^0^zzzz^y^2938323^0^0^p^ppl^de^^06^00^03401^^75893^0^12^europe/berlin^1.0^2.0^1.0^2012-05-10^n^n^zct^^europ^o
+zct^0^zzzz^y^2938323^53.0500000^8.6166700^p^ppl^de^^06^00^03401^^75893^0^12^europe/berlin^1.0^2.0^1.0^2012-05-10^n^n^zct^^europ^o
 zcu^0^zzzz^n^0^22.48^113.9^s^airp^cn^^^^^^^^^cn035^^^^-1^y^n^zcu^^asia^cb
-zcv^0^zzzz^y^2936871^0^0^p^ppl^de^^07^^^^70573^0^30^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcv^^europ^o
-zcw^0^zzzz^y^2935825^0^0^p^ppl^de^^07^^^^63582^0^44^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcw^^europ^o
-zcx^0^zzzz^y^2935530^0^0^p^ppl^de^^07^^^^79981^0^31^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcx^^europ^o
+zcv^0^zzzz^y^2936871^51.5666700^6.7333300^p^ppl^de^^07^^^^70573^0^30^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcv^^europ^o
+zcw^0^zzzz^y^2935825^51.1000000^6.8333300^p^ppl^de^^07^^^^63582^0^44^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcw^^europ^o
+zcx^0^zzzz^y^2935530^51.6666700^6.9666700^p^ppl^de^^07^^^^79981^0^31^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcx^^europ^o
 zcy^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zcy^^europ^o
-zcz^0^zzzz^y^2929567^0^0^p^ppl^de^^02^^^^102675^0^284^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcz^^europ^o
+zcz^0^zzzz^y^2929567^49.5897200^11.0038900^p^ppl^de^^02^^^^102675^0^284^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zcz^^europ^o
 zda^0^zzzz^y^2661881^47.3833^8.05^p^ppla^ch^^ag^1901^4001^^15501^0^389^europe/zurich^1.0^2.0^1.0^2010-04-05^y^n^zda^^europ^cr
 zdb^0^zzzz^n^0^46.5^7.567^s^airp^ch^^^^^^^^^ch032^^^^-1^y^n^zdb^^europ^cb
 zdc^0^zzzz^y^2661834^46.3167^6.96667^p^ppl^ch^^vd^2221^5401^^7723^0^408^europe/zurich^1.0^2.0^1.0^2012-01-17^y^n^zdc^^europ^cr
@@ -10838,13 +10838,13 @@ zdw^0^zzzz^n^0^47.3667^7.33333^s^airp^ch^^^^^^^^^ch032^^^^-1^y^n^zdw^^europ^cr
 zdx^0^zzzz^y^2661015^47.4167^8.75^p^pplx^ch^^zh^111^243^^20893^0^397^europe/zurich^1.0^2.0^1.0^2006-10-05^y^n^zdx^^europ^cr
 zdz^0^zzzz^y^2660925^47.1167^8.75^p^ppla2^ch^^sz^501^1301^^13148^882^997^europe/zurich^1.0^2.0^1.0^2011-12-28^y^n^zdz^^europ^cr
 zea^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zea^^europ^o
-zeb^0^zzzz^y^2928751^0^0^p^ppl^de^^01^^^^92390^0^241^europe/berlin^1.0^2.0^1.0^2008-12-20^n^n^zeb^^europ^o
+zeb^0^zzzz^y^2928751^48.7396100^9.3047300^p^ppl^de^^01^^^^92390^0^241^europe/berlin^1.0^2.0^1.0^2008-12-20^n^n^zeb^^europ^o
 zec^0^fasc^y^7730325^-26.53^29.17^s^airp^za^^^^^^0^0^1605^africa/johannesburg^2.0^2.0^2.0^2011-03-16^y^n^zec^^afric^ca
-zed^0^zzzz^y^2928396^0^0^p^ppl^de^^07^^^^54889^0^164^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zed^^europ^o
+zed^0^zzzz^y^2928396^50.6666700^6.7833300^p^ppl^de^^07^^^^54889^0^164^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zed^^europ^o
 zee^0^czee^y^7730044^50.53^9.683^s^airp^ca^^03^^^^0^0^185^america/winnipeg^-6.0^-5.0^-6.0^2011-03-16^y^n^zee^^europ^cr
 zef^0^zzzz^n^0^23.03^113.2^s^airp^cn^^^^^^^^^cn035^^^^-1^y^n^zef^^asia^cb
 zeg^0^zzzz^y^7731651^-5.983^139.4^s^airp^id^^36^^^^0^0^33^asia/jayapura^9.0^9.0^9.0^2011-03-18^y^n^zeg^^seasi^ca
-zeh^0^zzzz^y^2922586^0^0^p^ppl^de^^06^^^^63355^0^51^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zeh^^europ^o
+zeh^0^zzzz^y^2922586^52.4166700^9.6000000^p^ppl^de^^06^^^^63355^0^51^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zeh^^europ^o
 zei^0^zzzz^y^2922530^47.48^11.08^p^ppl^de^^02^091^^^26022^0^705^europe/berlin^1.0^2.0^1.0^2010-11-15^y^n^zei^^europ^cr
 zej^0^zzzz^y^2921466^51.52^7.117^p^ppl^de^^07^^^^270028^0^39^europe/berlin^1.0^2.0^1.0^2012-01-18^y^n^zej^^europ^cr
 zek^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zek^^europ^o
@@ -10856,18 +10856,18 @@ zep^0^zzzz^n^0^51.47^-0.45^s^airp^gb^^^^^^^^^gb053^^^^-1^y^y^lon^^europ^r
 zeq^0^zzzz^y^2651286^53.7^-1.617^p^ppl^gb^^eng^00^^^56640^0^44^europe/london^0.0^1.0^0.0^2010-08-03^y^n^zeq^^europ^cb
 zer^0^vezo^y^7668598^27.57^93.83^s^airp^in^^30^^^^0^0^1566^asia/kolkata^5.5^5.5^5.5^2011-02-17^y^n^zer^^asia^ca
 zes^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zes^^europ^o
-zet^0^zzzz^y^2918840^0^0^p^ppl^de^^06^^^^43560^0^270^europe/berlin^1.0^2.0^1.0^2010-03-29^n^n^zet^^europ^o
+zet^0^zzzz^y^2918840^51.9042500^10.4276600^p^ppl^de^^06^^^^43560^0^270^europe/berlin^1.0^2.0^1.0^2010-03-29^n^n^zet^^europ^o
 zeu^0^zzzz^n^0^51.54^9.928^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zeu^^europ^cr
-zev^0^zzzz^y^2917540^0^0^p^ppl^de^^07^051^05162^^64779^0^52^europe/berlin^1.0^2.0^1.0^2010-11-15^n^n^zev^^europ^o
-zew^0^zzzz^y^2913761^0^0^p^ppl^de^^07^^^^53131^0^296^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zew^^europ^o
+zev^0^zzzz^y^2917540^51.0910200^6.5827000^p^ppl^de^^07^051^05162^^64779^0^52^europe/berlin^1.0^2.0^1.0^2010-11-15^n^n^zev^^europ^o
+zew^0^zzzz^y^2913761^51.0333300^7.5500000^p^ppl^de^^07^^^^53131^0^296^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zew^^europ^o
 zex^0^zzzz^n^0^51.9^8.383^s^airp^de^^^^^^^^^de040^^^^-1^y^n^gut^^europ^r
 zey^0^zzzz^n^0^51.37^7.45^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zey^^europ^cr
-zez^0^zzzz^y^2911271^0^0^p^ppl^de^^06^^^^58666^0^74^europe/berlin^1.0^2.0^1.0^2011-03-20^n^n^zez^^europ^o
+zez^0^zzzz^y^2911271^52.1039700^9.3562300^p^ppl^de^^06^^^^58666^0^74^europe/berlin^1.0^2.0^1.0^2011-03-20^n^n^zez^^europ^o
 zfa^0^czfa^y^6301501^62.2075^-133.375833^s^airp^ca^^^^^^0^716^839^america/whitehorse^-8.0^-7.0^-8.0^2007-01-03^y^n^zfa^yt^namer^ca
 zfb^0^zzzz^n^0^51.58^-57.92^s^airp^ca^^^^^^^^^ca024^^^^-1^y^n^zfb^qc^namer^ca
 zfc^0^zzzz^n^0^53.8^-1.75^s^airp^gb^^^^^^^^^gb053^^^^-1^y^n^brf^^europ^b
 zfd^0^czfd^y^7668154^59.32^-107.2^s^airp^ca^^11^^^^0^0^241^america/regina^-6.0^-6.0^-6.0^2011-02-17^y^n^zfd^sk^namer^ca
-zfe^0^zzzz^y^4348353^0^0^p^ppl^us^^md^033^^^16772^41^43^america/new_york^-5.0^-4.0^-5.0^2011-05-14^n^n^zfe^md^namer^o
+zfe^0^zzzz^y^4348353^39.0348300^-76.9074700^p^ppl^us^^md^033^^^16772^41^43^america/new_york^-5.0^-4.0^-5.0^2011-05-14^n^n^zfe^md^namer^o
 zfg^0^czfg^y^7730045^53.4^-1.39^s^airp^ca^^03^^^^0^0^288^america/winnipeg^-6.0^-5.0^-6.0^2011-03-16^y^n^szd^^europ^b
 zfh^0^zzzz^n^0^52.05^-0.7^s^airp^gb^^^^^^^^^gb053^^^^-1^y^n^kyn^^europ^b
 zfi^0^zzzz^y^2653225^53.2^-1.417^p^ppl^gb^^eng^d3^17ud^^70679^0^89^europe/london^0.0^1.0^0.0^2012-01-17^y^n^zfi^^europ^cb
@@ -10897,17 +10897,17 @@ zgg^0^zzzz^n^0^55.88^-4.25^s^airp^gb^^^^^^^^^gb053^^^^-1^y^n^gla^^europ^r
 zgh^0^zzzz^n^0^55.62^12.65^s^airp^dk^^^^^^^^^dk041^^^^-1^y^y^cph^^europ^r
 zgi^0^czgi^y^7668156^54.68^-94.17^s^airp^ca^^03^^^^0^0^184^america/winnipeg^-6.0^-5.0^-6.0^2011-02-17^y^n^zgi^mb^namer^ca
 zgj^0^zzzz^n^0^0.8536^0.05389^s^airp^be^^^^^^^^^be012^^^^-1^y^n^ost^^europ^r
-zgk^0^zzzz^y^2792482^0^0^p^ppl^be^^vlg^vbr^24^24062^92892^0^28^europe/brussels^1.0^2.0^1.0^2008-07-11^n^n^zgk^^europ^o
+zgk^0^zzzz^y^2792482^50.8795900^4.7009300^p^ppl^be^^vlg^vbr^24^24062^92892^0^28^europe/brussels^1.0^2.0^1.0^2008-07-11^n^n^zgk^^europ^o
 zgl^0^ysgw^y^7731652^-25.68^142.1^s^airp^au^^04^30450^^^0^0^111^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^zgl^ql^austl^ca
 zgm^0^flna^y^901124^-15.97^25.95^s^airf^zm^^07^^^^0^0^1014^africa/lusaka^2.0^2.0^2.0^2012-01-17^y^n^zgm^^afric^ca
 zgn^0^zzzz^n^0^22.53^113.4^s^airp^cn^^^^^^^^^cn035^^^^-1^y^y^zgn^^asia^cb
 zgo^0^zzzz^n^0^50.95^10.72^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zgo^^europ^cr
 zgp^0^zzzz^y^7730319^-3.7395600^137.0320000^s^airp^id^^36^^^^0^0^2233^asia/jayapura^9.0^9.0^9.0^2011-03-16^n^n^zgp^^europ^o
-zgq^0^zzzz^y^2785341^0^0^p^ppl^be^^wal^wht^57^57081^67721^0^24^europe/brussels^1.0^2.0^1.0^2012-01-18^n^n^zgq^^europ^o
+zgq^0^zzzz^y^2785341^50.6071500^3.3893200^p^ppl^be^^wal^wht^57^57081^67721^0^24^europe/brussels^1.0^2.0^1.0^2012-01-18^n^n^zgq^^europ^o
 zgr^0^czgr^y^7668157^52.07^-95.47^s^airp^ca^^03^^^^0^0^300^america/winnipeg^-6.0^-5.0^-6.0^2011-02-17^y^n^zgr^mb^namer^ca
 zgs^0^zzzz^y^7910209^50.33^-60.67^s^airp^ca^^10^09^^^0^0^20^america/blanc-sablon^-4.0^-4.0^-4.0^2011-07-20^y^y^zgs^qc^namer^ca^gethsemani airport
 zgu^0^nvsq^y^7668376^-15.42^167.7^s^airp^vu^^^^^^0^0^28^pacific/efate^11.0^11.0^11.0^2011-02-17^y^y^zgu^^austl^ca
-zgv^0^zzzz^y^2783941^0^0^p^ppl^be^^wal^wbr^25^25112^32112^0^72^europe/brussels^1.0^2.0^1.0^2011-01-26^n^n^zgv^^europ^o
+zgv^0^zzzz^y^2783941^50.7171700^4.6013800^p^ppl^be^^wal^wbr^25^25112^32112^0^72^europe/brussels^1.0^2.0^1.0^2011-01-26^n^n^zgv^^europ^o
 zgw^0^zzzz^y^2917788^54.1^13.4^p^ppl^de^^12^^^^52731^0^0^europe/berlin^1.0^2.0^1.0^2012-01-18^y^n^zgw^^europ^cr
 zgx^0^zzzz^y^2610319^55.62^12.65^p^ppla^dk^^18^791^^^34831^0^50^europe/copenhagen^1.0^2.0^1.0^2010-01-29^y^n^zgx^^europ^cr
 zgy^0^zzzz^n^0^1.55^110.3^s^airp^my^^^^^^^^^my^^^^-1^y^n^kch^^seasi^p
@@ -10979,7 +10979,7 @@ zjo^0^zzzz^n^0^37.35^-121.9^s^airp^us^^^^^^^^^us110^^^^-1^y^n^sjc^ca^namer^b
 zjp^0^zzzz^y^2659601^46.43^6.912^p^ppl^ch^^vd^2230^5886^^22897^0^403^europe/zurich^1.0^2.0^1.0^2010-04-05^y^n^zjp^^europ^cr
 zjq^0^zzzz^y^2659587^46.52^6.5^p^ppl^ch^^vd^2227^5642^^14117^0^380^europe/zurich^1.0^2.0^1.0^2010-04-05^y^n^zjq^^europ^cr
 zjr^0^zzzz^n^0^5.385^100.3^s^airp^my^^^^^^^^^my^^^^-1^y^n^pen^^seasi^p
-zjs^0^zzzz^y^2895044^50.03^8.567^p^ppl^de^^15^^^^104712^0^175^europe/berlin^1.0^2.0^1.0^2012-01-18^y^n^zjs^^europ^cr
+zjs^0^zzzz^y^2895044^50.03^8.567^p^ppl^de^^15^^^^104712^0^175^europe/berlin^1.0^2.0^1.0^2012-05-14^y^n^zjs^^europ^cr
 zjt^0^zzzz^y^1732725^1.367^103.5^p^ppl^my^^01^^^^0^0^4^asia/kuala_lumpur^8.0^8.0^8.0^2012-01-17^y^n^zjt^^seasi^cp
 zju^0^zzzz^y^2659297^47.35^7.91667^p^ppla2^ch^^so^1108^2581^^16411^0^406^europe/zurich^1.0^2.0^1.0^2011-03-01^y^n^zju^^europ^cr
 zjv^0^zzzz^y^2659172^46.4833^9.9^p^ppl^ch^^gr^1827^3784^^1863^0^1822^europe/zurich^1.0^2.0^1.0^2010-04-05^y^n^zjv^^europ^cr
@@ -11025,7 +11025,7 @@ zli^0^zzzz^y^2657970^47.5^8.75^p^ppla2^ch^^zh^110^230^^91908^0^449^europe/zurich
 zlj^0^zzzz^y^2657941^46.7833^6.65^p^ppl^ch^^vd^2224^5938^^23702^0^438^europe/zurich^1.0^2.0^1.0^2012-03-30^y^n^zlj^^europ^cr
 zlk^0^zzzz^n^0^59.95^30.05^s^airp^ru^^^^^^^^^ru130^^^^-1^y^n^led^^euras^r
 zll^0^zzzz^y^2657915^47.2833^7.93333^p^ppla2^ch^^ag^1910^4289^^11451^0^441^europe/zurich^1.0^2.0^1.0^2011-03-01^y^n^zll^^europ^cr
-zlm^0^zzzz^y^2657908^0^0^p^ppla^ch^^zg^900^1711^^23435^0^424^europe/zurich^1.0^2.0^1.0^2012-01-17^n^n^zlm^^europ^o
+zlm^0^zzzz^y^2657908^47.1724200^8.5174400^p^ppla^ch^^zg^900^1711^^23435^0^424^europe/zurich^1.0^2.0^1.0^2012-01-17^n^n^zlm^^europ^o
 zln^0^zzzz^y^6621585^48^1.25^s^rstn^fr^^b5^72^723^72181^0^0^52^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^lme^^europ^r
 zlo^0^mmzo^y^6299885^19.144778^-104.558631^s^airp^mx^^^^^^0^9^12^america/mexico_city^-6.0^-5.0^-6.0^2007-01-03^y^y^zlo^^namer^ca
 zlp^0^zzzz^y^6324510^46.92^7.5^s^rstn^ch^^zh^112^261^^0^0^411^europe/zurich^1.0^2.0^1.0^2012-04-22^y^y^zrh^^europ^r^zurich main station
@@ -11071,18 +11071,18 @@ znd^0^drzr^y^6296462^13.778997^8.983761^s^airp^ne^^^^^^0^462^458^africa/niamey^1
 zne^0^ynwn^y^7668751^-23.417778^119.802778^s^airp^au^^08^53220^^^0^0^526^australia/perth^8.0^8.0^8.0^2011-06-04^y^y^zne^wa^austl^ca
 znf^0^zzzz^n^0^50.169189^8.961586^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znf^^europ^o
 zng^0^czng^y^7730046^53^-97.13^s^airp^ca^^03^^^^0^0^224^america/winnipeg^-6.0^-5.0^-6.0^2011-03-16^y^n^zng^mb^namer^ca
-znh^0^zzzz^y^2905210^0^0^p^ppl^de^^02^^^^0^0^445^europe/berlin^1.0^2.0^1.0^2012-05-05^n^n^znh^^europ^o
-zni^0^zzzz^y^2907852^0^0^p^ppl^de^^02^^^^2589^0^593^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zni^^europ^o
+znh^0^zzzz^y^2905210^48.5333300^10.6666700^p^ppl^de^^02^^^^0^0^445^europe/berlin^1.0^2.0^1.0^2012-05-05^n^n^znh^^europ^o
+zni^0^zzzz^y^2907852^49.0166700^10.7500000^p^ppl^de^^02^^^^2589^0^593^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zni^^europ^o
 znj^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znj^^europ^o
-znk^0^zzzz^y^2906121^0^0^p^ppl^de^^07^^^^64879^0^83^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^znk^^europ^o
+znk^0^zzzz^y^2906121^52.1333300^8.6833300^p^ppl^de^^07^^^^64879^0^83^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^znk^^europ^o
 znl^0^zzzz^n^0^49.494167^-117.300556^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znl^^europ^o
 znm^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znm^^europ^o
-znn^0^zzzz^y^2904795^0^0^p^ppl^de^^07^051^^^56565^0^55^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^znn^^europ^o
+znn^0^zzzz^y^2904795^51.1666700^6.9333300^p^ppl^de^^07^051^^^56565^0^55^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^znn^^europ^o
 zno^0^zzzz^y^2904789^52.179833^9.945667^p^ppl^de^^06^^^^103052^93^92^europe/berlin^1.0^2.0^1.0^2011-03-09^n^n^zno^^europ^o
 znp^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znp^^europ^o
 znq^0^zzzz^n^0^48.715667^11.534^s^airp^de^^^^^^^^^de040^^^^-1^y^n^igs^^europ^r
-znr^0^zzzz^y^2895669^0^0^p^ppl^de^^07^^^^97910^0^327^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^znr^^europ^o
-zns^0^zzzz^y^2891620^0^0^p^pplx^de^^08^00^^^0^0^88^europe/berlin^1.0^2.0^1.0^2010-11-22^n^n^zns^^europ^o
+znr^0^zzzz^y^2895669^51.3666700^7.7000000^p^ppl^de^^07^^^^97910^0^327^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^znr^^europ^o
+zns^0^zzzz^y^2891620^49.9672900^7.9370200^p^pplx^de^^08^00^^^0^0^88^europe/berlin^1.0^2.0^1.0^2010-11-22^n^n^zns^^europ^o
 znt^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znt^^europ^o
 znu^0^zzzz^y^8260873^51.85^-127.9^s^airp^ca^^02^^^^0^0^-9999^america/vancouver^-8.0^-7.0^-8.0^2012-04-29^y^n^znu^bc^namer^ca
 znv^0^zzzz^n^0^50.3255^7.528667^s^airp^de^^^^^^^^^de040^^^^-1^y^n^znv^^europ^cb
@@ -11090,30 +11090,30 @@ znw^0^zzzz^y^2877650^50.38^8.05^p^ppl^de^^02^091^^^0^0^485^europe/berlin^1.0^2.0
 znx^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^znx^^europ^o
 zny^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zny^^europ^o
 znz^0^htza^y^6297372^-6.222025^39.224886^s^airp^tz^^^^^^0^16^16^africa/dar_es_salaam^3.0^3.0^3.0^2007-01-03^y^y^znz^^afric^ca
-zoa^0^zzzz^y^2878234^0^0^p^ppl^de^^07^^^^162738^0^48^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zoa^^europ^o
+zoa^0^zzzz^y^2878234^51.0333300^7.0000000^p^ppl^de^^07^^^^162738^0^48^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zoa^^europ^o
 zob^0^zzzz^n^0^50.3833^8.05^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zob^^europ^o
 zoc^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zoc^^europ^o
 zod^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zod^^europ^o
-zoe^0^zzzz^y^2875377^0^0^p^pplx^de^de^01^^^^0^0^465^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zoe^^europ^o
+zoe^0^zzzz^y^2875377^47.8166700^9.0666700^p^pplx^de^de^01^^^^0^0^465^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zoe^^europ^o
 zof^0^zzzz^y^8260880^52.28^-127.8^s^airp^ca^^^^^^0^0^69^america/vancouver^-8.0^-7.0^-8.0^2012-04-29^y^n^zof^bc^namer^ca
 zog^0^zzzz^n^0^50.03^8.567^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zog^^europ^cr
 zoh^0^zzzz^n^0^-40.206039^175.387808^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zoh^^europ^o
 zoi^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zoi^^europ^o
 zoj^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zoj^^europ^o
-zok^0^zzzz^y^2872504^0^0^p^ppl^de^^07^^^^54826^0^33^europe/berlin^1.0^2.0^1.0^2012-02-02^n^n^zok^^europ^o
+zok^0^zzzz^y^2872504^51.2833300^6.6666700^p^ppl^de^^07^^^^54826^0^33^europe/berlin^1.0^2.0^1.0^2012-02-02^n^n^zok^^europ^o
 zol^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zol^^europ^o
 zom^0^zzzz^n^0^52.28^6.883^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zom^^europ^cr
-zon^0^zzzz^y^2870221^0^0^p^ppl^de^^07^^^^107816^0^27^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zon^^europ^o
+zon^0^zzzz^y^2870221^51.4500000^6.6500000^p^ppl^de^^07^^^^107816^0^27^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zon^^europ^o
 zoo^0^zzzz^n^0^51.43^6.883^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zoo^^europ^cr
 zop^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zop^^europ^o
 zoq^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zoq^^europ^o
 zor^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zor^^europ^o
 zos^0^scjo^y^7730165^-40.611208^-73.061042^s^airp^cl^^14^103^10301^^0^0^60^america/santiago^-3.0^-4.0^-4.0^2012-05-03^y^y^zos^^samer^ca
-zot^0^zzzz^y^2863941^0^0^p^ppl^de^^02^^^^51389^0^474^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^zot^^europ^o
-zou^0^zzzz^y^2863840^0^0^p^ppl^de^^08^^^^66805^0^65^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zou^^europ^o
-zov^0^zzzz^y^2862026^0^0^p^pplx^de^^10^^^^71439^0^32^europe/berlin^1.0^2.0^1.0^2010-10-30^n^n^zov^^europ^o
+zot^0^zzzz^y^2863941^48.3927900^10.0111200^p^ppl^de^^02^^^^51389^0^474^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^zot^^europ^o
+zou^0^zzzz^y^2863840^50.4333300^7.4666700^p^ppl^de^^08^^^^66805^0^65^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zou^^europ^o
+zov^0^zzzz^y^2862026^53.7000000^10.0166700^p^pplx^de^^10^^^^71439^0^32^europe/berlin^1.0^2.0^1.0^2010-10-30^n^n^zov^^europ^o
 zow^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zow^^europ^o
-zox^0^zzzz^y^2861422^0^0^p^ppla4^de^^02^091^09180^09180125^5344^0^840^europe/berlin^1.0^2.0^1.0^2011-04-25^n^n^zox^^europ^o
+zox^0^zzzz^y^2861422^47.5981200^11.0669200^p^ppla4^de^^02^091^09180^09180125^5344^0^840^europe/berlin^1.0^2.0^1.0^2011-04-25^n^n^zox^^europ^o
 zoy^0^zzzz^n^0^51.47^6.867^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zoy^^europ^cr
 zoz^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zoz^^europ^o
 zpa^0^zzzz^y^2857798^48.47^7.933^p^ppl^de^^01^^^^59238^0^149^europe/berlin^1.0^2.0^1.0^2012-01-18^y^n^zpa^^europ^cr
@@ -11122,44 +11122,44 @@ zpc^0^scpc^y^7668446^-39.2928^-71.915^s^airp^cl^^04^91^09115^^0^0^263^america/sa
 zpd^0^zzzz^n^0^53.15^8.2^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zpd^^europ^cr
 zpe^0^zzzz^n^0^49.02^0.1342^s^airp^de^^^^^^^^^de040^^^^-1^y^n^fmo^^europ^r
 zpf^0^zzzz^y^2855328^48.57^13.43^p^ppl^de^^02^092^09262^^50560^0^339^europe/berlin^1.0^2.0^1.0^2010-11-15^y^n^zpf^^europ^cr
-zpg^0^zzzz^y^2855047^0^0^p^ppl^de^^06^00^03157^03157006^49953^0^71^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpg^^europ^o
+zpg^0^zzzz^y^2855047^52.3166700^10.2333300^p^ppl^de^^06^00^03157^03157006^49953^0^71^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpg^^europ^o
 zph^0^kzph^y^4178944^28.23^-82.17^s^airp^us^^fl^101^^^0^25^26^america/new_york^-5.0^-4.0^-5.0^2011-12-11^y^n^zph^fl^namer^ca
-zpi^0^zzzz^y^2853574^0^0^p^ppl^de^^08^^^^43582^0^400^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^zpi^^europ^o
-zpj^0^zzzz^y^2850174^0^0^p^ppl^de^^07^051^^^91606^0^64^europe/berlin^1.0^2.0^1.0^2010-11-15^n^n^zpj^^europ^o
+zpi^0^zzzz^y^2853574^49.2014500^7.6052900^p^ppl^de^^08^^^^43582^0^400^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^zpi^^europ^o
+zpj^0^zzzz^y^2850174^51.2972400^6.8492900^p^ppl^de^^07^051^^^91606^0^64^europe/berlin^1.0^2.0^1.0^2010-11-15^n^n^zpj^^europ^o
 zpk^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zpk^^europ^o
 zpl^0^zzzz^n^0^51.6^7.183^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zpl^^europ^cr
 zpm^0^zzzz^y^2849483^49.02^0.2019^p^ppla2^de^^02^093^^^129151^0^348^europe/berlin^1.0^2.0^1.0^2010-11-15^y^n^zpm^^europ^cr
-zpn^0^zzzz^y^2848273^0^0^p^ppl^de^^07^^^^117118^0^283^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpn^^europ^o
+zpn^0^zzzz^y^2848273^51.1833300^7.2000000^p^ppl^de^^07^^^^117118^0^283^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpn^^europ^o
 zpo^0^zzzz^y^8260884^55.52^-106.6^s^airp^ca^^11^^^^0^0^397^america/regina^-6.0^-6.0^-6.0^2012-04-29^y^n^zpo^sk^namer^ca
-zpp^0^zzzz^y^2847736^0^0^p^ppl^de^^01^^^^112627^0^374^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^zpp^^europ^o
+zpp^0^zzzz^y^2847736^48.4914400^9.2042700^p^ppl^de^^01^^^^112627^0^374^europe/berlin^1.0^2.0^1.0^2010-01-29^n^n^zpp^^europ^o
 zpq^0^ethe^y^6296837^52.2911700^7.3870000^s^airp^de^^^^^^0^39^39^europe/berlin^1.0^2.0^1.0^2007-01-03^n^n^zpq^^europ^o
 zpr^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zpr^^europ^o
 zps^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zps^^europ^o
-zpt^0^zzzz^y^2842632^0^0^p^ppl^de^^09^^^^38333^0^181^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpt^^europ^o
-zpu^0^zzzz^y^2842150^0^0^p^ppl^de^^06^^^^0^0^95^europe/berlin^1.0^2.0^1.0^2010-08-30^n^n^zpu^^europ^o
+zpt^0^zzzz^y^2842632^49.3166700^6.7500000^p^ppl^de^^09^^^^38333^0^181^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpt^^europ^o
+zpu^0^zzzz^y^2842150^52.1525600^10.3314400^p^ppl^de^^06^^^^0^0^95^europe/berlin^1.0^2.0^1.0^2010-08-30^n^n^zpu^^europ^o
 zpv^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zpv^^europ^o
 zpw^0^zzzz^y^2834498^50.05^10.231^p^ppl^de^^02^^^^54012^250^221^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpw^^europ^o
-zpx^0^zzzz^y^2834265^0^0^p^ppl^de^^07^^^^50399^0^135^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpx^^europ^o
+zpx^0^zzzz^y^2834265^51.4500000^7.5666700^p^ppl^de^^07^^^^50399^0^135^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpx^^europ^o
 zpy^0^zzzz^y^2832521^50.8^7.2^p^ppl^de^^07^053^05382^^39135^0^60^europe/berlin^1.0^2.0^1.0^2012-01-18^y^n^zpy^^europ^cr
-zpz^0^zzzz^y^2831948^0^0^p^ppl^de^^01^^^^61311^0^468^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpz^^europ^o
+zpz^0^zzzz^y^2831948^48.7000000^9.0166700^p^ppl^de^^01^^^^61311^0^468^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zpz^^europ^o
 zqa^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqa^^europ^o
 zqb^0^zzzz^n^0^0^0^x^xxxx^us^^^^^^^^^us112^^^^-1^n^n^zqb^ak^namer^o
 zqc^0^zzzz^y^2830582^49.302776^8.451195^p^ppl^de^^08^^^^50343^0^102^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqc^^europ^o
 zqd^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqd^^europ^o
 zqe^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqe^^europ^o
 zqf^0^zzzz^y^2821164^49.8635^6.788167^p^ppla4^de^^08^00^07211^07211000^100129^0^141^europe/berlin^1.0^2.0^1.0^2011-04-25^y^n^zqf^^europ^cr
-zqg^0^zzzz^y^2821029^0^0^p^ppl^de^^07^^^^74749^0^62^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqg^^europ^o
+zqg^0^zzzz^y^2821029^50.8166700^7.1666700^p^ppl^de^^07^^^^74749^0^62^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqg^^europ^o
 zqh^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqh^^europ^o
-zqi^0^zzzz^y^2820087^0^0^p^ppl^de^^07^^^^66734^0^117^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqi^^europ^o
-zqj^0^zzzz^y^2817724^0^0^p^ppl^de^^07^^^^87669^0^264^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqj^^europ^o
-zqk^0^zzzz^y^2817311^0^0^p^ppl^de^^07^^^^76153^0^62^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqk^^europ^o
+zqi^0^zzzz^y^2820087^51.5333300^7.6833300^p^ppl^de^^07^^^^66734^0^117^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqi^^europ^o
+zqj^0^zzzz^y^2817724^51.3333300^7.0500000^p^ppl^de^^07^^^^87669^0^264^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqj^^europ^o
+zqk^0^zzzz^y^2817311^51.2500000^6.3833300^p^ppl^de^^07^^^^76153^0^62^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqk^^europ^o
 zql^0^zzzz^y^2817220^47.973331^8.522223^p^ppl^de^^01^^^^81770^0^710^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zql^^europ^o
 zqm^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqm^^europ^o
 zqn^0^nzqn^y^6206225^-45.021111^168.739167^s^airp^nz^^f7^070^^^0^0^357^pacific/auckland^13.0^12.0^12.0^2011-08-01^y^y^zqn^^austl^ca
 zqo^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqo^^europ^o
 zqp^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqp^^europ^o
-zqq^0^zzzz^y^2809889^0^0^p^ppl^de^^05^^^^52656^0^168^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqq^^europ^o
-zqr^0^zzzz^y^2807363^0^0^p^ppl^de^^07^^^^101247^0^94^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqr^^europ^o
+zqq^0^zzzz^y^2809889^50.5500000^8.5000000^p^ppl^de^^05^^^^52656^0^168^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqq^^europ^o
+zqr^0^zzzz^y^2807363^51.4333300^7.3333300^p^ppl^de^^07^^^^101247^0^94^europe/berlin^1.0^2.0^1.0^2012-01-18^n^n^zqr^^europ^o
 zqs^0^zzzz^n^0^53^-132^s^airp^ca^^^^^^^^^ca031^^^^-1^y^n^zqs^bc^namer^ca
 zqt^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zqt^^europ^o
 zqu^0^zzzz^n^0^52.42^10.77^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zqu^^europ^cr
@@ -11194,7 +11194,7 @@ zrw^0^zzzz^y^2850257^48.87^8.2^p^ppl^de^^01^^^^47906^0^121^europe/berlin^1.0^2.0
 zrx^0^zzzz^n^0^51.3^13.3^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zrx^^europ^cr
 zry^0^zzzz^y^2620425^56.13^8.978^p^ppla2^dk^^18^657^^^44763^0^58^europe/copenhagen^1.0^2.0^1.0^2011-03-01^y^n^zry^^europ^cb
 zrz^0^zzzz^n^0^39.17^-76.67^s^airp^us^^^^^^^^^us105^^^^-1^y^n^was^dc^namer^r
-zsa^0^mysm^y^6299942^24.063275^-74.523967^s^airp^bs^^35^^^^0^7^8^america/nassau^-5.0^-4.0^-5.0^2011-03-28^y^y^zsa^^carib^ca^cockburn town airport^san salvador airport
+zsa^0^mysm^y^6299942^24.063275^-74.523967^s^airp^bs^^35^^^^0^7^8^america/nassau^-5.0^-4.0^-5.0^2011-03-28^y^y^zsa^^carib^ca^san salvador airport^cockburn town airport
 zsb^0^zzzz^n^0^47.8^13.05^s^airp^at^^^^^^^^^at005^^^^-1^y^n^szg^^europ^r
 zsc^0^zzzz^n^0^50.03^8.567^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zsc^^europ^cr
 zsd^0^zzzz^y^2835249^53.43^10.68^p^ppla4^de^^12^00^13054^13054096^760^0^14^europe/berlin^1.0^2.0^1.0^2011-04-25^y^n^zsd^^europ^cr
@@ -11299,7 +11299,7 @@ zwa^0^fmnd^y^6297044^-14.651667^49.620556^s^airp^mg^^^^^^0^473^480^indian/antana
 zwb^0^zzzz^n^0^37.13^-76.5^s^airp^us^^^^^^^^^us105^^^^-1^y^n^phf^va^namer^r
 zwc^0^zzzz^n^0^58.97^50.73^s^airp^no^^^^^^^^^no083^^^^-1^y^n^svg^^europ^r
 zwd^0^zzzz^n^0^54.17^12.08^s^airp^de^^^^^^^^^de040^^^^-1^y^n^zwd^^europ^cr
-zwe^0^zzzz^n^0^51.22^4.421^s^airp^be^^^^^^^^^be012^^^^-1^y^y^anr^^europ^r
+zwe^0^zzzz^y^8063189^51.22^4.421^s^rstn^be^^vlg^van^^^0^0^19^europe/brussels^1.0^2.0^1.0^2012-05-15^y^y^anr^^europ^r
 zwg^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^zwg^^europ^o
 zwh^0^czwh^y^7730049^58.6175^-101.469^s^airp^ca^^03^^^^0^0^363^america/winnipeg^-6.0^-5.0^-6.0^2011-03-16^y^n^wdh^^afric^r
 zwi^0^zzzz^n^0^39.13^-75.47^s^airp^us^^^^^^^^^us105^^^^-1^y^y^ilg^de^namer^r
@@ -11369,24 +11369,24 @@ zyw^0^zzzz^n^0^59.89^10.88^s^airp^no^^^^^^^^^no083^^^^-1^y^n^zyw^^europ^cr
 zyx^0^zzzz^n^0^22.6^114.267^s^airp^cn^^^^^^^^^cn035^^^^-1^y^n^szx^^asia^p
 zyy^0^zzzz^n^0^58.36^7.857^s^airp^no^^^^^^^^^no083^^^^-1^y^n^zyy^^europ^cr
 zyz^0^zzzz^n^0^51.18^4.467^s^airp^be^^^^^^^^^be012^^^^-1^y^y^anr^^europ^r
-zza^0^zzzz^y^2506043^0^0^p^ppl^dz^^14^^^^40623^0^435^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zza^^afric^o
-zzb^0^zzzz^y^2505629^0^0^p^ppl^dz^^03^^^^98846^0^476^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzb^^afric^o
-zzc^0^zzzz^y^2501440^0^0^p^ppl^dz^^55^^^^0^0^38^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzc^^afric^o
-zzd^0^zzzz^y^2499104^0^0^p^ppl^dz^^21^^^^41263^0^410^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzd^^afric^o
+zza^0^zzzz^y^2506043^36.7447200^4.3722200^p^ppl^dz^^14^^^^40623^0^435^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zza^^afric^o
+zzb^0^zzzz^y^2505629^35.3890100^5.3658400^p^ppl^dz^^03^^^^98846^0^476^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzb^^afric^o
+zzc^0^zzzz^y^2501440^36.6050000^2.1908300^p^ppl^dz^^55^^^^0^0^38^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzc^^afric^o
+zzd^0^zzzz^y^2499104^36.5362800^3.8334000^p^ppl^dz^^21^^^^41263^0^410^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzd^^afric^o
 zzf^0^zzzz^y^8260374^-37.28^142.9^s^airp^au^^07^20260^^^0^0^313^australia/melbourne^11.0^10.0^10.0^2012-04-21^y^y^zzf^vi^austl^o
 zzg^0^zzzz^n^0^50.03^8.567^s^airp^de^^^^^^^^^de040^^^^-1^y^y^zzg^^europ^ca
 zzi^0^zzzz^n^0^-38.28^142.5^x^xxxx^au^^^^^^^^^au007^^^^-1^n^n^zzi^vi^austl^o
 zzj^0^zzzz^n^0^-38.03^144.5^x^xxxx^au^^^^^^^^^au007^^^^-1^n^n^zzj^vi^austl^o
-zzk^0^zzzz^y^2491911^0^0^p^ppl^dz^^35^^^^75865^0^299^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzk^^afric^o
+zzk^0^zzzz^y^2491911^36.2610400^2.2201500^p^ppl^dz^^35^^^^75865^0^299^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzk^^afric^o
 zzl^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^zzl^^afric^o
 zzm^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^zzm^^afric^o
 zzn^0^zzzz^n^0^59.91^10.74^s^airp^no^^^^^^^^^no083^^^^-1^y^n^osl^^europ^r
 zzo^0^zzzz^y^8260765^50.67^142.8^s^airp^ru^^64^^^^0^0^362^asia/sakhalin^11.0^11.0^11.0^2012-04-29^y^n^zzo^^euras^ca
 zzp^0^zzzz^n^0^44.82^20.3^s^airp^rs^^^^^^^^^rs189^^^^-1^y^n^zzp^^europ^o
 zzq^0^zzzz^n^0^0^0^x^xxxx^hk^^^^^^^^^hk^^^^-1^n^n^zzq^^seasi^o
-zzr^0^zzzz^y^2491776^0^0^p^ppl^dz^^18^^^^0^0^495^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzr^^afric^o
+zzr^0^zzzz^y^2491776^36.4934900^5.2780200^p^ppl^dz^^18^^^^0^0^495^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzr^^afric^o
 zzs^0^zzzz^n^0^0^0^x^xxxx^dz^^^^^^^^^dz^^^^-1^n^n^zzs^^afric^o
-zzt^0^zzzz^y^2478554^0^0^p^ppl^dz^^24^^^^0^0^65^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzt^^afric^o
+zzt^0^zzzz^y^2478554^36.7630400^5.8978800^p^ppl^dz^^24^^^^0^0^65^africa/algiers^1.0^1.0^1.0^2012-01-19^n^n^zzt^^afric^o
 zzu^0^fwuu^y^6297127^-11.45^34.02^s^airp^mw^^^^^^0^1254^1254^africa/blantyre^2.0^2.0^2.0^2011-03-28^y^n^zzu^^afric^ca
 zzv^0^kzzv^y^4528929^39.95^-81.88^s^airp^us^^oh^119^^^0^270^270^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^zzv^oh^namer^ca
 zzw^0^zzzz^n^0^0.0002778^0.0002778^s^airp^au^^^^^^^^^au011^^^^-1^y^n^zzw^ns^austl^ca
