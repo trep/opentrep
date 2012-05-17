@@ -2,8 +2,9 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // C
-#include <assert.h>
-// OPENTREP Common
+#include <cassert>
+// OpenTrep Common
+#include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/factory/FacSupervisor.hpp>
 #include <opentrep/factory/FacOpenTrepServiceContext.hpp>
 #include <opentrep/service/OPENTREP_ServiceContext.hpp>
@@ -31,7 +32,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext& FacOpenTrepServiceContext::
-  create (const std::string& iTravelDatabaseName) {
+  create (const TravelDatabaseName_T& iTravelDatabaseName) {
     OPENTREP_ServiceContext* aOPENTREP_ServiceContext_ptr = NULL;
 
     aOPENTREP_ServiceContext_ptr =

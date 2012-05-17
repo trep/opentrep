@@ -7,16 +7,16 @@
 // STL
 #include <string>
 #include <list>
-// OpenTREP
+// OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/bom/BomAbstract.hpp>
+#include <opentrep/basic/StructAbstract.hpp>
 
 namespace OPENTREP {
 
   /**
-   * Class holding a set of strings, e.g., {"rio", "de", "janeiro"}
+   * @brief Class holding a set of strings, e.g., {"rio", "de", "janeiro"}
    */
-  struct StringSet : public BomAbstract {
+  struct StringSet : public StructAbstract {
   public:
     // //////////////// Type definitions //////////////////
     /**
@@ -70,26 +70,15 @@ namespace OPENTREP {
     void fromStream (std::istream&);
 
     /**
-     * Get the serialised version of the structure.
-     */
-    std::string toString() const;
-    
-    /**
-     * Get a shorter serialised version of the structure.
-     */
-    std::string toShortString() const;
-    
-    /**
      * Get a string describing the whole key (differentiating two objects
      * at any level).
      */
     std::string describeKey() const;
 
     /**
-     * Get a string describing the short key (differentiating two objects
-     * at the same level).
+     * Get the serialised version of the structure.
      */
-    std::string describeShortKey() const;
+    std::string describe() const;
 
 
   public:

@@ -3,55 +3,56 @@
 // //////////////////////////////////////////////////////////////////////
 // C
 #include <cassert>
-#include <string>
-#include <sstream>
-// OpenTREP
-#include <opentrep/bom/StringMatcher.hpp>
-#include <opentrep/bom/Result.hpp>
+// OpenTrep BOM
+#include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  Result::Result (const Xapian::Database& iDatabase)
-    : _resultHolder (NULL), _database (iDatabase) {
-    init();
+  PlaceKey::PlaceKey (const std::string& iIataCode,
+                      const std::string& iIcaoCode,
+                      const GeonamesID_T& iGeonamesID) :
+    _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonamesID (iGeonamesID) {
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  PlaceKey::PlaceKey() :
+    _iataCode (""), _icaoCode (""), _geonamesID (0) {
+    assert (false);
   }
   
   // //////////////////////////////////////////////////////////////////////
-  Result::~Result () {
+  PlaceKey::PlaceKey (const PlaceKey& iPlaceKey) :
+    _iataCode (iPlaceKey._iataCode), _icaoCode (iPlaceKey._icaoCode),
+    _geonamesID (iPlaceKey._geonamesID) {
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  PlaceKey::~PlaceKey () {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void Result::init () {
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  std::string Result::describeShortKey() const {
+  std::string PlaceKey::describe() const {
     std::ostringstream oStr;
-    oStr << _queryString;
+    oStr << _iataCode << "-" << _icaoCode << "-" << _geonamesID;
     return oStr.str();
   }
-  
-  // //////////////////////////////////////////////////////////////////////
-  std::string Result::describeKey() const {
-    return describeShortKey();
-  }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Result::toString() const {
+  std::string PlaceKey::toString() const {
     std::ostringstream oStr;
-    oStr << _matchingDocument.describe();
+    oStr << describe();      
     return oStr.str();
   }   
 
   // //////////////////////////////////////////////////////////////////////
-  void Result::toStream (std::ostream& ioOut) const {
+  void PlaceKey::toStream (std::ostream& ioOut) const {
     ioOut << toString();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void Result::fromStream (std::istream& ioIn) {
+  void PlaceKey::fromStream (std::istream& ioIn) {
   }
   
 }

@@ -29,10 +29,14 @@ namespace soci {
       alternate_name7, alternate_name8, alternate_name9,
       alternate_name10 
     */
-    ioPlace.setIataCode (iPlaceValues.get<std::string> ("iata_code"));
+    // The IATA code will be set to the default value (empty string)
+    // when the column is null
+    ioPlace.setIataCode (iPlaceValues.get<std::string> ("iata_code", ""));
     // The ICAO code will be set to the default value (empty string)
     // when the column is null
     ioPlace.setIcaoCode (iPlaceValues.get<std::string> ("icao_code", ""));
+    // Geonames ID
+    ioPlace.setGeonamesID (iPlaceValues.get<int> ("geonameid"));
     // The FAA code will be set to the default value (empty string)
     // when the column is null
     // ioPlace.setFaaCode (iPlaceValues.get<std::string> ("faa_code", ""));
@@ -110,20 +114,27 @@ namespace soci {
     const std::string& lAlternateName10 =
       iPlaceValues.get<std::string> ("alternate_name10", "");
     ioPlace.addName (lLanguageCode, lAlternateName10);
+
+    // Re-set the (STL) sets of terms for the Xapian index, spelling
+    // dictionary, etc.
+    ioPlace.resetIndexSets();
   }
 
   // //////////////////////////////////////////////////////////////////////
   void type_conversion<OPENTREP::Place>::
   to_base (const OPENTREP::Place& iPlace, values& ioPlaceValues,
            indicator& ioIndicator) {
+    const indicator lIataCodeIndicator =
+      iPlace.getIataCode().empty() ? i_null : i_ok;
     const indicator lIcaoCodeIndicator =
       iPlace.getIcaoCode().empty() ? i_null : i_ok;
     const indicator lCityCodeIndicator =
       iPlace.getCityCode().empty() ? i_null : i_ok;
     const indicator lStateCodeIndicator =
       iPlace.getStateCode().empty() ? i_null : i_ok;
-    ioPlaceValues.set ("iata_code", iPlace.getIataCode());
+    ioPlaceValues.set ("iata_code", iPlace.getIataCode(), lIataCodeIndicator);
     ioPlaceValues.set ("icao_code", iPlace.getIcaoCode(), lIcaoCodeIndicator);
+    ioPlaceValues.set ("geonameid", iPlace.getGeonamesID());
     //ioPlaceValues.set ("faa_code", iPlace.getFaaCode());
     ioPlaceValues.set ("city_code", iPlace.getCityCode(), lCityCodeIndicator);
     ioPlaceValues.set ("state_code", iPlace.getStateCode(),

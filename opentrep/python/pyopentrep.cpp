@@ -262,8 +262,10 @@ namespace OPENTREP {
         
         // Initialise the context
         DBParams lDBParams (iDBUser, iDBPasswd, iDBHost, iDBPort, iDBDBName);
+        const OPENTREP::TravelDatabaseName_T
+          lXapianDatabaseName (iXapianDatabaseFilepath);
         _opentrepService = new OPENTREP_Service (*_logOutputStream, lDBParams,
-                                                 iXapianDatabaseFilepath);
+                                                 lXapianDatabaseName);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;

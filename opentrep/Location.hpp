@@ -30,77 +30,77 @@ namespace OPENTREP {
     /** 
      * Get the IATA code. 
      */
-    std::string getIataCode() const {
+    const std::string& getIataCode() const {
       return _iataCode;
     }
     
     /** 
      * Get the ICAO code. 
      */
-    std::string getIcaoCode() const {
+    const std::string& getIcaoCode() const {
       return _icaoCode;
     }
     
+    /**
+     * Get the Geonames ID.
+     */
+    const GeonamesID_T& getGeonamesID() const {
+      return _geonameID;
+    }
+
     /** 
      * Get the FAA code. 
      */
-    std::string getFaaCode() const {
+    const std::string& getFaaCode() const {
       return _faaCode;
     }
     
     /**
      * Get the City code. 
      */
-    std::string getCityCode() const {
+    const std::string& getCityCode() const {
       return _cityCode;
     }
     
     /**
      * Get the State code. 
      */
-    std::string getStateCode() const {
+    const std::string& getStateCode() const {
       return _stateCode;
     }
     
     /**
      * Get the Country code. 
      */
-    std::string getCountryCode() const {
+    const std::string& getCountryCode() const {
       return _countryCode;
     }
     
     /**
      * Get the Region code. 
      */
-    std::string getRegionCode() const {
+    const std::string& getRegionCode() const {
       return _regionCode;
-    }
-    
-    /**
-     * Get the Continent code. 
-     */
-    std::string getContinentCode() const {
-      return _continentCode;
     }
     
     /**
      * Get the Time-zone group. 
      */
-    std::string getTimeZoneGroup() const {
+    const std::string& getTimeZoneGroup() const {
       return _timeZoneGroup;
     }
     
     /**
      * Get the Latitude. 
      */
-    double getLatitude() const {
+    const double& getLatitude() const {
       return _latitude;
     }
 
     /**
      * Get the Longitude. 
      */
-    double getLongitude() const {
+    const double& getLongitude() const {
       return _longitude;
     }
     
@@ -114,14 +114,14 @@ namespace OPENTREP {
     /**
      * Get the original keywords. 
      */
-    std::string getOriginalKeywords() const {
+    const std::string& getOriginalKeywords() const {
       return _originalKeywords;
     }
     
     /**
      * Get the corrected keywords. 
      */
-    std::string getCorrectedKeywords() const {
+    const std::string& getCorrectedKeywords() const {
       return _correctedKeywords;
     }
     
@@ -162,6 +162,7 @@ namespace OPENTREP {
     }
 
     
+  public:
     // ///////// Setters //////////
     /**
      * Set the IATA code. 
@@ -177,6 +178,13 @@ namespace OPENTREP {
       _icaoCode = iIcaoCode;
     }
     
+    /**
+     * Get the Geonames ID.
+     */
+    void setGeonamesID (const GeonamesID_T& iGeonamesID) {
+      _geonameID = iGeonamesID;
+    }
+
     /**
      * Set the FAA code. 
      */
@@ -210,13 +218,6 @@ namespace OPENTREP {
      */
     void setRegionCode (const std::string& iRegionCode) {
       _regionCode = iRegionCode;
-    }
-    
-    /**
-     * Set the Continent code. 
-     */
-    void setContinentCode (const std::string& iContinentCode) {
-      _continentCode = iContinentCode;
     }
     
     /**
@@ -351,9 +352,9 @@ namespace OPENTREP {
      * Main Constructor. 
      */
     Location (const std::string& iIataCode, const std::string& iIcaoCode,
-              const std::string& iFaaCode, const std::string& iCityCode,
-              const std::string& iStateCode, const std::string& iCountryCode,
-              const std::string& iRegionCode, const std::string& iContinentCode,
+              const GeonamesID_T& iGeonamesID, const std::string& iFaaCode,
+              const std::string& iCityCode, const std::string& iStateCode,
+              const std::string& iCountryCode, const std::string& iRegionCode,
               const std::string& iTimeZoneGroup, 
               const double iLatitude, const double iLongitude,
               const LocationNameList_T& iNameList,
@@ -381,50 +382,64 @@ namespace OPENTREP {
     
   private:
     // /////// Attributes /////////
-    /** 
-     * IATA code.
+    // \note The combination (IATA code, ICAO code, GeonamesID) forms a
+    //       a primary key.
+    /**
+     * IATA code (e.g., ORD, CHI, SFO, LAX, LHR, LON, CDG, PAR).
      */
     std::string _iataCode;
-    /** 
-     * ICAO code. 
+
+    /**
+     * ICAO code (e.g., KORD).
      */
     std::string _icaoCode;
-    /** 
-     * FAA code. 
+
+    /**
+     * Geonames ID (e.g., 4887479).
+     */
+    GeonamesID_T _geonameID;
+
+
+    /**
+     * FAA code (e.g., ORD).
      */
     std::string _faaCode;
+
     /**
-     * City code. 
+     * Related IATA city code (e.g., CHI).
      */
     std::string _cityCode;
+
     /**
-     * State code. 
+     * State code (e.g., IL).
      */
     std::string _stateCode;
+
     /**
-     * Country code. 
+     * Country code (e.g., US).
      */
     std::string _countryCode;
+
     /**
-     * Region code. 
+     * Region code (e.g., NAMER).
      */
     std::string _regionCode;
+
     /**
-     * Continent code. 
-     */
-    std::string _continentCode;
-    /**
-     * Time-zone group. 
+     * Time-zone group (e.g., America/Chicago).
      */
     std::string _timeZoneGroup;
+
     /**
-     * Latitude. 
+     * Geographical latitude (e.g., 41.978603).
      */
     double _latitude;
+
     /**
-     * Longitude. 
+     * Geographical longitude (e.g., -87.904842).
      */
     double _longitude;
+
     /**
      * List of (American) English names. 
      */

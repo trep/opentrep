@@ -21,12 +21,13 @@ namespace OPENTREP {
   BlackList_T ListGenerator::createBlackList() {
     BlackList_T oBL;
     oBL.push_back ("airport"); oBL.push_back ("airfield");
-    oBL.push_back ("airbase"); oBL.push_back ("aerodromo");
-    oBL.push_back ("aeroporto");
+    oBL.push_back ("airbase"); oBL.push_back ("aerodrome");
+    oBL.push_back ("aerodromo"); oBL.push_back ("aeroporto");
     oBL.push_back ("international"); oBL.push_back ("intl");
     oBL.push_back ("saint"); oBL.push_back ("sankt");
     oBL.push_back ("municipal"); oBL.push_back ("county");
     oBL.push_back ("local");
+    oBL.push_back ("ferry");  oBL.push_back ("port");oBL.push_back ("harbour");
     return oBL;
   }
   

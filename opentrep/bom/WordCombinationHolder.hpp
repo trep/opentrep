@@ -9,7 +9,7 @@
 #include <list>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/bom/BomAbstract.hpp>
+#include <opentrep/basic/StructAbstract.hpp>
 
 namespace OPENTREP {
 
@@ -48,7 +48,7 @@ namespace OPENTREP {
    *   </ol></li>
    * </ul>
    */
-  struct WordCombinationHolder : public BomAbstract {
+  struct WordCombinationHolder : public StructAbstract {
     // //////////////// Type definitions //////////////////
     /**
      * List of strings.
@@ -100,26 +100,15 @@ namespace OPENTREP {
     void fromStream (std::istream&);
 
     /**
-     * Get the serialised version of the structure.
-     */
-    std::string toString() const;
-    
-    /**
-     * Get a shorter serialised version of the structure.
-     */
-    std::string toShortString() const;
-    
-    /**
      * Get a string describing the whole key (differentiating two objects
      * at any level).
      */
     std::string describeKey() const;
 
     /**
-     * Get a string describing the short key (differentiating two objects
-     * at the same level).
+     * Get the serialised version of the structure.
      */
-    std::string describeShortKey() const;
+    std::string describe() const;
 
 
   public:

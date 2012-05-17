@@ -4,7 +4,7 @@
 // STL
 #include <cassert>
 #include <sstream>
-// OpenTREP
+// OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -45,7 +45,7 @@ namespace OPENTREP {
     // 'san francisco', for instance, it should not be indexed/searched
     // alone (in a search, the resulting match score will be zero).
     const size_t lWordLength = iWord.size();
-    if (lWordLength <= 3) {
+    if (lWordLength <= 2) {
       isToBeKept = false;
       return isToBeKept;
     }

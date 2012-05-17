@@ -9,7 +9,7 @@
 #include <list>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/bom/BomAbstract.hpp>
+#include <opentrep/basic/StructAbstract.hpp>
 #include <opentrep/bom/StringSet.hpp>
 
 namespace OPENTREP {
@@ -32,7 +32,7 @@ namespace OPENTREP {
    *   <li>}</li>
    * </ul>
    */
-  struct StringPartition : public BomAbstract {
+  struct StringPartition : public StructAbstract {
     // //////////////// Type definitions //////////////////
     /**
      * Type gathering all the partitions of a string.
@@ -110,26 +110,15 @@ namespace OPENTREP {
     void fromStream (std::istream& ioIn);
 
     /**
-     * Get the serialised version of the structure.
-     */
-    std::string toString() const;
-    
-    /**
-     * Get a shorter serialised version of the structure.
-     */
-    std::string toShortString() const;
-    
-    /**
      * Get a string describing the whole key (differentiating two objects
      * at any level).
      */
     std::string describeKey() const;
 
     /**
-     * Get a string describing the short key (differentiating two objects
-     * at the same level).
+     * Get the serialised version of the structure.
      */
-    std::string describeShortKey() const;
+    std::string describe() const;
 
 
   public:

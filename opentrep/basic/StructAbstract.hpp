@@ -1,66 +1,54 @@
-#ifndef __OPENTREP_BOM_BOMABSTRACT_HPP
-#define __OPENTREP_BOM_BOMABSTRACT_HPP
+#ifndef __OPENTREP_BAS_STRUCTABSTRACT_HPP
+#define __OPENTREP_BAS_STRUCTABSTRACT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <iosfwd>
-#include <sstream>
 #include <string>
 
 namespace OPENTREP {
 
   /**
-   * @brief Base class for the Business Object Model (BOM) layer.
+   * @brief Base class for the light structures.
    */
-  class BomAbstract {
-    friend class FacBomAbstract;
+  struct StructAbstract {
   public:
-    // /////////// Display support methods /////////
+
+    /**
+     * Destructor.
+     */
+    virtual ~StructAbstract() {}
+
     /**
      * Dump a Business Object into an output stream.
      *
      * @param ostream& the output stream.
      */
-    virtual void toStream (std::ostream&) const = 0;
+    void toStream (std::ostream& ioOut) const {
+      ioOut << describe();
+    }
 
     /**
      * Read a Business Object from an input stream.
      *
      * @param istream& the input stream.
      */
-    virtual void fromStream (std::istream&) = 0;
+    virtual void fromStream (std::istream& ioIn) {}
 
     /**
-     * Get the serialised version of the Business Object.
+     * Display of the structure.
+     *
+     * @return std::string Dump of the structure.
      */
-    virtual std::string toString() const = 0;
-    
-    /**
-     * Get a string describing the whole key (differentiating two objects
-     * at any level).
-     */
-    virtual std::string describeKey() const = 0;
+    virtual std::string describe() const = 0;
 
-    /**
-     * Get a string describing the short key (differentiating two objects
-     * at the same level).
-     */
-    virtual std::string describeShortKey() const = 0;
-
-    
   protected:
     /**
      * Protected Default Constructor to ensure this class is abtract.
      */
-    BomAbstract() {}
-    BomAbstract (const BomAbstract&) {}
-
-    /**
-     * Destructor.
-     */
-    virtual ~BomAbstract() {}
+    StructAbstract() {}
   };
 }
 
@@ -73,18 +61,18 @@ template <class charT, class traits>
 inline
 std::basic_ostream<charT, traits>&
 operator<< (std::basic_ostream<charT, traits>& ioOut,
-            const OPENTREP::BomAbstract& iBom) {
+            const OPENTREP::StructAbstract& iStruct) {
   /**
-   *  string stream:
-   *  - with same format
-   *  - without special field width
-   */
+     string stream:
+     - with same format
+     - without special field width
+  */
   std::basic_ostringstream<charT,traits> ostr;
   ostr.copyfmt (ioOut);
   ostr.width (0);
 
   // Fill string stream
-  iBom.toStream (ostr);
+  iStruct.toStream (ostr);
 
   // Print string stream
   ioOut << ostr.str();
@@ -101,10 +89,10 @@ template <class charT, class traits>
 inline
 std::basic_istream<charT, traits>&
 operator>> (std::basic_istream<charT, traits>& ioIn,
-            OPENTREP::BomAbstract& ioBom) {
-  // Fill Bom object with input stream
-  ioBom.fromStream (ioIn);
+            OPENTREP::StructAbstract& ioStruct) {
+  // Fill the Structure object with the input stream.
+  ioStruct.fromStream (ioIn);
   return ioIn;
-}
 
-#endif // __OPENTREP_BOM_BOMABSTRACT_HPP
+}
+#endif // __OPENTREP_BAS_STRUCTABSTRACT_HPP

@@ -4,7 +4,7 @@
 // STL
 #include <cassert>
 #include <sstream>
-// OpenTREP
+// OpenTrep
 #include <opentrep/bom/StringSet.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -61,13 +61,6 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  std::string StringSet::describeShortKey() const {
-    std::ostringstream oStr;
-    oStr << "";
-    return oStr.str();
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
   std::string StringSet::describeKey() const {
     std::ostringstream oStr;
     oStr << "";
@@ -75,39 +68,10 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string StringSet::toShortString() const {
-    std::ostringstream oStr;
-    oStr << describeShortKey();
-
-    //
-    oStr << "  {";
-
-    short idx_string = 0;
-    for (StringSet_T::const_iterator itString = _set.begin();
-         itString != _set.end(); ++itString, ++idx_string) {
-      //
-      if (idx_string != 0) {
-        oStr << ", ";
-      }
-
-      //
-      const std::string& lString = *itString;
-
-      //
-      oStr << "\"" << lString << "\"";
-    }
-
-    //
-    oStr << "}";
-
-    return oStr.str();
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  std::string StringSet::toString() const {
+  std::string StringSet::describe() const {
     std::ostringstream oStr;
     oStr << describeKey();
-    
+
     //
     oStr << "  {";
 
@@ -128,15 +92,15 @@ namespace OPENTREP {
 
     //
     oStr << "}";
-    
+
     return oStr.str();
   }   
 
   // //////////////////////////////////////////////////////////////////////
   void StringSet::toStream (std::ostream& ioOut) const {
-    ioOut << toString();
+    ioOut << describe();
   }
-  
+
   // //////////////////////////////////////////////////////////////////////
   void StringSet::fromStream (std::istream& ioIn) {
   }

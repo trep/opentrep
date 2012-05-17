@@ -39,13 +39,6 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string WordCombinationHolder::describeShortKey() const {
-    std::ostringstream oStr;
-    oStr << "";
-    return oStr.str();
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
   std::string WordCombinationHolder::describeKey() const {
     std::ostringstream oStr;
     oStr << "";
@@ -53,9 +46,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string WordCombinationHolder::toShortString() const {
+  std::string WordCombinationHolder::describe() const {
     std::ostringstream oStr;
-    oStr << describeShortKey();
+    oStr << describeKey();
 
     //
     oStr << "{";
@@ -72,7 +65,7 @@ namespace OPENTREP {
       const StringSet& lStringSet = *itWordCombination;
 
       //
-      oStr << lStringSet.toShortString();
+      oStr << lStringSet;
     }
 
     //
@@ -82,37 +75,8 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string WordCombinationHolder::toString() const {
-    std::ostringstream oStr;
-    oStr << describeKey();
-    
-    //
-    oStr << "{" << std::endl;
-
-    short idx_sublist = 0;
-    for (StringList_T::const_iterator itWordCombination = _list.begin();
-         itWordCombination != _list.end(); ++itWordCombination, ++idx_sublist) {
-      //
-      if (idx_sublist != 0) {
-        oStr << "," << std::endl;
-      }
-      
-      //
-      const StringSet& lStringSet = *itWordCombination;
-
-      //
-      oStr << lStringSet.toString();
-    }
-
-    //
-    oStr << std::endl << "}" << std::endl;
-    
-    return oStr.str();
-  }   
-
-  // //////////////////////////////////////////////////////////////////////
   void WordCombinationHolder::toStream (std::ostream& ioOut) const {
-    ioOut << toString();
+    ioOut << describe();
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -141,11 +105,9 @@ namespace OPENTREP {
            itWordCombination != lStringList.end(); ++itWordCombination) {
         const std::string& lWordCombination = *itWordCombination;
 
-        // Check whether that word combination has already been stored once.
-        StringSet_T::const_iterator itString =
-          lStringSet.find (lWordCombination);
-        if (itString == lStringSet.end()) {
-          // If not, add it to the dedicated list (STL set).
+        // Check whether the word combination should be filtered out
+        const bool isToBeAdded = Filter::shouldKeep (iPhrase, lWordCombination);
+        if (isToBeAdded == true) {
           lStringSet.insert (lWordCombination);
         }
       }

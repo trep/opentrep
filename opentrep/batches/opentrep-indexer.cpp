@@ -172,7 +172,7 @@ int main (int argc, char* argv[]) {
   std::string lLogFilename;
 
   // Xapian database name (directory of the index)
-  OPENTREP::TravelDatabaseName_T lXapianDatabaseName;
+  std::string lXapianDatabaseNameStr;
 
   // SQL database parameters
   std::string lDBUser;
@@ -183,7 +183,7 @@ int main (int argc, char* argv[]) {
                        
   // Call the command-line option parser
   const int lOptionParserStatus = 
-    readConfiguration (argc, argv, lXapianDatabaseName, lLogFilename,
+    readConfiguration (argc, argv, lXapianDatabaseNameStr, lLogFilename,
                        lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
@@ -206,6 +206,8 @@ int main (int argc, char* argv[]) {
             << std::endl;
     
   // Initialise the context
+  const OPENTREP::TravelDatabaseName_T
+    lXapianDatabaseName (lXapianDatabaseNameStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
                                               lXapianDatabaseName);
 

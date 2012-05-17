@@ -22,7 +22,30 @@ namespace OPENTREP {
    * Xapian database name, corresponding to the (potentially relative)
    * directory name (on the filesystem) where Xapian stores its index.
    */
-  typedef std::string TravelDatabaseName_T;
+  struct TravelDatabaseName_T : public std::string {
+  public:
+    explicit TravelDatabaseName_T (const std::string& iValue)
+      : std::string (iValue) {
+    }
+  };
+
+  /**
+   * IATA three-letter code (e.g., ORD).
+   */
+  struct IATACode_T : public std::string {
+  public:
+    explicit IATACode_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
+
+  /**
+   * ICAO four-letter code (e.g., KORD).
+   */
+  struct ICAOCode_T : public std::string {
+  public:
+    explicit ICAOCode_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
 
   /**
    * Xapian document ID.
@@ -30,14 +53,29 @@ namespace OPENTREP {
   typedef int XapianDocID_T;
 
   /**
-   * Xapian percentage.
+   * Geonames ID.
    */
-  typedef unsigned int MatchingPercentage_T;
+  typedef int GeonamesID_T;
 
   /**
    * Travel search query.
    */
   typedef std::string TravelQuery_T;
+
+  /**
+   * Xapian percentage.
+   */
+  typedef double MatchingPercentage_T;
+
+  /**
+   * Matching percentage for a Xapian document.
+   */
+  typedef double Percentage_T;
+
+  /**
+   * Score (e.g., matching percentage) for a document/POR (point of reference).
+   */
+  typedef double Score_T;
 
   /**
    * Number of entries in the Xapian database.
@@ -55,7 +93,7 @@ namespace OPENTREP {
   typedef std::list<Word_T> WordList_T;
 
   /**
-   * List of words.
+   * List of (black-listed) words.
    */
   typedef std::list<std::string> BlackList_T;
 
