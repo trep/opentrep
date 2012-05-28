@@ -12,6 +12,11 @@ namespace OPENTREP {
   const std::string DEFAULT_OPENTREP_SERVICE_DB_NAME = "traveldb";
 
   /**
+   * Default PageRank (e.g., 0.1% == 0.001)
+   */
+  const Percentage_T K_DEFAULT_PAGE_RANK = 0.1;
+
+  /**
    * Black list, i.e., a list of words which should not be indexed
    * and/or searched for (e.g., "airport", "international").
    */
@@ -30,5 +35,5 @@ namespace OPENTREP {
     oBL.push_back ("ferry");  oBL.push_back ("port");oBL.push_back ("harbour");
     return oBL;
   }
-  
+
 }

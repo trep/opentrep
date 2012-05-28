@@ -187,7 +187,7 @@ namespace OPENTREP {
   public:
     // /////////// Business methods /////////
     /**
-     * Extract the primary key from the matchingdocuments data.
+     * Extract the primary key from the data of the given Xapian document.
      *
      * The primary key is made of the first three words (IATA and ICAO codes,
      * as well as the Geonames ID) of the Xapian document data/content.
@@ -196,6 +196,16 @@ namespace OPENTREP {
      * @return PlaceKey& The primary key of the place/POR (point of reference).
      */
     static PlaceKey getPrimaryKey (const Xapian::Document&);
+
+    /**
+     * Extract the PageRank from the data of the given Xapian document.
+     *
+     * The PageRank is the fourth word of the Xapian document data/content.
+     *
+     * @param Xapian::Document& The Xapian document.
+     * @return Percentage_T& The PageRank of the place/POR (point of reference).
+     */
+    static Percentage_T getPageRank (const Xapian::Document&);
 
     /**
      * Retrieve the number of extra matches for the given query string,
@@ -209,7 +219,12 @@ namespace OPENTREP {
      */
     NbOfMatches_T notifyIfExtraMatch() const;
 
-    
+    /**
+     * Get the best matching weight for the full-text match.
+     */
+    Percentage_T calculateMatchingWeight() const;
+
+
   public:
     // /////////// Display support methods /////////
     /**

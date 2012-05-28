@@ -6,6 +6,7 @@
 #include <string>
 #include <list>
 // OpenTrep
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/Location.hpp>
 
 namespace OPENTREP {
@@ -15,7 +16,7 @@ namespace OPENTREP {
     : _iataCode ("AAA"), _icaoCode ("AAAA"), _geonameID (0), _faaCode ("AAA"),
       _cityCode ("AAA"), _stateCode ("NA"), _countryCode ("NA"),
       _regionCode ("NA"), _timeZoneGroup ("NA"),
-      _latitude (0), _longitude (0), _pageRank (0.1),
+      _latitude (0), _longitude (0), _pageRank (K_DEFAULT_PAGE_RANK),
       _nameList (std::list<std::string> ()),
       _originalKeywords ("NA"), _correctedKeywords ("NA"),
       _percentage (0), _editDistance (0), _allowableEditDistance (0) {

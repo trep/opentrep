@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 // OpenTrep
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/dbadaptor/DbaPlace.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -52,7 +53,8 @@ namespace soci {
     ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("timezone"));
     ioPlace.setLatitude (iPlaceValues.get<double> ("latitude"));
     ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
-    ioPlace.setPageRank (iPlaceValues.get<double> ("page_rank", 0.1));
+    ioPlace.setPageRank (iPlaceValues.get<double> ("page_rank",
+                                                   OPENTREP::K_DEFAULT_PAGE_RANK));
     ioPlace.setDocID (iPlaceValues.get<int> ("xapian_docid"));
     
     // Names

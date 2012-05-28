@@ -4,6 +4,7 @@
 // C
 #include <cassert>
 // OpenTrep BOM
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -17,7 +18,7 @@ namespace OPENTREP {
     _faaCode (""), _cityCode (""),
     _stateCode (""), _countryCode (""),
     _regionCode (""), _timeZoneGroup (""),
-    _latitude (0.0), _longitude (0.0), _pageRank (0.01),
+    _latitude (0.0), _longitude (0.0), _pageRank (K_DEFAULT_PAGE_RANK),
     _originalKeywords (""), _correctedKeywords (""), _docID (0),
     _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
@@ -78,12 +79,12 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeShortKey();
 
-    oStr << ", " << _faaCode
+    oStr << ", " << _pageRank << "%"
+         << ", " << _faaCode
          << ", " << _cityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
-         << ", " << _pageRank << "%"
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance
@@ -140,11 +141,11 @@ namespace OPENTREP {
     oStr << describeShortKey();
 
     const std::string& lCityCode = getCityCode();
-    oStr << ", " << lCityCode << ", " << _stateCode
+    oStr << ", " << _pageRank << "%"
+         << ", " << lCityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
-         << ", " << _pageRank << "%"
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance;
@@ -221,7 +222,8 @@ namespace OPENTREP {
     oStr << describeKey();
 
     const std::string& lCityCode = getCityCode();
-    oStr << ", FAA code = " << _faaCode
+    oStr << ", page rank = " << _pageRank << "%"
+         << ", FAA code = " << _faaCode
          << ", city code = " << lCityCode
          << ", state code = " << _stateCode
          << ", country code = " << _countryCode
@@ -229,7 +231,6 @@ namespace OPENTREP {
          << ", time zone group = " << _timeZoneGroup
          << ", latitude = " << _latitude
          << ", longitude = " << _longitude
-         << ", page rank = " << _pageRank << "%"
          << ", original keywords = " << _originalKeywords
          << ", corrected keywords = " << _correctedKeywords
          << ", docID = " << _docID

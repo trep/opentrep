@@ -9,7 +9,15 @@
 
 namespace OPENTREP {
 
-  /** Default "black list". */
+
+  /**
+   * Default PageRank (e.g., 0.1% == 0.001)
+   */
+  extern const Percentage_T K_DEFAULT_PAGE_RANK;
+
+  /**
+   * Default "black list".
+   */
   struct ListGenerator {
     static BlackList_T createBlackList();
   };
