@@ -44,8 +44,10 @@ namespace OPENTREP {
          alternate_name1, alternate_name2, alternate_name3, 
          alternate_name4, alternate_name5, alternate_name6, 
          alternate_name7, alternate_name8, alternate_name9, 
-         alternate_name10 
-         from place_details rpd, place_names pn 
+         alternate_name10,
+         page_rank
+         from place_names as pn, place_details as rpd 
+         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.iata_code = pn.iata_code
       */
 
@@ -63,8 +65,10 @@ namespace OPENTREP {
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10 "
-         << "from place_details rpd, place_names pn "
+         << "alternate_name10, "
+         << "page_rank "
+         << "from place_names as pn, place_details as rpd "
+         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.iata_code = pn.iata_code", soci::into (ioPlace));
 
       // Execute the SQL query
@@ -102,8 +106,10 @@ namespace OPENTREP {
          alternate_name1, alternate_name2, alternate_name3,
          alternate_name4, alternate_name5, alternate_name6,
          alternate_name7, alternate_name8, alternate_name9,
-         alternate_name10 
-         from place_details rpd, place_names pn 
+         alternate_name10,
+         page_rank
+         from place_names as pn, place_details as rpd 
+         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where latitude >= :lower_latitude
            and latitude <= :upper_latitude
            and longitude >= :lower_longitude
@@ -131,13 +137,15 @@ namespace OPENTREP {
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10 "
-         << "from place_details rpd, place_names pn "
+         << "alternate_name10, "
+         << "page_rank "
+         << "from place_names as pn, place_details as rpd "
+         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where latitude >= :lower_latitude "
          << "  and latitude <= :upper_latitude "
          << "  and longitude >= :lower_longitude "
          << "  and longitude <= :upper_longitude "
-         << "  and pn.iata_code = rpd.iata_code",
+         << "  and rpd.iata_code = pn.iata_code",
          soci::into (lPlace), soci::use (lLowerBoundLatitude),
          soci::use (lUpperBoundLatitude), soci::use (lLowerBoundLongitude),
          soci::use (lUpperBoundLongitude));
@@ -179,12 +187,14 @@ namespace OPENTREP {
          alternate_name1, alternate_name2, alternate_name3,
          alternate_name4, alternate_name5, alternate_name6,
          alternate_name7, alternate_name8, alternate_name9,
-         alternate_name10 
-         from place_details rpd, place_names pn 
+         alternate_name10,
+         page_rank
+         from place_names as pn, place_details as rpd 
+         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.iata_code = iIataCode
            and rpd.icao_code = iIcaoCode
            and rpd.geonameid = iGeonamesID
-           and pn.iata_code = rpd.iata_code;
+           and rpd.iata_code = pn.iata_code 
       */
 
       ioSelectStatement =
@@ -201,12 +211,14 @@ namespace OPENTREP {
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10 "
-         << "from place_details rpd, place_names pn "
+         << "alternate_name10, "
+         << "page_rank "
+         << "from place_names as pn, place_details as rpd "
+         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.iata_code = :place_iata_code "
-         << "and rpd.icao_code = :place_icao_code "
-         << "and rpd.geonameid = :place_geonameid "
-         << "and pn.iata_code = rpd.iata_code",
+         << "  and rpd.icao_code = :place_icao_code "
+         << "  and rpd.geonameid = :place_geonameid "
+         << "  and rpd.iata_code = pn.iata_code",
          soci::into (ioPlace), soci::use (iIataCode), soci::use (iIcaoCode),
          soci::use (iGeonamesID));
 
@@ -245,10 +257,13 @@ namespace OPENTREP {
          alternate_name1, alternate_name2, alternate_name3,
          alternate_name4, alternate_name5, alternate_name6,
          alternate_name7, alternate_name8, alternate_name9,
-         alternate_name10 
-         from place_details rpd, place_names pn 
+         alternate_name10,
+         page_rank
+         from place_names as pn, place_details as rpd 
+         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.xapian_docid = DocID
-           and pn.iata_code = rpd.iata_code;
+           and rpd.iata_code = pn.iata_code
+           and rpd.iata_code = pr.iata_code
       */
 
       ioSelectStatement =
@@ -265,10 +280,13 @@ namespace OPENTREP {
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10 "
-         << "from place_details rpd, place_names pn "
+         << "alternate_name10, "
+         << "page_rank "
+         << "from place_names as pn, place_details as rpd "
+         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.xapian_docid = :xapian_docid "
-         << "and pn.iata_code = rpd.iata_code",
+         << "  and rpd.iata_code = pn.iata_code "
+         << "  and rpd.iata_code = pr.iata_code",
          soci::into (ioPlace), soci::use (iDocID));
 
       // Execute the SQL query

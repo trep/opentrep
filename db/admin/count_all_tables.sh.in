@@ -55,7 +55,7 @@ function countElements() {
 }
 
 #
-TABLES="place_details place_names"
+TABLES="place_details place_names airport_pageranked"
 
 # Count rows
 for table_name in ${TABLES}

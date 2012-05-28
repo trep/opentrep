@@ -64,6 +64,20 @@ create table place_names (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
+-- Structure for the table storing airport importance (PageRank-ed thanks to
+-- shcedule).
+-- Note: an more up-to-date version may be available in the OpenTravelData
+-- project:
+-- https://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/create_ori_tables.sql#L205
+--
+drop table if exists airport_pageranked;
+create table airport_pageranked (
+ iata_code char(3) NOT NULL,
+ page_rank decimal(15,12) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--
 --
 --
 set character_set_client = @saved_cs_client;

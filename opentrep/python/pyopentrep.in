@@ -171,10 +171,11 @@ def interpretFromJSON (jsonFormattedResult):
 	for location in parsedStruct['locations']:
 		interpretedString += location['iata_code'] + '-' 
 		interpretedString += location['icao_code'] + '-' 
-		interpretedString += location['geonames_id'] + '/' 
+		interpretedString += location['geonames_id'] + ' ' 
+		interpretedString += '(' + location['page_rank'] + '%) / '
 		interpretedString += location['city_code'] + ": "
 		interpretedString += location['lat'] + ' ' 
-		interpretedString += location['lon'] + ' '
+		interpretedString += location['lon'] + '; '
 
 	#
 	return interpretedString

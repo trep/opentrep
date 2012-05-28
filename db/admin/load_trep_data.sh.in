@@ -93,6 +93,10 @@ loadTableIntoDB
 DB_TABLE="place_names"
 loadTableIntoDB
 
+# Load airport_pageranked data into the table
+DB_TABLE="airport_pageranked"
+loadTableIntoDB
+
 # Indexes
 SQL_FILE="@OPENTREP_DB_DATA_DIR@/create_trep_indexes.sql"
 createIndexes

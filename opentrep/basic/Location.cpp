@@ -15,7 +15,7 @@ namespace OPENTREP {
     : _iataCode ("AAA"), _icaoCode ("AAAA"), _geonameID (0), _faaCode ("AAA"),
       _cityCode ("AAA"), _stateCode ("NA"), _countryCode ("NA"),
       _regionCode ("NA"), _timeZoneGroup ("NA"),
-      _latitude (0), _longitude (0),
+      _latitude (0), _longitude (0), _pageRank (0.1),
       _nameList (std::list<std::string> ()),
       _originalKeywords ("NA"), _correctedKeywords ("NA"),
       _percentage (0), _editDistance (0), _allowableEditDistance (0) {
@@ -30,6 +30,7 @@ namespace OPENTREP {
       _regionCode (iLocation._regionCode),
       _timeZoneGroup (iLocation._timeZoneGroup),
       _latitude (iLocation._latitude), _longitude (iLocation._longitude),
+      _pageRank (iLocation._pageRank),
       _nameList (iLocation._nameList),
       _originalKeywords (iLocation._originalKeywords),
       _correctedKeywords (iLocation._correctedKeywords),
@@ -51,6 +52,7 @@ namespace OPENTREP {
                       const std::string& iRegionCode, 
                       const std::string& iTimeZoneGroup, 
                       const double iLatitude, const double iLongitude,
+                      const double iPageRank,
                       const LocationNameList_T& iNameList,
                       const std::string& iOriginalKeywords,
                       const std::string& iCorrectedKeywords,
@@ -62,6 +64,7 @@ namespace OPENTREP {
       _countryCode (iCountryCode), _regionCode (iRegionCode),
       _timeZoneGroup (iTimeZoneGroup),
       _latitude (iLatitude), _longitude (iLongitude),
+      _pageRank (iPageRank),
       _nameList (iNameList), _originalKeywords (iOriginalKeywords),
       _correctedKeywords (iCorrectedKeywords),
       _percentage (iPercentage), _editDistance (iEditDistance),
@@ -89,8 +92,9 @@ namespace OPENTREP {
          << ", " << _stateCode << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
+         << ", " << _pageRank << "%"
          << ", " << _originalKeywords << ", " << _correctedKeywords
-         << ", " << _percentage
+         << ", " << _percentage << "%"
          << ", " << _editDistance << ", " << _allowableEditDistance;
       
     return oStr.str();
@@ -109,7 +113,7 @@ namespace OPENTREP {
       oStr << " with " << _alternateLocationList.size()
 	   << " alternate match(es)";
     }
-      
+
     return oStr.str();
   }
     
@@ -135,7 +139,7 @@ namespace OPENTREP {
       for (LocationList_T::const_iterator itLoc = _extraLocationList.begin();
 	   itLoc != _extraLocationList.end(); ++itLoc, ++idx) {
 	if (idx != 0) {
-	  oStr << ", ";
+	  oStr << ". ";
 	}
 	const Location& lExtraLocation = *itLoc;
 	oStr << lExtraLocation.toShortString();
@@ -150,7 +154,7 @@ namespace OPENTREP {
 	     _alternateLocationList.begin();
 	   itLoc != _alternateLocationList.end(); ++itLoc, ++idx) {
 	if (idx != 0) {
-	  oStr << ", ";
+	  oStr << ". ";
 	}
 	const Location& lAlternateLocation = *itLoc;
 	oStr << lAlternateLocation.toShortString();

@@ -17,8 +17,8 @@ namespace OPENTREP {
     _faaCode (""), _cityCode (""),
     _stateCode (""), _countryCode (""),
     _regionCode (""), _timeZoneGroup (""),
-    _latitude (0.0), _longitude (0.0), _originalKeywords (""),
-    _correctedKeywords (""), _docID (0),
+    _latitude (0.0), _longitude (0.0), _pageRank (0.01),
+    _originalKeywords (""), _correctedKeywords (""), _docID (0),
     _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
   
@@ -31,6 +31,7 @@ namespace OPENTREP {
     _regionCode (iPlace._regionCode),
     _timeZoneGroup (iPlace._timeZoneGroup),
     _latitude (iPlace._latitude), _longitude (iPlace._longitude),
+    _pageRank (iPlace._pageRank),
     _nameMatrix (iPlace._nameMatrix),
     _originalKeywords (iPlace._originalKeywords),
     _correctedKeywords (iPlace._correctedKeywords),
@@ -82,6 +83,7 @@ namespace OPENTREP {
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
+         << ", " << _pageRank << "%"
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance
@@ -129,9 +131,11 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   std::string Place::toShortString() const {
-    /* When the city code is empty, it means that the place is a city and
-       not an airport. The city code is thus the same as the place code
-       itself. */
+    /**
+     * When the city code is empty, it means that the place is a city and
+     * not an airport. The city code is thus the same as the place code
+     * itself.
+     */
     std::ostringstream oStr;
     oStr << describeShortKey();
 
@@ -140,6 +144,7 @@ namespace OPENTREP {
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
+         << ", " << _pageRank << "%"
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance;
@@ -224,6 +229,7 @@ namespace OPENTREP {
          << ", time zone group = " << _timeZoneGroup
          << ", latitude = " << _latitude
          << ", longitude = " << _longitude
+         << ", page rank = " << _pageRank << "%"
          << ", original keywords = " << _originalKeywords
          << ", corrected keywords = " << _correctedKeywords
          << ", docID = " << _docID
@@ -396,7 +402,7 @@ namespace OPENTREP {
                         _key.getGeonamesID(), _faaCode, lCityCode,
                         _stateCode, _countryCode,
                         _regionCode, _timeZoneGroup,
-                        _latitude, _longitude, lNameList,
+                        _latitude, _longitude, _pageRank, lNameList,
                         _originalKeywords, _correctedKeywords,
                         _percentage, _editDistance, _allowableEditDistance);
 

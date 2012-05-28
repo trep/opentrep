@@ -126,6 +126,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the PageRank/importance. 
+     */
+    const double& getPageRank() const {
+      return _pageRank;
+    }
+    
+    /**
      * Get the original keywords.
      */
     std::string getOriginalKeywords() const {
@@ -313,6 +320,13 @@ namespace OPENTREP {
      */
     void setLongitude (const double& iLongitude) {
       _longitude = iLongitude;
+    }
+    
+    /**
+     * Set the PageRank.
+     */
+    void setPageRank (const double& iPageRank) {
+      _pageRank = iPageRank;
     }
     
     /**
@@ -532,6 +546,11 @@ namespace OPENTREP {
      * Geographical longitude (e.g., -87.904842).
      */
     double _longitude;
+
+    /**
+     * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
+     */
+    double _pageRank;
 
     /**
      * List of names, for each given language.

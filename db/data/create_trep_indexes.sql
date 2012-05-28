@@ -51,3 +51,9 @@ ALTER TABLE place_names ADD PRIMARY KEY (`language_code`, `iata_code`);
 
 ALTER TABLE place_names ADD INDEX (`iata_code`);
 
+--
+-- Index structure for table airport importance
+--
+-- iata_code, page_rank
+
+ALTER TABLE airport_pageranked ADD PRIMARY KEY (`iata_code`);

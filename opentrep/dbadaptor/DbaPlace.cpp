@@ -27,7 +27,8 @@ namespace soci {
       alternate_name1, alternate_name2, alternate_name3,
       alternate_name4, alternate_name5, alternate_name6,
       alternate_name7, alternate_name8, alternate_name9,
-      alternate_name10 
+      alternate_name10,
+      page_rank
     */
     // The IATA code will be set to the default value (empty string)
     // when the column is null
@@ -51,6 +52,7 @@ namespace soci {
     ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("timezone"));
     ioPlace.setLatitude (iPlaceValues.get<double> ("latitude"));
     ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
+    ioPlace.setPageRank (iPlaceValues.get<double> ("page_rank", 0.1));
     ioPlace.setDocID (iPlaceValues.get<int> ("xapian_docid"));
     
     // Names
@@ -144,6 +146,7 @@ namespace soci {
     ioPlaceValues.set ("timezone", iPlace.getTimeZoneGroup());
     ioPlaceValues.set ("latitude", iPlace.getLatitude());
     ioPlaceValues.set ("longitude", iPlace.getLongitude());
+    ioPlaceValues.set ("page_rank", iPlace.getPageRank());
     ioPlaceValues.set ("xapian_docid", iPlace.getDocID());
     ioIndicator = i_ok;
   }
