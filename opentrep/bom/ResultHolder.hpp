@@ -7,7 +7,6 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
-#include <opentrep/bom/DocumentList.hpp>
 #include <opentrep/bom/ResultList.hpp>
 
 // Forward declarations
@@ -16,9 +15,6 @@ namespace Xapian {
 }
 
 namespace OPENTREP {
-
-  // Forward declarations
-  struct StringSet;
 
   /**
    * @brief Class wrapping functions on a list of Result objects.
@@ -43,36 +39,8 @@ namespace OPENTREP {
 
 
   public:
-    // /////////// Business methods /////////
-    /**
-     * Retrieve the list of documents matching the query string.
-     *
-     * @param DocumentList_T& List of matched documents by the query string.
-     * @param WordList_T& List of non-matched words of the query string.
-     */
-    void searchString (DocumentList_T&, WordList_T&) const;
+    // /////////// Business methods ///////////
 
-
-  private:
-    /**
-     * Retrieve the document best matching the query string.
-     *
-     * @param TravelQuery_T& The partial query string.
-     * @param MatchingDocument& The set of matching Xapian documents (if found).
-     * @return std::string The matching string, if any. It can be empty when
-     *         there is no match.
-     */
-    std::string searchString (const TravelQuery_T&, MatchingDocuments&) const;
-
-    /**
-     * Retrieve the document best matching the query string.
-     *
-     * @param DocumentList_T& List of matched documents by the query string.
-     * @param const StringSet& The set of strings for the current partition.
-     * @return double Total matching percentage, defined as the product of the
-     *         matching percentages of all the strings of the set.
-     */
-    Percentage_T searchString (DocumentList_T&, const StringSet&) const;
 
 
   public:

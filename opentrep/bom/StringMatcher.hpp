@@ -9,7 +9,7 @@
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
-#include <opentrep/bom/MatchingDocuments.hpp>
+#include <opentrep/bom/DocumentList.hpp>
 
 // Forward declarations
 namespace Xapian {
@@ -19,6 +19,9 @@ namespace Xapian {
 }
 
 namespace OPENTREP {
+
+  // Forward declarations
+  struct StringSet;
 
   /**
    * @brief Class grouping a few utility methods.
@@ -30,24 +33,25 @@ namespace OPENTREP {
    */
   class StringMatcher : public BomAbstract {
   public:
-    // ///////////////////////////////////////////////
+    // /////////// Business methods /////////
     /**
-     * Search, within the Xapian database, for occurrences of the
-     * words of the search string.
+     * For all the elements (StringSet) of the string partitions, derived
+     * from the given travel query, perform a Xapian-based full-text match.
+     * Each Xapian-based full-text match gives (potentially) a full set of
+     * matches, some with the highest matching percentage and some with a
+     * lower percentage.
      *
-     * The algorithm is much simpler than the above one.
-     *
-     * @param Xapian::MSet& The Xapian matching set. It can be empty.
-     * @param const TravelQuery_T& The query string.
-     * @param MatchingDocuments& The set of matching documents, if any.
+     * @param TravelQuery_T& The query string.
+     * @param DocumentList_T& List of matched documents for the query string.
+     * @param WordList_T& List of non-matched words of the query string.
      * @param const Xapian::Database& The Xapian index/database.
-     * @return std::string The query string, potentially corrected,
-     *         which has yielded matches.
      */
-    static std::string searchString (Xapian::MSet&, const TravelQuery_T&,
-                                     MatchingDocuments&,
-                                     const Xapian::Database&);
-    
+    static void searchString (const TravelQuery_T&, DocumentList_T&,
+                              WordList_T&, const Xapian::Database&);
+
+
+  public:
+    // ///////////////////////////////////////////////
     /**
      * Extract the best matching Xapian document.
      *

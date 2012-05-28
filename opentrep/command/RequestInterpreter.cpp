@@ -26,9 +26,12 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  void createResults (const DocumentList_T& iDocumentList,
-                      const Xapian::Database& iXapianDatabase,
-                      ResultHolder& ioResultHolder) {
+  ResultHolder& createResults (const TravelQuery_T& iQueryString,
+                               const DocumentList_T& iDocumentList,
+                               const Xapian::Database& iXapianDatabase) {
+    // Create a ResultHolder BOM instance
+    ResultHolder& oResultHolder =
+      FacResultHolder::instance().create (iQueryString, iXapianDatabase);
 
     // Back-up the (retrieved) matching Xapian documents into still
     // to-be-created Result objects.
@@ -47,16 +50,19 @@ namespace OPENTREP {
       
       // Add the Result object (holding the list of matching
       // documents) to the dedicated list.
-      FacResultHolder::initLinkWithResult (ioResultHolder, lResult);
+      FacResultHolder::initLinkWithResult (oResultHolder, lResult);
     }
     
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
                         << "========================================="
                         << std::endl << "Matching list: "  << std::endl
-                        << ioResultHolder.toString()
+                        << oResultHolder.toString()
                         << "========================================="
                         << std::endl << std::endl);
+
+    //
+    return oResultHolder;
   }
 
   /** Helper function. */
@@ -284,25 +290,28 @@ namespace OPENTREP {
     // Make the database
     Xapian::Database lXapianDatabase (iTravelDatabaseName);
 
-    // Create a ResultHolder object
-    ResultHolder& lResultHolder =
-      FacResultHolder::instance().create (iTravelQuery, lXapianDatabase);
-
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
                         << "=========================================");
       
     // Main algorithm
     DocumentList_T lDocumentList;
-    lResultHolder.searchString (lDocumentList, ioWordList);
+    StringMatcher::searchString (iTravelQuery, lDocumentList, ioWordList,
+                                 lXapianDatabase);
 
-    /** Create the list of Result objects corresponding to the list
-        of documents. */
-    createResults (lDocumentList, lXapianDatabase, lResultHolder);
+    /**
+     * Create the list of Result objects corresponding to the list
+     * of documents.
+     */
+    // First, create a ResultHolder object
+    ResultHolder& lResultHolder =
+      createResults (iTravelQuery, lDocumentList, lXapianDatabase);
 
-    /** Create the list of Place objects, for each of which a
-        look-up is made in the SQL database (e.g., MySQL or Oracle)
-        to retrieve complementary data. */
+    /**
+     * Create the list of Place objects, for each of which a
+     * look-up is made in the SQL database (e.g., MySQL or Oracle)
+     * to retrieve complementary data.
+     */
     createPlaces (lResultHolder, ioSociSession, lPlaceHolder);
       
     // DEBUG
@@ -313,9 +322,11 @@ namespace OPENTREP {
                         << "========================================="
                         << std::endl);
 
-    /** Create the list of Location structures, which are light copies
-        of the Place objects. Those (Location) structures are passed
-        back to the caller of the service. */
+    /**
+     * Create the list of Location structures, which are light copies
+     * of the Place objects. Those (Location) structures are passed
+     * back to the caller of the service.
+     */
     lPlaceHolder.createLocations (ioLocationList);
     oNbOfMatches = ioLocationList.size();
     
