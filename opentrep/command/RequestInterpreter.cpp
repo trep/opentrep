@@ -8,6 +8,8 @@
 #include <vector>
 #include <exception>
 // OpenTrep
+#include <opentrep/bom/Filter.hpp>
+#include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/ResultCombination.hpp>
 #include <opentrep/bom/ResultHolder.hpp>
@@ -123,14 +125,6 @@ namespace OPENTREP {
   void createPlaces (const ResultCombination& iResultCombination,
                      soci::session& ioSociSession, PlaceHolder& ioPlaceHolder) {
     
-    //
-    const bool hasFullTextMatched = iResultCombination.hasFullTextMatched();
-
-    if (hasFullTextMatched == false) {
-      return;
-    }
-    assert (hasFullTextMatched == true);
-
     // Retrieve the best matching ResultHolder object.
     const ResultHolder& lResultHolder =
       iResultCombination.getBestMatchingResultHolder();    
@@ -142,6 +136,16 @@ namespace OPENTREP {
       // Retrieve the result object
       const Result* lResult_ptr = *itResult;
       assert (lResult_ptr != NULL);
+
+      /**
+       * When there has been no full-text match, the Result object exists,
+       * but, by construction, it does not correspond to any Xapian document.
+       */
+      const bool hasFullTextMatched = lResult_ptr->hasFullTextMatched();
+      if (hasFullTextMatched == false) {
+        continue;
+      }
+      assert (hasFullTextMatched == true);
 
       // Retrieve the matching document
       const MatchingDocuments& lMatchingDocuments =
@@ -289,6 +293,10 @@ namespace OPENTREP {
     // Catch any thrown Xapian::Error exceptions
     try {
       
+      // Set of unknown words (just to eliminate the duplicates)
+      WordSet_T lWordSet;
+
+      // First, calculate all the partitions of the initial travel query
       StringPartition lStringPartition (iTravelQuery);
 
       // DEBUG
@@ -328,13 +336,36 @@ namespace OPENTREP {
           // Perform the Xapian-based full-text match: the set of
           // matching documents is filled.
           MatchingDocuments lMatchingDocuments (lQueryString);
-          StringMatcher::fullTextMatch (lQueryString, lMatchingDocuments,
-                                        iDatabase);
+          const std::string& lMatchedString =
+            StringMatcher::fullTextMatch (lQueryString, lMatchingDocuments,
+                                          iDatabase);
 
           // Create a Result object, and store the full-text matching
           // documents in it.
           OPENTREP::addResult (lQueryString, iDatabase, lMatchingDocuments,
                                lResultHolder);
+
+          if (lMatchedString.empty() == true) {
+            /**
+             * There was no full-text match. So, add the string to the list
+             * of unknown words, only when there is a single word. Otherwise,
+             * the string is simply discarded.
+             */
+            WordList_T lQueryStringWordList;
+            WordHolder::tokeniseStringIntoWordList (lQueryString,
+                                                    lQueryStringWordList);
+            if (lQueryStringWordList.size() == 1) {
+              // Add the unknown word, only when that latter has not already
+              // been stored, and when it is not black-listed.
+              const bool shouldBeKept = Filter::shouldKeep ("", lQueryString);
+              
+              WordSet_T::const_iterator itWord = lWordSet.find (lQueryString);
+              if (shouldBeKept == true && itWord == lWordSet.end()) {
+                lWordSet.insert (lQueryString);
+                ioWordList.push_back (lQueryString);
+              }
+            }
+          }
         }
 
         // DEBUG

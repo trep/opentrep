@@ -72,6 +72,11 @@ namespace OPENTREP {
   Percentage_T ResultHolder::calculateMatchingWeights() const {
     Percentage_T oOverallMatchingPercentage = 100.0;
 
+    // When there is no result, the weight is obviously 0%
+    if (_resultList.empty() == true) {
+      oOverallMatchingPercentage = 0.0;
+    }
+
     // Calculate the matching percentage of all the partitions
     for (ResultList_T::const_iterator itResult = _resultList.begin();
          itResult != _resultList.end(); ++itResult) {

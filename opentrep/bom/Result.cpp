@@ -7,6 +7,7 @@
 #include <sstream>
 // OpenTREP
 #include <opentrep/basic/float_utils.hpp>
+#include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/StringMatcher.hpp>
 #include <opentrep/bom/Result.hpp>
@@ -94,7 +95,13 @@ namespace OPENTREP {
       WordHolder::tokeniseStringIntoWordList (_queryString, lWordList);
       NbOfWords_T nbOfWords = lWordList.size();
 
-      if (nbOfWords == 1) {
+      /**
+       * Check whether that word should be filtered out (e.g., less than
+       * 3 characters, words like 'international', 'airport', etc).
+       */
+      const bool shouldBeKept = Filter::shouldKeep ("", _queryString);
+
+      if (nbOfWords == 1 && shouldBeKept == true) {
         /**
          * There is no full-text match for that single-word query. That is
          * therefore an unknown word. The percentage is set to 100%, though,
@@ -104,12 +111,14 @@ namespace OPENTREP {
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
-                           << "' does not match, but single-word string, i.e., "
+                           << "' does not match, but non black-listed "
+                           << "single-word string, i.e., "
                            << oPercentage << "%");
 
       } else {
         /**
-         * There is no full-text match for that multiple-word query.
+         * There is no full-text match for that query, which is made either
+         * of several words or of a single black-listed word (e.g., 'airport').
          * The corresponding percentage is set to something low (5%),
          * in order to significantly decrease the overall matching
          * percentage. The corresponding string set will therefore have
@@ -119,7 +128,9 @@ namespace OPENTREP {
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
-                           << "' does not match, i.e., " << oPercentage << "%");
+                           << "' does not match, and either multiple-word "
+                           << "string or black-listed i.e., "
+                           << oPercentage << "%");
       }
     }
 
