@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_RESULTLIST_HPP
-#define __OPENTREP_BOM_RESULTLIST_HPP
+#ifndef __OPENTREP_BOM_RESULTHOLDERLIST_HPP
+#define __OPENTREP_BOM_RESULTHOLDERLIST_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -10,10 +10,12 @@
 namespace OPENTREP {
 
   // Forward declarations
-  class Result;
+  class ResultHolder;
 
-  /** List of result objects. */
-  typedef std::list<Result*> ResultList_T;
+  /**
+   * List of ResultHolder objects.
+   */
+  typedef std::list<ResultHolder*> ResultHolderList_T;
 
 }
-#endif // __OPENTREP_BOM_RESULTLIST_HPP
+#endif // __OPENTREP_BOM_RESULTHOLDERLIST_HPP

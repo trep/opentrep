@@ -62,6 +62,13 @@ namespace OPENTREP {
     }
 
     /**
+     * State whether there has been a full-text match.
+     */
+    bool hasFullTextMatched() const {
+      return _hasFullTextMatched;
+    }
+
+    /**
      * Get the matching Xapian document.
      */
     const Xapian::Document& getXapianDocument() const {
@@ -123,6 +130,13 @@ namespace OPENTREP {
       _correctedQueryString = iCorrectedQueryString;
     }
     
+    /**
+     * Set whether there has been a full-text match.
+     */
+    void setHasFullTextMatched (const bool iHasFullTextMatched) {
+      _hasFullTextMatched = iHasFullTextMatched;
+    }
+
     /**
      * Set the matching Xapian document.
      */
@@ -230,6 +244,11 @@ namespace OPENTREP {
   public:
     // //////////////// Constructors and Destructors /////////////
     /**
+     * Main constructor.
+     */
+    MatchingDocuments (const TravelQuery_T&);
+
+    /**
      * Default constructor; default implementation.
      */
     //MatchingDocuments();
@@ -256,6 +275,14 @@ namespace OPENTREP {
      * Query string with which a Xapian full text search is done.
      */
     TravelQuery_T _correctedQueryString;
+
+    /**
+     * Whether or not there has been a full-text match.
+     *
+     * When there has been a full-text match, the set of documents contains
+     * those matches. Otherwise, the set of documents is empty.
+     */
+    bool _hasFullTextMatched;
 
     /**
      * Matching percentage, as returned by the Xapian full text search.

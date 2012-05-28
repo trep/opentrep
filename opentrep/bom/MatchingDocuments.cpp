@@ -15,7 +15,12 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  MatchingDocuments::~MatchingDocuments () {
+  MatchingDocuments::MatchingDocuments (const TravelQuery_T& iQueryString)
+    : _queryString (iQueryString), _hasFullTextMatched (false) {
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  MatchingDocuments::~MatchingDocuments() {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -34,6 +39,12 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeKey();
     
+    if (_hasFullTextMatched == false) {
+      oStr << "{ no match }" << std::endl;
+      return oStr.str();
+    }
+    assert (_hasFullTextMatched == true);
+
     const Xapian::docid& lDocID = _document.get_docid();
     oStr << " => Document ID " << lDocID << " matching at " << _percentage
          << "% (edit distance of " << _editDistance << " over "
@@ -92,7 +103,7 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey MatchingDocuments::getPrimaryKey (const Xapian::Document& iDocument) {
+  PlaceKey MatchingDocuments::getPrimaryKey(const Xapian::Document& iDocument) {
     // Retrieve the Xapian document data
     const std::string& lDocumentData = iDocument.get_data();
 

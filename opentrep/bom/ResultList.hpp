@@ -12,7 +12,9 @@ namespace OPENTREP {
   // Forward declarations
   class Result;
 
-  /** List of result objects. */
+  /**
+   * List of Result objects.
+   */
   typedef std::list<Result*> ResultList_T;
 
 }

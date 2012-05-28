@@ -9,12 +9,15 @@
 #include <exception>
 // OpenTrep
 #include <opentrep/bom/Place.hpp>
+#include <opentrep/bom/ResultCombination.hpp>
 #include <opentrep/bom/ResultHolder.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/bom/PlaceHolder.hpp>
+#include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/StringMatcher.hpp>
 #include <opentrep/factory/FacPlaceHolder.hpp>
 #include <opentrep/factory/FacPlace.hpp>
+#include <opentrep/factory/FacResultCombination.hpp>
 #include <opentrep/factory/FacResultHolder.hpp>
 #include <opentrep/factory/FacResult.hpp>
 #include <opentrep/command/DBManager.hpp>
@@ -25,44 +28,26 @@
 
 namespace OPENTREP {
 
+  /** Helper function. */
   // //////////////////////////////////////////////////////////////////////
-  ResultHolder& createResults (const TravelQuery_T& iQueryString,
-                               const DocumentList_T& iDocumentList,
-                               const Xapian::Database& iXapianDatabase) {
-    // Create a ResultHolder BOM instance
-    ResultHolder& oResultHolder =
-      FacResultHolder::instance().create (iQueryString, iXapianDatabase);
-
+  void addResult (const TravelQuery_T& iQueryString,
+                  const Xapian::Database& iXapianDatabase,
+                  const MatchingDocuments& iMatchingDocuments,
+                  ResultHolder& ioResultHolder) {
     // Back-up the (retrieved) matching Xapian documents into still
     // to-be-created Result objects.
-    for (DocumentList_T::const_iterator itDoc = iDocumentList.begin();
-         itDoc != iDocumentList.end(); ++itDoc) {
-      // Retrieve both the Xapian document object and the corresponding
-      // matching percentage (most of the time, it is 100%)
-      const MatchingDocuments& lMatchingDocuments = *itDoc;
-      
-      // Create a Result object
-      Result& lResult = FacResult::instance().create (iXapianDatabase);
-      
-      // Fill the Result object with both the corresponding Document object
-      // and its associated query string
-      lResult.setMatchingDocument (lMatchingDocuments);
-      
-      // Add the Result object (holding the list of matching
-      // documents) to the dedicated list.
-      FacResultHolder::initLinkWithResult (oResultHolder, lResult);
-    }
-    
-    // DEBUG
-    OPENTREP_LOG_DEBUG (std::endl
-                        << "========================================="
-                        << std::endl << "Matching list: "  << std::endl
-                        << oResultHolder.toString()
-                        << "========================================="
-                        << std::endl << std::endl);
 
-    //
-    return oResultHolder;
+    // Create a Result object
+    Result& lResult = FacResult::instance().create (iQueryString,
+                                                    iXapianDatabase);
+      
+    // Fill the Result object with both the corresponding Document object
+    // and its associated query string
+    lResult.setMatchingDocument (iMatchingDocuments);
+    
+    // Add the Result object (holding the list of matching
+    // documents) to the dedicated list.
+    FacResultHolder::initLinkWithResult (ioResultHolder, lResult);
   }
 
   /** Helper function. */
@@ -135,11 +120,23 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void createPlaces (const ResultHolder& iResultHolder,
+  void createPlaces (const ResultCombination& iResultCombination,
                      soci::session& ioSociSession, PlaceHolder& ioPlaceHolder) {
     
+    //
+    const bool hasFullTextMatched = iResultCombination.hasFullTextMatched();
+
+    if (hasFullTextMatched == false) {
+      return;
+    }
+    assert (hasFullTextMatched == true);
+
+    // Retrieve the best matching ResultHolder object.
+    const ResultHolder& lResultHolder =
+      iResultCombination.getBestMatchingResultHolder();    
+
     // Browse the list of result objects
-    const ResultList_T& lResultList = iResultHolder.getResultList();
+    const ResultList_T& lResultList = lResultHolder.getResultList();
     for (ResultList_T::const_iterator itResult = lResultList.begin();
          itResult != lResultList.end(); ++itResult) {
       // Retrieve the result object
@@ -271,6 +268,110 @@ namespace OPENTREP {
     }
   }
   
+  /**
+   * For all the elements (StringSet) of the string partitions, derived
+   * from the given travel query, perform a Xapian-based full-text match.
+   * Each Xapian-based full-text match gives (potentially) a full set of
+   * matches, some with the highest matching percentage and some with a
+   * lower percentage.
+   *
+   * @param TravelQuery_T& The query string.
+   * @param const Xapian::Database& The Xapian index/database.
+   * @param ResultHolder& List of results.
+   * @param WordList_T& List of non-matched words of the query string.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void searchString (const TravelQuery_T& iTravelQuery,
+                     const Xapian::Database& iDatabase,
+                     ResultCombination& ioResultCombination,
+                     WordList_T& ioWordList) {
+
+    // Catch any thrown Xapian::Error exceptions
+    try {
+      
+      StringPartition lStringPartition (iTravelQuery);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("+++++++++++++++++++++");
+      OPENTREP_LOG_DEBUG ("Travel query: `" << iTravelQuery << "'");
+      OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
+
+      // Browse the partitions
+      for (StringPartition::StringPartition_T::const_iterator itSet =
+             lStringPartition._partition.begin();
+           itSet != lStringPartition._partition.end(); ++itSet) {
+        const StringSet& lStringSet = *itSet;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("  ==========");
+        OPENTREP_LOG_DEBUG ("  String set: " << lStringSet);
+
+        // Create a ResultHolder object.
+        ResultHolder& lResultHolder =
+          FacResultHolder::instance().create (lStringSet.describe(), iDatabase);
+
+        // Add the ResultHolder object to the dedicated list.
+        FacResultCombination::initLinkWithResultHolder (ioResultCombination,
+                                                        lResultHolder);
+
+        // Browse through all the word combinations of the partition
+        for (StringSet::StringSet_T::const_iterator itString =
+               lStringSet._set.begin();
+             itString != lStringSet._set.end(); ++itString) {
+          //
+          const std::string lQueryString (*itString);
+
+          // DEBUG
+          OPENTREP_LOG_DEBUG ("    --------");
+          OPENTREP_LOG_DEBUG ("    Query string: " << lQueryString);
+
+          // Perform the Xapian-based full-text match: the set of
+          // matching documents is filled.
+          MatchingDocuments lMatchingDocuments (lQueryString);
+          StringMatcher::fullTextMatch (lQueryString, lMatchingDocuments,
+                                        iDatabase);
+
+          // Create a Result object, and store the full-text matching
+          // documents in it.
+          OPENTREP::addResult (lQueryString, iDatabase, lMatchingDocuments,
+                               lResultHolder);
+        }
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG (std::endl
+                            << "========================================="
+                            << std::endl << "Result holder: "
+                            << lResultHolder.toString()
+                            << "========================================="
+                            << std::endl << std::endl);
+      }
+
+      // Calculate the weights for the full-text matches
+      const bool doesBestMatchingResultHolderExist =
+        ioResultCombination.chooseBestMatchingResultHolder();
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("*********************");
+
+      if (doesBestMatchingResultHolderExist == true) {
+        const ResultHolder& lBestMatchingResultHolder =
+          ioResultCombination.getBestMatchingResultHolder();
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("Best matching ResultHolder: "
+                            << lBestMatchingResultHolder);
+
+      } else {
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("No best matching ResultHolder object.");
+      }
+
+    } catch (const Xapian::Error& error) {
+      OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
+      throw XapianException (error.get_msg());
+    }
+  }
+
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
   interpretTravelRequest (soci::session& ioSociSession,
@@ -294,25 +395,37 @@ namespace OPENTREP {
     OPENTREP_LOG_DEBUG (std::endl
                         << "=========================================");
       
-    // Main algorithm
-    DocumentList_T lDocumentList;
-    StringMatcher::searchString (iTravelQuery, lDocumentList, ioWordList,
-                                 lXapianDatabase);
+    /**
+     * 0. Initialisation
+     *
+     * Create a ResultCombination BOM instance.
+     */
+    ResultCombination& lResultCombination =
+      FacResultCombination::instance().create (iTravelQuery);
 
     /**
-     * Create the list of Result objects corresponding to the list
-     * of documents.
+     * 1. Perform all the full-text matches, and fill accordingly the
+     *    list of Result instances.
      */
-    // First, create a ResultHolder object
-    ResultHolder& lResultHolder =
-      createResults (iTravelQuery, lDocumentList, lXapianDatabase);
+    OPENTREP::searchString (iTravelQuery, lXapianDatabase, lResultCombination,
+                            ioWordList);
 
     /**
-     * Create the list of Place objects, for each of which a
-     * look-up is made in the SQL database (e.g., MySQL or Oracle)
-     * to retrieve complementary data.
+     * 2. Calculate the weights according to the PageRank algorithm.
      */
-    createPlaces (lResultHolder, ioSociSession, lPlaceHolder);
+    //
+
+    /**
+     * 3. Calculate the weights according to heuristic rules.
+     */
+    //
+
+    /**
+     * 4. Create the list of Place objects, for each of which a
+     *    look-up is made in the SQL database (e.g., MySQL or Oracle)
+     *    to retrieve complementary data.
+     */
+    createPlaces (lResultCombination, ioSociSession, lPlaceHolder);
       
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
@@ -323,9 +436,9 @@ namespace OPENTREP {
                         << std::endl);
 
     /**
-     * Create the list of Location structures, which are light copies
-     * of the Place objects. Those (Location) structures are passed
-     * back to the caller of the service.
+     * 5. Create the list of Location structures, which are light copies
+     *    of the Place objects. Those (Location) structures are passed
+     *    back to the caller of the service.
      */
     lPlaceHolder.createLocations (ioLocationList);
     oNbOfMatches = ioLocationList.size();

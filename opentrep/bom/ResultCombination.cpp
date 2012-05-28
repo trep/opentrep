@@ -115,6 +115,11 @@ namespace OPENTREP {
       }
     }
 
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("    [pct] '" << describeKey()
+                        << "' - Max weight until now: "
+                        << lMaxMatchingPercentage << "%");
+
     //
     const bool doesBestMatchingResultHolderExist =
       (_bestMatchingResultHolder != NULL);

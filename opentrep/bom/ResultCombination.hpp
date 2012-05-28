@@ -38,6 +38,13 @@ namespace OPENTREP {
     }
 
     /**
+     * State whether there has been a full-text match.
+     */
+    bool hasFullTextMatched() const {
+      return (_bestMatchingResultHolder != NULL);
+    }
+
+    /**
      * Get a reference on the best matching ResultHolder object.
      * If there is no such object, the method throws a
      * NoBestMatchingResultHolderException exception.

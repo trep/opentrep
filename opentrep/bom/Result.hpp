@@ -13,7 +13,7 @@ namespace OPENTREP {
 
   // Forward declarations
   class ResultHolder;
-  
+
   /**
    * @brief Class wrapping functions on a list of Xapian Document objects.
    */
@@ -38,13 +38,20 @@ namespace OPENTREP {
     }
 
     /**
+     * State whether there has been a full-text match.
+     */
+    bool hasFullTextMatched() const {
+      return _matchingDocuments.hasFullTextMatched();
+    }
+
+    /**
      * Retrieve the percentage corresponding to the best matching
      * Xapian document object.
      */
     const Percentage_T& getXapianPercentage() const {
       return _matchingDocuments.getXapianPercentage();
     }
-    
+
     /**
      * Retrieve the best matching Xapian document object.
      */
@@ -52,7 +59,8 @@ namespace OPENTREP {
       return _matchingDocuments.getXapianDocument();
     }
 
-    
+
+  public:
     // ////////////// Setters /////////////
     /**
      * Set the query string.
@@ -69,6 +77,14 @@ namespace OPENTREP {
     }
 
     
+  public:
+    // /////////// Business support methods /////////
+    /**
+     * Get the best matching weight for the full-text match.
+     */
+    Percentage_T calculateMatchingWeight() const;
+
+
   public:
     // /////////// Display support methods /////////
     /**
@@ -108,7 +124,7 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    Result (const Xapian::Database&);
+    Result (const TravelQuery_T&, const Xapian::Database&);
 
     /**
      * Default constructor.
@@ -123,12 +139,12 @@ namespace OPENTREP {
     /**
      * Destructor.
      */
-    ~Result ();
+    ~Result();
 
     /**
      * Initialise (reset the list of documents).
      */
-    void init ();
+    void init();
 
     
   private:
@@ -137,17 +153,17 @@ namespace OPENTREP {
      * Parent ResultHolder.
      */
     ResultHolder* _resultHolder;
-    
+
     /**
      * Query string having generated the set of documents.
      */
     TravelQuery_T _queryString;
-    
+
     /**
      * Xapian database.
      */
     const Xapian::Database& _database;
-    
+
     /**
      * Set of Xapian document objects matching the given query string,
      * along with their corresponding matching percentages.

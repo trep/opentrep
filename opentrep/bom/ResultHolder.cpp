@@ -16,7 +16,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   ResultHolder::ResultHolder (const TravelQuery_T& iQueryString,
                               const Xapian::Database& iDatabase)
-    : _queryString (iQueryString), _database (iDatabase) {
+    : _resultCombination (NULL),
+      _queryString (iQueryString), _database (iDatabase) {
     init();
   }
   
@@ -26,6 +27,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void ResultHolder::init () {
+    _resultCombination = NULL;
     _resultList.clear();
   }
 
@@ -64,6 +66,33 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   void ResultHolder::fromStream (std::istream& ioIn) {
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  Percentage_T ResultHolder::calculateMatchingWeights() const {
+    Percentage_T oOverallMatchingPercentage = 100.0;
+
+    // Calculate the matching percentage of all the partitions
+    for (ResultList_T::const_iterator itResult = _resultList.begin();
+         itResult != _resultList.end(); ++itResult) {
+      const Result* lResult_ptr = *itResult;
+      assert (lResult_ptr != NULL);
+
+      // Retrieve the weight from the full-text matching process
+      const Percentage_T& lMatchingPercentage =
+        lResult_ptr->calculateMatchingWeight();
+
+      // Combine it with the other matching percentages
+      oOverallMatchingPercentage *= lMatchingPercentage / 100.0;
+    }
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("      [pct] '" << describeKey()
+                        << "' overall matches at "
+                        << oOverallMatchingPercentage << "%");
+
+    //
+    return oOverallMatchingPercentage;
   }
 
 }

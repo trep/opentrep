@@ -103,6 +103,11 @@ namespace OPENTREP {
   typedef unsigned int NbOfLetters_T;
   
   /**
+   * Number of words in a list.
+   */
+  typedef unsigned short NbOfWords_T;
+  
+  /**
    * Number of matching documents.
    */
   typedef unsigned short NbOfMatches_T;

@@ -16,10 +16,14 @@ namespace Xapian {
 
 namespace OPENTREP {
 
+  // Forward declarations
+  class ResultCombination;
+
   /**
    * @brief Class wrapping functions on a list of Result objects.
    */
   class ResultHolder : public BomAbstract {
+    friend class FacResultCombination;
     friend class FacResultHolder;
   public:
     // ////////////// Getters /////////////
@@ -40,7 +44,10 @@ namespace OPENTREP {
 
   public:
     // /////////// Business methods ///////////
-
+    /**
+     * Calculate the overall matching weight for all the full-text matches.
+     */
+    Percentage_T calculateMatchingWeights() const;
 
 
   public:
@@ -103,6 +110,11 @@ namespace OPENTREP {
     
   private:
     // /////////////// Attributes ////////////////
+    /**
+     * Parent ResultCombination.
+     */
+    ResultCombination* _resultCombination;
+
     /**
      * Query string having generated the list of document.
      */
