@@ -7,7 +7,7 @@
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
-#include <opentrep/bom/Document.hpp>
+#include <opentrep/bom/MatchingDocuments.hpp>
 
 namespace OPENTREP {
 
@@ -30,26 +30,26 @@ namespace OPENTREP {
     }
 
     /**
-     * Get the Matching Xapian document object, along with its
-     * corresponding matching percentage.
+     * Get the set of Xapian document objects matching the given query
+     * string, along with their corresponding matching percentages.
      */
-    const Document& getMatchingDocument() const {
-      return _matchingDocument;
+    const MatchingDocuments& getMatchingDocument() const {
+      return _matchingDocuments;
     }
 
     /**
-     * Retrieve the percentage corresponding to the matching Xapian
-     * document object.
+     * Retrieve the percentage corresponding to the best matching
+     * Xapian document object.
      */
     const Percentage_T& getXapianPercentage() const {
-      return _matchingDocument.getXapianPercentage();
+      return _matchingDocuments.getXapianPercentage();
     }
     
     /**
-     * Retrieve the matching Xapian document object.
+     * Retrieve the best matching Xapian document object.
      */
     const Xapian::Document& getXapianDocument() const {
-      return _matchingDocument.getXapianDocument();
+      return _matchingDocuments.getXapianDocument();
     }
 
     
@@ -62,11 +62,10 @@ namespace OPENTREP {
     }
 
     /**
-     * Set the matching Xapian document object and its corresponding
-     * matching percentage.
+     * Copy the set of Xapian document objects.
      */
-    void setMatchingDocument (const Document& iMatchingDocument) {
-      _matchingDocument = iMatchingDocument;
+    void setMatchingDocument (const MatchingDocuments& iMatchingDocument) {
+      _matchingDocuments = iMatchingDocument;
     }
 
     
@@ -140,7 +139,7 @@ namespace OPENTREP {
     ResultHolder* _resultHolder;
     
     /**
-     * Query string having generated the list of document.
+     * Query string having generated the set of documents.
      */
     TravelQuery_T _queryString;
     
@@ -150,10 +149,10 @@ namespace OPENTREP {
     const Xapian::Database& _database;
     
     /**
-     * Matching Xapian document object, along with its corresponding
-     * matching percentage.
+     * Set of Xapian document objects matching the given query string,
+     * along with their corresponding matching percentages.
      */
-    Document _matchingDocument;
+    MatchingDocuments _matchingDocuments;
   };
 
 }

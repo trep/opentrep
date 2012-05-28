@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_DOCUMENT_HPP
-#define __OPENTREP_BOM_DOCUMENT_HPP
+#ifndef __OPENTREP_BOM_MATCHINGDOCUMENTS_HPP
+#define __OPENTREP_BOM_MATCHINGDOCUMENTS_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -43,7 +43,7 @@ namespace OPENTREP {
    * It is a structure, as it is aimed to be temporary, the time
    * a Result object be created with the corresponding content.
    */
-  struct Document : public StructAbstract {
+  struct MatchingDocuments : public StructAbstract {
   public:
     // ////////////////// Getters ////////////////
     /**
@@ -173,7 +173,7 @@ namespace OPENTREP {
   public:
     // /////////// Business methods /////////
     /**
-     * Extract the primary key from the document data.
+     * Extract the primary key from the matchingdocuments data.
      *
      * The primary key is made of the first three words (IATA and ICAO codes,
      * as well as the Geonames ID) of the Xapian document data/content.
@@ -229,18 +229,22 @@ namespace OPENTREP {
 
   public:
     // //////////////// Constructors and Destructors /////////////
-    /** Default constructor. */
-    // Document();
+    /**
+     * Default constructor; default implementation.
+     */
+    //MatchingDocuments();
 
-    /** Default copy constructor. */
-    // Document (const Document&);
+    /**
+     * Default copy constructor; default implementation.
+     */
+    //MatchingDocuments (const MatchingDocuments&);
 
     /**
      * Default destructor.
      */
-    ~Document ();
+    ~MatchingDocuments();
 
-    
+
   private:
     // ///////////////// Attributes //////////////////
     /**
@@ -294,4 +298,4 @@ namespace OPENTREP {
   };
 
 }
-#endif // __OPENTREP_BOM_DOCUMENT_HPP
+#endif // __OPENTREP_BOM_MATCHINGDOCUMENTS_HPP

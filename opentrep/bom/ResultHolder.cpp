@@ -72,8 +72,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string ResultHolder::searchString (const TravelQuery_T& iQueryString,
-                                          Document& ioMatchingDocument) const {
+  std::string ResultHolder::
+  searchString (const TravelQuery_T& iQueryString,
+                MatchingDocuments& ioMatchingDocuments) const {
     std::string oMatchedString;
 
     // Catch any Xapian::Error exceptions thrown
@@ -91,7 +92,7 @@ namespace OPENTREP {
       if (isToBeAdded == true) {
         oMatchedString = StringMatcher::searchString (lMatchingSet,
                                                       iQueryString,
-                                                      ioMatchingDocument,
+                                                      ioMatchingDocuments,
                                                       _database);
       }
 
@@ -99,7 +100,7 @@ namespace OPENTREP {
         // Create the corresponding document (from the Xapian MSet object)
         StringMatcher::
           extractBestMatchingDocumentFromMSet (lMatchingSet,
-                                               ioMatchingDocument);
+                                               ioMatchingDocuments);
 
         // Note: the allowable edit distance/error, as well as the
         // effective (Levenshtein) edit distance/error, have been
@@ -148,18 +149,18 @@ namespace OPENTREP {
         OPENTREP_LOG_DEBUG ("    Query string: " << lQueryString);
 
         //
-        Document lMatchingDocument;
+        MatchingDocuments lMatchingDocuments;
         const std::string& lMatchedString = searchString (lQueryString,
-                                                          lMatchingDocument);
+                                                          lMatchingDocuments);
 
         if (lMatchedString.empty() == false) {
           //
-          lMatchingDocument.setQueryString (lQueryString);
-          lMatchingDocument.setCorrectedQueryString (lMatchedString);
+          lMatchingDocuments.setQueryString (lQueryString);
+          lMatchingDocuments.setCorrectedQueryString (lMatchedString);
 
           // Retrieve the matching percentage for the corresponding string only
           const Xapian::percent& lXapianPercentage =
-            lMatchingDocument.getXapianPercentage();
+            lMatchingDocuments.getXapianPercentage();
           lPercentage = static_cast<Percentage_T> (lXapianPercentage);
 
           // Trick to decrease the overall percentage of word combinations,
@@ -176,15 +177,15 @@ namespace OPENTREP {
           oTotalMatchingPercentage *= lPercentage / 100.0;
 
           // Store the Document into the output list
-          ioDocumentList.push_back (lMatchingDocument);
+          ioDocumentList.push_back (lMatchingDocuments);
 
           // DEBUG
           const NbOfMatches_T& lNbOfMatches =
-            lMatchingDocument.notifyIfExtraMatch();
+            lMatchingDocuments.notifyIfExtraMatch();
           const NbOfErrors_T& lEditDistance =
-            lMatchingDocument.getEditDistance();
+            lMatchingDocuments.getEditDistance();
           const NbOfErrors_T& lAllowableEditDistance =
-            lMatchingDocument.getAllowableEditDistance();
+            lMatchingDocuments.getAllowableEditDistance();
           OPENTREP_LOG_DEBUG ("      ==> " << lNbOfMatches
                               << " main matches for the query string: `"
                               << lMatchedString << "' (from `" << lQueryString
@@ -222,7 +223,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void ResultHolder::searchString (DocumentList_T& ioDocumentList,
-                                   WordList_T& ioWordList) {
+                                   WordList_T& ioWordList) const {
 
     // Catch any thrown Xapian::Error exceptions
     try {

@@ -1,7 +1,7 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
 #include <string>
 #include <sstream>
@@ -41,7 +41,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Result::toString() const {
     std::ostringstream oStr;
-    oStr << _matchingDocument.describe();
+    oStr << _matchingDocuments.describe();
     return oStr.str();
   }   
 

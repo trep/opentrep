@@ -50,7 +50,7 @@ namespace OPENTREP {
      * @param DocumentList_T& List of matched documents by the query string.
      * @param WordList_T& List of non-matched words of the query string.
      */
-    void searchString (DocumentList_T&, WordList_T&);
+    void searchString (DocumentList_T&, WordList_T&) const;
 
 
   private:
@@ -58,11 +58,11 @@ namespace OPENTREP {
      * Retrieve the document best matching the query string.
      *
      * @param TravelQuery_T& The partial query string.
-     * @param MatchingDocument_T& The best matching Xapian document (if found).
+     * @param MatchingDocument& The set of matching Xapian documents (if found).
      * @return std::string The matching string, if any. It can be empty when
      *         there is no match.
      */
-    std::string searchString (const TravelQuery_T&, Document&) const;
+    std::string searchString (const TravelQuery_T&, MatchingDocuments&) const;
 
     /**
      * Retrieve the document best matching the query string.

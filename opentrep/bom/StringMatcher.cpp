@@ -40,10 +40,11 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  std::string StringMatcher::searchString (Xapian::MSet& ioMatchingSet,
-                                           const TravelQuery_T& iQueryString,
-                                           Document& ioMatchingDocument,
-                                           const Xapian::Database& iDatabase) {
+  std::string
+  StringMatcher::searchString (Xapian::MSet& ioMatchingSet,
+                               const TravelQuery_T& iQueryString,
+                               MatchingDocuments& ioMatchingDocuments,
+                               const Xapian::Database& iDatabase) {
     std::string oMatchedString;
 
     // Catch any Xapian::Error exceptions thrown
@@ -102,10 +103,10 @@ namespace OPENTREP {
       if (nbMatches != 0) {
         // Store the effective (Levenshtein) edit distance/error
         const NbOfErrors_T lEditDistance = 0;
-        ioMatchingDocument.setEditDistance (lEditDistance);
+        ioMatchingDocuments.setEditDistance (lEditDistance);
 
         // Store the allowable edit distance/error
-        ioMatchingDocument.setAllowableEditDistance (lEditDistance);
+        ioMatchingDocuments.setAllowableEditDistance (lEditDistance);
 
         //
         oMatchedString = iQueryString;
@@ -178,10 +179,10 @@ namespace OPENTREP {
 
       if (nbMatches != 0) {
         // Store the effective (Levenshtein) edit distance/error
-        ioMatchingDocument.setEditDistance (lEditDistance);
+        ioMatchingDocuments.setEditDistance (lEditDistance);
 
         // Store the allowable edit distance/error
-        ioMatchingDocument.setAllowableEditDistance (lAllowableEditDistance);
+        ioMatchingDocuments.setAllowableEditDistance (lAllowableEditDistance);
 
         //
         oMatchedString = lCorrectedString;
@@ -223,7 +224,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void StringMatcher::
   extractBestMatchingDocumentFromMSet (const Xapian::MSet& iMatchingSet,
-                                       Document& ioMatchingDocument) {
+                                       MatchingDocuments& ioMatchingDocuments) {
     assert (iMatchingSet.empty() == false);
 
     /**
@@ -238,11 +239,11 @@ namespace OPENTREP {
 
     // Store the percentage
     const Xapian::percent& lBestPercentage = itDoc.get_percent();
-    ioMatchingDocument.setXapianPercentage (lBestPercentage);
+    ioMatchingDocuments.setXapianPercentage (lBestPercentage);
 
     // Store the (Xapian) document itself
     const Xapian::Document& lBestDocument = itDoc.get_document();
-    ioMatchingDocument.setXapianDocument (lBestDocument);
+    ioMatchingDocuments.setXapianDocument (lBestDocument);
 
     // Go on in the list of matches, if any
     ++itDoc;
@@ -257,8 +258,10 @@ namespace OPENTREP {
     }
     */
 
-    /** Add all the Xapian documents having reached the same matching
-        percentage. */
+    /**
+       Add all the Xapian documents having reached the same matching
+       percentage.
+    */
     NbOfMatches_T idx = 1;
     for ( ; itDoc != iMatchingSet.end(); ++itDoc, ++idx) {
       const Xapian::percent& lPercentage = itDoc.get_percent();
@@ -275,10 +278,10 @@ namespace OPENTREP {
           (chosen) Xapian document, then add it to the dedicated
           list. Otherwise, add it to the alternative choices. */
       if (lPercentage == lBestPercentage) {
-        ioMatchingDocument.addExtraDocument (lDocument);
+        ioMatchingDocuments.addExtraDocument (lDocument);
         
       } else {
-        ioMatchingDocument.addAlternateDocument (lPercentage, lDocument);
+        ioMatchingDocuments.addAlternateDocument (lPercentage, lDocument);
       }
     }
   }

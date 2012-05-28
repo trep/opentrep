@@ -36,14 +36,14 @@ namespace OPENTREP {
          itDoc != iDocumentList.end(); ++itDoc) {
       // Retrieve both the Xapian document object and the corresponding
       // matching percentage (most of the time, it is 100%)
-      const Document& lMatchingDocument = *itDoc;
+      const MatchingDocuments& lMatchingDocuments = *itDoc;
       
       // Create a Result object
       Result& lResult = FacResult::instance().create (iXapianDatabase);
       
       // Fill the Result object with both the corresponding Document object
       // and its associated query string
-      lResult.setMatchingDocument (lMatchingDocument);
+      lResult.setMatchingDocument (lMatchingDocuments);
       
       // Add the Result object (holding the list of matching
       // documents) to the dedicated list.
@@ -76,7 +76,7 @@ namespace OPENTREP {
     ioPlace.setPercentage (iDocPercentage);
     
     // Retrieve the parameters of the best matching document
-    const PlaceKey& lKey = Document::getPrimaryKey (iDocument);
+    const PlaceKey& lKey = MatchingDocuments::getPrimaryKey (iDocument);
 
     // DEBUG
     const Xapian::docid& lDocID = iDocument.get_docid();
@@ -113,10 +113,10 @@ namespace OPENTREP {
   
   /** Helper function. */
   // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlace (const Document& iDocument,
+  bool retrieveAndFillPlace (const MatchingDocuments& iDocument,
                              soci::session& ioSociSession, Place& ioPlace) {
-    // Note that Document::getTravelQuery() returns a TravelQuery_T, which
-    // is actually a std::string
+    // Note that MatchingDocuments::getTravelQuery() returns a TravelQuery_T,
+    // which is actually a std::string
     const std::string& lOriginalKeywords = iDocument.getTravelQuery();
     const std::string& lCorrectedKeywords = iDocument.getCorrectedTravelQuery();
     
@@ -141,7 +141,8 @@ namespace OPENTREP {
       assert (lResult_ptr != NULL);
 
       // Retrieve the matching document
-      const Document& lDocument = lResult_ptr->getMatchingDocument();
+      const MatchingDocuments& lMatchingDocuments =
+        lResult_ptr->getMatchingDocument();
       
       // Instanciate an empty place object, which will be filled from the
       // rows retrieved from the database.
@@ -150,15 +151,15 @@ namespace OPENTREP {
       // Retrieve, in the MySQL database, the place corresponding to
       // the place code located as the first word of the Xapian
       // document data.
-      bool hasRetrievedPlace = retrieveAndFillPlace (lDocument, ioSociSession,
-                                                     lPlace);
+      bool hasRetrievedPlace = retrieveAndFillPlace (lMatchingDocuments,
+                                                     ioSociSession, lPlace);
 
       // Retrieve the effective (Levenshtein) edit distance/error, as
       // well as the allowable edit distance/error, and store them in
       // the Place object.
-      const NbOfErrors_T& lEditDistance = lDocument.getEditDistance();
+      const NbOfErrors_T& lEditDistance = lMatchingDocuments.getEditDistance();
       const NbOfErrors_T& lAllowableEditDistance =
-        lDocument.getAllowableEditDistance();
+        lMatchingDocuments.getAllowableEditDistance();
       lPlace.setEditDistance (lEditDistance);
       lPlace.setAllowableEditDistance (lAllowableEditDistance);
 
@@ -176,13 +177,14 @@ namespace OPENTREP {
 
       // Retrieve the list of extra matching documents (documents
       // matching with the same weight/percentage)
-      const std::string& lOriginalKeywords = lDocument.getTravelQuery();
+      const std::string& lOriginalKeywords =
+        lMatchingDocuments.getTravelQuery();
       const std::string& lCorrectedKeywords =
-        lDocument.getCorrectedTravelQuery();
+        lMatchingDocuments.getCorrectedTravelQuery();
       const Xapian::percent& lExtraDocPercentage =
-        lDocument.getXapianPercentage();
+        lMatchingDocuments.getXapianPercentage();
       const XapianDocumentList_T& lExtraDocumentList =
-        lDocument.getExtraDocumentList();
+        lMatchingDocuments.getExtraDocumentList();
       for (XapianDocumentList_T::const_iterator itExtraDoc =
              lExtraDocumentList.begin();
            itExtraDoc != lExtraDocumentList.end(); ++itExtraDoc) {
@@ -221,7 +223,7 @@ namespace OPENTREP {
       // Retrieve the list of alternate matching documents (documents
       // matching with the a lower weight)
       const XapianAlternateDocumentList_T& lAlternateDocumentList =
-        lDocument.getAlternateDocumentList();
+        lMatchingDocuments.getAlternateDocumentList();
       for (XapianAlternateDocumentList_T::const_iterator itAlterDoc =
              lAlternateDocumentList.begin();
            itAlterDoc != lAlternateDocumentList.end(); ++itAlterDoc) {

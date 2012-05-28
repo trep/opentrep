@@ -1,7 +1,7 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
 #include <sstream>
 // Boost
@@ -9,17 +9,17 @@
 // OpenTrep
 #include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/bom/WordHolder.hpp>
-#include <opentrep/bom/Document.hpp>
+#include <opentrep/bom/MatchingDocuments.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  Document::~Document () {
+  MatchingDocuments::~MatchingDocuments () {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Document::describeKey() const {
+  std::string MatchingDocuments::describeKey() const {
     std::ostringstream oStr;
     oStr << "`" << _queryString << "'";
     if (_correctedQueryString.empty() == false) {
@@ -30,7 +30,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Document::describe() const {
+  std::string MatchingDocuments::describe() const {
     std::ostringstream oStr;
     oStr << describeKey();
     
@@ -83,16 +83,16 @@ namespace OPENTREP {
   }   
 
   // //////////////////////////////////////////////////////////////////////
-  void Document::toStream (std::ostream& ioOut) const {
+  void MatchingDocuments::toStream (std::ostream& ioOut) const {
     ioOut << describe();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void Document::fromStream (std::istream& ioIn) {
+  void MatchingDocuments::fromStream (std::istream& ioIn) {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey Document::getPrimaryKey (const Xapian::Document& iDocument) {
+  PlaceKey MatchingDocuments::getPrimaryKey (const Xapian::Document& iDocument) {
     // Retrieve the Xapian document data
     const std::string& lDocumentData = iDocument.get_data();
 
@@ -114,7 +114,7 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  NbOfMatches_T Document::notifyIfExtraMatch () const {
+  NbOfMatches_T MatchingDocuments::notifyIfExtraMatch () const {
     NbOfMatches_T oNbOfMatches = _documentList.size();
     
     // DEBUG

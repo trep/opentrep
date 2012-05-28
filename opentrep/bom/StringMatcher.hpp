@@ -9,7 +9,7 @@
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
-#include <opentrep/bom/Document.hpp>
+#include <opentrep/bom/MatchingDocuments.hpp>
 
 // Forward declarations
 namespace Xapian {
@@ -39,14 +39,13 @@ namespace OPENTREP {
      *
      * @param Xapian::MSet& The Xapian matching set. It can be empty.
      * @param const TravelQuery_T& The query string.
-     * @param Document& The matching document, if any.
+     * @param MatchingDocuments& The set of matching documents, if any.
      * @param const Xapian::Database& The Xapian index/database.
      * @return std::string The query string, potentially corrected,
      *         which has yielded matches.
      */
-    static std::string searchString (Xapian::MSet&,
-                                     const TravelQuery_T& iQueryString,
-                                     Document& ioMatchingDocument,
+    static std::string searchString (Xapian::MSet&, const TravelQuery_T&,
+                                     MatchingDocuments&,
                                      const Xapian::Database&);
     
     /**
@@ -59,26 +58,26 @@ namespace OPENTREP {
      *
      * @param Xapian::MSet& The Xapian matching set. It can be empty.
      */
-    static void
-    extractBestMatchingDocumentFromMSet (const Xapian::MSet&, Document&);
+    static void extractBestMatchingDocumentFromMSet (const Xapian::MSet&,
+                                                     MatchingDocuments&);
 
     /**
      * Remove the word furthest at right.
      */
-    static void removeFurthestRightWord (std::string& ioQueryString);
+    static void removeFurthestRightWord (TravelQuery_T&);
 
     /**
      * Remove the word furthest at left.
      */
-    static Word_T removeFurthestLeftWord (std::string& ioQueryString);
+    static Word_T removeFurthestLeftWord (TravelQuery_T&);
 
     /**
      * Remove, from a string, the part corresponding to the one given
      * as parameter.
      */
     static void
-    subtractParsedToRemaining (const std::string& iAlreadyParsedQueryString,
-                               std::string& ioRemainingQueryString);
+    subtractParsedToRemaining (const TravelQuery_T& iAlreadyParsedQueryString,
+                               TravelQuery_T& ioRemainingQueryString);
   };
 
 }
