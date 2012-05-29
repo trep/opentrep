@@ -107,6 +107,13 @@ namespace OPENTREP {
         //
         oMatchedString = iQueryString;
 
+        // Store the fact that there has been a full-text match
+        ioMatchingDocuments.setHasFullTextMatched (true);
+
+        // Store the corrected string (the same as the given string, here,
+        // as there that latter directly gave full-text matches).
+        ioMatchingDocuments.setCorrectedQueryString (oMatchedString);
+
         // DEBUG
         OPENTREP_LOG_DEBUG ("        Query string: `" << iQueryString
                             << "' provides " << nbMatches << " exact matches.");
@@ -137,6 +144,9 @@ namespace OPENTREP {
                             << "and there is no spelling suggestion, "
                             << "even with an edit distance of "
                             << lAllowableEditDistance);
+
+        // Store the fact that there has not been any full-text match
+        ioMatchingDocuments.setHasFullTextMatched (false);
 
         // Leave the string empty
         return oMatchedString;
@@ -183,6 +193,12 @@ namespace OPENTREP {
         //
         oMatchedString = lCorrectedString;
 
+        // Store the fact that there has been a full-text match
+        ioMatchingDocuments.setHasFullTextMatched (true);
+
+        // Store the corrected string
+        ioMatchingDocuments.setCorrectedQueryString (oMatchedString);
+
         // DEBUG
         OPENTREP_LOG_DEBUG ("        Query string: `"
                             << iQueryString << "', spelling suggestion: `"
@@ -214,83 +230,31 @@ namespace OPENTREP {
       throw XapianException (error.get_msg());
     }
 
+    // Store the fact that there has not been any full-text match
+    ioMatchingDocuments.setHasFullTextMatched (false);
+
     return oMatchedString;
   }
 
   /**
-   * Extract the best matching Xapian document.
-   *
-   * If there are several such best matching documents (for
-   * instance, several at, say, 100%), one is taken randomly. Well,
-   * as we take the first one of the STL multimap, it is not exactly
-   * randomly, but the result is the same: it appears to be random.
+   * Extract the best matching Xapian documents.
    *
    * @param Xapian::MSet& The Xapian matching set. It can be empty.
+   * @param MatchingDocuments& The holder for the Xapian documents
+   *        to be stored.
    */
   // //////////////////////////////////////////////////////////////////////
-  void
-  extractBestMatchingDocumentFromMSet (const Xapian::MSet& iMatchingSet,
+  void convertMSetToMatchingDocuments (const Xapian::MSet& iMatchingSet,
                                        MatchingDocuments& ioMatchingDocuments) {
-    assert (iMatchingSet.empty() == false);
-
     /**
-     * Retrieve the best matching document. If there are several such
-     * best matching documents (for instance, several at, say, 100%),
-     * one is taken randomly (well, we take the first one of the STL
-     * multimap, so it is not exactly randomly, but the result is the
-     * same: it appears random).
+     * Retrieve the best matching documents, each with its own
+     * (Xapian-based) full-text score / weighting percentage.
      */
-    Xapian::MSetIterator itDoc = iMatchingSet.begin();
-    assert (itDoc != iMatchingSet.end());
-
-    // Store the percentage
-    const Xapian::percent& lBestPercentage = itDoc.get_percent();
-    ioMatchingDocuments.setXapianPercentage (lBestPercentage);
-
-    // Store the (Xapian) document itself
-    const Xapian::Document& lBestDocument = itDoc.get_document();
-    ioMatchingDocuments.setXapianDocument (lBestDocument);
-
-    // Go on in the list of matches, if any
-    ++itDoc;
-
-    /*
-    if (itDoc != iMatchingSet.end()) {
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("There are extra matches for Document ID "
-                          << lBestDocument.get_docid()
-                          << ", itself matching at " << lBestPercentage
-                          << "%.");
-    }
-    */
-
-    /**
-       Add all the Xapian documents having reached the same matching
-       percentage.
-    */
-    NbOfMatches_T idx = 1;
-    for ( ; itDoc != iMatchingSet.end(); ++itDoc, ++idx) {
-      const Xapian::percent& lPercentage = itDoc.get_percent();
+    for (Xapian::MSetIterator itDoc = iMatchingSet.begin();
+         itDoc != iMatchingSet.end(); ++itDoc) {
+      const Xapian::percent& lXapianPercentage = itDoc.get_percent();
       const Xapian::Document& lDocument = itDoc.get_document();
-
-      // DEBUG
-      /*
-      OPENTREP_LOG_DEBUG ("Extra #" << idx << ": Doc ID "
-                          << lDocument.get_docid() << " matching at "
-                          << lPercentage << "%.");
-      */
-
-      /**
-       * If the matching percentage is the same as for the main
-       * (chosen) Xapian document, then add it to the dedicated
-       * list. Otherwise, add it to the alternative choices.
-       */
-      if (lPercentage == lBestPercentage) {
-        ioMatchingDocuments.addExtraDocument (lDocument);
-        
-      } else {
-        ioMatchingDocuments.addAlternateDocument (lPercentage, lDocument);
-      }
+      ioMatchingDocuments.addDocument (lDocument, lXapianPercentage);
     }
   }
   
@@ -305,9 +269,8 @@ namespace OPENTREP {
     try {
       
       // DEBUG
-      OPENTREP_LOG_DEBUG ("      ----------------");
-      OPENTREP_LOG_DEBUG ("      Current query string: `" << iQueryString
-                          << "'");
+      OPENTREP_LOG_DEBUG("      ----------------");
+      OPENTREP_LOG_DEBUG("      Current query string: '"<< iQueryString << "'");
 
       // Check whether the string should be filtered out
       const bool isToBeAdded = Filter::shouldKeep ("", iQueryString);
@@ -319,45 +282,11 @@ namespace OPENTREP {
                                                   iDatabase);
       }
 
-      // Store whether or not there has been a full-text match
-      const bool hasFullTextMatched = !oMatchedString.empty();
-      ioMatchingDocuments.setHasFullTextMatched (hasFullTextMatched);
-
-      if (hasFullTextMatched == true) {
-        // Store the corrected string
-        ioMatchingDocuments.setCorrectedQueryString (oMatchedString);
-
-        // Create the corresponding document (from the Xapian MSet object)
-        extractBestMatchingDocumentFromMSet (lMatchingSet,
-                                             ioMatchingDocuments);
-
-        // Note: the allowable edit distance/error, as well as the
-        // effective (Levenshtein) edit distance/error, have been
-        // set, in the Document object, by the above call to the
-        // fullTextMatch() method.
-
-        // DEBUG
-        const NbOfMatches_T& lNbOfMatches =
-          ioMatchingDocuments.notifyIfExtraMatch();
-        const NbOfErrors_T& lEditDistance =
-          ioMatchingDocuments.getEditDistance();
-        const NbOfErrors_T& lAllowableEditDistance =
-          ioMatchingDocuments.getAllowableEditDistance();
-        OPENTREP_LOG_DEBUG ("      ==> " << lNbOfMatches
-                            << " main matches for the query string: `"
-                            << oMatchedString << "' (from `" << iQueryString
-                            << "' -> Levenshtein edit distance of "
-                            << lEditDistance << " over allowable "
-                            << lAllowableEditDistance << ")");
-
-      } else {
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("      No match for query string: `"
-                            << iQueryString << "'");
-      }
+      // Create the corresponding documents (from the Xapian MSet object)
+      convertMSetToMatchingDocuments (lMatchingSet, ioMatchingDocuments);
 
       // DEBUG
+      OPENTREP_LOG_DEBUG ("      ==> " << ioMatchingDocuments.describe());
       OPENTREP_LOG_DEBUG ("      ----------------");
 
     } catch (const Xapian::Error& error) {

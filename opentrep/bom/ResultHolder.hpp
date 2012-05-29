@@ -30,7 +30,7 @@ namespace OPENTREP {
     /**
      * Get the query string.
      */
-    const TravelQuery_T& getQueryString () const {
+    const TravelQuery_T& getQueryString() const {
       return _queryString;
     }
 
@@ -41,13 +41,40 @@ namespace OPENTREP {
       return _resultList;
     }
 
+    /**
+     * Get the combined weight, for all the rules (full-text, PageRank, etc)
+     */
+    const Percentage_T& getCombinedWeight() const {
+      return _combinedWeight;
+    }
+
+
+  public:
+    // ////////////// Setters /////////////
+    /**
+     * Set the combined weight, for all the rules (full-text, PageRank, etc)
+     */
+    void setCombinedWeight (const Percentage_T& iPercentage) {
+      _combinedWeight = iPercentage;
+    }
+
 
   public:
     // /////////// Business methods ///////////
     /**
-     * Calculate the overall matching weight for all the full-text matches.
+     * Calculate/set the PageRanks for all the matching documents
      */
-    Percentage_T calculateMatchingWeights() const;
+    void calculatePageRanks() const;
+
+    /**
+     * Calculate/set the user input weights for all the matching documents
+     */
+    void calculateUserInputWeights() const;
+
+    /**
+     * Calculate/set the combined weights for all the matching documents
+     */
+    void calculateCombinedWeights();
 
 
   public:
@@ -93,7 +120,7 @@ namespace OPENTREP {
     /**
      * Default constructor.
      */
-    ResultHolder ();
+    ResultHolder();
     /**
      * Default copy constructor.
      */
@@ -101,11 +128,11 @@ namespace OPENTREP {
     /**
      * Destructor.
      */
-    ~ResultHolder ();
+    ~ResultHolder();
     /**
      * Initialise (reset the list of documents).
      */
-    void init ();
+    void init();
 
     
   private:
@@ -129,6 +156,11 @@ namespace OPENTREP {
      * List of result objects.
      */
     ResultList_T _resultList;
+
+    /**
+     * Combined weight, for all the rules (full-text, PageRank, etc)
+     */
+    Percentage_T _combinedWeight;
   };
 
 }

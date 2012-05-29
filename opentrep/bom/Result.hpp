@@ -45,18 +45,10 @@ namespace OPENTREP {
     }
 
     /**
-     * Retrieve the percentage corresponding to the best matching
-     * Xapian document object.
+     * Get the combined weight, for all the rules (full-text, PageRank, etc)
      */
-    const Percentage_T& getXapianPercentage() const {
-      return _matchingDocuments.getXapianPercentage();
-    }
-
-    /**
-     * Retrieve the best matching Xapian document object.
-     */
-    const Xapian::Document& getXapianDocument() const {
-      return _matchingDocuments.getXapianDocument();
+    const Percentage_T& getBestCombinedWeight() const {
+      return _bestCombinedWeight;
     }
 
 
@@ -76,13 +68,32 @@ namespace OPENTREP {
       _matchingDocuments = iMatchingDocument;
     }
 
+    /**
+     * Set the best combined weight, for all the rules (full-text,
+     * PageRank, etc)
+     */
+    void setBestCombinedWeight (const Percentage_T& iPercentage) {
+      _bestCombinedWeight = iPercentage;
+    }
     
+
   public:
     // /////////// Business support methods /////////
     /**
-     * Get the best matching weight for the full-text match.
+     * Calculate/set the PageRanks for all the matching documents
      */
-    Percentage_T calculateMatchingWeight() const;
+    void calculatePageRanks();
+
+    /**
+     * Calculate/set the user input weights for all the matching documents
+     */
+    void calculateUserInputWeights();
+
+    /**
+     * Calculate/set the combined weights for all the matching documents.
+     * Store the best matching one in the _bestCombinedWeight attribute.
+     */
+    void calculateCombinedWeights();
 
 
   public:
@@ -169,6 +180,12 @@ namespace OPENTREP {
      * along with their corresponding matching percentages.
      */
     MatchingDocuments _matchingDocuments;
+
+    /**
+     * Combined weight for the best matching document, taking into account
+     * all the rules (full-text, PageRank, etc)
+     */
+    Percentage_T _bestCombinedWeight;
   };
 
 }

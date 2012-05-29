@@ -5,7 +5,7 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <list>
+#include <map>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/basic/ScoreType.hpp>
@@ -25,21 +25,33 @@ namespace OPENTREP {
     /**
      * (STL) map of scores.
      */
-    typedef std::map<ScoreType::EN_ScoreType, Score_T> ScoreList_T;
+    typedef std::map<ScoreType::EN_ScoreType, Score_T> ScoreMap_T;
 
 
   public:
     // ////////////////// Getters ////////////////
     /**
-     * Get the list of scores.
+     * Get the map of scores.
      */
-    const ScoreList_T& getScoreList() const {
-     return _scoreList;
+    const ScoreMap_T& getScoreMap() const {
+     return _scoreMap;
     }
 
 
   public:
     // //////////////////// Setters //////////////////
+    /**
+     * Set the score for the given type. If no score value has
+     * already been stored for that type, create it.
+     */
+    void setScore (const ScoreType&, const Score_T&);
+
+    /**
+     * Calculate the combination of the weights for all the score types,
+     * resulting from the full-text matching process, PageRank, user input,
+     * etc.
+     */
+    Percentage_T calculateMatchingWeight();
 
 
   public:
@@ -79,24 +91,33 @@ namespace OPENTREP {
 
   public:
     // //////////////// Constructors and Destructors /////////////
-    /** Default constructor. */
-    // ScoreBoard();
+    /**
+     * Main constructor.
+     */
+    ScoreBoard (const ScoreType&, const Score_T&);
 
-    /** Default copy constructor. */
-    // ScoreBoard (const ScoreBoard&);
+    /**
+     * Default constructor.
+     */
+    ScoreBoard();
+
+    /**
+     * Copy constructor.
+     */
+    ScoreBoard (const ScoreBoard&);
 
     /**
      * Default destructor.
      */
-    ~ScoreBoard ();
+    ~ScoreBoard();
 
     
   private:
     // ///////////////// Attributes //////////////////
     /**
-     * List of scores.
+     * Map of scores.
      */
-    ScoreList_T _scoreList;
+    ScoreMap_T _scoreMap;
   };
 
 }

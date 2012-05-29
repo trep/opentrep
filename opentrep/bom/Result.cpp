@@ -60,8 +60,18 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  Percentage_T Result::calculateMatchingWeight() const {
-    return _matchingDocuments.calculateMatchingWeight();
+  void Result::calculatePageRanks() {
+    _matchingDocuments.calculatePageRanks();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Result::calculateUserInputWeights() {
+    _matchingDocuments.calculateUserInputWeights();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Result::calculateCombinedWeights() {
+    _matchingDocuments.calculateCombinedWeights();
   }
 
 }

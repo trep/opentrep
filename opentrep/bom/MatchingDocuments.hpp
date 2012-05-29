@@ -6,9 +6,11 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <list>
+#include <map>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/basic/StructAbstract.hpp>
+#include <opentrep/bom/ScoreBoard.hpp>
 // Xapian
 #include <xapian.h>
 
@@ -18,30 +20,30 @@ namespace OPENTREP {
   struct PlaceKey;
 
 
-  // //////////////// Type definitions /////////////////
+  // //////////////////// Type definitions /////////////////////
   /**
-   * List of Xapian documents.
+   * Pair of a Xapian document and its associated score board.
    */
-  typedef std::list<Xapian::Document> XapianDocumentList_T;
+  typedef std::pair<Xapian::Document, ScoreBoard> XapianDocumentPair_T;
 
   /**
-   * Pair of a Xapian document and its associated matching percentage.
+   * (STL) List of Xapian documents and their associated score board.
    */
-  typedef std::pair<Percentage_T, Xapian::Document> XapianDocumentPair_T;
-
+  typedef std::list<XapianDocumentPair_T> DocumentList_T;
+  
   /**
-   * List of Xapian documents.
+   * (STL) Map of Xapian documents and their associated score board.
    */
-  typedef std::list<XapianDocumentPair_T> XapianAlternateDocumentList_T;
+  typedef std::map<Xapian::docid, XapianDocumentPair_T> DocumentMap_T;
   
 
-  // //////////////// Main Class /////////////////
+  // //////////////////////// Main Class /////////////////////////
   /**
-   * @brief Structure wrapping a Xapian document having matched part
-   *        of a given query string.
+   * @brief Structure wrapping a set of Xapian documents having
+   *        matched a given query string.
    *
    * It is a structure, as it is aimed to be temporary, the time
-   * a Result object be created with the corresponding content.
+   * a Result BOM object be created with the corresponding content.
    */
   struct MatchingDocuments : public StructAbstract {
   public:
@@ -69,23 +71,9 @@ namespace OPENTREP {
     }
 
     /**
-     * Get the matching Xapian document.
-     */
-    const Xapian::Document& getXapianDocument() const {
-     return _document;
-    }
-
-    /**
-     * Get the matching percentage associated to the Xapian document.
-     */
-    const Percentage_T& getXapianPercentage() const {
-     return _percentage;
-    }
-
-    /**
      * Get the edit distance/error, with which the matching has been made.
      */
-    const NbOfErrors_T& getEditDistance () const {
+    const NbOfErrors_T& getEditDistance() const {
       return _editDistance;
     }
     
@@ -93,25 +81,42 @@ namespace OPENTREP {
      * Get the maximal allowable edit distance/error, with which the
      * matching has been made.
      */
-    const NbOfErrors_T& getAllowableEditDistance () const {
+    const NbOfErrors_T& getAllowableEditDistance() const {
       return _allowableEditDistance;
     }
     
     /**
-     * Get the extra list of matching Xapian documents (i.e., those
-     * having matched with the same weight as the main one).
+     * Get the list of documents.
      */
-    const XapianDocumentList_T& getExtraDocumentList() const {
+    const DocumentList_T& getDocumentList() const {
      return _documentList;
     }
 
     /**
-     * Get the alternate list of matching Xapian documents (i.e., those
-     * having matched with a lower weight than the main one).
+     * Get the map of documents.
      */
-    const XapianAlternateDocumentList_T& getAlternateDocumentList() const {
-     return _alternateDocumentList;
+    const DocumentMap_T& getDocumentMap() const {
+     return _documentMap;
     }
+
+    /**
+     * Get the Xapian ID of the best matching document.
+     */
+    const Xapian::docid& getBestDocID() const {
+      return _bestDocID;
+    }
+
+    /**
+     * Get the combined weight, for all the rules (full-text, PageRank, etc)
+     */
+    const Percentage_T& getBestCombinedWeight() const {
+      return _bestCombinedWeight;
+    }
+
+    /**
+     * Get the best matching Xapian document.
+     */
+    const Xapian::Document& getBestXapianDocument() const;
 
 
   public:
@@ -138,20 +143,6 @@ namespace OPENTREP {
     }
 
     /**
-     * Set the matching Xapian document.
-     */
-    void setXapianDocument (const Xapian::Document& iMatchingDocument) {
-      _document = iMatchingDocument;
-    }
-
-    /**
-     * Set the matching percentage associated to the Xapian document.
-     */
-    void setXapianPercentage (const Percentage_T& iPercentage) {
-      _percentage = iPercentage;
-    }
-
-    /**
      * Set the edit distance/error, with which the matching has been made.
      */
     void setEditDistance (const NbOfErrors_T& iEditDistance) {
@@ -167,20 +158,40 @@ namespace OPENTREP {
     }
     
     /**
-     * Add a matching Xapian document (having the same matching percentage).
+     * Set the latest score for the given type. If no score value has
+     * already been stored for that type, create it.
+    void setScore (const ScoreType& iScoreType, const Score_T& iScore) {
+      _scoreBoard.setScore (iScoreType, iScore);
+    }
      */
-    void addExtraDocument (const Xapian::Document& iMatchingDocument) {
-      _documentList.push_back (iMatchingDocument);
+
+    /**
+     * Add a Xapian document to the dedicated (STL) list and (STL) map.
+     *
+     * \note The score type is not specified, as it is corresponding,
+     *       by construction, to the (Xapian-based) full-text matching.
+     *       Indeed, when there is no (Xapian-based) full-text matching,
+     *       by construction, no Xapian document has been found matching
+     *       a given string.
+     *
+     * @param const Xapian::Document& The Xapian document to be added.
+     * @param const Score_T& The matching percentage.
+     */
+    void addDocument (const Xapian::Document&, const Score_T&);
+
+    /**
+     * Set the Xapian ID of the best matching document.
+     */
+    void setBestDocID (const Xapian::docid& iDocID) {
+      _bestDocID = iDocID;
     }
 
     /**
-     * Add a matching Xapian document (having a lower matching percentage).
+     * Set the best combined weight, for all the rules (full-text,
+     * PageRank, etc)
      */
-    void addAlternateDocument (const Percentage_T& iMatchingPercentage,
-                               const Xapian::Document& iMatchingDocument) {
-      _alternateDocumentList.
-        push_back (XapianDocumentPair_T (iMatchingPercentage,
-                                         iMatchingDocument));
+    void setBestCombinedWeight (const Percentage_T& iPercentage) {
+      _bestCombinedWeight = iPercentage;
     }
 
 
@@ -189,11 +200,13 @@ namespace OPENTREP {
     /**
      * Extract the primary key from the data of the given Xapian document.
      *
-     * The primary key is made of the first three words (IATA and ICAO codes,
-     * as well as the Geonames ID) of the Xapian document data/content.
+     * The primary key is made of the first three words (IATA and ICAO
+     * codes, as well as the Geonames ID) of the Xapian document
+     * data/content.
      *
      * @param Xapian::Document& The Xapian document.
-     * @return PlaceKey& The primary key of the place/POR (point of reference).
+     * @return PlaceKey& The primary key of the place/POR (point of
+     *         reference).
      */
     static PlaceKey getPrimaryKey (const Xapian::Document&);
 
@@ -208,21 +221,20 @@ namespace OPENTREP {
     static Percentage_T getPageRank (const Xapian::Document&);
 
     /**
-     * Retrieve the number of extra matches for the given query string,
-     * and print a notification in the logs, so that the SQL and Xapian
-     * databases can be altered in order to get more specific matches.
-     *
-     * @param const TravelQuery_T& Query string having yielded that matching
-     *                             document.
-     * @return NbOfMatches_T The number of matches (i.e., one chosen match
-     *                       added to the extra matches).
+     * Calculate/set the PageRanks for all the matching documents
      */
-    NbOfMatches_T notifyIfExtraMatch() const;
+    void calculatePageRanks();
 
     /**
-     * Get the best matching weight for the full-text match.
+     * Calculate/set the user input weights for all the matching documents
      */
-    Percentage_T calculateMatchingWeight() const;
+    void calculateUserInputWeights();
+
+    /**
+     * Calculate/set the combined weights for all the matching documents.
+     * Store the best matching one in the _bestCombinedWeight attribute.
+     */
+    void calculateCombinedWeights();
 
 
   public:
@@ -287,7 +299,8 @@ namespace OPENTREP {
     TravelQuery_T _queryString;
 
     /**
-     * Query string with which a Xapian full text search is done.
+     * That string reflects any spelling corrections, that Xapian may have
+     * been suggested.
      */
     TravelQuery_T _correctedQueryString;
 
@@ -298,18 +311,6 @@ namespace OPENTREP {
      * those matches. Otherwise, the set of documents is empty.
      */
     bool _hasFullTextMatched;
-
-    /**
-     * Matching percentage, as returned by the Xapian full text search.
-     *
-     * Generally, that percentage is equal to, or close to, 100%.
-     */
-    Percentage_T _percentage;
-
-    /**
-     * Matching document, as returned by the Xapian full text search.
-     */
-    Xapian::Document _document;
 
     /**
      * Edit distance/error, with which the matching has been made.
@@ -323,20 +324,26 @@ namespace OPENTREP {
     NbOfErrors_T _allowableEditDistance;
     
     /**
-     * List of Xapian documents having the same matching percentage.
-     *
-     * Hence, any of those other Xapian documents could have been
-     * chosen, instead of the main one.
+     * Xapian ID of the best matching document.
      */
-    XapianDocumentList_T _documentList;
+    Xapian::docid _bestDocID;
 
     /**
-     * List of Xapian documents having the a lower matching percentage.
-     *
-     * Those alternate matches can be suggested (in the famous
-     * "Did you mean Xxx?" question) to the end user.
+     * Best weight for all the rules (e.g., full-text matching,
+     * PageRank, heuristic, popularity) for all the documents collected
+     * so far.
      */
-    XapianAlternateDocumentList_T _alternateDocumentList;
+    Percentage_T _bestCombinedWeight;
+
+    /**
+     * (STL) List of Xapian documents and their associated score board.
+     */
+    DocumentList_T _documentList;
+  
+    /**
+     * (STL) Map of Xapian documents and their associated score board.
+     */
+    DocumentMap_T _documentMap;
   };
 
 }

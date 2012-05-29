@@ -30,7 +30,10 @@
 
 namespace OPENTREP {
 
-  /** Helper function. */
+  /**
+   * Helper function to create a Result BOM object from the set of
+   * Xapian documents having matched the given query.
+   */
   // //////////////////////////////////////////////////////////////////////
   void addResult (const TravelQuery_T& iQueryString,
                   const Xapian::Database& iXapianDatabase,
@@ -52,7 +55,43 @@ namespace OPENTREP {
     FacResultHolder::initLinkWithResult (ioResultHolder, lResult);
   }
 
-  /** Helper function. */
+
+  /**
+   * Helper function to add the given string to the list of unknown words,
+   * only when that given string is made of a single word. Otherwise, the
+   * given string is simply ignored.
+   *
+   * @param const TravelQuery_T& The given string
+   * @param WordList_T& ioWordList The list to which the given single-word
+   *        string should be added (if needed).
+   * @param WordSet_T& A (STL) set of words, allowing to keep track of
+   *        the already added words.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void addUnmatchedWord (const TravelQuery_T& iQueryString,
+                         WordList_T& ioWordList, WordSet_T& ioWordSet) {
+    // Token-ise the given string
+    WordList_T lQueryStringWordList;
+    WordHolder::tokeniseStringIntoWordList (iQueryString,
+                                            lQueryStringWordList);
+    if (lQueryStringWordList.size() == 1) {
+      // Add the unmatched/unknown word, only when that latter has not
+      // already been stored, and when it is not black-listed.
+      const bool shouldBeKept = Filter::shouldKeep ("", iQueryString);
+              
+      WordSet_T::const_iterator itWord = ioWordSet.find (iQueryString);
+      if (shouldBeKept == true && itWord == ioWordSet.end()) {
+        ioWordSet.insert (iQueryString);
+        ioWordList.push_back (iQueryString);
+      }
+    }
+  }
+
+  /**
+   * Helper function to retrieve, from the database, the details of a
+   * given point of reference (POR). The corresponding Place BOM
+   * object is then filled with those details.
+   */
   // //////////////////////////////////////////////////////////////////////
   bool retrieveAndFillPlace (const std::string& iOriginalKeywords,
                              const std::string& iCorrectedKeywords,
@@ -104,20 +143,26 @@ namespace OPENTREP {
     return hasRetrievedPlace;
   }
   
-  /** Helper function. */
+  /**
+   * Helper function to retrieve, from the database, the details of a
+   * given list of points of reference (POR). The corresponding Place
+   * BOM objects are then filled according to the retrieved details.
+   */
   // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlace (const MatchingDocuments& iDocument,
+  bool retrieveAndFillPlace (const MatchingDocuments& iMatchingDocuments,
                              soci::session& ioSociSession, Place& ioPlace) {
     // Note that MatchingDocuments::getTravelQuery() returns a TravelQuery_T,
     // which is actually a std::string
-    const std::string& lOriginalKeywords = iDocument.getTravelQuery();
-    const std::string& lCorrectedKeywords = iDocument.getCorrectedTravelQuery();
+    const std::string& lOriginalKeywords = iMatchingDocuments.getTravelQuery();
+    const std::string& lCorrectedKeywords =
+      iMatchingDocuments.getCorrectedTravelQuery();
     
     // Delegate
-    const Xapian::Document& lXapianDocument = iDocument.getXapianDocument();
-    const Xapian::percent& lDocPercentage = iDocument.getXapianPercentage();
+    const Xapian::Document& lXapianDocument =
+      iMatchingDocuments.getBestXapianDocument();
+    const Xapian::percent& lWeight = iMatchingDocuments.getBestCombinedWeight();
     return retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                 lXapianDocument, lDocPercentage,
+                                 lXapianDocument, lWeight,
                                  ioSociSession, ioPlace);
   }
   
@@ -181,94 +226,6 @@ namespace OPENTREP {
       
       // DEBUG
       OPENTREP_LOG_DEBUG ("Retrieved Document: " << lPlace.toString());
-
-      // Retrieve the list of extra matching documents (documents
-      // matching with the same weight/percentage)
-      const std::string& lOriginalKeywords =
-        lMatchingDocuments.getTravelQuery();
-      const std::string& lCorrectedKeywords =
-        lMatchingDocuments.getCorrectedTravelQuery();
-      const Xapian::percent& lExtraDocPercentage =
-        lMatchingDocuments.getXapianPercentage();
-      const XapianDocumentList_T& lExtraDocumentList =
-        lMatchingDocuments.getExtraDocumentList();
-      for (XapianDocumentList_T::const_iterator itExtraDoc =
-             lExtraDocumentList.begin();
-           itExtraDoc != lExtraDocumentList.end(); ++itExtraDoc) {
-        // Retrieve the extra matching Xapian document
-        const Xapian::Document& lExtraDocument = *itExtraDoc;
-        
-        // Instanciate an empty place object, which will be filled from the
-        // rows retrieved from the database.
-        Place& lExtraPlace = FacPlace::instance().create();
-      
-        // Retrieve, in the MySQL database, the place corresponding to
-        // the place code located as the first word of the Xapian
-        // document data.
-        hasRetrievedPlace =
-          retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                lExtraDocument, lExtraDocPercentage,
-                                ioSociSession, lExtraPlace);
-
-        // Same remark as above
-        assert (hasRetrievedPlace == true);
-
-        // The extra matching Place object has the very same effective
-        // (Levenshtein) and allowable edit distances/errors as the
-        // main Place object.
-        lExtraPlace.setEditDistance (lEditDistance);
-        lExtraPlace.setAllowableEditDistance (lAllowableEditDistance);
-      
-        // Insert the extra matching Place object within the dedicated
-        // list within the main Place object
-        FacPlace::initLinkWithExtraPlace (lPlace, lExtraPlace);
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("Retrieved Document: " << lExtraPlace.toString());
-      }
-
-      // Retrieve the list of alternate matching documents (documents
-      // matching with the a lower weight)
-      const XapianAlternateDocumentList_T& lAlternateDocumentList =
-        lMatchingDocuments.getAlternateDocumentList();
-      for (XapianAlternateDocumentList_T::const_iterator itAlterDoc =
-             lAlternateDocumentList.begin();
-           itAlterDoc != lAlternateDocumentList.end(); ++itAlterDoc) {
-        // Retrieve the alternate matching Xapian document
-        const Xapian::percent& lAlterDocPercentage = itAlterDoc->first;
-        const Xapian::Document& lAlterDocument = itAlterDoc->second;
-        
-        // Instanciate an empty place object, which will be filled from the
-        // rows retrieved from the database.
-        Place& lAlterPlace = FacPlace::instance().create();
-      
-        // Retrieve, in the MySQL database, the place corresponding to
-        // the place code located as the first word of the Xapian
-        // document data.
-        hasRetrievedPlace =
-          retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                lAlterDocument, lAlterDocPercentage,
-                                ioSociSession, lAlterPlace);
-
-        // Same remark as above
-        assert (hasRetrievedPlace == true);
-
-        // The extra matching Place object has the very same effective
-        // (Levenshtein) and allowable edit distances/errors as the
-        // main Place object.
-        lAlterPlace.setEditDistance (lEditDistance);
-        lAlterPlace.setAllowableEditDistance (lAllowableEditDistance);
-        
-        // Insert the alternate matching Place object within the dedicated
-        // list within the main Place object
-        FacPlace::initLinkWithAlternatePlace (lPlace, lAlterPlace);
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("Retrieved Document: " << lAlterPlace.toString());
-      }
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("Fully retrieved Document: " << lPlace.toString());
     }
   }
   
@@ -281,7 +238,7 @@ namespace OPENTREP {
    *
    * @param TravelQuery_T& The query string.
    * @param const Xapian::Database& The Xapian index/database.
-   * @param ResultHolder& List of results.
+   * @param ResultCombination& List of ResultHolder objects.
    * @param WordList_T& List of non-matched words of the query string.
    */
   // //////////////////////////////////////////////////////////////////////
@@ -345,26 +302,10 @@ namespace OPENTREP {
           OPENTREP::addResult (lQueryString, iDatabase, lMatchingDocuments,
                                lResultHolder);
 
+          // When a single-word string is unmatched/unknown by/from Xapian,
+          // add it to the dedicated list (i.e., ioWordList).
           if (lMatchedString.empty() == true) {
-            /**
-             * There was no full-text match. So, add the string to the list
-             * of unknown words, only when there is a single word. Otherwise,
-             * the string is simply discarded.
-             */
-            WordList_T lQueryStringWordList;
-            WordHolder::tokeniseStringIntoWordList (lQueryString,
-                                                    lQueryStringWordList);
-            if (lQueryStringWordList.size() == 1) {
-              // Add the unknown word, only when that latter has not already
-              // been stored, and when it is not black-listed.
-              const bool shouldBeKept = Filter::shouldKeep ("", lQueryString);
-              
-              WordSet_T::const_iterator itWord = lWordSet.find (lQueryString);
-              if (shouldBeKept == true && itWord == lWordSet.end()) {
-                lWordSet.insert (lQueryString);
-                ioWordList.push_back (lQueryString);
-              }
-            }
+            OPENTREP::addUnmatchedWord (lQueryString, ioWordList, lWordSet);
           }
         }
 
@@ -377,29 +318,49 @@ namespace OPENTREP {
                             << std::endl << std::endl);
       }
 
-      // Calculate the weights for the full-text matches
-      const bool doesBestMatchingResultHolderExist =
-        ioResultCombination.chooseBestMatchingResultHolder();
-
       // DEBUG
       OPENTREP_LOG_DEBUG ("*********************");
-
-      if (doesBestMatchingResultHolderExist == true) {
-        const ResultHolder& lBestMatchingResultHolder =
-          ioResultCombination.getBestMatchingResultHolder();
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("Best matching ResultHolder: "
-                            << lBestMatchingResultHolder);
-
-      } else {
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("No best matching ResultHolder object.");
-      }
 
     } catch (const Xapian::Error& error) {
       OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
       throw XapianException (error.get_msg());
+    }
+  }
+
+  /**
+   * Select the best matching string partition, based on the results of
+   * several rules, that are all materialised by weighting percentages:
+   * <ul>
+   *   <li>Xapian-based full-text match. Score type: XAPIAN_PCT</li>
+   *   <li>Schedule-derived PageRank for the point of reference (POR).
+   *       Score type: PAGE_RANK</li>
+   *   <li>User input. Score type: USER_INPUT</li>
+   * </ul>
+   * \see ScoreType.hpp for the various types of score.
+   *
+   * The score for the combination (score type: COMBINATION) is simply the
+   * product of all the scores/weighting percentages.
+   *
+   * @param ResultCombination& List of ResultHolder objects.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void chooseBestMatchingResultHolder (ResultCombination& ioResultCombination) {
+
+    // Calculate the weights for the full-text matches
+    const bool doesBestMatchingResultHolderExist =
+      ioResultCombination.chooseBestMatchingResultHolder();
+
+    if (doesBestMatchingResultHolderExist == true) {
+      const ResultHolder& lBestMatchingResultHolder =
+        ioResultCombination.getBestMatchingResultHolder();
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("Best matching ResultHolder: "
+                          << lBestMatchingResultHolder);
+
+    } else {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("No best matching ResultHolder object.");
     }
   }
 
@@ -435,24 +396,34 @@ namespace OPENTREP {
       FacResultCombination::instance().create (iTravelQuery);
 
     /**
-     * 1. Perform all the full-text matches, and fill accordingly the
-     *    list of Result instances.
+     * 1.1. Perform all the full-text matches, and fill accordingly the
+     *      list of Result instances.
      */
     OPENTREP::searchString (iTravelQuery, lXapianDatabase, lResultCombination,
                             ioWordList);
 
     /**
-     * 2. Calculate the weights according to the PageRank algorithm.
+     * 1.2. Calculate/set the PageRanks for all the matching documents
      */
-    //
+    lResultCombination.calculatePageRanks();
 
     /**
-     * 3. Calculate the weights according to heuristic rules.
+     * 1.3. Calculate/set the user input weights for all the matching documents
      */
-    //
+    lResultCombination.calculateUserInputWeights();
 
     /**
-     * 4. Create the list of Place objects, for each of which a
+     * 1.4. Calculate/set the combined weights for all the matching documents
+     */
+    lResultCombination.calculateCombinedWeights();
+
+    /**
+     * 2. Calculate the best matching scores / weighting percentages.
+     */
+    OPENTREP::chooseBestMatchingResultHolder (lResultCombination);
+
+    /**
+     * 3. Create the list of Place objects, for each of which a
      *    look-up is made in the SQL database (e.g., MySQL or Oracle)
      *    to retrieve complementary data.
      */
@@ -467,7 +438,7 @@ namespace OPENTREP {
                         << std::endl);
 
     /**
-     * 5. Create the list of Location structures, which are light copies
+     * 4. Create the list of Location structures, which are light copies
      *    of the Place objects. Those (Location) structures are passed
      *    back to the caller of the service.
      */

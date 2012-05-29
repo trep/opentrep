@@ -7,7 +7,6 @@
 // Boost
 #include <boost/lexical_cast.hpp>
 // OpenTrep
-#include <opentrep/basic/float_utils.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/PlaceKey.hpp>
@@ -28,10 +27,12 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string MatchingDocuments::describeKey() const {
     std::ostringstream oStr;
-    oStr << "`" << _queryString << "'";
+    oStr << "'" << _queryString << "' ";
     if (_correctedQueryString.empty() == false) {
-      oStr << " (corrected into `" << _correctedQueryString
-           << "' with an edit distance/error of " << _editDistance << ")";
+      oStr << "(corrected into '" << _correctedQueryString
+           << "' with an edit distance/error of " << _editDistance
+           << " over an allowable distance of " << _allowableEditDistance
+           << ") ";
     }
     return oStr.str();
   }
@@ -41,57 +42,30 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeKey();
     
-    if (_hasFullTextMatched == false) {
-      oStr << "{ no match }" << std::endl;
+    if (_documentList.empty() == true) {
+      oStr << "No match" << std::endl;
       return oStr.str();
     }
     assert (_hasFullTextMatched == true);
 
-    const Xapian::docid& lDocID = _document.get_docid();
-    oStr << " => Document ID " << lDocID << " matching at " << _percentage
-         << "% (edit distance of " << _editDistance << " over "
-         << _allowableEditDistance << ") [" << _document.get_data() << "]";
+    unsigned short idx = 0;
+    for (DocumentList_T::const_iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc, ++idx) {
+      const XapianDocumentPair_T& lDocumentPair = *itDoc;
 
-    if (_documentList.empty() == false) {
-      oStr << "  along with " << _documentList.size()
-           << " other equivalent matching document(s) { ";
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
 
-      unsigned short idx = 0;
-      for (XapianDocumentList_T::const_iterator itDoc = _documentList.begin();
-           itDoc != _documentList.end(); ++itDoc, ++idx) {
-        const Xapian::Document& lXapianDoc = *itDoc;
-        const Xapian::docid& lDocID = lXapianDoc.get_docid();
-        if (idx != 0) {
-          oStr << ", ";
-        }
-        oStr << "Doc ID " << lDocID << " [" << lXapianDoc.get_data() << "]";
+      const ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      if (idx != 0) {
+        oStr << ", ";
       }
-      oStr << " }";
+      oStr << "Doc ID: " << lDocID << ", matching with ("
+           << lScoreBoard.describe() << "), containing: '"
+           << lXapianDoc.get_data() << "'";
     }
-    
-    if (_alternateDocumentList.empty() == false) {
-      oStr << "  and with still " << _alternateDocumentList.size()
-           << " other less matching document(s) { ";
 
-      unsigned short idx = 0;
-      for (XapianAlternateDocumentList_T::const_iterator itDoc =
-             _alternateDocumentList.begin();
-           itDoc != _alternateDocumentList.end(); ++itDoc, ++idx) {
-        const Xapian::percent& lPercentage = itDoc->first;
-        const Xapian::Document& lXapianDoc = itDoc->second;
-        const Xapian::docid& lDocID = lXapianDoc.get_docid();
-        if (idx != 0) {
-          oStr << ", ";
-        }
-        oStr << lDocID << " / " << lPercentage << "% ["
-             << lXapianDoc.get_data() << "]";
-      }
-      oStr << " }." << std::endl;
-      
-    } else {
-      oStr << std::endl;
-    }
-    
     return oStr.str();
   }   
 
@@ -99,11 +73,38 @@ namespace OPENTREP {
   void MatchingDocuments::toStream (std::ostream& ioOut) const {
     ioOut << describe();
   }
-  
+
   // //////////////////////////////////////////////////////////////////////
   void MatchingDocuments::fromStream (std::istream& ioIn) {
   }
-  
+
+  // //////////////////////////////////////////////////////////////////////
+  void MatchingDocuments::addDocument (const Xapian::Document& iDocument,
+                                       const Score_T& iScore) {
+    // The document is created at the time of (Xapian-based) full-text matching
+    const ScoreType lXapianScoreType (ScoreType::XAPIAN_PCT);
+
+    // Create a ScoreBoard structure
+    const ScoreBoard lScoreBoard (lXapianScoreType, iScore);
+
+    // Retrieve the ID of the Xapian document
+    const Xapian::docid& lDocID = iDocument.get_docid();
+
+    // Create a (Xapian document, score board) pair, so as to store
+    // the document along with its corresponding score board
+    const XapianDocumentPair_T lDocumentPair (iDocument, lScoreBoard);
+
+    // Insert the just created pair into the dedicated (STL) list
+    _documentList.push_back (lDocumentPair);
+
+    // Insert the just created pair into the dedicated (STL) map
+    const bool hasInsertBeenSuccessful =
+      _documentMap.insert (DocumentMap_T::value_type (lDocID,
+                                                      lDocumentPair)).second;
+    // Sanity check
+    assert (hasInsertBeenSuccessful == true);
+  }
+
   // //////////////////////////////////////////////////////////////////////
   PlaceKey MatchingDocuments::getPrimaryKey(const Xapian::Document& iDocument) {
     // Retrieve the Xapian document data
@@ -127,6 +128,21 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  const Xapian::Document& MatchingDocuments::getBestXapianDocument() const {
+    // Retrieve the Xapian document corresponding to the doc ID of the
+    // best matching document
+    DocumentMap_T::const_iterator itDoc = _documentMap.find (_bestDocID);
+    assert (itDoc != _documentMap.end());
+
+    //
+    const XapianDocumentPair_T& lDocumentPair = itDoc->second;
+    const Xapian::Document& oXapianDocument = lDocumentPair.first;
+
+    //
+    return oXapianDocument;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   Percentage_T MatchingDocuments::
   getPageRank (const Xapian::Document& iDocument) {
     // Retrieve the Xapian document data
@@ -148,46 +164,67 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  NbOfMatches_T MatchingDocuments::notifyIfExtraMatch () const {
-    NbOfMatches_T oNbOfMatches = _documentList.size();
-    
-    // DEBUG
-    if (oNbOfMatches != 0) {
-      OPENTREP_LOG_NOTIFICATION ("NOTE: the following document gets several "
-                                 << "matches with the same matching percentage."
-                                 << " You may want to alter the SQL database "
-                                 << "and re-index the Xapian database, so as "
-                                 << "to allow a more specific match:"
-                                 << std::endl << describe());
-    }
+  void MatchingDocuments::calculatePageRanks() {
+    // Browse the list of Xapian documents
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
 
-    // Return the total number of matches (main plus extras)
-    return (1 + oNbOfMatches);
+      // Retrieve the Xapian document
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+
+      // Extract the PageRank from the document data.      
+      const Score_T& lPageRank = getPageRank (lXapianDoc);
+
+      // Store the PageRank weight
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+      lScoreBoard.setScore (ScoreType::PAGE_RANK, lPageRank);
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Percentage_T MatchingDocuments::calculateMatchingWeight() const {
-    Percentage_T oPercentage = 0.0;
+  void MatchingDocuments::calculateUserInputWeights() {
+    /**
+     * Nothing for now. The user input weight, by construction,
+     * should come from the user, not from the document. So,
+     * parameters would be needed along the call to that method.
+     */
+  }
 
-    if (hasFullTextMatched() == true) {
-      // Retrieve the matching percentage for the corresponding string only
-      oPercentage = static_cast<Percentage_T> (_percentage);
+  // //////////////////////////////////////////////////////////////////////
+  void MatchingDocuments::calculateCombinedWeights() {
+    Percentage_T lMaxPercentage = 0.0;
+
+    // Browse the list of Xapian documents
+    Xapian::docid lBestDocID = 0;
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document ID
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
 
       /**
-       * Trick to decrease the overall percentage of word combinations,
-       * when compared to the whole string. For instance, {"san francisco"}
-       * will have a percentage of 99.999, compared to {"san", "francisco"}
-       * which will have a percentage of 99.998.
+       * Calculate the combined weight, resulting from all the rules
+       * (e.g., full-text matching, PageRank, user input).
        */
-      const FloatingPoint<Percentage_T> lComparablePct (oPercentage);
-      const FloatingPoint<Percentage_T> lFullMatchingPct (100.0);
-      if (lComparablePct.AlmostEquals (lFullMatchingPct) == true) {
-        oPercentage = 99.999;
-      }
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+      const Percentage_T& lPercentage = lScoreBoard.calculateMatchingWeight();
 
+      // Register the document, if it is the best matching until now
+      if (lPercentage > lMaxPercentage) {
+        lMaxPercentage = lPercentage;
+        lBestDocID = lDocID;
+      }
+    }
+
+    //
+    if (hasFullTextMatched() == true) {
       // DEBUG
       OPENTREP_LOG_DEBUG ("        [pct] '" << describeKey()
-                          << "' matches at " << oPercentage << "%");
+                          << "' matches at " << lMaxPercentage
+                          << "% for doc ID: " << lBestDocID);
 
     } else {
       // Check whether or not the query string is made of a single word
@@ -207,13 +244,13 @@ namespace OPENTREP {
          * therefore an unknown word. The percentage is set to 100%, though,
          * to not disqualify the rest of the string set.
          */
-        oPercentage = 100.0;
+        lMaxPercentage = 100.0;
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
                            << "' does not match, but non black-listed "
                            << "single-word string, i.e., "
-                           << oPercentage << "%");
+                           << lMaxPercentage << "%");
 
       } else {
         /**
@@ -224,18 +261,21 @@ namespace OPENTREP {
          * percentage. The corresponding string set will therefore have
          * almost no chance to being selected/chosen.
          */
-        oPercentage = 5.0;
+        lMaxPercentage = 5.0;
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
                            << "' does not match, and either multiple-word "
                            << "string or black-listed i.e., "
-                           << oPercentage << "%");
+                           << lMaxPercentage << "%");
       }
     }
 
-    //
-    return oPercentage;
+    // Store the doc ID of the best matching document
+    setBestDocID (lBestDocID);
+
+    // Store the best weight
+    setBestCombinedWeight (lMaxPercentage);
   }
 
 }

@@ -69,35 +69,64 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Percentage_T ResultHolder::calculateMatchingWeights() const {
-    Percentage_T oOverallMatchingPercentage = 100.0;
+  void ResultHolder::calculatePageRanks() const {
+    // Browse the Result objects
+    for (ResultList_T::const_iterator itResult = _resultList.begin();
+         itResult != _resultList.end(); ++itResult) {
+      Result* lResult_ptr = *itResult;
+      assert (lResult_ptr != NULL);
+
+      //
+      lResult_ptr->calculatePageRanks();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void ResultHolder::calculateUserInputWeights() const {
+    // Browse the Result objects
+    for (ResultList_T::const_iterator itResult = _resultList.begin();
+         itResult != _resultList.end(); ++itResult) {
+      Result* lResult_ptr = *itResult;
+      assert (lResult_ptr != NULL);
+
+      //
+      lResult_ptr->calculateUserInputWeights();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void ResultHolder::calculateCombinedWeights() {
+    Percentage_T oCombinedPercentage = 100.0;
 
     // When there is no result, the weight is obviously 0%
     if (_resultList.empty() == true) {
-      oOverallMatchingPercentage = 0.0;
+      oCombinedPercentage = 0.0;
     }
 
-    // Calculate the matching percentage of all the partitions
+    // Browse the Result objects
     for (ResultList_T::const_iterator itResult = _resultList.begin();
          itResult != _resultList.end(); ++itResult) {
-      const Result* lResult_ptr = *itResult;
+      Result* lResult_ptr = *itResult;
       assert (lResult_ptr != NULL);
 
-      // Retrieve the weight from the full-text matching process
-      const Percentage_T& lMatchingPercentage =
-        lResult_ptr->calculateMatchingWeight();
+      // Calculate the combined weights, for all the matching documents,
+      // and set the best combined weight to the greatest one
+      lResult_ptr->calculateCombinedWeights();
 
-      // Combine it with the other matching percentages
-      oOverallMatchingPercentage *= lMatchingPercentage / 100.0;
+      // Retrieve the just calculated combined weight
+      const Percentage_T& lPercentage = lResult_ptr->getBestCombinedWeight();
+
+      // Take into account the current weight into the total
+      oCombinedPercentage *= lPercentage / 100.0;
     }
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("      [pct] '" << describeKey()
-                        << "' overall matches at "
-                        << oOverallMatchingPercentage << "%");
+                        << "' overall matches at " << oCombinedPercentage
+                        << "%");
 
-    //
-    return oOverallMatchingPercentage;
+    // Store the combined weight
+    setCombinedWeight (oCombinedPercentage);
   }
 
 }

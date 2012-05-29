@@ -93,6 +93,48 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::calculatePageRanks() const {
+    // Browse the ResultHolder objects
+    for (ResultHolderList_T::const_iterator itResultHolder =
+           _resultHolderList.begin();
+         itResultHolder != _resultHolderList.end(); ++itResultHolder) {
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
+      assert (lResultHolder_ptr != NULL);
+
+      //
+      lResultHolder_ptr->calculatePageRanks();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::calculateUserInputWeights() const {
+    // Browse the ResultHolder objects
+    for (ResultHolderList_T::const_iterator itResultHolder =
+           _resultHolderList.begin();
+         itResultHolder != _resultHolderList.end(); ++itResultHolder) {
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
+      assert (lResultHolder_ptr != NULL);
+
+      //
+      lResultHolder_ptr->calculateUserInputWeights();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::calculateCombinedWeights() const {
+    // Browse the ResultHolder objects
+    for (ResultHolderList_T::const_iterator itResultHolder =
+           _resultHolderList.begin();
+         itResultHolder != _resultHolderList.end(); ++itResultHolder) {
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
+      assert (lResultHolder_ptr != NULL);
+
+      //
+      lResultHolder_ptr->calculateCombinedWeights();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   bool ResultCombination::chooseBestMatchingResultHolder() {
 
     // Identify the ResultHolder object corresponding to the best
@@ -101,12 +143,12 @@ namespace OPENTREP {
     for (ResultHolderList_T::const_iterator itResultHolder =
            _resultHolderList.begin();
          itResultHolder != _resultHolderList.end(); ++itResultHolder) {
-      const ResultHolder* lResultHolder_ptr = *itResultHolder;
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
       assert (lResultHolder_ptr != NULL);
 
       // Retrieve the weight from the full-text matching process
       const Percentage_T& lMatchingPercentage =
-        lResultHolder_ptr->calculateMatchingWeights();
+        lResultHolder_ptr->getCombinedWeight();
 
       // Override the maximum percentage, if needed
       if (lMatchingPercentage > lMaxMatchingPercentage) {

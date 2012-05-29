@@ -55,6 +55,21 @@ namespace OPENTREP {
   public:
     // /////////// Business methods ///////////
     /**
+     * Calculate/set the PageRanks for all the matching documents
+     */
+    void calculatePageRanks() const;
+
+    /**
+     * Calculate/set the user input weights for all the matching documents
+     */
+    void calculateUserInputWeights() const;
+
+    /**
+     * Calculate/set the combined weights for all the matching documents
+     */
+    void calculateCombinedWeights() const;
+
+    /**
      * Choose the best matching ResultHolder object from the underlying list.
      *
      * @return bool Whether or not a best matching ResultHolder exists.
