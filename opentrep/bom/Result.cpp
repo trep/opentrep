@@ -3,9 +3,16 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
-#include <string>
 #include <sstream>
+// Boost
+#include <boost/tokenizer.hpp>
+#include <boost/lexical_cast.hpp>
 // OpenTREP
+#include <opentrep/bom/Filter.hpp>
+#include <opentrep/bom/WordHolder.hpp>
+#include <opentrep/bom/StringPartition.hpp>
+#include <opentrep/bom/Levenshtein.hpp>
+#include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -14,8 +21,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   Result::Result (const TravelQuery_T& iQueryString,
                   const Xapian::Database& iDatabase)
-    : _resultHolder (NULL), _queryString (iQueryString), _database (iDatabase),
-      _matchingDocuments (iQueryString) {
+    : _resultHolder (NULL), _database (iDatabase),
+      _queryString (iQueryString), _hasFullTextMatched (false) {
     init();
   }
   
@@ -36,17 +43,46 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   std::string Result::describeKey() const {
-    return describeShortKey();
+    std::ostringstream oStr;
+    oStr << "'" << describeShortKey() << "' ";
+    if (_correctedQueryString.empty() == false) {
+      oStr << "(corrected into '" << _correctedQueryString
+           << "' with an edit distance/error of " << _editDistance
+           << " over an allowable distance of " << _allowableEditDistance
+           << ") ";
+    }
+    return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
   std::string Result::toString() const {
     std::ostringstream oStr;
-    if (hasFullTextMatched() == true) {
-      oStr << _matchingDocuments.describe();
-    } else {
-      oStr << "No full-text match for '" << _queryString << "'";
+    oStr << describeKey();
+    
+    if (_documentList.empty() == true) {
+      oStr << "No match" << std::endl;
+      return oStr.str();
     }
+    assert (_hasFullTextMatched == true);
+
+    unsigned short idx = 0;
+    for (DocumentList_T::const_iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc, ++idx) {
+      const XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
+
+      const ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      if (idx != 0) {
+        oStr << ", ";
+      }
+      oStr << "Doc ID: " << lDocID << ", matching with ("
+           << lScoreBoard.describe() << "), containing: '"
+           << lXapianDoc.get_data() << "'";
+    }
+
     return oStr.str();
   }   
 
@@ -60,18 +96,468 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  void Result::addDocument (const Xapian::Document& iDocument,
+                            const Score_T& iScore) {
+    // The document is created at the time of (Xapian-based) full-text matching
+    const ScoreType lXapianScoreType (ScoreType::XAPIAN_PCT);
+
+    // Create a ScoreBoard structure
+    const ScoreBoard lScoreBoard (lXapianScoreType, iScore);
+
+    // Retrieve the ID of the Xapian document
+    const Xapian::docid& lDocID = iDocument.get_docid();
+
+    // Create a (Xapian document, score board) pair, so as to store
+    // the document along with its corresponding score board
+    const XapianDocumentPair_T lDocumentPair (iDocument, lScoreBoard);
+
+    // Insert the just created pair into the dedicated (STL) list
+    _documentList.push_back (lDocumentPair);
+
+    // Insert the just created pair into the dedicated (STL) map
+    const bool hasInsertBeenSuccessful =
+      _documentMap.insert (DocumentMap_T::value_type (lDocID,
+                                                      lDocumentPair)).second;
+    // Sanity check
+    assert (hasInsertBeenSuccessful == true);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Result::fillResult (const Xapian::MSet& iMatchingSet) {
+    /**
+     * Retrieve the best matching documents, each with its own
+     * (Xapian-based) full-text score / weighting percentage.
+     */
+    for (Xapian::MSetIterator itDoc = iMatchingSet.begin();
+         itDoc != iMatchingSet.end(); ++itDoc) {
+      const Xapian::percent& lXapianPercentage = itDoc.get_percent();
+      const Xapian::Document& lDocument = itDoc.get_document();
+      addDocument (lDocument, lXapianPercentage);
+    }
+  }
+
+  /**
+   * @brief Helper function
+   *
+   * Given the size of the phrase, determine the allowed edit distance for
+   * spelling purpose. For instance, an edit distance of 1 will be allowed
+   * on a 4-letter word, while an edit distance of 3 will be allowed on an
+   * 11-letter word.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  static unsigned int calculateEditDistance (const TravelQuery_T& iPhrase) {
+    NbOfErrors_T oEditDistance = 2;
+
+    const NbOfErrors_T lQueryStringSize = iPhrase.size();
+    
+    oEditDistance = lQueryStringSize / 4;
+    return oEditDistance;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  std::string Result::fullTextMatch (const Xapian::Database& iDatabase,
+                                     const TravelQuery_T& iQueryString,
+                                     Xapian::MSet& ioMatchingSet) {
+    std::string oMatchedString;
+
+    // Catch any Xapian::Error exceptions thrown
+    try {
+      
+      // Build the query object
+      Xapian::QueryParser lQueryParser;
+      lQueryParser.set_database (iDatabase);
+
+      /**
+       * As explained in http://www.xapian.org/docs/queryparser.html,
+       * Xapian::Query::OP_NEAR may be better than Xapian::Query::OP_PHRASE,
+       * but only available from version 1.0.13 of Xapian.
+       */
+      // lQueryParser.set_default_op (Xapian::Query::OP_ADJ);
+      lQueryParser.set_default_op (Xapian::Query::OP_PHRASE);
+
+      // DEBUG
+      /*
+        OPENTREP_LOG_DEBUG ("Query parser `" << lQueryParser.get_description()
+        << "'");
+      */
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("        --------");
+        
+      // Start an enquire session
+      Xapian::Enquire enquire (iDatabase);
+
+      /**
+       * The Xapian::QueryParser::parse_query() method aggregates all
+       * the words with operators inbetween them (here, the "PHRASE"
+       * operator).  With the above example ('sna francicso'), it
+       * yields "sna PHRASE 2 francicso".
+       */
+      const Xapian::Query& lXapianQuery =
+        lQueryParser.parse_query (iQueryString,
+                                  Xapian::QueryParser::FLAG_BOOLEAN
+                                  | Xapian::QueryParser::FLAG_PHRASE
+                                  | Xapian::QueryParser::FLAG_LOVEHATE);
+
+      // Give the query object to the enquire session
+      enquire.set_query (lXapianQuery);
+
+      // Get the top 10 results of the query
+      ioMatchingSet = enquire.get_mset (0, 10);
+
+      // Display the results
+      int nbMatches = ioMatchingSet.size();
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("      Query string: `" << iQueryString
+                          << "', i.e.: `" << lXapianQuery.get_description()
+                          << "' => " << nbMatches << " result(s) found");
+
+      if (nbMatches != 0) {
+        // Store the effective (Levenshtein) edit distance/error
+        const NbOfErrors_T lEditDistance = 0;
+        setEditDistance (lEditDistance);
+
+        // Store the allowable edit distance/error
+        setAllowableEditDistance (lEditDistance);
+
+        //
+        oMatchedString = iQueryString;
+
+        // Store the fact that there has been a full-text match
+        setHasFullTextMatched (true);
+
+        // Store the corrected string (the same as the given string, here,
+        // as there that latter directly gave full-text matches).
+        setCorrectedQueryString (oMatchedString);
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("        Query string: `" << iQueryString
+                            << "' provides " << nbMatches << " exact matches.");
+
+        return oMatchedString;
+      }  
+      assert (ioMatchingSet.empty() == true);
+
+      /**
+       * Since there is no match, we search for a spelling suggestion, if any.
+       * With the above example, 'sna francisco' yields the suggestion
+       * 'san francisco'.
+       */
+      const NbOfErrors_T& lAllowableEditDistance =
+        calculateEditDistance (iQueryString);
+      
+      // Let Xapian find a spelling correction (if any)
+      const std::string& lCorrectedString =
+        iDatabase.get_spelling_suggestion(iQueryString, lAllowableEditDistance);
+
+      // If the correction is no better than the original string, there is
+      // no need to go further: there is no match.
+      if (lCorrectedString.empty() == true
+          || lCorrectedString == iQueryString) {
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("        Query string: `"
+                            << iQueryString << "' provides no match, "
+                            << "and there is no spelling suggestion, "
+                            << "even with an edit distance of "
+                            << lAllowableEditDistance);
+
+        // Store the fact that there has not been any full-text match
+        setHasFullTextMatched (false);
+
+        // Leave the string empty
+        return oMatchedString;
+      }
+      assert (lCorrectedString.empty() == false
+              && lCorrectedString != iQueryString);
+
+      // Calculate the effective (Levenshtein) edit distance/error
+      const NbOfErrors_T& lEditDistance =
+        Levenshtein::getDistance (iQueryString, lCorrectedString);
+
+      /**
+       * Since there is no match, we search on the corrected string.       
+       *
+       * As, with the above example, the full corrected string is
+       * 'san francisco', it yields the query "san PHRASE 2 francisco",
+       * which should provide matches.
+       */
+      const Xapian::Query& lCorrectedXapianQuery = 
+        lQueryParser.parse_query (lCorrectedString,
+                                  Xapian::QueryParser::FLAG_BOOLEAN
+                                  | Xapian::QueryParser::FLAG_PHRASE
+                                  | Xapian::QueryParser::FLAG_LOVEHATE);
+
+      enquire.set_query (lCorrectedXapianQuery);
+      ioMatchingSet = enquire.get_mset (0, 10);
+
+      // Display the results
+      nbMatches = ioMatchingSet.size();
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("      Corrected query string: `" << lCorrectedString
+                          << "', i.e.: `"
+                          << lCorrectedXapianQuery.get_description()
+                          << "' => " << nbMatches << " result(s) found");
+
+      if (nbMatches != 0) {
+        // Store the effective (Levenshtein) edit distance/error
+        setEditDistance (lEditDistance);
+
+        // Store the allowable edit distance/error
+        setAllowableEditDistance (lAllowableEditDistance);
+
+        //
+        oMatchedString = lCorrectedString;
+
+        // Store the fact that there has been a full-text match
+        setHasFullTextMatched (true);
+
+        // Store the corrected string
+        setCorrectedQueryString (oMatchedString);
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("        Query string: `"
+                            << iQueryString << "', spelling suggestion: `"
+                            << lCorrectedString
+                            << "', with a Levenshtein edit distance of "
+                            << lEditDistance
+                            << " over an allowable edit distance of "
+                            << lAllowableEditDistance << ", provides "
+                            << nbMatches << " matches.");
+
+        //
+        return oMatchedString;
+      }
+
+      // Error
+      OPENTREP_LOG_ERROR ("        Query string: `"
+                          << iQueryString << "', spelling suggestion: `"
+                          << lCorrectedString
+                          << "', with a Levenshtein edit distance of "
+                          << lEditDistance
+                          << " over an allowable edit distance of "
+                          << lAllowableEditDistance << ", provides no match, "
+                          << "which is not consistent with the existence of "
+                          << "the spelling correction.");
+      assert (false);
+      
+    } catch (const Xapian::Error& error) {
+      OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
+      throw XapianException (error.get_msg());
+    }
+
+    // Store the fact that there has not been any full-text match
+    setHasFullTextMatched (false);
+
+    return oMatchedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string Result::fullTextMatch (const Xapian::Database& iDatabase,
+                                     const TravelQuery_T& iQueryString) {
+    std::string oMatchedString;
+
+    // Catch any Xapian::Error exceptions thrown
+    try {
+      
+      // DEBUG
+      OPENTREP_LOG_DEBUG("      ----------------");
+      OPENTREP_LOG_DEBUG("      Current query string: '"<< iQueryString << "'");
+
+      // Check whether the string should be filtered out
+      const bool isToBeAdded = Filter::shouldKeep ("", iQueryString);
+
+      Xapian::MSet lMatchingSet;
+      if (isToBeAdded == true) {
+        oMatchedString = fullTextMatch (iDatabase, iQueryString, lMatchingSet);
+      }
+
+      // Create the corresponding documents (from the Xapian MSet object)
+      fillResult (lMatchingSet);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("      ==> " << toString());
+      OPENTREP_LOG_DEBUG ("      ----------------");
+
+    } catch (const Xapian::Error& error) {
+      OPENTREP_LOG_ERROR ("Xapian-related error: "  << error.get_msg());
+      throw XapianException (error.get_msg());
+    }
+
+    return oMatchedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  PlaceKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
+    // Retrieve the Xapian document data
+    const std::string& lDocumentData = iDocument.get_data();
+
+    // Tokenise the string into words
+    WordList_T lWordList;
+    WordHolder::tokeniseStringIntoWordList (lDocumentData, lWordList);
+    assert (lWordList.size() > 3);
+
+    // By convention (within OpenTrep), the first three words of the Xapian
+    // document data string constitute the primary key of the place
+    WordList_T::const_iterator itWord = lWordList.begin();
+    const std::string& lIataCode = *itWord;
+    ++itWord; const std::string& lIcaoCode = *itWord;
+    ++itWord; const std::string& lGeonamesIDStr = *itWord;
+    const GeonamesID_T lGeonamesID =
+      boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
+
+    return PlaceKey (lIataCode, lIcaoCode, lGeonamesID);
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  const Xapian::Document& Result::getBestXapianDocument() const {
+    // Retrieve the Xapian document corresponding to the doc ID of the
+    // best matching document
+    DocumentMap_T::const_iterator itDoc = _documentMap.find (_bestDocID);
+    assert (itDoc != _documentMap.end());
+
+    //
+    const XapianDocumentPair_T& lDocumentPair = itDoc->second;
+    const Xapian::Document& oXapianDocument = lDocumentPair.first;
+
+    //
+    return oXapianDocument;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  Percentage_T Result::getPageRank (const Xapian::Document& iDocument) {
+    // Retrieve the Xapian document data
+    const std::string& lDocumentData = iDocument.get_data();
+
+    // Tokenise the string into words
+    WordList_T lWordList;
+    WordHolder::tokeniseStringIntoWordList (lDocumentData, lWordList);
+    assert (lWordList.size() >= 4);
+
+    // By convention (within OpenTrep), the fourth word of the Xapian
+    // document data string constitutes the PageRank percentage of the place
+    WordList_T::const_iterator itWord = lWordList.begin();
+    ++itWord; ++itWord; ++itWord; const std::string& lPercentageStr = *itWord;
+    const Percentage_T oPercentage =
+      boost::lexical_cast<Percentage_T> (lPercentageStr);
+
+    return oPercentage;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
   void Result::calculatePageRanks() {
-    _matchingDocuments.calculatePageRanks();
+    // Browse the list of Xapian documents
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+
+      // Extract the PageRank from the document data.      
+      const Score_T& lPageRank = getPageRank (lXapianDoc);
+
+      // Store the PageRank weight
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+      lScoreBoard.setScore (ScoreType::PAGE_RANK, lPageRank);
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
   void Result::calculateUserInputWeights() {
-    _matchingDocuments.calculateUserInputWeights();
+    /**
+     * Nothing for now. The user input weight, by construction,
+     * should come from the user, not from the document. So,
+     * parameters would be needed along the call to that method.
+     */
   }
 
   // //////////////////////////////////////////////////////////////////////
   void Result::calculateCombinedWeights() {
-    _matchingDocuments.calculateCombinedWeights();
+    Percentage_T lMaxPercentage = 0.0;
+
+    // Browse the list of Xapian documents
+    Xapian::docid lBestDocID = 0;
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document ID
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
+
+      /**
+       * Calculate the combined weight, resulting from all the rules
+       * (e.g., full-text matching, PageRank, user input).
+       */
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+      const Percentage_T& lPercentage = lScoreBoard.calculateMatchingWeight();
+
+      // Register the document, if it is the best matching until now
+      if (lPercentage > lMaxPercentage) {
+        lMaxPercentage = lPercentage;
+        lBestDocID = lDocID;
+      }
+    }
+
+    //
+    if (hasFullTextMatched() == true) {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("        [pct] '" << describeKey()
+                          << "' matches at " << lMaxPercentage
+                          << "% for doc ID: " << lBestDocID);
+
+    } else {
+      // Check whether or not the query string is made of a single word
+      WordList_T lWordList;
+      WordHolder::tokeniseStringIntoWordList (_queryString, lWordList);
+      NbOfWords_T nbOfWords = lWordList.size();
+
+      /**
+       * Check whether that word should be filtered out (e.g., less than
+       * 3 characters, words like 'international', 'airport', etc).
+       */
+      const bool shouldBeKept = Filter::shouldKeep ("", _queryString);
+
+      if (nbOfWords == 1 && shouldBeKept == true) {
+        /**
+         * There is no full-text match for that single-word query. That is
+         * therefore an unknown word. The percentage is set to 100%, though,
+         * to not disqualify the rest of the string set.
+         */
+        lMaxPercentage = 100.0;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
+                           << "' does not match, but non black-listed "
+                           << "single-word string, i.e., "
+                           << lMaxPercentage << "%");
+
+      } else {
+        /**
+         * There is no full-text match for that query, which is made either
+         * of several words or of a single black-listed word (e.g., 'airport').
+         * The corresponding percentage is set to something low (5%),
+         * in order to significantly decrease the overall matching
+         * percentage. The corresponding string set will therefore have
+         * almost no chance to being selected/chosen.
+         */
+        lMaxPercentage = 5.0;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
+                           << "' does not match, and either multiple-word "
+                           << "string or black-listed i.e., "
+                           << lMaxPercentage << "%");
+      }
+    }
+
+    // Store the doc ID of the best matching document
+    setBestDocID (lBestDocID);
+
+    // Store the best weight
+    setBestCombinedWeight (lMaxPercentage);
   }
 
 }
