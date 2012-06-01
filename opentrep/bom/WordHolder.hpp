@@ -10,30 +10,48 @@
 
 namespace OPENTREP {
 
-  /** Class wrapping utility functions to transform back and forth
-      strings from and into a list of words. */
+  /**
+   * @brief Class wrapping utility functions to transform back and forth
+   * strings from and into a list of words.
+   */
   class WordHolder : public BomAbstract {
     friend class FacWordHolder;
   public:
 
     // /////////////// Business Methods ////////////////
-    /** Tokenise a string into a list of words (STL strings).
-        <br>The Boost.Tokenizer library is used. */
-    static void tokeniseStringIntoWordList (const std::string& iPhrase,
-                                            WordList_T& ioWordList);
+    /**
+     * Tokenise a string into a list of words (STL strings).
+     *
+     * The Boost.Tokenizer library is used.
+     */
+    static void tokeniseStringIntoWordList (const TravelQuery_T&, WordList_T&);
 
-    /** Serialise a list of words (STL strings) into a single (STL) string. */
+    /**
+     * Tokenise a Xapian document data into a list of words (STL strings).
+     *
+     * The Boost.Tokenizer library is used.
+     */
+    static void tokeniseDocIntoWordList (const TravelQuery_T&, WordList_T&);
+
+    /**
+     * Serialise a list of words (STL strings) into a single (STL) string.
+     */
     static std::string createStringFromWordList (const WordList_T& iWordList);
     
   private:
     // ////////////// Constructors and Destructors /////////////
-    /** Default constructor. */
-    WordHolder ();
-    /** Default copy constructor. */
+    /**
+     * Default constructor.
+     */
+    WordHolder();
+    /**
+     * Default copy constructor.
+     */
     WordHolder (const WordHolder&);
-    /** Destructor. */
-    ~WordHolder ();
-
+    /**
+     * Destructor.
+     */
+    ~WordHolder();
     
   private:
     // /////////////// Attributes ////////////////

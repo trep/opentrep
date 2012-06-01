@@ -22,31 +22,48 @@ typedef std::vector<std::string> WordList_T;
 
 
 // //////// Constants //////
-/** Default name and location for the log file. */
+/**
+ * Default name and location for the log file.
+ */
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-searcher.log");
 
-/** Default name and location for the Xapian database. */
+/**
+ * Default name and location for the Xapian database.
+ */
 const std::string K_OPENTREP_DEFAULT_DATABSE_FILEPATH("/tmp/opentrep/traveldb");
 
-/** Default travel query string, to be seached against the Xapian database. */
+/**
+ * Default travel query string, to be seached against the Xapian database.
+ */
 const std::string K_OPENTREP_DEFAULT_QUERY_STRING ("sna francicso rio de janero lso angles reykyavki");
 
-/** Default name and location for the Xapian database. */
+/**
+ * State whether or not the database should be used by default.
+ */
+const bool K_OPENTREP_DEFAULT_USE_DB = true;
+
+/**
+ * Default name and location for the Xapian database.
+ */
 const std::string K_OPENTREP_DEFAULT_DB_USER ("geo");
 const std::string K_OPENTREP_DEFAULT_DB_PASSWD ("geo");
 const std::string K_OPENTREP_DEFAULT_DB_DBNAME ("geo_trep");
 const std::string K_OPENTREP_DEFAULT_DB_HOST ("localhost");
 const std::string K_OPENTREP_DEFAULT_DB_PORT ("3306");
 
-/** Default type for the search request.
-    <br>
-    <ul>
-      <li>0 = Full text</li>
-      <li>1 = Coordinates</li> 
-    </ul> */
+/**
+ * Default type for the search request.
+ *  <br>
+ *  <ul>
+ *    <li>0 = Full text</li>
+ *    <li>1 = Coordinates</li> 
+ *  </ul>
+ */
 const unsigned short K_OPENTREP_DEFAULT_SEARCH_TYPE = 0;
 
-/** Default error distance for spelling corrections. */
+/**
+ * Default error distance for spelling corrections.
+ */
 const unsigned short K_OPENTREP_DEFAULT_SPELLING_ERROR_DISTANCE = 3;
 
 
@@ -105,7 +122,7 @@ int readConfiguration (int argc, char* argv[],
                        unsigned short& ioSpellingErrorDistance, 
                        std::string& ioQueryString,
                        std::string& ioDatabaseFilepath, 
-                       std::string& ioLogFilename,
+                       std::string& ioLogFilename, bool& ioIsDBUsed,
                        std::string& ioDBUser, std::string& ioDBPasswd,
                        std::string& ioDBHost, std::string& ioDBPort,
                        std::string& ioDBDBName, unsigned short& ioSearchType) {
@@ -115,6 +132,9 @@ int readConfiguration (int argc, char* argv[],
     ioQueryString = K_OPENTREP_DEFAULT_QUERY_STRING;
   }
   
+  // Default for the database usage
+  ioIsDBUsed = K_OPENTREP_DEFAULT_USE_DB;
+
   // Transform the query string into a list of words (STL strings)
   WordList_T lWordList;
   tokeniseStringIntoWordList (ioQueryString, lWordList);
@@ -139,6 +159,8 @@ int readConfiguration (int argc, char* argv[],
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
+    ("nodb,n",
+     "Whether or not the database should be used (0 = no DB, 1 = with DB)")
     ("user,u",
      boost::program_options::value< std::string >(&ioDBUser)->default_value(K_OPENTREP_DEFAULT_DB_USER),
      "SQL database username (e.g., geo)")
@@ -207,6 +229,13 @@ int readConfiguration (int argc, char* argv[],
     return K_OPENTREP_EARLY_RETURN_STATUS;
   }
 
+  if (vm.count ("nodb")) {
+    ioIsDBUsed = false;
+  }
+  const std::string isDBUsedStr = (ioIsDBUsed == true)?"yes":"no";
+  std::cout << "The database should be used? " << isDBUsedStr << std::endl;
+   
+
   if (vm.count ("database")) {
     ioDatabaseFilepath = vm["database"].as< std::string >();
     std::cout << "Xapian database filepath is: " << ioDatabaseFilepath
@@ -254,6 +283,49 @@ int readConfiguration (int argc, char* argv[],
   return 0;
 }
 
+/**
+ * Helper function
+ */
+std::string parseQuery (OPENTREP::OPENTREP_Service& ioOpentrepService,
+                        const OPENTREP::TravelQuery_T& iTravelQuery) {
+  std::ostringstream oStr;
+
+  // Query the Xapian database (index)
+  OPENTREP::WordList_T lNonMatchedWordList;
+  OPENTREP::LocationList_T lLocationList;
+  const OPENTREP::NbOfMatches_T nbOfMatches =
+    ioOpentrepService.interpretTravelRequest (iTravelQuery, lLocationList,
+                                              lNonMatchedWordList);
+
+  oStr << nbOfMatches << " (geographical) location(s) have been found "
+       << "matching your query (`" << iTravelQuery << "'). "
+       << lNonMatchedWordList.size() << " words were left unmatched."
+       << std::endl;
+      
+  if (nbOfMatches != 0) {
+    OPENTREP::NbOfMatches_T idx = 1;
+    for (OPENTREP::LocationList_T::const_iterator itLocation =
+           lLocationList.begin();
+         itLocation != lLocationList.end(); ++itLocation, ++idx) {
+      const OPENTREP::Location& lLocation = *itLocation;
+      oStr << " [" << idx << "]: " << lLocation << std::endl;
+    }
+  }
+
+  if (lNonMatchedWordList.empty() == false) {
+    oStr << "List of unmatched words:" << std::endl;
+
+    OPENTREP::NbOfMatches_T idx = 1;
+    for (OPENTREP::WordList_T::const_iterator itWord =
+           lNonMatchedWordList.begin();
+         itWord != lNonMatchedWordList.end(); ++itWord, ++idx) {
+      const OPENTREP::Word_T& lWord = *itWord;
+      oStr << " [" << idx << "]: " << lWord << std::endl;
+    }
+  }
+
+  return oStr.str();
+}
 
 // /////////////// M A I N /////////////////
 int main (int argc, char* argv[]) {
@@ -290,6 +362,7 @@ int main (int argc, char* argv[]) {
     std::string lXapianDatabaseNameStr;
 
     // SQL database parameters
+    bool isDBUsed (true);
     std::string lDBUser;
     std::string lDBPasswd;
     std::string lDBHost;
@@ -305,7 +378,7 @@ int main (int argc, char* argv[]) {
     // Call the command-line option parser
     const int lOptionParserStatus = 
       readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
-                         lXapianDatabaseNameStr, lLogFilename,
+                         lXapianDatabaseNameStr, lLogFilename, isDBUsed,
                          lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName,
                          lSearchType);
 
@@ -323,47 +396,31 @@ int main (int argc, char* argv[]) {
     logOutputFile.open (lLogFilename.c_str());
     logOutputFile.clear();
 
-    // Initialise the context
-    const OPENTREP::TravelDatabaseName_T
-      lXapianDatabaseName (lXapianDatabaseNameStr);
-    OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
-                                                lXapianDatabaseName);
-
     if (lSearchType == 0) {
-      // Query the Xapian database (index)
-      OPENTREP::WordList_T lNonMatchedWordList;
-      OPENTREP::LocationList_T lLocationList;
-      const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.interpretTravelRequest (lTravelQuery, lLocationList,
-                                                lNonMatchedWordList);
 
-      std::cout << nbOfMatches << " (geographical) location(s) have been found "
-                << "matching your query (`" << lTravelQuery << "'). "
-                << lNonMatchedWordList.size() << " words were left unmatched."
-                << std::endl;
-      
-      if (nbOfMatches != 0) {
-        OPENTREP::NbOfMatches_T idx = 1;
-        for (OPENTREP::LocationList_T::const_iterator itLocation =
-               lLocationList.begin();
-             itLocation != lLocationList.end(); ++itLocation, ++idx) {
-          const OPENTREP::Location& lLocation = *itLocation;
-          std::cout << " [" << idx << "]: " << lLocation << std::endl;
-        }
+      if (isDBUsed == true) {
+        // Initialise the context
+        const OPENTREP::TravelDatabaseName_T
+          lXapianDatabaseName (lXapianDatabaseNameStr);
+        OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
+                                                    lXapianDatabaseName);
+
+        // Parse the query and retrieve the places from the database
+        const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
+        std::cout << lOutput << std::endl;
+
+      } else {
+        // Initialise the context
+        const OPENTREP::TravelDatabaseName_T
+          lXapianDatabaseName (lXapianDatabaseNameStr);
+        OPENTREP::OPENTREP_Service opentrepService (logOutputFile,
+                                                    lXapianDatabaseName);
+
+        // Parse the query and retrieve the places from Xapian only
+        const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
+        std::cout << lOutput;
       }
 
-      if (lNonMatchedWordList.empty() == false) {
-        std::cout << "List of unmatched words:" << std::endl;
-        
-        OPENTREP::NbOfMatches_T idx = 1;
-        for (OPENTREP::WordList_T::const_iterator itWord =
-               lNonMatchedWordList.begin();
-             itWord != lNonMatchedWordList.end(); ++itWord, ++idx) {
-          const OPENTREP::Word_T& lWord = *itWord;
-          std::cout << " [" << idx << "]: " << lWord << std::endl;
-        }
-      }
-      
     } else {
       std::cout << "Finding the airports closest to: " << lTravelQuery
                 << std::endl;

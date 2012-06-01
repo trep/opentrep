@@ -29,7 +29,7 @@ namespace OPENTREP {
       XAPIAN_PCT,
       PAGE_RANK,
       PAX_NB,
-      USER_INPUT,
+      HEURISTIC,
       LAST_VALUE
     } EN_ScoreType;
 

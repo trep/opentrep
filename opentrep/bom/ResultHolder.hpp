@@ -18,6 +18,7 @@ namespace OPENTREP {
 
   // Forward declarations
   class ResultCombination;
+  struct StringSet;
 
   /**
    * @brief Class wrapping functions on a list of Result objects.
@@ -26,7 +27,7 @@ namespace OPENTREP {
     friend class FacResultCombination;
     friend class FacResultHolder;
   public:
-    // ////////////// Getters /////////////
+    // ////////////////////// Getters /////////////////////
     /**
      * Get the query string.
      */
@@ -48,9 +49,14 @@ namespace OPENTREP {
       return _combinedWeight;
     }
 
+    /**
+     * Get the list of corrected strings
+     */
+    StringSet getCorrectedStringSet() const;
+
 
   public:
-    // ////////////// Setters /////////////
+    // ////////////////////// Setters /////////////////////
     /**
      * Set the combined weight, for all the rules (full-text, PageRank, etc)
      */
@@ -67,9 +73,9 @@ namespace OPENTREP {
     void calculatePageRanks() const;
 
     /**
-     * Calculate/set the user input weights for all the matching documents
+     * Calculate/set the heuristic weights for all the matching documents
      */
-    void calculateUserInputWeights() const;
+    void calculateHeuristicWeights() const;
 
     /**
      * Calculate/set the combined weights for all the matching documents

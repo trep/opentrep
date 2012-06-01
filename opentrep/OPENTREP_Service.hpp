@@ -18,7 +18,7 @@ namespace OPENTREP {
   // Forward declaration
   class OPENTREP_ServiceContext;
 
-  
+
   /** 
    * @brief Interface for the OPENTREP Services.
    */
@@ -44,8 +44,17 @@ namespace OPENTREP {
     NbOfMatches_T interpretTravelRequest (const std::string& iTravelQuery,
                                           LocationList_T&, WordList_T&);
 
-    
+
     // ////////// Constructors and destructors //////////
+    /**
+     *  Constructor.
+     *
+     * @param std::ostream& Output log stream (for instance, std::cout).
+     * @param const TravelDatabaseName_T& File-path of the Xapian
+     *                                    index/database. 
+     */
+    OPENTREP_Service (std::ostream& ioLogStream, const TravelDatabaseName_T&);
+
     /**
      *  Constructor.
      *
@@ -62,17 +71,26 @@ namespace OPENTREP {
      */
     ~OPENTREP_Service();
 
-    
+
   private:
     // /////// Construction and Destruction helper methods ///////
     /**
      * Default constructor. 
      */
-    OPENTREP_Service ();
+    OPENTREP_Service();
     /**
      * Default copy constructor. 
      */
     OPENTREP_Service (const OPENTREP_Service&);
+
+    /**
+     * Initialise.
+     *
+     * @param std::ostream& Output log stream (for instance, std::cout).
+     * @param const TravelDatabaseName_T& File-path of the Xapian
+     *                                    index/database. 
+     */
+    void init (std::ostream& ioLogStream, const TravelDatabaseName_T&);
 
     /**
      * Initialise.
@@ -88,9 +106,9 @@ namespace OPENTREP {
     /**
      *  Finalise. 
      */
-    void finalise ();
+    void finalise();
 
-    
+
   private:
     // ///////// Service Context /////////
     /**

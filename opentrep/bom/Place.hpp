@@ -42,7 +42,7 @@ namespace OPENTREP {
   public:
     // //////////////// Getters ///////////////
     /**
-     * Get the primary key.
+     * Get the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
     const PlaceKey& getKey() const {
       return _key;
@@ -239,7 +239,7 @@ namespace OPENTREP {
   public:
     // ////////////////// Setters /////////////////
     /**
-     * Set the primary key.
+     * Set the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
     void setKey (const PlaceKey& iKey) {
       _key = iKey;
@@ -466,9 +466,15 @@ namespace OPENTREP {
     
   private:
     /**
+     * Main constructor.
+     */
+    Place (const PlaceKey&);
+
+    /**
      * Default constructor.
      */
     Place();
+
     /**
      * Default copy constructor.
      */
@@ -494,7 +500,7 @@ namespace OPENTREP {
     PlaceHolder* _placeHolder;
     
     /**
-     * Parent (main) Place (not always defined,for instance if the
+     * Parent (main) Place (not always defined, for instance if the
      * current Place object is itself a main one).
      */
     Place* _mainPlace;

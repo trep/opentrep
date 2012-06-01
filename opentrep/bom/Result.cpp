@@ -8,11 +8,13 @@
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
 // OpenTREP
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/Levenshtein.hpp>
 #include <opentrep/bom/PlaceKey.hpp>
+#include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -45,11 +47,14 @@ namespace OPENTREP {
   std::string Result::describeKey() const {
     std::ostringstream oStr;
     oStr << "'" << describeShortKey() << "' ";
-    if (_correctedQueryString.empty() == false) {
+    if (_correctedQueryString.empty() == false
+        && _correctedQueryString != _queryString) {
       oStr << "(corrected into '" << _correctedQueryString
            << "' with an edit distance/error of " << _editDistance
            << " over an allowable distance of " << _allowableEditDistance
-           << ") ";
+           << ") - ";
+    } else {
+      oStr << "- ";
     }
     return oStr.str();
   }
@@ -96,16 +101,46 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  const Xapian::Document& Result::
+  getDocument (const Xapian::docid& iDocID) const {
+    // Retrieve the Xapian document corresponding to the doc ID of the
+    // best matching document
+    DocumentMap_T::const_iterator itDoc = _documentMap.find (iDocID);
+
+    if (itDoc == _documentMap.end()) {
+      OPENTREP_LOG_ERROR ("The Xapian document (ID = " << iDocID
+                          << ") can not be found in the Result object "
+                          << describeKey());
+    }
+    assert (itDoc != _documentMap.end());
+
+    //
+    const XapianDocumentPair_T& lDocumentPair = itDoc->second;
+    const Xapian::Document& oXapianDocument = lDocumentPair.first;
+
+    //
+    return oXapianDocument;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Result::addDocument (const Xapian::Document& iDocument,
                             const Score_T& iScore) {
     // The document is created at the time of (Xapian-based) full-text matching
     const ScoreType lXapianScoreType (ScoreType::XAPIAN_PCT);
 
     // Create a ScoreBoard structure
-    const ScoreBoard lScoreBoard (lXapianScoreType, iScore);
+    const ScoreBoard lScoreBoard (_queryString, lXapianScoreType, iScore);
 
     // Retrieve the ID of the Xapian document
     const Xapian::docid& lDocID = iDocument.get_docid();
+
+    /**
+    // DEBUG
+    const PlaceKey& lPlaceKey = getPrimaryKey (iDocument);
+    OPENTREP_LOG_DEBUG ("        '" << describeShortKey()
+                        << "', " << lPlaceKey << " (doc ID = " << lDocID
+                        << ") has the following weight: " << iScore << "%");
+    */
 
     // Create a (Xapian document, score board) pair, so as to store
     // the document along with its corresponding score board
@@ -123,6 +158,12 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  const PlaceKey Result::getBestDocPrimaryKey() const {
+    const Xapian::Document& lBestDoc = getBestXapianDocument();
+    return getPrimaryKey (lBestDoc);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Result::fillResult (const Xapian::MSet& iMatchingSet) {
     /**
      * Retrieve the best matching documents, each with its own
@@ -134,6 +175,35 @@ namespace OPENTREP {
       const Xapian::Document& lDocument = itDoc.get_document();
       addDocument (lDocument, lXapianPercentage);
     }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Result::fillPlace (Place& ioPlace) const {
+    // Set the original and corrected/suggested keywords
+    ioPlace.setOriginalKeywords (_queryString);
+    ioPlace.setCorrectedKeywords (_correctedQueryString);
+
+    // Set the effective (Levenshtein) edit distance/error, as
+    // well as the allowable edit distance/error
+    ioPlace.setEditDistance (_editDistance);
+    ioPlace.setAllowableEditDistance (_allowableEditDistance);
+
+    // Set the Xapian document ID
+    ioPlace.setDocID (_bestDocID);
+    
+    // Set the matching percentage
+    ioPlace.setPercentage (_bestCombinedWeight);
+    
+    // Retrieve the best matching Xapian document
+    const Xapian::Document& lDocument = getBestXapianDocument();
+    
+    // Retrieve the parameters of the best matching document
+    const PlaceKey& lKey = getPrimaryKey (lDocument);
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Place key: " << lKey << " - Xapian ID " << _bestDocID
+                        << ", " << _bestCombinedWeight << "% [" << _bestDocData
+                        << "]");
   }
 
   /**
@@ -152,6 +222,53 @@ namespace OPENTREP {
     
     oEditDistance = lQueryStringSize / 4;
     return oEditDistance;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  PlaceKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
+    // Retrieve the Xapian document data
+    const std::string& lDocumentData = iDocument.get_data();
+
+    // Tokenise the string into words
+    WordList_T lWordList;
+    WordHolder::tokeniseDocIntoWordList (lDocumentData, lWordList);
+    assert (lWordList.size() > 3);
+
+    // By convention (within OpenTrep), the first three words of the Xapian
+    // document data string constitute the primary key of the place
+    WordList_T::const_iterator itWord = lWordList.begin();
+    const std::string& lIataCode = *itWord;
+    ++itWord; const std::string& lIcaoCode = *itWord;
+    ++itWord; const std::string& lGeonamesIDStr = *itWord;
+    const GeonamesID_T lGeonamesID =
+      boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
+
+    return PlaceKey (lIataCode, lIcaoCode, lGeonamesID);
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  Percentage_T Result::getPageRank (const Xapian::Document& iDocument) {
+    // Retrieve the Xapian document data
+    const std::string& lDocumentData = iDocument.get_data();
+
+    // Tokenise the string into words
+    WordList_T lWordList;
+    WordHolder::tokeniseDocIntoWordList (lDocumentData, lWordList);
+    assert (lWordList.size() >= 4);
+
+    // By convention (within OpenTrep), the fourth word of the Xapian
+    // document data string constitutes the PageRank percentage of the place
+    WordList_T::const_iterator itWord = lWordList.begin();
+    ++itWord; ++itWord; ++itWord; const std::string& lPercentageStr = *itWord;
+    Percentage_T oPercentage =
+      boost::lexical_cast<Percentage_T> (lPercentageStr);
+
+    // Sanity check
+    if (oPercentage <= 0.0) {
+      oPercentage = K_DEFAULT_PAGE_RANK;
+    }
+
+    return oPercentage;
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -228,7 +345,7 @@ namespace OPENTREP {
         setHasFullTextMatched (true);
 
         // Store the corrected string (the same as the given string, here,
-        // as there that latter directly gave full-text matches).
+        // as that latter directly gave full-text matches).
         setCorrectedQueryString (oMatchedString);
 
         // DEBUG
@@ -389,63 +506,6 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
-    // Retrieve the Xapian document data
-    const std::string& lDocumentData = iDocument.get_data();
-
-    // Tokenise the string into words
-    WordList_T lWordList;
-    WordHolder::tokeniseStringIntoWordList (lDocumentData, lWordList);
-    assert (lWordList.size() > 3);
-
-    // By convention (within OpenTrep), the first three words of the Xapian
-    // document data string constitute the primary key of the place
-    WordList_T::const_iterator itWord = lWordList.begin();
-    const std::string& lIataCode = *itWord;
-    ++itWord; const std::string& lIcaoCode = *itWord;
-    ++itWord; const std::string& lGeonamesIDStr = *itWord;
-    const GeonamesID_T lGeonamesID =
-      boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
-
-    return PlaceKey (lIataCode, lIcaoCode, lGeonamesID);
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  const Xapian::Document& Result::getBestXapianDocument() const {
-    // Retrieve the Xapian document corresponding to the doc ID of the
-    // best matching document
-    DocumentMap_T::const_iterator itDoc = _documentMap.find (_bestDocID);
-    assert (itDoc != _documentMap.end());
-
-    //
-    const XapianDocumentPair_T& lDocumentPair = itDoc->second;
-    const Xapian::Document& oXapianDocument = lDocumentPair.first;
-
-    //
-    return oXapianDocument;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  Percentage_T Result::getPageRank (const Xapian::Document& iDocument) {
-    // Retrieve the Xapian document data
-    const std::string& lDocumentData = iDocument.get_data();
-
-    // Tokenise the string into words
-    WordList_T lWordList;
-    WordHolder::tokeniseStringIntoWordList (lDocumentData, lWordList);
-    assert (lWordList.size() >= 4);
-
-    // By convention (within OpenTrep), the fourth word of the Xapian
-    // document data string constitutes the PageRank percentage of the place
-    WordList_T::const_iterator itWord = lWordList.begin();
-    ++itWord; ++itWord; ++itWord; const std::string& lPercentageStr = *itWord;
-    const Percentage_T oPercentage =
-      boost::lexical_cast<Percentage_T> (lPercentageStr);
-
-    return oPercentage;
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
   void Result::calculatePageRanks() {
     // Browse the list of Xapian documents
     for (DocumentList_T::iterator itDoc = _documentList.begin();
@@ -458,24 +518,27 @@ namespace OPENTREP {
       // Extract the PageRank from the document data.      
       const Score_T& lPageRank = getPageRank (lXapianDoc);
 
-      // Store the PageRank weight
+      // Retrieve the score board for that Xapian document
       ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      // Store the PageRank weight
       lScoreBoard.setScore (ScoreType::PAGE_RANK, lPageRank);
     }
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void Result::calculateUserInputWeights() {
+  void Result::calculateHeuristicWeights() {
     /**
-     * Nothing for now. The user input weight, by construction,
-     * should come from the user, not from the document. So,
-     * parameters would be needed along the call to that method.
+     * Nothing for now. The heuristic weight, by construction,
+     * should come from the caller of the API, not from the document.
+     * So, parameters would be needed along the call to that method.
      */
   }
 
   // //////////////////////////////////////////////////////////////////////
   void Result::calculateCombinedWeights() {
     Percentage_T lMaxPercentage = 0.0;
+    std::string lBestDocData; 
 
     // Browse the list of Xapian documents
     Xapian::docid lBestDocID = 0;
@@ -486,27 +549,41 @@ namespace OPENTREP {
       // Retrieve the Xapian document ID
       const Xapian::Document& lXapianDoc = lDocumentPair.first;
       const Xapian::docid& lDocID = lXapianDoc.get_docid();
+      const std::string& lDocData = lXapianDoc.get_data();
 
       /**
        * Calculate the combined weight, resulting from all the rules
        * (e.g., full-text matching, PageRank, user input).
        */
       ScoreBoard& lScoreBoard = lDocumentPair.second;
-      const Percentage_T& lPercentage = lScoreBoard.calculateMatchingWeight();
+      const Percentage_T& lPercentage = lScoreBoard.calculateCombinedWeight();
+
+      /**
+      // DEBUG
+      const PlaceKey& lPlaceKey = getPrimaryKey (lXapianDoc);
+      OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
+                          << "', " << lPlaceKey << " (doc ID = " << lDocID
+                          << ") having the following weight: " << lPercentage
+                          << "%; whole score board: " << lScoreBoard);
+      */
 
       // Register the document, if it is the best matching until now
       if (lPercentage > lMaxPercentage) {
         lMaxPercentage = lPercentage;
         lBestDocID = lDocID;
+        lBestDocData = lDocData;
       }
     }
 
     //
     if (hasFullTextMatched() == true) {
       // DEBUG
-      OPENTREP_LOG_DEBUG ("        [pct] '" << describeKey()
+      const Xapian::Document& lXapianDoc = getDocument (lBestDocID);
+      const PlaceKey& lPlaceKey = getPrimaryKey (lXapianDoc);
+      OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
                           << "' matches at " << lMaxPercentage
-                          << "% for doc ID: " << lBestDocID);
+                          << "% for " << lPlaceKey << " (doc ID = "
+                          << lBestDocID << ")");
 
     } else {
       // Check whether or not the query string is made of a single word
@@ -529,26 +606,26 @@ namespace OPENTREP {
         lMaxPercentage = 100.0;
 
         // DEBUG
-        OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
-                           << "' does not match, but non black-listed "
-                           << "single-word string, i.e., "
+        OPENTREP_LOG_DEBUG("        [pct] '" << describeShortKey()
+                           << "' does not match, but it is a non black-listed "
+                           << "single-word string; hence, the weight is "
                            << lMaxPercentage << "%");
 
       } else {
         /**
          * There is no full-text match for that query, which is made either
          * of several words or of a single black-listed word (e.g., 'airport').
-         * The corresponding percentage is set to something low (5%),
+         * The corresponding percentage is set to something low (0.1%),
          * in order to significantly decrease the overall matching
          * percentage. The corresponding string set will therefore have
          * almost no chance to being selected/chosen.
          */
-        lMaxPercentage = 5.0;
+        lMaxPercentage = 1e-6;
 
         // DEBUG
-        OPENTREP_LOG_DEBUG("        [pct] '" << describeKey()
-                           << "' does not match, and either multiple-word "
-                           << "string or black-listed i.e., "
+        OPENTREP_LOG_DEBUG("        [pct] '" << describeShortKey()
+                           << "' does not match, and is either a multiple-word "
+                           << "string or black-listed; hence, the weight is "
                            << lMaxPercentage << "%");
       }
     }
@@ -558,6 +635,9 @@ namespace OPENTREP {
 
     // Store the best weight
     setBestCombinedWeight (lMaxPercentage);
+
+    // Store all the details of the Xapian document
+    setBestDocData (lBestDocData);
   }
 
 }

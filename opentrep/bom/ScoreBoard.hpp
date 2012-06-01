@@ -31,15 +31,42 @@ namespace OPENTREP {
   public:
     // ////////////////// Getters ////////////////
     /**
+     * Get the query string.
+     */
+    const TravelQuery_T& getQueryString() const {
+      return _queryString;
+    }
+
+    /**
      * Get the map of scores.
      */
     const ScoreMap_T& getScoreMap() const {
      return _scoreMap;
     }
 
+    /**
+     * Get the score for the given type. If no score value has
+     * already been stored for that type, return 0.
+     */
+    Score_T getScore (const ScoreType&) const;
+
+    /**
+     * Get the combined weight, if existing (0 otherwise).
+     */
+    Score_T getCombinedWeight() const {
+      return getScore (ScoreType::COMBINATION);
+    }
+
 
   public:
     // //////////////////// Setters //////////////////
+    /**
+     * Set the query string.
+     */
+    void setQueryString (const TravelQuery_T& iQueryString) {
+      _queryString = iQueryString;
+    }
+
     /**
      * Set the score for the given type. If no score value has
      * already been stored for that type, create it.
@@ -47,11 +74,18 @@ namespace OPENTREP {
     void setScore (const ScoreType&, const Score_T&);
 
     /**
+     * Set the combined weight.
+     */
+    void setCombinedWeight (const Score_T& iScore) {
+      setScore (ScoreType::COMBINATION, iScore);
+    }
+
+    /**
      * Calculate the combination of the weights for all the score types,
      * resulting from the full-text matching process, PageRank, user input,
      * etc.
      */
-    Percentage_T calculateMatchingWeight();
+    Percentage_T calculateCombinedWeight();
 
 
   public:
@@ -94,12 +128,12 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    ScoreBoard (const ScoreType&, const Score_T&);
+    ScoreBoard (const TravelQuery_T&, const ScoreType&, const Score_T&);
 
     /**
      * Default constructor.
      */
-    ScoreBoard();
+    ScoreBoard (const TravelQuery_T&);
 
     /**
      * Copy constructor.
@@ -114,6 +148,11 @@ namespace OPENTREP {
     
   private:
     // ///////////////// Attributes //////////////////
+    /**
+     * Query string having generated the set of documents.
+     */
+    TravelQuery_T _queryString;
+
     /**
      * Map of scores.
      */

@@ -7,6 +7,7 @@
 // Xapian
 #include <xapian.h>
 // OpenTrep
+#include <opentrep/bom/StringSet.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/bom/ResultHolder.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -48,11 +49,15 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeShortKey() << std::endl;
     
+    unsigned short idx = 0;
     for (ResultList_T::const_iterator itResult = _resultList.begin();
-         itResult != _resultList.end(); ++itResult) {
+         itResult != _resultList.end(); ++itResult, ++idx) {
       const Result* lResult_ptr = *itResult;
       assert (lResult_ptr != NULL);
       
+      if (idx != 0) {
+        oStr << std::endl;
+      }
       oStr << " ==> " << std::endl << lResult_ptr->toString();
     }
     
@@ -69,6 +74,24 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  StringSet ResultHolder::getCorrectedStringSet() const {
+    StringSet oStringSet;
+    for (ResultList_T::const_iterator itResult = _resultList.begin();
+         itResult != _resultList.end(); ++itResult) {
+      const Result* lResult_ptr = *itResult;
+      assert (lResult_ptr != NULL);
+
+      // Retrieve the corrected string
+      const TravelQuery_T& lCorrectedQueryString =
+        lResult_ptr->getCorrectedTravelQuery();
+      oStringSet.push_back (lCorrectedQueryString);
+    }
+
+    //
+    return oStringSet;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void ResultHolder::calculatePageRanks() const {
     // Browse the Result objects
     for (ResultList_T::const_iterator itResult = _resultList.begin();
@@ -82,7 +105,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void ResultHolder::calculateUserInputWeights() const {
+  void ResultHolder::calculateHeuristicWeights() const {
     // Browse the Result objects
     for (ResultList_T::const_iterator itResult = _resultList.begin();
          itResult != _resultList.end(); ++itResult) {
@@ -90,7 +113,7 @@ namespace OPENTREP {
       assert (lResult_ptr != NULL);
 
       //
-      lResult_ptr->calculateUserInputWeights();
+      lResult_ptr->calculateHeuristicWeights();
     }
   }
 
@@ -121,9 +144,9 @@ namespace OPENTREP {
     }
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("      [pct] '" << describeKey()
-                        << "' overall matches at " << oCombinedPercentage
-                        << "%");
+    OPENTREP_LOG_DEBUG ("      [pct] The " << describeKey()
+                        << " string partition overall matches at "
+                        << oCombinedPercentage << "%");
 
     // Store the combined weight
     setCombinedWeight (oCombinedPercentage);

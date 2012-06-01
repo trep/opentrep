@@ -19,6 +19,7 @@ namespace OPENTREP {
   // Forward declarations
   class ResultHolder;
   struct PlaceKey;
+  class Place;
 
 
   // //////////////////// Type definitions /////////////////////
@@ -47,7 +48,7 @@ namespace OPENTREP {
     friend class FacResultHolder;
     friend class FacResult;
   public:
-    // ////////////// Getters /////////////
+    // ////////////////////// Getters /////////////////////
     /**
      * Get the query string.
      */
@@ -100,6 +101,11 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the Xapian document corresponding to the given document ID.
+     */
+    const Xapian::Document& getDocument (const Xapian::docid& iDocID) const;
+
+    /**
      * Get the Xapian ID of the best matching document.
      */
     const Xapian::docid& getBestDocID() const {
@@ -114,13 +120,27 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the details of the best matching document.
+     */
+    const std::string& getBestDocData() const {
+      return _bestDocData;
+    }
+
+    /**
      * Get the best matching Xapian document.
      */
-    const Xapian::Document& getBestXapianDocument() const;
+    const Xapian::Document& getBestXapianDocument() const {
+      return getDocument (_bestDocID);
+    }
+
+    /**
+     * Get the primary key of the best matching document.
+     */
+    const PlaceKey getBestDocPrimaryKey() const;
 
 
   public:
-    // ////////////// Setters /////////////
+    // ////////////////////// Setters /////////////////////
     /**
      * Set the query string.
      */
@@ -195,18 +215,32 @@ namespace OPENTREP {
     }
     
     /**
-     * Extract the best matching Xapian documents.
+     * Set the details of the best matching document.
+     */
+    void setBestDocData (const std::string& iDocData) {
+      _bestDocData = iDocData;
+    }
+
+    /**
+     * Extract the best matching Xapian document.
      *
      * @param Xapian::MSet& The Xapian matching set. It can be empty.
      * @param Result& The holder for the Xapian documents
      *        to be stored.
      */
-    // //////////////////////////////////////////////////////////////////////
     void fillResult (const Xapian::MSet& iMatchingSet);
+
+    /**
+     * Fill the Place object with the details of the best matching
+     * Xapian document.
+     *
+     * @param Place& The Place object.
+     */
+    void fillPlace (Place&) const;
 
 
   public:
-    // /////////// Business support methods /////////
+    // /////////////////// Business support methods /////////////////
     /**
      * For all the elements (strings) of the travel query (string set),
      * perform a Xapian-based full-text match.
@@ -248,9 +282,9 @@ namespace OPENTREP {
     void calculatePageRanks();
 
     /**
-     * Calculate/set the user input weights for all the matching documents
+     * Calculate/set the heuristic weights for all the matching documents
      */
-    void calculateUserInputWeights();
+    void calculateHeuristicWeights();
 
     /**
      * Calculate/set the combined weights for all the matching documents.
@@ -275,7 +309,7 @@ namespace OPENTREP {
 
 
   public:
-    // /////////// Display support methods /////////
+    // /////////////////// Display support methods /////////////////
     /**
      * Dump a Business Object into an output stream.
      *
@@ -391,6 +425,11 @@ namespace OPENTREP {
     Percentage_T _bestCombinedWeight;
 
     /**
+     * Details of the best matching document.
+     */
+    std::string _bestDocData;
+
+      /**
      * (STL) List of Xapian documents and their associated score board.
      */
     DocumentList_T _documentList;

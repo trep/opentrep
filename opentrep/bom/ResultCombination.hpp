@@ -16,6 +16,9 @@ namespace Xapian {
 
 namespace OPENTREP {
 
+  // Forward declarations
+  struct StringSet;
+
   /**
    * @brief Class wrapping functions on a list of ResultHolder objects.
    */
@@ -51,6 +54,21 @@ namespace OPENTREP {
      */
     const ResultHolder& getBestMatchingResultHolder() const;
 
+    /**
+     * Get the weight of the best matching ResultHolder object.
+     * If there is no such object, the method throws a
+     * NoBestMatchingResultHolderException exception.
+     */
+    const Percentage_T& getBestMatchingWeight() const;
+
+    /**
+     * Get the list of corrected strings for the best matching
+     * ResultHolder object.
+     * If there is no such object, the method throws a
+     * NoBestMatchingResultHolderException exception.
+     */
+    StringSet getCorrectedStringSet() const;
+
 
   public:
     // /////////// Business methods ///////////
@@ -60,9 +78,9 @@ namespace OPENTREP {
     void calculatePageRanks() const;
 
     /**
-     * Calculate/set the user input weights for all the matching documents
+     * Calculate/set the heuristic weights for all the matching documents
      */
-    void calculateUserInputWeights() const;
+    void calculateHeuristicWeights() const;
 
     /**
      * Calculate/set the combined weights for all the matching documents
@@ -125,6 +143,7 @@ namespace OPENTREP {
      * Initialise (reset the list of documents).
      */
     void init ();
+
   private:
     /**
      * Default constructor. It should not be used.

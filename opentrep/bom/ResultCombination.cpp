@@ -7,6 +7,7 @@
 // Xapian
 #include <xapian.h>
 // OpenTrep
+#include <opentrep/bom/StringSet.hpp>
 #include <opentrep/bom/ResultHolder.hpp>
 #include <opentrep/bom/ResultCombination.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -52,6 +53,20 @@ namespace OPENTREP {
     }
     assert (_bestMatchingResultHolder != NULL);
     return *_bestMatchingResultHolder;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  const Percentage_T& ResultCombination::getBestMatchingWeight() const {
+    const ResultHolder& lResultHolder = getBestMatchingResultHolder();
+    const Percentage_T& oPercentage = lResultHolder.getCombinedWeight();
+    return oPercentage;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  StringSet ResultCombination::getCorrectedStringSet() const {
+    const ResultHolder& lResultHolder = getBestMatchingResultHolder();
+    const StringSet& oStringSet = lResultHolder.getCorrectedStringSet();
+    return oStringSet;
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -107,7 +122,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void ResultCombination::calculateUserInputWeights() const {
+  void ResultCombination::calculateHeuristicWeights() const {
     // Browse the ResultHolder objects
     for (ResultHolderList_T::const_iterator itResultHolder =
            _resultHolderList.begin();
@@ -116,7 +131,7 @@ namespace OPENTREP {
       assert (lResultHolder_ptr != NULL);
 
       //
-      lResultHolder_ptr->calculateUserInputWeights();
+      lResultHolder_ptr->calculateHeuristicWeights();
     }
   }
 
@@ -158,9 +173,17 @@ namespace OPENTREP {
     }
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("    [pct] '" << describeKey()
-                        << "' - Max weight until now: "
-                        << lMaxMatchingPercentage << "%");
+    if (_bestMatchingResultHolder != NULL) {
+      OPENTREP_LOG_DEBUG ("    [pct] The best match for the '" << describeKey()
+                          << "' string has a weight of "
+                          << lMaxMatchingPercentage
+                          << "%. It is the following string partition: "
+                          << _bestMatchingResultHolder->describeKey());
+
+    } else {
+      OPENTREP_LOG_DEBUG ("    [pct] There is no match for the '"
+                          << describeKey() << "' string");
+    }
 
     //
     const bool doesBestMatchingResultHolderExist =

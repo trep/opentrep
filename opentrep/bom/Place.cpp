@@ -12,9 +12,21 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  Place::Place () :
+  Place::Place() :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _key ("", "", 0),
+    _faaCode (""), _cityCode (""),
+    _stateCode (""), _countryCode (""),
+    _regionCode (""), _timeZoneGroup (""),
+    _latitude (0.0), _longitude (0.0), _pageRank (K_DEFAULT_PAGE_RANK),
+    _originalKeywords (""), _correctedKeywords (""), _docID (0),
+    _percentage (0), _editDistance (0), _allowableEditDistance (0) {
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  Place::Place (const PlaceKey& iPlaceKey) :
+    _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
+    _key (iPlaceKey),
     _faaCode (""), _cityCode (""),
     _stateCode (""), _countryCode (""),
     _regionCode (""), _timeZoneGroup (""),
@@ -44,7 +56,7 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  Place::~Place () {
+  Place::~Place() {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -394,9 +406,9 @@ namespace OPENTREP {
                << "locale) can be found for the following place: "
                << toShortString();
       OPENTREP_LOG_ERROR (errorStr.str());
-      throw LanguageCodeNotDefinedInNameTableException (errorStr.str());
+      // throw LanguageCodeNotDefinedInNameTableException (errorStr.str());
     }
-    assert (hasFoundNameList == true);
+    // assert (hasFoundNameList == true);
 
     // Copy the parameters from the Place object to the Location structure
     Location oLocation (_key.getIataCode(), _key.getIcaoCode(),

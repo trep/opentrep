@@ -61,33 +61,42 @@ namespace OPENTREP {
   }
 
   /**
+   * Helper function to retrieve, from the Xapian document data (string),
+   * the details of a given point of reference (POR). The corresponding
+   * Place BOM object is then filled with those details.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void retrieveAndFillPlaceFromDocData (const std::string& iDocData,
+                                        Place& ioPlace) {
+    // DEBUG
+    const PlaceKey& lKey = ioPlace.getKey();
+    const Xapian::docid& lDocID = ioPlace.getDocID();
+    OPENTREP_LOG_DEBUG (lKey << " (doc ID = " << lDocID << "): " << iDocData);
+
+    /**
+     * \todo Parse the Xapian document data and fill the Place object
+     *       with those details
+     */
+  }
+
+  /**
    * Helper function to retrieve, from the database, the details of a
    * given point of reference (POR). The corresponding Place BOM
    * object is then filled with those details.
    */
   // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlace (const std::string& iOriginalKeywords,
-                             const std::string& iCorrectedKeywords,
-                             const Xapian::Document& iDocument,
-                             const Xapian::percent& iDocPercentage,
-                             soci::session& ioSociSession, Place& ioPlace) {
+  bool retrieveAndFillPlaceFromDB (soci::session& ioSociSession,
+                                   Place& ioPlace) {
     bool hasRetrievedPlace = false;
 
-    // Set the original and corrected/suggested keywords
-    ioPlace.setOriginalKeywords (iOriginalKeywords);
-    ioPlace.setCorrectedKeywords (iCorrectedKeywords);
-    
-    // Set the matching percentage
-    ioPlace.setPercentage (iDocPercentage);
-    
-    // Retrieve the parameters of the best matching document
-    const PlaceKey& lKey = Result::getPrimaryKey (iDocument);
+    // Retrieve the key of the Place
+    const PlaceKey& lKey = ioPlace.getKey();
+
+    // Retrieve the Xapian document ID
+    const Xapian::docid& lDocID = ioPlace.getDocID();
 
     // DEBUG
-    const Xapian::docid& lDocID = iDocument.get_docid();
-    const std::string& lDocData = iDocument.get_data();
-    OPENTREP_LOG_DEBUG ("Place key: " << lKey << " - Xapian ID " << lDocID
-                        << ", " << iDocPercentage << "% [" << lDocData << "]");
+    OPENTREP_LOG_DEBUG ("Place key: " << lKey);
 
     // Fill the Place object with the row retrieved from the
     // (MySQL) database and corresponding to the given place code
@@ -103,8 +112,7 @@ namespace OPENTREP {
        */
       std::ostringstream errorStr;
       errorStr << "There is no document corresponding to " << lKey
-               << " (Xapian document ID" << lDocID
-               << " [" << lDocData << "]) in the SQL database. "
+               << " (Xapian doc ID = " << lDocID << ") in the SQL database. "
                << "It usually means that the Xapian index/database "
                << "is not synchronised with the SQL database. "
                << "[Hint] Rebuild the Xapian index/database "
@@ -116,30 +124,10 @@ namespace OPENTREP {
     return hasRetrievedPlace;
   }
   
-  /**
-   * Helper function to retrieve, from the database, the details of a
-   * given list of points of reference (POR). The corresponding Place
-   * BOM objects are then filled according to the retrieved details.
-   */
-  // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlace (const Result& iResult,
-                             soci::session& ioSociSession, Place& ioPlace) {
-    // Note that Result::getTravelQuery() returns a TravelQuery_T,
-    // which is actually a std::string
-    const std::string& lOriginalKeywords = iResult.getQueryString();
-    const std::string& lCorrectedKeywords = iResult.getCorrectedTravelQuery();
-    
-    // Delegate
-    const Xapian::Document& lXapianDocument = iResult.getBestXapianDocument();
-    const Xapian::percent& lWeight = iResult.getBestCombinedWeight();
-    return retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                 lXapianDocument, lWeight,
-                                 ioSociSession, ioPlace);
-  }
-  
   // //////////////////////////////////////////////////////////////////////
   void createPlaces (const ResultCombination& iResultCombination,
-                     soci::session& ioSociSession, PlaceHolder& ioPlaceHolder) {
+                     soci::session* ioSociSession_ptr,
+                     PlaceHolder& ioPlaceHolder) {
     
     // Retrieve the best matching ResultHolder object.
     const ResultHolder& lResultHolder =
@@ -163,34 +151,40 @@ namespace OPENTREP {
       }
       assert (hasFullTextMatched == true);
 
+      // Retrieve the primary key of the place
+      const PlaceKey& lPlaceKey = lResult_ptr->getBestDocPrimaryKey();
+
       // Instanciate an empty place object, which will be filled from the
       // rows retrieved from the database.
-      Place& lPlace = FacPlace::instance().create();
+      Place& lPlace = FacPlace::instance().create (lPlaceKey);
       
-      // Retrieve, in the MySQL database, the place corresponding to
-      // the place code located as the first word of the Xapian
-      // document data.
-      bool hasRetrievedPlace = retrieveAndFillPlace (*lResult_ptr,
-                                                     ioSociSession, lPlace);
-
-      // Retrieve the effective (Levenshtein) edit distance/error, as
-      // well as the allowable edit distance/error, and store them in
-      // the Place object.
-      const NbOfErrors_T& lEditDistance = lResult_ptr->getEditDistance();
-      const NbOfErrors_T& lAllowableEditDistance =
-        lResult_ptr->getAllowableEditDistance();
-      lPlace.setEditDistance (lEditDistance);
-      lPlace.setAllowableEditDistance (lAllowableEditDistance);
-
-      // If there was no place corresponding to the place code with
-      // the SQL database, an exception is thrown. Hence, here, by
-      // construction, the place has been retrieved from the SQL
-      // database.
-      assert (hasRetrievedPlace == true);
-
       // Insert the Place object within the PlaceHolder object
       FacPlaceHolder::initLinkWithPlace (ioPlaceHolder, lPlace);
       
+      // Fill the place with the Xapian document details.
+      lResult_ptr->fillPlace (lPlace);
+
+      if (ioSociSession_ptr != NULL) {
+        // Retrieve, in the MySQL database, the place corresponding to
+        // the place code located as the first word of the Xapian
+        // document data.
+        bool hasRetrievedPlace = retrieveAndFillPlaceFromDB (*ioSociSession_ptr,
+                                                             lPlace);
+
+        // If there was no place corresponding to the place code with
+        // the SQL database, an exception is thrown. Hence, here, by
+        // construction, the place has been retrieved from the SQL
+        // database.
+        assert (hasRetrievedPlace == true);
+
+      } else {
+        // Retrieve the Xapian document data (string)
+        const std::string& lDocData = lResult_ptr->getBestDocData();
+
+        // Fill the Place object with those details
+        retrieveAndFillPlaceFromDocData (lDocData, lPlace);
+      }
+
       // DEBUG
       OPENTREP_LOG_DEBUG ("Retrieved Document: " << lPlace.toString());
     }
@@ -255,7 +249,7 @@ namespace OPENTREP {
 
           // DEBUG
           OPENTREP_LOG_DEBUG ("    --------");
-          OPENTREP_LOG_DEBUG ("    Query string: " << lQueryString);
+          OPENTREP_LOG_DEBUG ("    Query string: '" << lQueryString << "'");
 
           // Create an empty Result object
           Result& lResult = FacResult::instance().create (lQueryString,
@@ -280,7 +274,7 @@ namespace OPENTREP {
         OPENTREP_LOG_DEBUG (std::endl
                             << "========================================="
                             << std::endl << "Result holder: "
-                            << lResultHolder.toString()
+                            << lResultHolder.toString() << std::endl
                             << "========================================="
                             << std::endl << std::endl);
       }
@@ -301,7 +295,7 @@ namespace OPENTREP {
    *   <li>Xapian-based full-text match. Score type: XAPIAN_PCT</li>
    *   <li>Schedule-derived PageRank for the point of reference (POR).
    *       Score type: PAGE_RANK</li>
-   *   <li>User input. Score type: USER_INPUT</li>
+   *   <li>Heuristic. Score type: Heuristic</li>
    * </ul>
    * \see ScoreType.hpp for the various types of score.
    *
@@ -322,18 +316,26 @@ namespace OPENTREP {
         ioResultCombination.getBestMatchingResultHolder();
 
       // DEBUG
-      OPENTREP_LOG_DEBUG ("Best matching ResultHolder: "
-                          << lBestMatchingResultHolder);
+      const StringSet& lCorrectedStringSet =
+        ioResultCombination.getCorrectedStringSet();
+      OPENTREP_LOG_DEBUG ("The best matching string partition for '"
+                          << ioResultCombination.describeShortKey() << "' is "
+                          << lBestMatchingResultHolder.describeShortKey()
+                          << ", and has got a weight of "
+                          << ioResultCombination.getBestMatchingWeight()
+                          << "%. The corrected string set is: "
+                          << lCorrectedStringSet);
 
     } else {
       // DEBUG
-      OPENTREP_LOG_DEBUG ("No best matching ResultHolder object.");
+      OPENTREP_LOG_DEBUG ("There is no match for '"
+                          << ioResultCombination.describeShortKey() << "'");
     }
   }
 
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
-  interpretTravelRequest (soci::session& ioSociSession,
+  interpretTravelRequest (soci::session* ioSociSession_ptr,
                           const TravelDatabaseName_T& iTravelDatabaseName,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
@@ -375,9 +377,9 @@ namespace OPENTREP {
     lResultCombination.calculatePageRanks();
 
     /**
-     * 1.3. Calculate/set the user input weights for all the matching documents
+     * 1.3. Calculate/set the heuristic weights for all the matching documents
      */
-    lResultCombination.calculateUserInputWeights();
+    lResultCombination.calculateHeuristicWeights();
 
     /**
      * 1.4. Calculate/set the combined weights for all the matching documents
@@ -394,7 +396,7 @@ namespace OPENTREP {
      *    look-up is made in the SQL database (e.g., MySQL or Oracle)
      *    to retrieve complementary data.
      */
-    createPlaces (lResultCombination, ioSociSession, lPlaceHolder);
+    createPlaces (lResultCombination, ioSociSession_ptr, lPlaceHolder);
       
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
