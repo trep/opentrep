@@ -10,8 +10,13 @@
 
 namespace OPENTREP {
 
+  /**
+   * 32-bit unsigned integer
+   */
+  typedef long unsigned int u_int32_t;
+
   // //////////////////////////////////////////////////////////////////////
-  static const wchar_t offsetsFromUTF8[6] = {
+  static const u_int32_t offsetsFromUTF8[6] = {
     0x00000000UL, 0x00003080UL, 0x000E2080UL,
     0x03C82080UL, 0xFA082080UL, 0x82082080UL
   };
@@ -46,12 +51,14 @@ namespace OPENTREP {
 
       uchar_t lCurrentChar = static_cast<uchar_t> (src[idx]);
 
-      // When there are multi-byte characters (e.g., for UTF-8 encoded
-      // STL strings), the size of the STL string corresponds to the
-      // total number of bytes. For instance, "München" has a size of 8
-      // bytes (and not 7 characters). However, the iteration is made on
-      // the number of characters (idx); when the end of the string is
-      // reached, the loop must therefore be exited.
+      /**
+       * When there are multi-byte characters (e.g., for UTF-8 encoded
+       * STL strings), the size of the STL string corresponds to the
+       * total number of bytes. For instance, "München" has a size of 8
+       * bytes (and not 7 characters). However, the iteration is made on
+       * the number of characters (idx); when the end of the string is
+       * reached, the loop must therefore be exited.
+       */
       if (lCurrentChar == '\0') {
         break;
       }

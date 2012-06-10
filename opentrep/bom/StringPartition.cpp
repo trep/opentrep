@@ -185,9 +185,8 @@ namespace OPENTREP {
         const std::string& lWordCombination = *itString;
 
         // Check whether that word combination has already been stored once.
-        WordSet_T::const_iterator itString =
-          lStringList.find (lWordCombination);
-        if (itString == lStringList.end()) {
+        WordSet_T::const_iterator itExistingString = lStringList.find (lWordCombination);
+        if (itExistingString == lStringList.end()) {
           // If not, add it to the dedicated list (STD set).
           lStringList.insert (lWordCombination);
         }
