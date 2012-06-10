@@ -1,0 +1,124 @@
+##################################################
+## Set up of a JavaScript-based UI for the whole chain, from the client
+## to the server, through the Web and application servers.
+##################################################
+
+##
+# A few variables
+##
+MY_USER=`whoami`
+HOME_DIR=/home/${MY_USER}
+trep_DIR=${HOME_DIR}/dev/sim/trep/trepgit
+MY_HOST=myhost
+
+##
+# Required packages (on Fedora/RedHat)
+##
+yum -y install httpd phpMyAdmin mysql-server
+yum -y install Django django-piston python-docutils python-simplejson python-zmq
+yum -y install gdal-devel gdal-python proj-devel proj-epsg proj-nad
+yum -y install soci-mysql-devel zeromq-devel stdair-devel
+
+##
+# Mirror for the client-side JavaScript libraries
+cd ${trep_DIR}/trep/ui/browser/libs
+# extJS (~40 MB)
+midori http://www.sencha.com/products/extjs/download/ext-js-4.0.7/1234
+# Then, save the archive in ${trep_DIR}/trep/ui/browser/libs
+unzip ext-4.0.7-gpl.zip && rm -f ext-4.0.7-gpl.zip
+ln -s ext-4.0.7-gpl extJS
+# jQueryUI (~1.1 MB)
+mkdir jQueryUI-1.8.16 && ln -s jQueryUI-1.8.16 jQueryUI && cd jQueryUI
+midori http://jqueryui.com/download
+# Select the "redmond" them and click the download button. Save the file
+# under the ${trep_DIR}/trep/ui/browser/libs/jQueryUI directory.
+# Note: wget http://jqueryui.com/download/jquery-ui-1.8.16.custom.zip
+# would get you the default theme, i.e., "smoothness", instead of "redmond".
+unzip jquery-ui-1.8.16.custom.zip && rm -f jquery-ui-1.8.16.custom.zip
+# Then, potentially create symbolic links for the missing version.
+# To see which versions are required, check:
+#  * ${trep_DIR}/trep/ui/browser/launcher.html
+#  * ${trep_DIR}/trep/ui/browser/trep.html
+# For instance:
+cd ${trep_DIR}/trep/ui/browser/libs/jQueryUI/js/
+ln -s jquery-1.6.2.min.js jquery-1.5.1.min.js
+ln -s jquery-ui-1.8.16.custom.min.js jquery-ui-1.8.13.custom.min.js 
+cd ${trep_DIR}/trep/ui/browser/libs/jQueryUI/css/redmond/
+ln -s jquery-ui-1.8.16.custom.css jquery-ui-1.8.13.custom.css
+
+
+##
+# Set-up of the Apache Web server
+##
+# 1. Create symbolic links to local sub-directories:
+su -
+cd /var/www/html
+ln -s ${trep_DIR}/trep/ui/browser browser
+ln -s ${HOME_DIR} localoriuser
+
+# 2. Create a proxy from Apache to Django
+#    That proxy creates a bridge from the Apache Web server to Django,
+#    expected to be launched on port 8000.
+su -
+cd ${trep_DIR}/appserver/django/setup
+./addProxyForDjangotrepApp.sh
+
+##
+# Launch Django (expected to listen on port 8000)
+##
+su - ${MY_USER}
+cd ${trep_DIR}/appserver/django/trep
+# The installation of Django-related database is not mandatory.
+# Change the database connection parameters in settings.py.
+# Be sure that the 'django' database user and 'django' database
+# are created.
+./manage.py syncdb
+#
+./manage.py runserver localhost:8000
+
+##
+# trep server
+##
+# 0. If needed, build the trepServer binary
+su - build
+cd ${trep_DIR}
+rm -rf build && mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${HOME_DIR}/dev/deliveries/trep-99.99.99 \
+ -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF ..
+# (only if a newer version of StdAir is needed, add the following line)
+# -DWITH_STDAIR_PREFIX=${HOME_DIR}/dev/deliveries/stdair-stable
+make check
+make install
+
+# 1. Launch the trepServer
+#    Note that, by default, it listens on port 5555
+./trepserver
+
+# 2. Check that the trepServer runs correctly with the trepClient
+./trepClient
+
+##
+# Set-up the JavaScript script for the grid data fecther
+##
+su - ${MY_USER}
+cd ${trep_DIR}/ui/browser/js
+# Search for 'var url = "http://[...]/api/display/inv/[...]"' (circa line 185)
+# and replace by the appropriate host name (${MY_HOST}). Remember that that
+# code may be executed by external browser clients. Hence, 'localhost' does
+# not fit in there.
+
+##
+# Install the ExtJS and jQueryUI libraries
+##
+su - ${MY_USER}
+cd ${trep_DIR}/trep/ui/browser/libs
+
+##
+# Trigger the browser
+##
+google-chrome http://${MY_HOST}/browser/launcher.html
+google-chrome http://${MY_HOST}/browser/trep.html
+
+vi trep-grid.js
+
