@@ -112,6 +112,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the Wikipedia link.
+     */
+    const std::string& getWikiLink() const {
+      return _wikiLink;
+    }
+
+    /**
      * Get the list of (American) English names for that location. 
      */
     const LocationNameList_T& getNameList () const {
@@ -256,6 +263,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the Wikipedia link.
+     */
+    void setWikiLink (const std::string& iWikiLink) {
+      _wikiLink = iWikiLink;
+    }
+    
+    /**
      * Set the list of (American) English names for that location. 
      */
     void setNameList (const LocationNameList_T& iNameList) {
@@ -371,7 +385,7 @@ namespace OPENTREP {
               const std::string& iCountryCode, const std::string& iRegionCode,
               const std::string& iTimeZoneGroup, 
               const double iLatitude, const double iLongitude,
-              const double iPageRank,
+              const double iPageRank, const std::string& iWikiLink,
               const LocationNameList_T& iNameList,
               const std::string& iOriginalKeywords,
               const std::string& iCorrectedKeywords,
@@ -459,6 +473,11 @@ namespace OPENTREP {
      * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
      */
     double _pageRank;
+
+    /**
+     * Link on the Wikipedia entry
+     */
+    std::string _wikiLink;
 
     /**
      * List of (American) English names. 

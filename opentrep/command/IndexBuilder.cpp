@@ -140,7 +140,7 @@ namespace OPENTREP {
     // Place object
     ioPlace.setDocID (lDocID);
   }
-  
+
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (soci::session& ioSociSession,
@@ -169,10 +169,7 @@ namespace OPENTREP {
     Xapian::WritableDatabase lDatabase (iTravelDatabaseName, Xapian::DB_CREATE);
 
     // Iterate through the retrieved database rows
-    const bool shouldDoReset = true;
-    bool hasStillData = DBManager::iterateOnStatement (lSelectStatement,
-                                                       lPlace,
-                                                       shouldDoReset);
+    bool hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace);
 
     /**
      * Begin a transation on the Xapian database (index).
@@ -185,20 +182,50 @@ namespace OPENTREP {
     lDatabase.begin_transaction();
 
     while (hasStillData == true) {
-      // Add the document, corresponding to the Place object, to the
-      // Xapian index
-      IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
+      /**
+       * Clone the Place object, as most of the time, the next row will correspond to
+       * a different place, and we must keep track of the fields of the last place.
+       */
+      Place& lClonedPlace = FacPlace::instance().clone (lPlace);
+
+      // Retrieve the corresponding place key
+      const PlaceKey& lLastPlaceKey = lClonedPlace.getKey();
+
+      // Iterate on the MySQL database cursor. It alters the lPlace object.
+      hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace);
+
+      // Retrieve the corresponding place key
+      const PlaceKey& lNewPlaceKey = lPlace.getKey();
+
+      // DEBUG
+      /*
+      const char* areEqualStr = (lNewPlaceKey == lLastPlaceKey)?"Yes":"No";
+      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] Cloned place key: "
+                          << lClonedPlace.describeKey() << " -- Current place key: "
+                          << lPlace.describeKey() << " -- Equals? " << areEqualStr);
+      */
 
       //
-      ++oNbOfEntries;
-        
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
-        
-      // Iterate on the MySQL database cursor
-      hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace,
-                                                    shouldDoReset);
+      if (lNewPlaceKey != lLastPlaceKey) {
+        // Add the document, associated to the Place object, to the Xapian index
+        IndexBuilder::addDocumentToIndex (lDatabase, lClonedPlace);
+
+        // Iteration
+        ++oNbOfEntries;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lClonedPlace);
+      }
     }
+
+    // Add the document, associated to the Place object, to the Xapian index
+    IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
+
+    // Iteration
+    ++oNbOfEntries;
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
 
     // Commit the pending modifications on the Xapian database (index)
     lDatabase.commit_transaction();

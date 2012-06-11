@@ -19,6 +19,7 @@ namespace OPENTREP {
     _stateCode (""), _countryCode (""),
     _regionCode (""), _timeZoneGroup (""),
     _latitude (0.0), _longitude (0.0), _pageRank (K_DEFAULT_PAGE_RANK),
+    _wikiLink (""),
     _originalKeywords (""), _correctedKeywords (""), _docID (0),
     _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
@@ -31,6 +32,7 @@ namespace OPENTREP {
     _stateCode (""), _countryCode (""),
     _regionCode (""), _timeZoneGroup (""),
     _latitude (0.0), _longitude (0.0), _pageRank (K_DEFAULT_PAGE_RANK),
+    _wikiLink (""),
     _originalKeywords (""), _correctedKeywords (""), _docID (0),
     _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
@@ -45,6 +47,7 @@ namespace OPENTREP {
     _timeZoneGroup (iPlace._timeZoneGroup),
     _latitude (iPlace._latitude), _longitude (iPlace._longitude),
     _pageRank (iPlace._pageRank),
+    _wikiLink (iPlace._wikiLink),
     _nameMatrix (iPlace._nameMatrix),
     _originalKeywords (iPlace._originalKeywords),
     _correctedKeywords (iPlace._correctedKeywords),
@@ -59,21 +62,6 @@ namespace OPENTREP {
   Place::~Place() {
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  bool Place::getNameList (const Language::EN_Language& iLanguageCode,
-                           NameList_T& ioNameList) const {
-    bool oFoundNameList = false;
-    
-    NameMatrix_T::const_iterator itNameList = _nameMatrix.find (iLanguageCode);
-    if (itNameList != _nameMatrix.end()) {
-      const Names& lNameList = itNameList->second;
-      ioNameList = lNameList.getNameList();
-      oFoundNameList = true;
-    }
-
-    return oFoundNameList;
-  }
-  
   // //////////////////////////////////////////////////////////////////////
   std::string Place::describeShortKey() const {
     std::ostringstream oStr;
@@ -97,16 +85,13 @@ namespace OPENTREP {
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
+         << ", " << _wikiLink
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance
          << ". ";
-    
-    for (NameMatrix_T::const_iterator itNameList = _nameMatrix.begin();
-         itNameList != _nameMatrix.end(); ++itNameList) {
-      const Names& lNameList = itNameList->second;
-      oStr << lNameList.describe();
-    }
+
+    oStr << _nameMatrix.describe();
     
     if (_extraPlaceList.empty() == false) {
       oStr << "; Extra matches: {";
@@ -158,21 +143,13 @@ namespace OPENTREP {
          << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
+         << ", " << _wikiLink
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _docID << ", " << _percentage
          << ", " << _editDistance << ", " << _allowableEditDistance;
 
-    NameMatrix_T::const_iterator itNameHolder = _nameMatrix.begin();
-    if (itNameHolder != _nameMatrix.end()) {
+    oStr << _nameMatrix.describe();
 
-      const Names& lNameHolder = itNameHolder->second;
-      const std::string& lFirstName = lNameHolder.getFirstName();
-
-      if (lFirstName.empty() == false) {
-        oStr << ", " << lFirstName << ".";
-      }
-    }
-    
     if (_extraPlaceList.empty() == false) {
       oStr << " " << _extraPlaceList.size() << " extra match(es)";
     }
@@ -243,6 +220,7 @@ namespace OPENTREP {
          << ", time zone group = " << _timeZoneGroup
          << ", latitude = " << _latitude
          << ", longitude = " << _longitude
+         << ", wiki = " << _wikiLink
          << ", original keywords = " << _originalKeywords
          << ", corrected keywords = " << _correctedKeywords
          << ", docID = " << _docID
@@ -256,48 +234,8 @@ namespace OPENTREP {
   std::string Place::display() const {
     std::ostringstream oStr;
     oStr << shortDisplay() << std::endl;
-    for (NameMatrix_T::const_iterator itNameList = _nameMatrix.begin();
-         itNameList != _nameMatrix.end(); ++itNameList) {
-      const Names& lNameList = itNameList->second;
-      oStr << lNameList;
-    }
+    oStr << _nameMatrix.describe();
     return oStr.str();
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  void Place::addName (const Language::EN_Language& iLanguageCode,
-                       const std::string& iName) {
-
-    // Check whether a name in that language has already been recorded
-    NameMatrix_T::iterator itNameList = _nameMatrix.find (iLanguageCode);
-    if (itNameList != _nameMatrix.end()) {
-      // Just add the name for that language
-      Names& lNameList = itNameList->second;
-
-      lNameList.addName (iName);
-
-    } else {
-      // Create a new name list for the given language
-      Names lNameList (iLanguageCode);
-      lNameList.addName (iName);
-
-      // Insert the name list with the dedicated list
-      const bool insertSucceeded =
-        _nameMatrix.insert (NameMatrix_T::value_type (iLanguageCode,
-                                                      lNameList)).second;
-      if (insertSucceeded == false) {
-        OPENTREP_LOG_ERROR ("The " << iName << " name can not be inserted in "
-                            << "the dedicated list for the "
-                            << Language::getLongLabel (iLanguageCode)
-                            << " language");
-      }
-      assert (insertSucceeded == true);
-    }
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  void Place::resetMatrix() {
-    _nameMatrix.clear();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -352,10 +290,11 @@ namespace OPENTREP {
 
     // Add the region code
     _termSet.insert (_regionCode);
-      
+
     // Retrieve the place names in all the available languages
-    for (NameMatrix_T::const_iterator itNameList = _nameMatrix.begin();
-         itNameList != _nameMatrix.end(); ++itNameList) {
+    const NameMatrix_T& lNameMatrix = _nameMatrix.getNameMatrix();
+    for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
+         itNameList != lNameMatrix.end(); ++itNameList) {
       // Retrieve the language code and locale
       // const Language::EN_Language& lLanguage = itNameList->first;
       const Names& lNames = itNameList->second;
@@ -415,7 +354,7 @@ namespace OPENTREP {
                         _key.getGeonamesID(), _faaCode, lCityCode,
                         _stateCode, _countryCode,
                         _regionCode, _timeZoneGroup,
-                        _latitude, _longitude, _pageRank, lNameList,
+                        _latitude, _longitude, _pageRank, _wikiLink, lNameList,
                         _originalKeywords, _correctedKeywords,
                         _percentage, _editDistance, _allowableEditDistance);
 

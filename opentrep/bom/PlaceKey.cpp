@@ -10,8 +10,7 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey::PlaceKey (const std::string& iIataCode,
-                      const std::string& iIcaoCode,
+  PlaceKey::PlaceKey (const std::string& iIataCode, const std::string& iIcaoCode,
                       const GeonamesID_T& iGeonamesID) :
     _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonamesID (iGeonamesID) {
   }
@@ -29,7 +28,15 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey::~PlaceKey () {
+  PlaceKey::~PlaceKey() {
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool PlaceKey::operator== (const PlaceKey& iPlaceKey) const {
+    const bool areEqual = (_iataCode == iPlaceKey._iataCode
+                           && _icaoCode == iPlaceKey._icaoCode
+                           && _geonamesID == iPlaceKey._geonamesID);
+    return areEqual;
   }
 
   // //////////////////////////////////////////////////////////////////////

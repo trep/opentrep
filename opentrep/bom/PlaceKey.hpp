@@ -72,14 +72,14 @@ namespace OPENTREP {
      *
      * @param ostream& the output stream.
      */
-    void toStream (std::ostream& ioOut) const;
+    void toStream (std::ostream&) const;
 
     /**
      * Read a structure from an input stream.
      *
      * @param istream& the input stream.
      */
-    void fromStream (std::istream& ioIn);
+    void fromStream (std::istream&);
 
     /**
      * Get the serialised version of the structure.
@@ -92,14 +92,14 @@ namespace OPENTREP {
      */
     std::string describe() const;
 
-    
+
   public:
-    // ////////////// Display methods //////////////
+    // ////////////// Constructors and destructors //////////////
     /**
      * Main constructor.
      */
     PlaceKey (const std::string& iIataCode, const std::string& iIcaoCode,
-              const GeonamesID_T& iGeonamesID);
+              const GeonamesID_T&);
 
     /**
      * Default copy constructor.
@@ -111,6 +111,17 @@ namespace OPENTREP {
      */
     ~PlaceKey();
 
+    /**
+     * Comparison operator.
+     */
+    bool operator== (const PlaceKey&) const;
+
+    /**
+     * Comparison operator.
+     */
+    bool operator!= (const PlaceKey& iPlaceKey) const {
+      return !(iPlaceKey == *this);
+    }
 
   private:
     /**

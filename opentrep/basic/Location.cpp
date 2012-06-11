@@ -17,29 +17,31 @@ namespace OPENTREP {
       _cityCode ("AAA"), _stateCode ("NA"), _countryCode ("NA"),
       _regionCode ("NA"), _timeZoneGroup ("NA"),
       _latitude (0), _longitude (0), _pageRank (K_DEFAULT_PAGE_RANK),
+      _wikiLink ("http://en.wikipedia.org"),
       _nameList (std::list<std::string> ()),
       _originalKeywords ("NA"), _correctedKeywords ("NA"),
       _percentage (0), _editDistance (0), _allowableEditDistance (0) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Location::Location (const Location& iLocation) 
-    : _iataCode (iLocation._iataCode), _icaoCode (iLocation._icaoCode),
-      _geonameID (iLocation._geonameID), _faaCode (iLocation._faaCode),
-      _cityCode (iLocation._cityCode), _stateCode (iLocation._stateCode),
-      _countryCode (iLocation._countryCode),
-      _regionCode (iLocation._regionCode),
-      _timeZoneGroup (iLocation._timeZoneGroup),
-      _latitude (iLocation._latitude), _longitude (iLocation._longitude),
-      _pageRank (iLocation._pageRank),
-      _nameList (iLocation._nameList),
-      _originalKeywords (iLocation._originalKeywords),
-      _correctedKeywords (iLocation._correctedKeywords),
-      _percentage (iLocation._percentage),
-      _editDistance (iLocation._editDistance),
-      _allowableEditDistance (iLocation._allowableEditDistance),
-      _extraLocationList (iLocation._extraLocationList),
-      _alternateLocationList (iLocation._alternateLocationList) { 
+  Location::Location (const Location& iLocation) :
+    _iataCode (iLocation._iataCode), _icaoCode (iLocation._icaoCode),
+    _geonameID (iLocation._geonameID), _faaCode (iLocation._faaCode),
+    _cityCode (iLocation._cityCode), _stateCode (iLocation._stateCode),
+    _countryCode (iLocation._countryCode),
+    _regionCode (iLocation._regionCode),
+    _timeZoneGroup (iLocation._timeZoneGroup),
+    _latitude (iLocation._latitude), _longitude (iLocation._longitude),
+    _pageRank (iLocation._pageRank),
+    _wikiLink (iLocation._wikiLink),
+    _nameList (iLocation._nameList),
+    _originalKeywords (iLocation._originalKeywords),
+    _correctedKeywords (iLocation._correctedKeywords),
+    _percentage (iLocation._percentage),
+    _editDistance (iLocation._editDistance),
+    _allowableEditDistance (iLocation._allowableEditDistance),
+    _extraLocationList (iLocation._extraLocationList),
+    _alternateLocationList (iLocation._alternateLocationList) { 
   }
     
   // //////////////////////////////////////////////////////////////////////
@@ -53,23 +55,23 @@ namespace OPENTREP {
                       const std::string& iRegionCode, 
                       const std::string& iTimeZoneGroup, 
                       const double iLatitude, const double iLongitude,
-                      const double iPageRank,
+                      const double iPageRank, const std::string& iWikiLink,
                       const LocationNameList_T& iNameList,
                       const std::string& iOriginalKeywords,
                       const std::string& iCorrectedKeywords,
                       const MatchingPercentage_T& iPercentage,
                       const NbOfErrors_T& iEditDistance,
-                      const NbOfErrors_T& iAllowableEditDistance)
-    : _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonameID (iGeonamesID),
-      _faaCode (iFaaCode), _cityCode (iCityCode), _stateCode (iStateCode),
-      _countryCode (iCountryCode), _regionCode (iRegionCode),
-      _timeZoneGroup (iTimeZoneGroup),
-      _latitude (iLatitude), _longitude (iLongitude),
-      _pageRank (iPageRank),
-      _nameList (iNameList), _originalKeywords (iOriginalKeywords),
-      _correctedKeywords (iCorrectedKeywords),
-      _percentage (iPercentage), _editDistance (iEditDistance),
-      _allowableEditDistance (iAllowableEditDistance) {
+                      const NbOfErrors_T& iAllowableEditDistance) :
+    _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonameID (iGeonamesID),
+    _faaCode (iFaaCode), _cityCode (iCityCode), _stateCode (iStateCode),
+    _countryCode (iCountryCode), _regionCode (iRegionCode),
+    _timeZoneGroup (iTimeZoneGroup),
+    _latitude (iLatitude), _longitude (iLongitude),
+    _pageRank (iPageRank), _wikiLink (iWikiLink),
+    _nameList (iNameList), _originalKeywords (iOriginalKeywords),
+    _correctedKeywords (iCorrectedKeywords),
+    _percentage (iPercentage), _editDistance (iEditDistance),
+    _allowableEditDistance (iAllowableEditDistance) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -93,7 +95,7 @@ namespace OPENTREP {
          << ", " << _stateCode << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
-         << ", " << _pageRank << "%"
+         << ", " << _pageRank << "%, " << _wikiLink
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage << "%"
          << ", " << _editDistance << ", " << _allowableEditDistance;

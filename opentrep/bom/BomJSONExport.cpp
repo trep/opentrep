@@ -104,6 +104,7 @@ namespace OPENTREP {
     ioPTLocation.put ("lon", iLocation.getLongitude());
     ioPTLocation.put ("lat", iLocation.getLatitude());
     ioPTLocation.put ("page_rank", iLocation.getPageRank());
+    ioPTLocation.put ("wiki_link", iLocation.getWikiLink());
     ioPTLocation.put ("original_keywords", iLocation.getOriginalKeywords());
     ioPTLocation.put ("corrected_keywords", iLocation.getCorrectedKeywords());
     ioPTLocation.put ("matching_percentage", iLocation.getPercentage());

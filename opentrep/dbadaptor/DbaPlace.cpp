@@ -29,64 +29,105 @@ namespace soci {
       alternate_name4, alternate_name5, alternate_name6,
       alternate_name7, alternate_name8, alternate_name9,
       alternate_name10,
-      page_rank
+      page_rank, wiki_link
     */
-    // The IATA code will be set to the default value (empty string)
-    // when the column is null
-    ioPlace.setIataCode (iPlaceValues.get<std::string> ("iata_code", ""));
-    // The ICAO code will be set to the default value (empty string)
-    // when the column is null
-    ioPlace.setIcaoCode (iPlaceValues.get<std::string> ("icao_code", ""));
-    // Geonames ID
-    ioPlace.setGeonamesID (iPlaceValues.get<int> ("geonameid"));
-    // The FAA code will be set to the default value (empty string)
-    // when the column is null
-    // ioPlace.setFaaCode (iPlaceValues.get<std::string> ("faa_code", ""));
-    // The city code will be set to the default value (empty string)
-    // when the column is null
-    ioPlace.setCityCode (iPlaceValues.get<std::string> ("city_code", ""));
-    // The state code will be set to the default value (empty string)
-    // when the column is null
-    ioPlace.setStateCode (iPlaceValues.get<std::string> ("state_code", ""));
-    ioPlace.setCountryCode (iPlaceValues.get<std::string> ("country_code"));
-    ioPlace.setRegionCode (iPlaceValues.get<std::string> ("region_code"));
-    ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("timezone"));
-    ioPlace.setLatitude (iPlaceValues.get<double> ("latitude"));
-    ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
-    ioPlace.setPageRank (iPlaceValues.get<double> ("page_rank",
-                                                   OPENTREP::K_DEFAULT_PAGE_RANK));
-    ioPlace.setDocID (iPlaceValues.get<int> ("xapian_docid"));
+
+    /*
+     * Retrieve the place key (IATA code, ICAO code, Geonames ID).
+     * If ioPlace has already that key, then only the alternate names need to be added.
+     * Otherwise, all the fields of the Place need to be set.
+     */
+    // First, retrieve the key from the database fields
+    const std::string lIataCode = iPlaceValues.get<std::string> ("iata_code", "");
+    const std::string lIcaoCode = iPlaceValues.get<std::string> ("icao_code", "");
+    const OPENTREP::GeonamesID_T lGeonameID = iPlaceValues.get<int> ("geonameid");
+    //
+    const OPENTREP::PlaceKey lNewPlaceKey (lIataCode, lIcaoCode, lGeonameID);
+
+    // Then, retrieve the key from the previous Place object
+    const OPENTREP::PlaceKey lPlaceKey = ioPlace.getKey();
+
+    // Compare the keys
+    if (lNewPlaceKey != lPlaceKey) {
+      // The place keys are different: the current place retrieved from the database
+      // is not the same as the one retrieved previously
+
+      // Re-set the (STL) sets of terms for the Xapian index, spelling
+      // dictionary, etc.
+      ioPlace.resetIndexSets();
     
-    // Names
+      // Reset the list of names of the given Place object
+      ioPlace.resetMatrix();
+
+      // The IATA code will be set to the default value (empty string)
+      // when the column is null
+      ioPlace.setIataCode (lIataCode);
+      // The ICAO code will be set to the default value (empty string)
+      // when the column is null
+      ioPlace.setIcaoCode (lIcaoCode);
+      // Geonames ID
+      ioPlace.setGeonamesID (lGeonameID);
+
+      // The FAA code will be set to the default value (empty string)
+      // when the column is null
+      // ioPlace.setFaaCode (iPlaceValues.get<std::string> ("faa_code", ""));
+
+      // The city code will be set to the default value (empty string)
+      // when the column is null
+      ioPlace.setCityCode (iPlaceValues.get<std::string> ("city_code", ""));
+
+      // The state code will be set to the default value (empty string)
+      // when the column is null
+      ioPlace.setStateCode (iPlaceValues.get<std::string> ("state_code", ""));
+      ioPlace.setCountryCode (iPlaceValues.get<std::string> ("country_code"));
+      ioPlace.setRegionCode (iPlaceValues.get<std::string> ("region_code"));
+      ioPlace.setTimeZoneGroup (iPlaceValues.get<std::string> ("timezone"));
+      ioPlace.setLatitude (iPlaceValues.get<double> ("latitude"));
+      ioPlace.setLongitude (iPlaceValues.get<double> ("longitude"));
+      ioPlace.setPageRank (iPlaceValues.get<double> ("page_rank",
+                                                     OPENTREP::K_DEFAULT_PAGE_RANK));
+      // The Wikipedia link will be set to the default value (empty string)
+      // when the column is null
+      ioPlace.setWikiLink (iPlaceValues.get<std::string> ("wiki_link", ""));
+
+      // Xapian document ID
+      ioPlace.setDocID (iPlaceValues.get<int> ("xapian_docid"));
+    }
+
+    // List of alternate names
     const std::string& lLanguageString =
       iPlaceValues.get<std::string> ("language_code", "");
     if (lLanguageString.empty() == true) {
       std::ostringstream errorStr;
-      errorStr << "The language field is empty for the place "
-               << ioPlace.getIataCode();
+      errorStr << "The language field is empty for the place " << ioPlace.getIataCode();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw OPENTREP::LanguageCodeNotDefinedInNameTableException (errorStr.str());
     }
 
+    // Convert the language code string (e.g., "en") into the corresponding enumeration
     const OPENTREP::Language::EN_Language lLanguageCode =
       OPENTREP::Language::getCode (lLanguageString);
 
-    const std::string& lClassicalName =
-      iPlaceValues.get<std::string> ("ascii_name", "");
-    ioPlace.addName (lLanguageCode, lClassicalName);
+    // Add the ASCII and UTF8 names only when the language code is standard English
+    if (lLanguageCode == OPENTREP::Language::en) {
+      // ASCII name (which may be null/empty)
+      const std::string& lAsciiName = iPlaceValues.get<std::string> ("ascii_name", "");
+      ioPlace.addName (lLanguageCode, lAsciiName);
 
-    const std::string& lExtendedName =
-      iPlaceValues.get<std::string> ("utf_name", "");
-    ioPlace.addName (lLanguageCode, lExtendedName);
+      // UTF-8 name (which may be null/empty)
+      const std::string& lExtendedName = iPlaceValues.get<std::string> ("utf_name", "");
+      ioPlace.addName (lLanguageCode, lExtendedName);
+    }
 
+    // Alternate names
     const std::string& lAlternateName1 =
       iPlaceValues.get<std::string> ("alternate_name1", "");
     ioPlace.addName (lLanguageCode, lAlternateName1);
-    
+
     const std::string& lAlternateName2 =
       iPlaceValues.get<std::string> ("alternate_name2", "");
     ioPlace.addName (lLanguageCode, lAlternateName2);
-    
+
     const std::string& lAlternateName3 =
       iPlaceValues.get<std::string> ("alternate_name3", "");
     ioPlace.addName (lLanguageCode, lAlternateName3);
@@ -119,9 +160,13 @@ namespace soci {
       iPlaceValues.get<std::string> ("alternate_name10", "");
     ioPlace.addName (lLanguageCode, lAlternateName10);
 
-    // Re-set the (STL) sets of terms for the Xapian index, spelling
-    // dictionary, etc.
-    ioPlace.resetIndexSets();
+    // DEBUG
+    /*
+    OPENTREP_LOG_DEBUG ("[Old:" << lPlaceKey << "][New:" << lNewPlaceKey << "] Lang: "
+                        << lLanguageString << " => "
+                        << OPENTREP::Language::getLongLabel (lLanguageCode)
+                        << " -- Details: " << ioPlace);
+    */
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -149,6 +194,7 @@ namespace soci {
     ioPlaceValues.set ("latitude", iPlace.getLatitude());
     ioPlaceValues.set ("longitude", iPlace.getLongitude());
     ioPlaceValues.set ("page_rank", iPlace.getPageRank());
+    ioPlaceValues.set ("wiki_link", iPlace.getWikiLink());
     ioPlaceValues.set ("xapian_docid", iPlace.getDocID());
     ioIndicator = i_ok;
   }

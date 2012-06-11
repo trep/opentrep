@@ -39,7 +39,7 @@ namespace OPENTREP {
          population, elevation, gtopo30, 
          timezone, gmt_offset, dst_offset, raw_offset, moddate, 
          is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, 
+         city_code, state_code, region_code, location_type, wiki_link,
          language_code, ascii_name, utf_name, 
          alternate_name1, alternate_name2, alternate_name3, 
          alternate_name4, alternate_name5, alternate_name6, 
@@ -49,6 +49,7 @@ namespace OPENTREP {
          from place_names as pn, place_details as rpd 
          left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.iata_code = pn.iata_code
+         order by rpd.iata_code, icao_code, geonameid
       */
 
       ioSelectStatement =
@@ -60,7 +61,7 @@ namespace OPENTREP {
          << "population, elevation, gtopo30, "
          << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
          << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, "
+         << "city_code, state_code, region_code, location_type, wiki_link, "
          << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
@@ -69,7 +70,8 @@ namespace OPENTREP {
          << "page_rank "
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
-         << "where rpd.iata_code = pn.iata_code", soci::into (ioPlace));
+         << "where rpd.iata_code = pn.iata_code "
+         << "order by rpd.iata_code, icao_code, geonameid", soci::into (ioPlace));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -101,7 +103,7 @@ namespace OPENTREP {
          population, elevation, gtopo30, 
          timezone, gmt_offset, dst_offset, raw_offset, moddate, 
          is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, 
+         city_code, state_code, region_code, location_type, wiki_link, 
          language_code, ascii_name, utf_name, 
          alternate_name1, alternate_name2, alternate_name3,
          alternate_name4, alternate_name5, alternate_name6,
@@ -132,7 +134,7 @@ namespace OPENTREP {
          << "population, elevation, gtopo30, "
          << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
          << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, "
+         << "city_code, state_code, region_code, location_type, wiki_link, "
          << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
@@ -182,7 +184,7 @@ namespace OPENTREP {
          population, elevation, gtopo30, 
          timezone, gmt_offset, dst_offset, raw_offset, moddate, 
          is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, 
+         city_code, state_code, region_code, location_type, wiki_link, 
          language_code, ascii_name, utf_name, 
          alternate_name1, alternate_name2, alternate_name3,
          alternate_name4, alternate_name5, alternate_name6,
@@ -206,7 +208,7 @@ namespace OPENTREP {
          << "population, elevation, gtopo30, "
          << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
          << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, "
+         << "city_code, state_code, region_code, location_type, wiki_link, "
          << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
@@ -252,7 +254,7 @@ namespace OPENTREP {
          population, elevation, gtopo30, 
          timezone, gmt_offset, dst_offset, raw_offset, moddate, 
          is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, 
+         city_code, state_code, region_code, location_type, wiki_link, 
          language_code, ascii_name, utf_name, 
          alternate_name1, alternate_name2, alternate_name3,
          alternate_name4, alternate_name5, alternate_name6,
@@ -275,7 +277,7 @@ namespace OPENTREP {
          << "population, elevation, gtopo30, "
          << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
          << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, "
+         << "city_code, state_code, region_code, location_type, wiki_link, "
          << "language_code, ascii_name, utf_name, "
          << "alternate_name1, alternate_name2, alternate_name3, "
          << "alternate_name4, alternate_name5, alternate_name6, "
@@ -301,25 +303,19 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool DBManager::iterateOnStatement (soci::statement& ioStatement,
-                                      Place& ioPlace,
-                                      const bool iShouldDoReset) {
+  bool DBManager::iterateOnStatement (soci::statement& ioStatement, Place& ioPlace) {
     bool hasStillData = false;
   
     try {
-
-      // Reset the list of names of the given Place object
-      if (iShouldDoReset == true) {
-        ioPlace.resetMatrix();
-      }
 
       // Retrieve the next row of Place object
       hasStillData = ioStatement.fetch();
       
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error when iterating on the SQL fetch: "
-               << lException.what();
+      errorStr << "Error when iterating on the SQL fetch: " << lException.what();
+      errorStr << ". The current place key is: " << ioPlace.describeKey()
+               << " (it may be mis-leading, though, if the key could not be retrieved).";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
@@ -382,27 +378,22 @@ namespace OPENTREP {
                                                     lSelectStatement,
                                                     lIataCode, lIcaoCode,
                                                     lGeonamesID, ioPlace);
-      const bool shouldDoReset = true;
-      bool hasStillData = iterateOnStatement (lSelectStatement, ioPlace,
-                                              shouldDoReset);
-      if (hasStillData == true) {
-        oHasRetrievedPlace = true;
-      }
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement, ioPlace);
 
-      // Sanity check
-      const bool shouldNotDoReset = false;
-      hasStillData = iterateOnStatement (lSelectStatement, ioPlace,
-                                         shouldNotDoReset);
-      if (hasStillData == true) {
-        std::ostringstream errorStr;
-        errorStr << "Error - There are multiple entries for the " << iPlaceKey
-                 << " place code in the MySQL database.";
-        OPENTREP_LOG_ERROR (errorStr.str());
-        throw MultipleRowsForASingleDocIDException (errorStr.str());
-      }
+        // It is enough to have (at least) one database retrieved row
+        if (hasStillData == true) {
+          oHasRetrievedPlace = true;
+        }
 
-      // Debug
-      // OPENTREP_LOG_DEBUG ("[" << iDocID << "] " << ioPlace);
+        // Debug
+        OPENTREP_LOG_DEBUG ("[" << iPlaceKey << "] " << ioPlace);
+      }
       
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
