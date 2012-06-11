@@ -3,6 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
+#include <ostream>
 #include <sstream>
 // OpenTrep
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
@@ -11,17 +12,44 @@
 
 namespace OPENTREP {
 
+  /**
+   * Helper function to check whether the Xapian travel database file-path
+   * is valid.
+   *
+   * \todo Check with Boost that the file-path is valid.
+   */
   // //////////////////////////////////////////////////////////////////////
-  OPENTREP_ServiceContext::OPENTREP_ServiceContext ()
-    : _sociSession (NULL), _world (NULL),
-      _travelDatabaseName (DEFAULT_OPENTREP_SERVICE_DB_NAME) {
+  void checkXapian (const TravelDatabaseName_T& iTravelDatabaseName) {
+    // Check that the Xapian travel database is not empty
+    if (iTravelDatabaseName.empty() == true) {
+      std::ostringstream errorStr;
+      errorStr << "The filepath for the Xapian travel database is "
+               << "not specified.";
+      std::cerr << errorStr.str() << std::endl;
+      throw XapianTravelDatabaseWrongPathnameException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  OPENTREP_ServiceContext::OPENTREP_ServiceContext()
+    : _world (NULL), _travelDatabaseName (DEFAULT_OPENTREP_SERVICE_DB_NAME) {
+    assert (false);
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
   OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName)
-    : _sociSession (NULL), _world (NULL),
-      _travelDatabaseName (iTravelDatabaseName) {
+    : _world (NULL), _travelDatabaseName (iTravelDatabaseName) {
+    OPENTREP::checkXapian (iTravelDatabaseName);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  OPENTREP_ServiceContext::
+  OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName,
+                           const DBParams& iDBParams)
+    : _world (NULL), _travelDatabaseName (iTravelDatabaseName),
+      _dbSessionManager (iDBParams) {
+    OPENTREP::checkXapian (iTravelDatabaseName);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -29,13 +57,14 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  soci::session& OPENTREP_ServiceContext::getSociSessionHandler() const {
-    assert (_sociSession != NULL);
-    return *_sociSession;
+  soci::session& OPENTREP_ServiceContext::getDBSessionRef() const {
+    soci::session* lSession_ptr = _dbSessionManager.getDBSession();
+    assert (lSession_ptr != NULL);
+    return *lSession_ptr;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  World& OPENTREP_ServiceContext::getWorldHandler () const {
+  World& OPENTREP_ServiceContext::getWorldHandler() const {
     assert (_world != NULL);
     return *_world;
   }

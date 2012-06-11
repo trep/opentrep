@@ -8,14 +8,16 @@
 #include <list>
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/bom/Document.hpp>
+#include <opentrep/bom/MatchingDocuments.hpp>
 // Xapian
 #include <xapian.h>
 
 namespace OPENTREP {
 
-  /** List of matching Xapian documents. */
-  typedef std::list<Document> DocumentList_T;
+  /**
+   * List of matching Xapian documents.
+   */
+  typedef std::list<MatchingDocuments> DocumentList_T;
 
 }
 #endif // __OPENTREP_BOM_DOCUMENTLIST_HPP

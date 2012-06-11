@@ -7,7 +7,6 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
-#include <opentrep/bom/DocumentList.hpp>
 #include <opentrep/bom/ResultList.hpp>
 
 // Forward declarations
@@ -18,19 +17,21 @@ namespace Xapian {
 namespace OPENTREP {
 
   // Forward declarations
+  class ResultCombination;
   struct StringSet;
 
   /**
    * @brief Class wrapping functions on a list of Result objects.
    */
   class ResultHolder : public BomAbstract {
+    friend class FacResultCombination;
     friend class FacResultHolder;
   public:
-    // ////////////// Getters /////////////
+    // ////////////////////// Getters /////////////////////
     /**
      * Get the query string.
      */
-    const TravelQuery_T& getQueryString () const {
+    const TravelQuery_T& getQueryString() const {
       return _queryString;
     }
 
@@ -41,38 +42,45 @@ namespace OPENTREP {
       return _resultList;
     }
 
+    /**
+     * Get the combined weight, for all the rules (full-text, PageRank, etc)
+     */
+    const Percentage_T& getCombinedWeight() const {
+      return _combinedWeight;
+    }
+
+    /**
+     * Get the list of corrected strings
+     */
+    StringSet getCorrectedStringSet() const;
+
 
   public:
-    // /////////// Business methods /////////
+    // ////////////////////// Setters /////////////////////
     /**
-     * Retrieve the list of documents matching the query string.
-     *
-     * @param DocumentList_T& List of matched documents by the query string.
-     * @param WordList_T& List of non-matched words of the query string.
+     * Set the combined weight, for all the rules (full-text, PageRank, etc)
      */
-    void searchString (DocumentList_T&, WordList_T&);
+    void setCombinedWeight (const Percentage_T& iPercentage) {
+      _combinedWeight = iPercentage;
+    }
 
 
-  private:
+  public:
+    // /////////// Business methods ///////////
     /**
-     * Retrieve the document best matching the query string.
-     *
-     * @param TravelQuery_T& The partial query string.
-     * @param MatchingDocument_T& The best matching Xapian document (if found).
-     * @return std::string The matching string, if any. It can be empty when
-     *         there is no match.
+     * Calculate/set the PageRanks for all the matching documents
      */
-    std::string searchString (const TravelQuery_T&, Document&) const;
+    void calculatePageRanks() const;
 
     /**
-     * Retrieve the document best matching the query string.
-     *
-     * @param DocumentList_T& List of matched documents by the query string.
-     * @param const StringSet& The set of strings for the current partition.
-     * @return double Total matching percentage, defined as the product of the
-     *         matching percentages of all the strings of the set.
+     * Calculate/set the heuristic weights for all the matching documents
      */
-    Percentage_T searchString (DocumentList_T&, const StringSet&) const;
+    void calculateHeuristicWeights() const;
+
+    /**
+     * Calculate/set the combined weights for all the matching documents
+     */
+    void calculateCombinedWeights();
 
 
   public:
@@ -118,7 +126,7 @@ namespace OPENTREP {
     /**
      * Default constructor.
      */
-    ResultHolder ();
+    ResultHolder();
     /**
      * Default copy constructor.
      */
@@ -126,15 +134,20 @@ namespace OPENTREP {
     /**
      * Destructor.
      */
-    ~ResultHolder ();
+    ~ResultHolder();
     /**
      * Initialise (reset the list of documents).
      */
-    void init ();
+    void init();
 
     
   private:
     // /////////////// Attributes ////////////////
+    /**
+     * Parent ResultCombination.
+     */
+    ResultCombination* _resultCombination;
+
     /**
      * Query string having generated the list of document.
      */
@@ -149,6 +162,11 @@ namespace OPENTREP {
      * List of result objects.
      */
     ResultList_T _resultList;
+
+    /**
+     * Combined weight, for all the rules (full-text, PageRank, etc)
+     */
+    Percentage_T _combinedWeight;
   };
 
 }

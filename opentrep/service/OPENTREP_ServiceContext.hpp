@@ -8,6 +8,7 @@
 #include <string>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/command/DBSessionManager.hpp>
 #include <opentrep/service/ServiceAbstract.hpp>
 
 // Forward declarations
@@ -20,77 +21,116 @@ namespace OPENTREP {
   // Forward declarations
   class World;
   
-  /** Class holding the context of the OpenTrep services. */
+  /**
+   * @brief Class holding the context of the OpenTrep services.
+   */
   class OPENTREP_ServiceContext : public ServiceAbstract {
     friend class FacOpenTrepServiceContext;
   public:
-    // ///////// Getters //////////
-    /** Get the SOCI Session. */
-    soci::session* getSociSession () const {
-      return _sociSession;
-    }
-
-    /** Get the World object (BOM root). */
-    World* getWorld () const {
+    // /////////////////// Getters //////////////////////
+    /**
+     * Get the World object (BOM root).
+     */
+    World* getWorld() const {
       return _world;
     }
 
-    /** Get the Xapian database name. */
-    const TravelDatabaseName_T& getTravelDatabaseName () const {
+    /**
+     * Get the World object (BOM root).
+     */
+    World& getWorldHandler() const;
+
+    /**
+     * Get the Xapian database name.
+     */
+    const TravelDatabaseName_T& getTravelDatabaseName() const {
       return _travelDatabaseName;
     }
     
-    /** Get the SOCI Session. */
-    soci::session& getSociSessionHandler () const;
+    /**
+     * Get the SOCI Session.
+     */
+    soci::session* getDBSession() const {
+      return _dbSessionManager.getDBSession();
+    }      
 
-    /** Get the World object (BOM root). */
-    World& getWorldHandler () const;
+    /**
+     * Get the SOCI Session.
+     */
+    soci::session& getDBSessionRef() const;
 
-    
-    // ///////// Setters //////////
-    /** Set the SOCI Session. */
-    void setSociSession (soci::session* ioSociSession_ptr) {
-      _sociSession = ioSociSession_ptr;
-    }
 
-    /** Set the World object (BOM root). */
+  public:
+    // ////////////////// Setters /////////////////////
+    /**
+     * Set the World object (BOM root).
+     */
     void setWorld (World& ioWorld) {
       _world = &ioWorld;
     }
 
-    /** Set the Xapian database name. */
+    /**
+     * Set the Xapian database name.
+     */
     void setTravelDatabaseName (const TravelDatabaseName_T& iTravelDatabaseName) {
       _travelDatabaseName = iTravelDatabaseName;
     }
 
 
+  public:
     // ///////// Display Methods //////////
-    /** Display the short OPENTREP_ServiceContext content. */
+    /**
+     * Display the short OPENTREP_ServiceContext content.
+     */
     const std::string shortDisplay() const;
     
-    /** Display the full OPENTREP_ServiceContext content. */
+    /**
+     * Display the full OPENTREP_ServiceContext content.
+     */
     const std::string display() const;
 
     
   private:
     // /////// Construction / initialisation ////////
-    /** Constructors. */
-    OPENTREP_ServiceContext ();
-    OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName);
+    /**
+     * Main constructor without database usage.
+     */
+    OPENTREP_ServiceContext (const TravelDatabaseName_T&);
+    /**
+     * Main constructor with database usage.
+     */
+    OPENTREP_ServiceContext (const TravelDatabaseName_T&, const DBParams&);
+    /**
+     * Default constructor.
+     */
+    OPENTREP_ServiceContext();
+    /**
+     * Copy constructor.
+     */
     OPENTREP_ServiceContext (const OPENTREP_ServiceContext&);
 
-    /** Destructor. */
+    /**
+     * Destructor.
+     */
     ~OPENTREP_ServiceContext();
       
-  private:
-    /** SOCI session. */
-    soci::session* _sociSession;
 
-    /** World object (BOM root). */
+  private:
+    // ////////////// Attributes ///////////////
+    /**
+     * World object (BOM root).
+     */
     World* _world;
     
-    /** Xapian Database (directory of the index). */
+    /**
+     * Xapian Database (directory of the index).
+     */
     TravelDatabaseName_T _travelDatabaseName;
+
+    /**
+     * Database session manager.
+     */
+    DBSessionManager _dbSessionManager;
   };
 
 }

@@ -3,7 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // C
 #include <cassert>
-// OPENTREP
+// OpenTrep
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/factory/FacSupervisor.hpp>
 #include <opentrep/factory/FacResult.hpp>
@@ -38,10 +38,11 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Result& FacResult::create (const Xapian::Database& iXapianDatabase) {
+  Result& FacResult::create (const TravelQuery_T& iQueryString,
+                             const Xapian::Database& iXapianDatabase) {
     Result* oResult_ptr = NULL;
 
-    oResult_ptr = new Result (iXapianDatabase);
+    oResult_ptr = new Result (iQueryString, iXapianDatabase);
     assert (oResult_ptr != NULL);
 
     // The new object is added to the Bom pool

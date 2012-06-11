@@ -105,6 +105,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the PageRank/importance. 
+     */
+    const double& getPageRank() const {
+      return _pageRank;
+    }
+    
+    /**
+     * Get the Wikipedia link.
+     */
+    const std::string& getWikiLink() const {
+      return _wikiLink;
+    }
+
+    /**
      * Get the list of (American) English names for that location. 
      */
     const LocationNameList_T& getNameList () const {
@@ -228,17 +242,31 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the Latitude. 
+     * Set the Latitude.
      */
     void setLatitude (const double& iLatitude) {
       _latitude = iLatitude;
     }
 
     /**
-     * Set the Longitude. 
+     * Set the Longitude.
      */
     void setLongitude (const double& iLongitude) {
       _longitude = iLongitude;
+    }
+    
+    /**
+     * Set the PageRank.
+     */
+    void setPageRank (const double& iPageRank) {
+      _pageRank = iPageRank;
+    }
+    
+    /**
+     * Set the Wikipedia link.
+     */
+    void setWikiLink (const std::string& iWikiLink) {
+      _wikiLink = iWikiLink;
     }
     
     /**
@@ -357,6 +385,7 @@ namespace OPENTREP {
               const std::string& iCountryCode, const std::string& iRegionCode,
               const std::string& iTimeZoneGroup, 
               const double iLatitude, const double iLongitude,
+              const double iPageRank, const std::string& iWikiLink,
               const LocationNameList_T& iNameList,
               const std::string& iOriginalKeywords,
               const std::string& iCorrectedKeywords,
@@ -439,6 +468,16 @@ namespace OPENTREP {
      * Geographical longitude (e.g., -87.904842).
      */
     double _longitude;
+
+    /**
+     * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
+     */
+    double _pageRank;
+
+    /**
+     * Link on the Wikipedia entry
+     */
+    std::string _wikiLink;
 
     /**
      * List of (American) English names. 

@@ -9,6 +9,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <set>
 // Boost Array
 #include <boost/array.hpp>
 // OpenTrep
@@ -93,6 +94,11 @@ namespace OPENTREP {
   typedef std::list<Word_T> WordList_T;
 
   /**
+   * Set of words.
+   */
+  typedef std::set<std::string> WordSet_T;
+
+  /**
    * List of (black-listed) words.
    */
   typedef std::list<std::string> BlackList_T;
@@ -101,6 +107,11 @@ namespace OPENTREP {
    * Number of letters in a word or phrase.
    */
   typedef unsigned int NbOfLetters_T;
+  
+  /**
+   * Number of words in a list.
+   */
+  typedef unsigned short NbOfWords_T;
   
   /**
    * Number of matching documents.

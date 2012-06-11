@@ -13,7 +13,7 @@
 #include <opentrep/Location.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
 #include <opentrep/bom/PlaceKey.hpp>
-#include <opentrep/bom/Names.hpp>
+#include <opentrep/bom/NameMatrix.hpp>
 #include <opentrep/bom/PlaceList.hpp>
 
 namespace OPENTREP {
@@ -42,7 +42,7 @@ namespace OPENTREP {
   public:
     // //////////////// Getters ///////////////
     /**
-     * Get the primary key.
+     * Get the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
     const PlaceKey& getKey() const {
       return _key;
@@ -126,6 +126,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the PageRank/importance. 
+     */
+    const double& getPageRank() const {
+      return _pageRank;
+    }
+    
+    /**
+     * Get the Wikipedia link.
+     */
+    const std::string& getWikiLink() const {
+      return _wikiLink;
+    }
+    
+    /**
      * Get the original keywords.
      */
     std::string getOriginalKeywords() const {
@@ -164,14 +178,14 @@ namespace OPENTREP {
      * Get the maximal allowable edit distance/error, with which the
      * matching has been made.
      */
-    const NbOfErrors_T& getAllowableEditDistance () const {
+    const NbOfErrors_T& getAllowableEditDistance() const {
       return _allowableEditDistance;
     }
     
     /**
      * Get the map of name lists.
      */
-    const NameMatrix_T& getNameMatrix () const {
+    const NameMatrix& getNameMatrix() const {
       return _nameMatrix;
     }
 
@@ -184,7 +198,10 @@ namespace OPENTREP {
      * @return bool Whether or not such a list exists for the given
      *         language.
      */
-    bool getNameList (const Language::EN_Language&, NameList_T&) const;
+    bool getNameList (const Language::EN_Language& iLanguageCode,
+                      NameList_T& ioNameList) const {
+      return _nameMatrix.getNameList (iLanguageCode, ioNameList);
+    }
 
     /**
      * Get the list of extra matching (similar) places.
@@ -232,7 +249,7 @@ namespace OPENTREP {
   public:
     // ////////////////// Setters /////////////////
     /**
-     * Set the primary key.
+     * Set the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
     void setKey (const PlaceKey& iKey) {
       _key = iKey;
@@ -316,6 +333,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the PageRank.
+     */
+    void setPageRank (const double& iPageRank) {
+      _pageRank = iPageRank;
+    }
+    
+    /**
+     * Set the Wikipedia link.
+     */
+    void setWikiLink (const std::string& iWikiLink) {
+      _wikiLink = iWikiLink;
+    }
+    
+    /**
      * Set the original keywords.
      */
     void setOriginalKeywords (const std::string& iOriginalKeywords) {
@@ -363,13 +394,20 @@ namespace OPENTREP {
     // ////////// Setters in underlying names ////////
     /**
      * Add a name for the place.
+     *
+     * @param const Language::EN_Language& Language in which to add the name.
+     * @param const std::string& Name to be added.
      */
-    void addName (const Language::EN_Language&, const std::string& iName);
+    void addName (const Language::EN_Language& iLanguageCode, const std::string& iName) {
+      _nameMatrix.addName (iLanguageCode, iName);
+    }
 
     /**
      * Reset the map of name lists.
      */
-    void resetMatrix();
+    void resetMatrix() {
+      _nameMatrix.reset();
+    }
 
     /**
      * Reset the index/spelling (STL) sets.
@@ -452,11 +490,17 @@ namespace OPENTREP {
     
   private:
     /**
+     * Main constructor.
+     */
+    Place (const PlaceKey&);
+
+    /**
      * Default constructor.
      */
     Place();
+
     /**
-     * Default copy constructor.
+     * Copy constructor.
      */
     Place (const Place&);
     
@@ -480,7 +524,7 @@ namespace OPENTREP {
     PlaceHolder* _placeHolder;
     
     /**
-     * Parent (main) Place (not always defined,for instance if the
+     * Parent (main) Place (not always defined, for instance if the
      * current Place object is itself a main one).
      */
     Place* _mainPlace;
@@ -534,9 +578,19 @@ namespace OPENTREP {
     double _longitude;
 
     /**
+     * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
+     */
+    double _pageRank;
+
+    /**
+     * Link on the Wikipedia entry
+     */
+    std::string _wikiLink;
+
+    /**
      * List of names, for each given language.
      */
-    NameMatrix_T _nameMatrix;
+    NameMatrix _nameMatrix;
 
 
   private:

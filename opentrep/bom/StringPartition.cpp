@@ -171,8 +171,7 @@ namespace OPENTREP {
     StringSet oStringSet;
 
     // Set of unique strings
-    typedef std::set<std::string> StringList_T;
-    StringList_T lStringList;
+    WordSet_T lStringList;
 
     // Browse all the word combinations. Then, for every word combination,
     // add it if not already in the list (STD set) of strings.
@@ -186,9 +185,8 @@ namespace OPENTREP {
         const std::string& lWordCombination = *itString;
 
         // Check whether that word combination has already been stored once.
-        StringList_T::const_iterator itString =
-          lStringList.find (lWordCombination);
-        if (itString == lStringList.end()) {
+        WordSet_T::const_iterator itExistingString = lStringList.find (lWordCombination);
+        if (itExistingString == lStringList.end()) {
           // If not, add it to the dedicated list (STD set).
           lStringList.insert (lWordCombination);
         }
@@ -196,7 +194,7 @@ namespace OPENTREP {
     }    
 
     // Convert the STD set into a StringSet structure
-    for (StringList_T::const_iterator itString = lStringList.begin();
+    for (WordSet_T::const_iterator itString = lStringList.begin();
          itString != lStringList.end(); ++itString) {
       const std::string& lWordCombination = *itString;
       oStringSet.push_back (lWordCombination);

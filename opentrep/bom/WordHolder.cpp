@@ -11,11 +11,13 @@
 namespace OPENTREP {
 
   // Define the separators
-  static const boost::char_separator<char> SepatorList (" .,;:|+-*/_=!@#$%`~^&(){}[]?'<>\"");
+  static const boost::char_separator<char> AllSepatorList (" .,;:|+-*/_=!@#$%`~^&(){}[]?'<>\"");
+  static const boost::char_separator<char> DocSepatorList (" ,-%");
     
   // //////////////////////////////////////////////////////////////////////
-  void WordHolder::tokeniseStringIntoWordList (const std::string& iPhrase,
-                                               WordList_T& ioWordList) {
+  void baseTokeniseStringIntoWordList (const std::string& iPhrase,
+                                       WordList_T& ioWordList,
+                                       const boost::char_separator<char>& iSepatorList) {
     // Empty the word list
     ioWordList.clear();
     
@@ -23,13 +25,26 @@ namespace OPENTREP {
     typedef boost::tokenizer<boost::char_separator<char> > Tokeniser_T;
     
     // Initialise the phrase to be tokenised
-    Tokeniser_T lTokens (iPhrase, SepatorList);
+    Tokeniser_T lTokens (iPhrase, iSepatorList);
     for (Tokeniser_T::const_iterator tok_iter = lTokens.begin();
          tok_iter != lTokens.end(); ++tok_iter) {
       const std::string& lTerm = *tok_iter;
       ioWordList.push_back (lTerm);
     }
-    
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void WordHolder::tokeniseStringIntoWordList (const std::string& iPhrase,
+                                               WordList_T& ioWordList) {
+    OPENTREP::baseTokeniseStringIntoWordList (iPhrase, ioWordList,
+                                              AllSepatorList);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void WordHolder::tokeniseDocIntoWordList (const std::string& iPhrase,
+                                            WordList_T& ioWordList) {
+    OPENTREP::baseTokeniseStringIntoWordList (iPhrase, ioWordList,
+                                              DocSepatorList);
   }
 
   // //////////////////////////////////////////////////////////////////////

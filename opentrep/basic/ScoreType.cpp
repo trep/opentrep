@@ -12,9 +12,10 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   const std::string ScoreType::_labels[LAST_VALUE] =
-    { "Xapian Percentage", "Page Rank", "Passenger Number" };
+        { "Combination", "Xapian Percentage", "Page Rank", "Passenger Number",
+          "Heuristic"};
 
-  const char ScoreType::_typeLabels[LAST_VALUE] = { 'X', 'R', 'N' };
+  const char ScoreType::_typeLabels[LAST_VALUE] = { 'C', 'X', 'R', 'N', 'H' };
 
 
   // //////////////////////////////////////////////////////////////////////
@@ -25,9 +26,11 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   ScoreType::ScoreType (const char iType) {
     switch (iType) {
+    case 'C': _type = COMBINATION; break;
     case 'X': _type = XAPIAN_PCT; break;
     case 'R': _type = PAGE_RANK; break;
     case 'N': _type = PAX_NB; break;
+    case 'H': _type = HEURISTIC; break;
     default: _type = LAST_VALUE; break;
     }
 
@@ -38,6 +41,11 @@ namespace OPENTREP {
                << "' is not known. Known score types: " << lLabels;
       throw CodeConversionException (oMessage.str());
     }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  const std::string& ScoreType::getLongLabel() const {
+    return _labels[_type];
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -87,6 +95,21 @@ namespace OPENTREP {
     std::ostringstream ostr;
     ostr << _labels[_type];
     return ostr.str();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool ScoreType::isIndividualScore() const {
+    bool oIsIndividual = true;
+    if (_type == COMBINATION || _type == LAST_VALUE) {
+      oIsIndividual = false;
+    }
+    return oIsIndividual;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool ScoreType::isIndividualScore (const EN_ScoreType& iTypeEnum) {
+    ScoreType lType (iTypeEnum);
+    return lType.isIndividualScore();
   }
 
   // //////////////////////////////////////////////////////////////////////

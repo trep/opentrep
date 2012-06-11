@@ -5,7 +5,7 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <list>
+#include <map>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/basic/ScoreType.hpp>
@@ -25,21 +25,67 @@ namespace OPENTREP {
     /**
      * (STL) map of scores.
      */
-    typedef std::map<ScoreType::EN_ScoreType, Score_T> ScoreList_T;
+    typedef std::map<ScoreType::EN_ScoreType, Score_T> ScoreMap_T;
 
 
   public:
     // ////////////////// Getters ////////////////
     /**
-     * Get the list of scores.
+     * Get the query string.
      */
-    const ScoreList_T& getScoreList() const {
-     return _scoreList;
+    const TravelQuery_T& getQueryString() const {
+      return _queryString;
+    }
+
+    /**
+     * Get the map of scores.
+     */
+    const ScoreMap_T& getScoreMap() const {
+     return _scoreMap;
+    }
+
+    /**
+     * Get the score for the given type. If no score value has
+     * already been stored for that type, return 0.
+     */
+    Score_T getScore (const ScoreType&) const;
+
+    /**
+     * Get the combined weight, if existing (0 otherwise).
+     */
+    Score_T getCombinedWeight() const {
+      return getScore (ScoreType::COMBINATION);
     }
 
 
   public:
     // //////////////////// Setters //////////////////
+    /**
+     * Set the query string.
+     */
+    void setQueryString (const TravelQuery_T& iQueryString) {
+      _queryString = iQueryString;
+    }
+
+    /**
+     * Set the score for the given type. If no score value has
+     * already been stored for that type, create it.
+     */
+    void setScore (const ScoreType&, const Score_T&);
+
+    /**
+     * Set the combined weight.
+     */
+    void setCombinedWeight (const Score_T& iScore) {
+      setScore (ScoreType::COMBINATION, iScore);
+    }
+
+    /**
+     * Calculate the combination of the weights for all the score types,
+     * resulting from the full-text matching process, PageRank, user input,
+     * etc.
+     */
+    Percentage_T calculateCombinedWeight();
 
 
   public:
@@ -79,24 +125,38 @@ namespace OPENTREP {
 
   public:
     // //////////////// Constructors and Destructors /////////////
-    /** Default constructor. */
-    // ScoreBoard();
+    /**
+     * Main constructor.
+     */
+    ScoreBoard (const TravelQuery_T&, const ScoreType&, const Score_T&);
 
-    /** Default copy constructor. */
-    // ScoreBoard (const ScoreBoard&);
+    /**
+     * Default constructor.
+     */
+    ScoreBoard (const TravelQuery_T&);
+
+    /**
+     * Copy constructor.
+     */
+    ScoreBoard (const ScoreBoard&);
 
     /**
      * Default destructor.
      */
-    ~ScoreBoard ();
+    ~ScoreBoard();
 
     
   private:
     // ///////////////// Attributes //////////////////
     /**
-     * List of scores.
+     * Query string having generated the set of documents.
      */
-    ScoreList_T _scoreList;
+    TravelQuery_T _queryString;
+
+    /**
+     * Map of scores.
+     */
+    ScoreMap_T _scoreMap;
   };
 
 }

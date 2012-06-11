@@ -24,10 +24,12 @@ namespace OPENTREP {
    */
   struct ScoreType : public StructAbstract {
   public:
-    typedef enum { 
-      XAPIAN_PCT = 0,
+    typedef enum {
+      COMBINATION = 0,
+      XAPIAN_PCT,
       PAGE_RANK,
       PAX_NB,
+      HEURISTIC,
       LAST_VALUE
     } EN_ScoreType;
 
@@ -35,6 +37,11 @@ namespace OPENTREP {
      * Get the label as a string (e.g., "Xapian Percentage" or "Page Rank").
      */
     static const std::string& getLabel (const EN_ScoreType&);
+
+    /**
+     * Get the label as a string (e.g., "Xapian Percentage" or "Page Rank").
+     */
+    const std::string& getLongLabel() const;
 
     /**
      * Get the label as a single char (e.g., 'X' or 'R').
@@ -66,6 +73,19 @@ namespace OPENTREP {
      * or "Page Rank").
      */
     std::string describe() const;
+
+    /**
+     * State whether that score type is valid and is an individual one,
+     * i.e., one that is neither COMBINATION nor LAST_VALUE.
+     */
+    bool isIndividualScore() const;
+
+    /**
+     * State whether that score type is valid and is an individual one,
+     * i.e., one that is neither COMBINATION nor LAST_VALUE.
+     */
+    static bool isIndividualScore (const EN_ScoreType&);
+
 
   public:
     /**

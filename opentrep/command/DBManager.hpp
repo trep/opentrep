@@ -99,10 +99,8 @@ namespace OPENTREP {
      * @param soci::statement& SOCI SQL statement handler.
      * @param Place& The object corresponding to the place to be retrieved.
      *               It has to be given empty, and is filled by the method.
-     * @param const bool Tells whether the Place object should be reset.
      */
-    static bool iterateOnStatement (soci::statement&, Place&,
-                                    const bool iShouldDoReset);
+    static bool iterateOnStatement (soci::statement&, Place&);
 
     
   private:

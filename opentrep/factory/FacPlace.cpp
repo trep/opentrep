@@ -3,7 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // C
 #include <cassert>
-// OPENTREP
+// OpenTrep
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/factory/FacSupervisor.hpp>
 #include <opentrep/factory/FacPlace.hpp>
@@ -13,7 +13,7 @@ namespace OPENTREP {
   FacPlace* FacPlace::_instance = NULL;
 
   // //////////////////////////////////////////////////////////////////////
-  FacPlace::FacPlace () {
+  FacPlace::FacPlace() {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -21,12 +21,12 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  FacPlace::~FacPlace () {
+  FacPlace::~FacPlace() {
     _instance = NULL;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  FacPlace& FacPlace::instance () {
+  FacPlace& FacPlace::instance() {
 
     if (_instance == NULL) {
       _instance = new FacPlace();
@@ -38,10 +38,23 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Place& FacPlace::create () {
+  Place& FacPlace::create() {
     Place* oPlace_ptr = NULL;
 
-    oPlace_ptr = new Place ();
+    oPlace_ptr = new Place();
+    assert (oPlace_ptr != NULL);
+
+    // The new object is added to the Bom pool
+    _pool.push_back (oPlace_ptr);
+
+    return *oPlace_ptr;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  Place& FacPlace::create (const PlaceKey& iPlaceKey) {
+    Place* oPlace_ptr = NULL;
+
+    oPlace_ptr = new Place (iPlaceKey);
     assert (oPlace_ptr != NULL);
 
     // The new object is added to the Bom pool

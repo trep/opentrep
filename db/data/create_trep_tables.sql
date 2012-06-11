@@ -38,7 +38,8 @@ create table place_details (
  city_code varchar(3) default NULL,
  state_code varchar(3) default NULL,
  region_code varchar(5) default NULL,
- location_type varchar(4) default NULL
+ location_type varchar(4) default NULL,
+ wiki_link varchar(200) default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -49,7 +50,7 @@ drop table if exists place_names;
 create table place_names (
   language_code char(2) not null,
   iata_code char(3) not null,
-  ascii_name varchar(200) not null,
+  ascii_name varchar(200) default null,
   utf_name varchar(200) collate utf8_unicode_ci default NULL,
   alternate_name1 varchar(200) collate utf8_unicode_ci,
   alternate_name2 varchar(200) collate utf8_unicode_ci,
@@ -62,6 +63,20 @@ create table place_names (
   alternate_name9 varchar(200) collate utf8_unicode_ci,
   alternate_name10 varchar(200) collate utf8_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Structure for the table storing airport importance (PageRank-ed thanks to
+-- shcedule).
+-- Note: an more up-to-date version may be available in the OpenTravelData
+-- project:
+-- https://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/create_ori_tables.sql#L205
+--
+drop table if exists airport_pageranked;
+create table airport_pageranked (
+ iata_code char(3) NOT NULL,
+ page_rank decimal(15,12) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 --
 --

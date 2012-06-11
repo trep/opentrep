@@ -8,13 +8,17 @@
 #include <vector>
 #include <exception>
 // OpenTrep
+#include <opentrep/bom/Filter.hpp>
+#include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/Place.hpp>
+#include <opentrep/bom/ResultCombination.hpp>
 #include <opentrep/bom/ResultHolder.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/bom/PlaceHolder.hpp>
-#include <opentrep/bom/StringMatcher.hpp>
+#include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/factory/FacPlaceHolder.hpp>
 #include <opentrep/factory/FacPlace.hpp>
+#include <opentrep/factory/FacResultCombination.hpp>
 #include <opentrep/factory/FacResultHolder.hpp>
 #include <opentrep/factory/FacResult.hpp>
 #include <opentrep/command/DBManager.hpp>
@@ -25,64 +29,74 @@
 
 namespace OPENTREP {
 
+  /**
+   * Helper function to add the given string to the list of unknown words,
+   * only when that given string is made of a single word. Otherwise, the
+   * given string is simply ignored.
+   *
+   * @param const TravelQuery_T& The given string
+   * @param WordList_T& ioWordList The list to which the given single-word
+   *        string should be added (if needed).
+   * @param WordSet_T& A (STL) set of words, allowing to keep track of
+   *        the already added words.
+   */
   // //////////////////////////////////////////////////////////////////////
-  void createResults (const DocumentList_T& iDocumentList,
-                      const Xapian::Database& iXapianDatabase,
-                      ResultHolder& ioResultHolder) {
-
-    // Back-up the (retrieved) matching Xapian documents into still
-    // to-be-created Result objects.
-    for (DocumentList_T::const_iterator itDoc = iDocumentList.begin();
-         itDoc != iDocumentList.end(); ++itDoc) {
-      // Retrieve both the Xapian document object and the corresponding
-      // matching percentage (most of the time, it is 100%)
-      const Document& lMatchingDocument = *itDoc;
-      
-      // Create a Result object
-      Result& lResult = FacResult::instance().create (iXapianDatabase);
-      
-      // Fill the Result object with both the corresponding Document object
-      // and its associated query string
-      lResult.setMatchingDocument (lMatchingDocument);
-      
-      // Add the Result object (holding the list of matching
-      // documents) to the dedicated list.
-      FacResultHolder::initLinkWithResult (ioResultHolder, lResult);
+  void addUnmatchedWord (const TravelQuery_T& iQueryString,
+                         WordList_T& ioWordList, WordSet_T& ioWordSet) {
+    // Token-ise the given string
+    WordList_T lQueryStringWordList;
+    WordHolder::tokeniseStringIntoWordList (iQueryString,
+                                            lQueryStringWordList);
+    if (lQueryStringWordList.size() == 1) {
+      // Add the unmatched/unknown word, only when that latter has not
+      // already been stored, and when it is not black-listed.
+      const bool shouldBeKept = Filter::shouldKeep ("", iQueryString);
+              
+      WordSet_T::const_iterator itWord = ioWordSet.find (iQueryString);
+      if (shouldBeKept == true && itWord == ioWordSet.end()) {
+        ioWordSet.insert (iQueryString);
+        ioWordList.push_back (iQueryString);
+      }
     }
-    
-    // DEBUG
-    OPENTREP_LOG_DEBUG (std::endl
-                        << "========================================="
-                        << std::endl << "Matching list: "  << std::endl
-                        << ioResultHolder.toString()
-                        << "========================================="
-                        << std::endl << std::endl);
   }
 
-  /** Helper function. */
+  /**
+   * Helper function to retrieve, from the Xapian document data (string),
+   * the details of a given point of reference (POR). The corresponding
+   * Place BOM object is then filled with those details.
+   */
   // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlace (const std::string& iOriginalKeywords,
-                             const std::string& iCorrectedKeywords,
-                             const Xapian::Document& iDocument,
-                             const Xapian::percent& iDocPercentage,
-                             soci::session& ioSociSession, Place& ioPlace) {
+  void retrieveAndFillPlaceFromDocData (const std::string& iDocData,
+                                        Place& ioPlace) {
+    // DEBUG
+    const PlaceKey& lKey = ioPlace.getKey();
+    const Xapian::docid& lDocID = ioPlace.getDocID();
+    OPENTREP_LOG_DEBUG (lKey << " (doc ID = " << lDocID << "): " << iDocData);
+
+    /**
+     * \todo Parse the Xapian document data and fill the Place object
+     *       with those details
+     */
+  }
+
+  /**
+   * Helper function to retrieve, from the database, the details of a
+   * given point of reference (POR). The corresponding Place BOM
+   * object is then filled with those details.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  bool retrieveAndFillPlaceFromDB (soci::session& ioSociSession,
+                                   Place& ioPlace) {
     bool hasRetrievedPlace = false;
 
-    // Set the original and corrected/suggested keywords
-    ioPlace.setOriginalKeywords (iOriginalKeywords);
-    ioPlace.setCorrectedKeywords (iCorrectedKeywords);
-    
-    // Set the matching percentage
-    ioPlace.setPercentage (iDocPercentage);
-    
-    // Retrieve the parameters of the best matching document
-    const PlaceKey& lKey = Document::getPrimaryKey (iDocument);
+    // Retrieve the key of the Place
+    const PlaceKey& lKey = ioPlace.getKey();
+
+    // Retrieve the Xapian document ID
+    const Xapian::docid& lDocID = ioPlace.getDocID();
 
     // DEBUG
-    const Xapian::docid& lDocID = iDocument.get_docid();
-    const std::string& lDocData = iDocument.get_data();
-    OPENTREP_LOG_DEBUG ("Place key: " << lKey << " - Xapian ID " << lDocID
-                        << ", " << iDocPercentage << "% [" << lDocData << "]");
+    OPENTREP_LOG_DEBUG ("Place key: " << lKey);
 
     // Fill the Place object with the row retrieved from the
     // (MySQL) database and corresponding to the given place code
@@ -98,8 +112,7 @@ namespace OPENTREP {
        */
       std::ostringstream errorStr;
       errorStr << "There is no document corresponding to " << lKey
-               << " (Xapian document ID" << lDocID
-               << " [" << lDocData << "]) in the SQL database. "
+               << " (Xapian doc ID = " << lDocID << ") in the SQL database. "
                << "It usually means that the Xapian index/database "
                << "is not synchronised with the SQL database. "
                << "[Hint] Rebuild the Xapian index/database "
@@ -111,161 +124,218 @@ namespace OPENTREP {
     return hasRetrievedPlace;
   }
   
-  /** Helper function. */
   // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlace (const Document& iDocument,
-                             soci::session& ioSociSession, Place& ioPlace) {
-    // Note that Document::getTravelQuery() returns a TravelQuery_T, which
-    // is actually a std::string
-    const std::string& lOriginalKeywords = iDocument.getTravelQuery();
-    const std::string& lCorrectedKeywords = iDocument.getCorrectedTravelQuery();
+  void createPlaces (const ResultCombination& iResultCombination,
+                     soci::session* ioSociSession_ptr,
+                     PlaceHolder& ioPlaceHolder) {
     
-    // Delegate
-    const Xapian::Document& lXapianDocument = iDocument.getXapianDocument();
-    const Xapian::percent& lDocPercentage = iDocument.getXapianPercentage();
-    return retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                 lXapianDocument, lDocPercentage,
-                                 ioSociSession, ioPlace);
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  void createPlaces (const ResultHolder& iResultHolder,
-                     soci::session& ioSociSession, PlaceHolder& ioPlaceHolder) {
-    
+    // Retrieve the best matching ResultHolder object.
+    const ResultHolder& lResultHolder =
+      iResultCombination.getBestMatchingResultHolder();    
+
     // Browse the list of result objects
-    const ResultList_T& lResultList = iResultHolder.getResultList();
+    const ResultList_T& lResultList = lResultHolder.getResultList();
     for (ResultList_T::const_iterator itResult = lResultList.begin();
          itResult != lResultList.end(); ++itResult) {
       // Retrieve the result object
       const Result* lResult_ptr = *itResult;
       assert (lResult_ptr != NULL);
 
-      // Retrieve the matching document
-      const Document& lDocument = lResult_ptr->getMatchingDocument();
-      
+      /**
+       * When there has been no full-text match, the Result object exists,
+       * but, by construction, it does not correspond to any Xapian document.
+       */
+      const bool hasFullTextMatched = lResult_ptr->hasFullTextMatched();
+      if (hasFullTextMatched == false) {
+        continue;
+      }
+      assert (hasFullTextMatched == true);
+
+      // Retrieve the primary key of the place
+      const PlaceKey& lPlaceKey = lResult_ptr->getBestDocPrimaryKey();
+
       // Instanciate an empty place object, which will be filled from the
       // rows retrieved from the database.
-      Place& lPlace = FacPlace::instance().create();
+      Place& lPlace = FacPlace::instance().create (lPlaceKey);
       
-      // Retrieve, in the MySQL database, the place corresponding to
-      // the place code located as the first word of the Xapian
-      // document data.
-      bool hasRetrievedPlace = retrieveAndFillPlace (lDocument, ioSociSession,
-                                                     lPlace);
-
-      // Retrieve the effective (Levenshtein) edit distance/error, as
-      // well as the allowable edit distance/error, and store them in
-      // the Place object.
-      const NbOfErrors_T& lEditDistance = lDocument.getEditDistance();
-      const NbOfErrors_T& lAllowableEditDistance =
-        lDocument.getAllowableEditDistance();
-      lPlace.setEditDistance (lEditDistance);
-      lPlace.setAllowableEditDistance (lAllowableEditDistance);
-
-      // If there was no place corresponding to the place code with
-      // the SQL database, an exception is thrown. Hence, here, by
-      // construction, the place has been retrieved from the SQL
-      // database.
-      assert (hasRetrievedPlace == true);
-
       // Insert the Place object within the PlaceHolder object
       FacPlaceHolder::initLinkWithPlace (ioPlaceHolder, lPlace);
       
+      // Fill the place with the Xapian document details.
+      lResult_ptr->fillPlace (lPlace);
+
+      if (ioSociSession_ptr != NULL) {
+        // Retrieve, in the MySQL database, the place corresponding to
+        // the place code located as the first word of the Xapian
+        // document data.
+        bool hasRetrievedPlace = retrieveAndFillPlaceFromDB (*ioSociSession_ptr,
+                                                             lPlace);
+
+        // If there was no place corresponding to the place code with
+        // the SQL database, an exception is thrown. Hence, here, by
+        // construction, the place has been retrieved from the SQL
+        // database.
+        assert (hasRetrievedPlace == true);
+
+      } else {
+        // Retrieve the Xapian document data (string)
+        const std::string& lDocData = lResult_ptr->getBestDocData();
+
+        // Fill the Place object with those details
+        retrieveAndFillPlaceFromDocData (lDocData, lPlace);
+      }
+
       // DEBUG
       OPENTREP_LOG_DEBUG ("Retrieved Document: " << lPlace.toString());
-
-      // Retrieve the list of extra matching documents (documents
-      // matching with the same weight/percentage)
-      const std::string& lOriginalKeywords = lDocument.getTravelQuery();
-      const std::string& lCorrectedKeywords =
-        lDocument.getCorrectedTravelQuery();
-      const Xapian::percent& lExtraDocPercentage =
-        lDocument.getXapianPercentage();
-      const XapianDocumentList_T& lExtraDocumentList =
-        lDocument.getExtraDocumentList();
-      for (XapianDocumentList_T::const_iterator itExtraDoc =
-             lExtraDocumentList.begin();
-           itExtraDoc != lExtraDocumentList.end(); ++itExtraDoc) {
-        // Retrieve the extra matching Xapian document
-        const Xapian::Document& lExtraDocument = *itExtraDoc;
-        
-        // Instanciate an empty place object, which will be filled from the
-        // rows retrieved from the database.
-        Place& lExtraPlace = FacPlace::instance().create();
-      
-        // Retrieve, in the MySQL database, the place corresponding to
-        // the place code located as the first word of the Xapian
-        // document data.
-        hasRetrievedPlace =
-          retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                lExtraDocument, lExtraDocPercentage,
-                                ioSociSession, lExtraPlace);
-
-        // Same remark as above
-        assert (hasRetrievedPlace == true);
-
-        // The extra matching Place object has the very same effective
-        // (Levenshtein) and allowable edit distances/errors as the
-        // main Place object.
-        lExtraPlace.setEditDistance (lEditDistance);
-        lExtraPlace.setAllowableEditDistance (lAllowableEditDistance);
-      
-        // Insert the extra matching Place object within the dedicated
-        // list within the main Place object
-        FacPlace::initLinkWithExtraPlace (lPlace, lExtraPlace);
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("Retrieved Document: " << lExtraPlace.toString());
-      }
-
-      // Retrieve the list of alternate matching documents (documents
-      // matching with the a lower weight)
-      const XapianAlternateDocumentList_T& lAlternateDocumentList =
-        lDocument.getAlternateDocumentList();
-      for (XapianAlternateDocumentList_T::const_iterator itAlterDoc =
-             lAlternateDocumentList.begin();
-           itAlterDoc != lAlternateDocumentList.end(); ++itAlterDoc) {
-        // Retrieve the alternate matching Xapian document
-        const Xapian::percent& lAlterDocPercentage = itAlterDoc->first;
-        const Xapian::Document& lAlterDocument = itAlterDoc->second;
-        
-        // Instanciate an empty place object, which will be filled from the
-        // rows retrieved from the database.
-        Place& lAlterPlace = FacPlace::instance().create();
-      
-        // Retrieve, in the MySQL database, the place corresponding to
-        // the place code located as the first word of the Xapian
-        // document data.
-        hasRetrievedPlace =
-          retrieveAndFillPlace (lOriginalKeywords, lCorrectedKeywords,
-                                lAlterDocument, lAlterDocPercentage,
-                                ioSociSession, lAlterPlace);
-
-        // Same remark as above
-        assert (hasRetrievedPlace == true);
-
-        // The extra matching Place object has the very same effective
-        // (Levenshtein) and allowable edit distances/errors as the
-        // main Place object.
-        lAlterPlace.setEditDistance (lEditDistance);
-        lAlterPlace.setAllowableEditDistance (lAllowableEditDistance);
-        
-        // Insert the alternate matching Place object within the dedicated
-        // list within the main Place object
-        FacPlace::initLinkWithAlternatePlace (lPlace, lAlterPlace);
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("Retrieved Document: " << lAlterPlace.toString());
-      }
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("Fully retrieved Document: " << lPlace.toString());
     }
   }
   
+  /**
+   * For all the elements (StringSet) of the string partitions, derived
+   * from the given travel query, perform a Xapian-based full-text match.
+   * Each Xapian-based full-text match gives (potentially) a full set of
+   * matches, some with the highest matching percentage and some with a
+   * lower percentage.
+   *
+   * @param TravelQuery_T& The query string.
+   * @param const Xapian::Database& The Xapian index/database.
+   * @param ResultCombination& List of ResultHolder objects.
+   * @param WordList_T& List of non-matched words of the query string.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void searchString (const TravelQuery_T& iTravelQuery,
+                     const Xapian::Database& iDatabase,
+                     ResultCombination& ioResultCombination,
+                     WordList_T& ioWordList) {
+
+    // Catch any thrown Xapian::Error exceptions
+    try {
+      
+      // Set of unknown words (just to eliminate the duplicates)
+      WordSet_T lWordSet;
+
+      // First, calculate all the partitions of the initial travel query
+      StringPartition lStringPartition (iTravelQuery);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("+++++++++++++++++++++");
+      OPENTREP_LOG_DEBUG ("Travel query: `" << iTravelQuery << "'");
+      OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
+
+      // Browse the partitions
+      for (StringPartition::StringPartition_T::const_iterator itSet =
+             lStringPartition._partition.begin();
+           itSet != lStringPartition._partition.end(); ++itSet) {
+        const StringSet& lStringSet = *itSet;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("  ==========");
+        OPENTREP_LOG_DEBUG ("  String set: " << lStringSet);
+
+        // Create a ResultHolder object.
+        ResultHolder& lResultHolder =
+          FacResultHolder::instance().create (lStringSet.describe(), iDatabase);
+
+        // Add the ResultHolder object to the dedicated list.
+        FacResultCombination::initLinkWithResultHolder (ioResultCombination,
+                                                        lResultHolder);
+
+        // Browse through all the word combinations of the partition
+        for (StringSet::StringSet_T::const_iterator itString =
+               lStringSet._set.begin();
+             itString != lStringSet._set.end(); ++itString) {
+          //
+          const std::string lQueryString (*itString);
+
+          // DEBUG
+          OPENTREP_LOG_DEBUG ("    --------");
+          OPENTREP_LOG_DEBUG ("    Query string: '" << lQueryString << "'");
+
+          // Create an empty Result object
+          Result& lResult = FacResult::instance().create (lQueryString,
+                                                          iDatabase);
+      
+          // Add the Result object to the dedicated list.
+          FacResultHolder::initLinkWithResult (lResultHolder, lResult);
+
+          // Perform the Xapian-based full-text match: the set of
+          // matching documents is filled.
+          const std::string& lMatchedString =
+            lResult.fullTextMatch (iDatabase, lQueryString);
+
+          // When a single-word string is unmatched/unknown by/from Xapian,
+          // add it to the dedicated list (i.e., ioWordList).
+          if (lMatchedString.empty() == true) {
+            OPENTREP::addUnmatchedWord (lQueryString, ioWordList, lWordSet);
+          }
+        }
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG (std::endl
+                            << "========================================="
+                            << std::endl << "Result holder: "
+                            << lResultHolder.toString() << std::endl
+                            << "========================================="
+                            << std::endl << std::endl);
+      }
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("*********************");
+
+    } catch (const Xapian::Error& error) {
+      OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
+      throw XapianException (error.get_msg());
+    }
+  }
+
+  /**
+   * Select the best matching string partition, based on the results of
+   * several rules, that are all materialised by weighting percentages:
+   * <ul>
+   *   <li>Xapian-based full-text match. Score type: XAPIAN_PCT</li>
+   *   <li>Schedule-derived PageRank for the point of reference (POR).
+   *       Score type: PAGE_RANK</li>
+   *   <li>Heuristic. Score type: Heuristic</li>
+   * </ul>
+   * \see ScoreType.hpp for the various types of score.
+   *
+   * The score for the combination (score type: COMBINATION) is simply the
+   * product of all the scores/weighting percentages.
+   *
+   * @param ResultCombination& List of ResultHolder objects.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void chooseBestMatchingResultHolder (ResultCombination& ioResultCombination) {
+
+    // Calculate the weights for the full-text matches
+    const bool doesBestMatchingResultHolderExist =
+      ioResultCombination.chooseBestMatchingResultHolder();
+
+    if (doesBestMatchingResultHolderExist == true) {
+      const ResultHolder& lBestMatchingResultHolder =
+        ioResultCombination.getBestMatchingResultHolder();
+
+      // DEBUG
+      const StringSet& lCorrectedStringSet =
+        ioResultCombination.getCorrectedStringSet();
+      OPENTREP_LOG_DEBUG ("The best matching string partition for '"
+                          << ioResultCombination.describeShortKey() << "' is "
+                          << lBestMatchingResultHolder.describeShortKey()
+                          << ", and has got a weight of "
+                          << ioResultCombination.getBestMatchingWeight()
+                          << "%. The corrected string set is: "
+                          << lCorrectedStringSet);
+
+    } else {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("There is no match for '"
+                          << ioResultCombination.describeShortKey() << "'");
+    }
+  }
+
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
-  interpretTravelRequest (soci::session& ioSociSession,
+  interpretTravelRequest (soci::session* ioSociSession_ptr,
                           const TravelDatabaseName_T& iTravelDatabaseName,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
@@ -282,26 +352,51 @@ namespace OPENTREP {
     // Make the database
     Xapian::Database lXapianDatabase (iTravelDatabaseName);
 
-    // Create a ResultHolder object
-    ResultHolder& lResultHolder =
-      FacResultHolder::instance().create (iTravelQuery, lXapianDatabase);
-
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
                         << "=========================================");
       
-    // Main algorithm
-    DocumentList_T lDocumentList;
-    lResultHolder.searchString (lDocumentList, ioWordList);
+    /**
+     * 0. Initialisation
+     *
+     * Create a ResultCombination BOM instance.
+     */
+    ResultCombination& lResultCombination =
+      FacResultCombination::instance().create (iTravelQuery);
 
-    /** Create the list of Result objects corresponding to the list
-        of documents. */
-    createResults (lDocumentList, lXapianDatabase, lResultHolder);
+    /**
+     * 1.1. Perform all the full-text matches, and fill accordingly the
+     *      list of Result instances.
+     */
+    OPENTREP::searchString (iTravelQuery, lXapianDatabase, lResultCombination,
+                            ioWordList);
 
-    /** Create the list of Place objects, for each of which a
-        look-up is made in the SQL database (e.g., MySQL or Oracle)
-        to retrieve complementary data. */
-    createPlaces (lResultHolder, ioSociSession, lPlaceHolder);
+    /**
+     * 1.2. Calculate/set the PageRanks for all the matching documents
+     */
+    lResultCombination.calculatePageRanks();
+
+    /**
+     * 1.3. Calculate/set the heuristic weights for all the matching documents
+     */
+    lResultCombination.calculateHeuristicWeights();
+
+    /**
+     * 1.4. Calculate/set the combined weights for all the matching documents
+     */
+    lResultCombination.calculateCombinedWeights();
+
+    /**
+     * 2. Calculate the best matching scores / weighting percentages.
+     */
+    OPENTREP::chooseBestMatchingResultHolder (lResultCombination);
+
+    /**
+     * 3. Create the list of Place objects, for each of which a
+     *    look-up is made in the SQL database (e.g., MySQL or Oracle)
+     *    to retrieve complementary data.
+     */
+    createPlaces (lResultCombination, ioSociSession_ptr, lPlaceHolder);
       
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
@@ -311,9 +406,11 @@ namespace OPENTREP {
                         << "========================================="
                         << std::endl);
 
-    /** Create the list of Location structures, which are light copies
-        of the Place objects. Those (Location) structures are passed
-        back to the caller of the service. */
+    /**
+     * 4. Create the list of Location structures, which are light copies
+     *    of the Place objects. Those (Location) structures are passed
+     *    back to the caller of the service.
+     */
     lPlaceHolder.createLocations (ioLocationList);
     oNbOfMatches = ioLocationList.size();
     

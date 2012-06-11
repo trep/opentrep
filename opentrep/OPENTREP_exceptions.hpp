@@ -214,6 +214,18 @@ namespace OPENTREP {
   };
 
   /**
+   * There is best matching ResultHolder object.
+   */
+  class NoBestMatchingResultHolderException : public RootException {
+  public:
+    /**
+     * Constructor.
+     */
+    NoBestMatchingResultHolderException (const std::string& iWhat)
+      : RootException (iWhat) {}
+  };
+
+  /**
    * MySQL Database root exception.
    */
   class SQLDatabaseException : public RootException {

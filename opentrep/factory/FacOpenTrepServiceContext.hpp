@@ -9,38 +9,67 @@
 
 namespace OPENTREP {
 
-  /** Forward declarations. */
+  // Forward declarations.
   class OPENTREP_ServiceContext;
+  struct DBParams;
 
-  /** Factory for Bucket. */
+
+  /**
+   * @brief Factory for Bucket.
+   */
   class FacOpenTrepServiceContext : public FacServiceAbstract {
   public:
 
-    /** Provide the unique instance.
-        <br> The singleton is instantiated when first used
-        @return FacOpentrepServiceContext& */
+    /**
+     * Provide the unique instance.
+     *
+     * The singleton is instantiated when first used
+     *
+     * @return FacOpentrepServiceContext&
+     */
     static FacOpenTrepServiceContext& instance();
 
-    /** Destructor.
-        <br> The Destruction put the _instance to NULL
-        in order to be clean for the next
-        FacOpentrepServiceContext::instance() */
+    /**
+     * Destructor.
+     *
+     * The Destruction put the _instance to NULL in order to be clean
+     * for the next FacOpentrepServiceContext::instance()
+     */
     ~FacOpenTrepServiceContext();
 
-    /** Create a new OPENTREP_ServiceContext object.
-        <br>This new object is added to the list of instantiated objects.
-        @return OPENTREP_ServiceContext& The newly created object. */
+    /**
+     * Create a new OPENTREP_ServiceContext object.
+     *
+     * This new object is added to the list of instantiated objects.
+     *
+     * @return OPENTREP_ServiceContext& The newly created object.
+     */
     OPENTREP_ServiceContext& create (const TravelDatabaseName_T&);
 
-    
+    /**
+     * Create a new OPENTREP_ServiceContext object.
+     *
+     * This new object is added to the list of instantiated objects.
+     *
+     * @return OPENTREP_ServiceContext& The newly created object.
+     */
+    OPENTREP_ServiceContext& create (const TravelDatabaseName_T&,
+                                     const DBParams&);
+
+
   protected:
-    /** Default Constructor.
-        <br>This constructor is protected in order to ensure the singleton
-        pattern.*/
-    FacOpenTrepServiceContext () {}
+    /**
+     * Default Constructor.
+     *
+     * This constructor is protected in order to ensure the singleton
+     * pattern.
+     */
+    FacOpenTrepServiceContext() {}
 
   private:
-    /** The unique instance.*/
+    /**
+     * The unique instance.
+     */
     static FacOpenTrepServiceContext* _instance;
   };
 
