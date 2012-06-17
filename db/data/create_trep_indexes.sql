@@ -56,4 +56,4 @@ ALTER TABLE place_names ADD INDEX (`iata_code`);
 --
 -- iata_code, page_rank
 
-ALTER TABLE airport_pageranked ADD PRIMARY KEY (`iata_code`);
+ALTER TABLE airport_pageranked ADD PRIMARY KEY (`iata_code`, `por_type`);

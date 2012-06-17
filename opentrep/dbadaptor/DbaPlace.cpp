@@ -18,18 +18,20 @@ namespace soci {
   from_base (values const& iPlaceValues, indicator /* ind */,
              OPENTREP::Place& ioPlace) {
     /*
-      code, xapian_docid, icao_code, is_geonames, geonameid, 
+      rpd.iata_code, xapian_docid, icao_code, is_geonames, geonameid, 
       latitude, longitude, fclass, fcode, country_code, cc2,
       admin1, admin2, admin3, admin4, population, elevation, gtopo30, 
       timezone, gmt_offset, dst_offset, raw_offset, moddate, 
-      is_airport, is_commercial,
-      city_code, state_code, region_code, location_type, 
+      is_airport, is_commercial, 
+      city_code, state_code, region_code, location_type, wiki_link,
       language_code, ascii_name, utf_name, 
-      alternate_name1, alternate_name2, alternate_name3,
-      alternate_name4, alternate_name5, alternate_name6,
-      alternate_name7, alternate_name8, alternate_name9,
-      alternate_name10,
-      page_rank, wiki_link
+      alternate_name1, alternate_name2, alternate_name3, 
+      alternate_name4, alternate_name5, alternate_name6, 
+      alternate_name7, alternate_name8, alternate_name9, 
+      alternate_name10, 
+      page_rank, por_type 
+      from place_names as pn, place_details as rpd 
+      left join airport_pageranked pr on pr.iata_code = rpd.iata_code
     */
 
     /*
@@ -72,9 +74,17 @@ namespace soci {
       // when the column is null
       // ioPlace.setFaaCode (iPlaceValues.get<std::string> ("faa_code", ""));
 
+      // Location type ('C' for city only, 'A' for airport only, 'CA' for airport/city)
+      const std::string lLocationType = iPlaceValues.get<std::string>("location_type","");
+      const std::string lPorType = iPlaceValues.get<std::string> ("por_type", "");
+
       // The city code will be set to the default value (empty string)
       // when the column is null
       ioPlace.setCityCode (iPlaceValues.get<std::string> ("city_code", ""));
+
+      if (lLocationType == "ca" || lPorType == "c") {
+        ioPlace.setCityCode ("");
+      }
 
       // The state code will be set to the default value (empty string)
       // when the column is null
