@@ -74,6 +74,7 @@ create table place_names (
 drop table if exists airport_pageranked;
 create table airport_pageranked (
  iata_code char(3) NOT NULL,
+ por_type char(1) NOT NULL,
  page_rank decimal(15,12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

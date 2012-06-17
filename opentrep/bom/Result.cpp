@@ -319,8 +319,8 @@ namespace OPENTREP {
       // Give the query object to the enquire session
       enquire.set_query (lXapianQuery);
 
-      // Get the top 10 results of the query
-      ioMatchingSet = enquire.get_mset (0, 10);
+      // Get the top 20 results of the query
+      ioMatchingSet = enquire.get_mset (0, 20);
 
       // Display the results
       int nbMatches = ioMatchingSet.size();
@@ -406,7 +406,7 @@ namespace OPENTREP {
                                   | Xapian::QueryParser::FLAG_LOVEHATE);
 
       enquire.set_query (lCorrectedXapianQuery);
-      ioMatchingSet = enquire.get_mset (0, 10);
+      ioMatchingSet = enquire.get_mset (0, 20);
 
       // Display the results
       nbMatches = ioMatchingSet.size();

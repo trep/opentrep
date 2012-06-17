@@ -45,7 +45,7 @@ namespace OPENTREP {
          alternate_name4, alternate_name5, alternate_name6, 
          alternate_name7, alternate_name8, alternate_name9, 
          alternate_name10,
-         page_rank
+         page_rank, por_type
          from place_names as pn, place_details as rpd 
          left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.iata_code = pn.iata_code
@@ -67,7 +67,7 @@ namespace OPENTREP {
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10, "
-         << "page_rank "
+         << "page_rank, por_type "
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.iata_code = pn.iata_code "
@@ -109,7 +109,7 @@ namespace OPENTREP {
          alternate_name4, alternate_name5, alternate_name6,
          alternate_name7, alternate_name8, alternate_name9,
          alternate_name10,
-         page_rank
+         page_rank, por_type
          from place_names as pn, place_details as rpd 
          left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where latitude >= :lower_latitude
@@ -140,7 +140,7 @@ namespace OPENTREP {
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10, "
-         << "page_rank "
+         << "page_rank, por_type "
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where latitude >= :lower_latitude "
@@ -190,7 +190,7 @@ namespace OPENTREP {
          alternate_name4, alternate_name5, alternate_name6,
          alternate_name7, alternate_name8, alternate_name9,
          alternate_name10,
-         page_rank
+         page_rank, por_type
          from place_names as pn, place_details as rpd 
          left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.iata_code = iIataCode
@@ -214,7 +214,7 @@ namespace OPENTREP {
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10, "
-         << "page_rank "
+         << "page_rank, por_type "
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.iata_code = :place_iata_code "
@@ -260,7 +260,7 @@ namespace OPENTREP {
          alternate_name4, alternate_name5, alternate_name6,
          alternate_name7, alternate_name8, alternate_name9,
          alternate_name10,
-         page_rank
+         page_rank, por_type
          from place_names as pn, place_details as rpd 
          left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
          where rpd.xapian_docid = DocID
@@ -283,7 +283,7 @@ namespace OPENTREP {
          << "alternate_name4, alternate_name5, alternate_name6, "
          << "alternate_name7, alternate_name8, alternate_name9, "
          << "alternate_name10, "
-         << "page_rank "
+         << "page_rank, por_type "
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.xapian_docid = :xapian_docid "

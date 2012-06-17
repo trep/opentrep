@@ -436,6 +436,7 @@ namespace OPENTREP {
 
     /**
      * Related IATA city code (e.g., CHI).
+     * \note The related city code is empty when the Place object is itself a city.
      */
     std::string _cityCode;
 

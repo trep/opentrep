@@ -9,7 +9,7 @@ aah^0^edka^y^3207669^50.75^6.133^s^airp^de^^07^^^^0^0^195^europe/berlin^1.0^2.0^
 aai^0^swra^y^7668483^-12.92^-46.93^s^airp^br^^31^^^^0^0^559^america/araguaina^-3.0^-3.0^-3.0^2011-02-17^y^n^aai^to^samer^ca^http://en.wikipedia.org/wiki/arraias_airport
 aaj^0^zzzz^y^7730797^3.9^-55.37^s^airp^sr^^18^^^^0^0^208^america/paramaribo^-3.0^-3.0^-3.0^2012-05-12^y^n^aaj^^samer^ca^
 aak^0^nguk^y^7521791^0.2167^174^s^airp^ki^^01^ak^^^0^0^13^pacific/tarawa^12.0^12.0^12.0^2010-08-20^y^n^aak^^austl^ca^http://en.wikipedia.org/wiki/aranuka_airport
-aal^0^ekyt^y^2624887^57.092789^9.849164^s^airp^dk^^19^851^^^0^3^2^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^y^aal^^europ^ca^http://en.wikipedia.org/wiki/aalborg_airport
+aal^0^ekyt^y^2624887^57.092789^9.849164^s^airp^dk^^19^851^^^0^3^2^europe/copenhagen^1.0^2.0^1.0^2012-06-10^y^y^aal^^europ^ca^http://en.wikipedia.org/wiki/aalborg_airport
 aam^0^famd^y^7668229^-24.8^31.53^s^airp^za^^^^^^0^0^329^africa/johannesburg^2.0^2.0^2.0^2011-02-17^y^n^aam^^afric^ca^http://en.wikipedia.org/wiki/mala_mala_airport
 aan^0^omal^y^6300095^24.261667^55.609167^s^airp^ae^^^^^^0^264^248^asia/dubai^4.0^4.0^4.0^2007-01-03^y^y^aan^^meast^ca^http://en.wikipedia.org/wiki/al_ain_international_airport
 aao^0^svan^y^3649283^9.430225^-64.470725^s^airf^ve^^02^^^^0^0^204^america/caracas^-4.5^-4.5^-4.5^2012-05-01^y^n^aao^^samer^ca^http://en.wikipedia.org/wiki/anaco_airport
@@ -40,7 +40,7 @@ abm^0^ybam^y^7730800^-10.950833^142.459444^s^airp^au^^04^36950^^^0^0^6^australia
 abn^0^smbn^y^3384793^5.483^-54.05^s^airf^sr^^13^^^^0^0^10^america/paramaribo^-3.0^-3.0^-3.0^2012-01-18^y^n^abn^^samer^ca^http://en.wikipedia.org/wiki/albina_airstrip
 abo^0^diao^y^8260695^5.467^-3.2^s^airp^ci^^04^^^^0^0^74^africa/abidjan^0.0^0.0^0.0^2012-04-29^y^n^abo^^afric^ca^http://en.wikipedia.org/wiki/aboisso_airport
 abp^0^zzzz^y^8299138^-6.067^141.1^s^airp^pg^^06^^^^0^0^26^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^abp^^austl^ca^
-abq^0^kabq^y^5454724^35.05^-106.6^s^airp^us^^nm^001^^^0^1620^1618^america/denver^-7.0^-6.0^-7.0^2007-05-24^y^y^abq^nm^namer^ca^http://en.wikipedia.org/wiki/albuquerque_international_sunport
+abq^0^kabq^y^5454724^35.05^-106.6^s^airp^us^^nm^001^^^0^1620^1618^america/denver^-7.0^-6.0^-7.0^2007-05-24^y^y^abq^nm^namer^ca^http://en.wikipedia.org/wiki/kirtland_air_force_base
 abr^0^kabr^y^5225860^45.449056^-98.421833^s^airp^us^^sd^013^^^0^395^393^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^abr^sd^namer^ca^http://en.wikipedia.org/wiki/aberdeen_regional_airport
 abs^0^hebl^y^6452622^22.375953^31.611722^s^airp^eg^^16^^^^0^188^184^africa/cairo^2.0^2.0^2.0^2007-04-05^y^y^abs^^afric^ca^http://en.wikipedia.org/wiki/abu_simbel_airport
 abt^0^oeba^y^6300010^20.296139^41.634277^s^airp^sa^^02^^^^0^1672^1654^asia/riyadh^3.0^3.0^3.0^2011-07-23^y^y^abt^^meast^ca^http://en.wikipedia.org/wiki/al-baha_domestic_airport
@@ -598,7 +598,7 @@ bci^0^ybar^y^7730239^-23.565278^145.306667^s^airp^au^^04^30410^^^0^0^271^austral
 bcj^0^zzzz^y^8299025^37.97^-105.8^s^airp^us^^co^109^^^0^0^2325^america/denver^-7.0^-6.0^-7.0^2012-05-18^y^n^bcj^co^namer^ca^
 bck^0^zzzz^y^7730849^-17.4^144.2^s^airp^au^^04^36810^^^0^0^315^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^bck^ql^austl^ca^
 bcl^0^mrbc^y^7668354^10.78^-83.58^s^airp^cr^^06^^^^0^0^6^america/costa_rica^-6.0^-6.0^-6.0^2011-02-17^y^n^bcl^^camer^ca^http://en.wikipedia.org/wiki/barra_del_colorado_airport
-bcm^0^lrbc^y^6299699^46.521946^26.910278^s^airp^ro^^^^^^0^185^185^europe/bucharest^2.0^3.0^2.0^2007-01-03^y^y^bcm^^eeuro^ca^http://en.wikipedia.org/wiki/bac%c4%83u_international_airport
+bcm^0^lrbc^y^6299699^46.521946^26.910278^s^airp^ro^^^^^^0^185^185^europe/bucharest^2.0^3.0^2.0^2007-01-03^y^y^bcm^^eeuro^ca^http://en.wikipedia.org/wiki/roaf_95th_air_base
 bcn^0^lebl^y^3115882^41.297078^2.078464^s^airp^es^^56^b^08169^^0^3^3^europe/madrid^1.0^2.0^1.0^2010-08-25^y^y^bcn^^europ^ca^http://en.wikipedia.org/wiki/barcelona_airport
 bco^0^zzzz^y^8298865^5.783^36.55^s^airp^et^^39^^^^0^0^1398^africa/addis_ababa^3.0^3.0^3.0^2012-05-18^y^n^bco^^afric^ca^
 bcp^0^zzzz^y^2099957^-5.85^146.5^p^ppl^pg^^12^^^^0^0^2022^pacific/port_moresby^10.0^10.0^10.0^2012-01-17^y^n^bcp^^austl^ca^
@@ -624,7 +624,7 @@ bdi^0^fssb^y^6354923^-3.717^55.22^s^airp^sc^^^^^^0^0^5^indian/mahe^4.0^4.0^4.0^2
 bdj^0^wrbb^y^6301262^-3.283^114.7^s^airp^id^^^^^^0^20^18^asia/jakarta^7.0^7.0^7.0^2006-10-29^y^y^bdj^^seasi^ca^
 bdk^0^dibu^y^6296435^8.033^-2.8^s^airp^ci^^^^^^0^369^375^africa/abidjan^0.0^0.0^0.0^2006-10-29^y^n^bdk^^afric^ca^http://en.wikipedia.org/wiki/soko_airport
 bdl^0^kbdl^y^5282636^41.938889^-72.683222^s^airp^us^^ct^003^^^0^57^56^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^y^hfd^ct^namer^a^http://en.wikipedia.org/wiki/bradley_international_airport
-bdm^0^ltbg^y^6299747^40.317972^27.977694^s^airp^tr^^^^^^0^51^42^europe/istanbul^2.0^3.0^2.0^2011-03-28^y^n^bdm^^euras^ca^http://en.wikipedia.org/wiki/band%c4%b1rma_airport
+bdm^0^ltbg^y^6299747^40.317972^27.977694^s^airp^tr^^^^^^0^51^42^europe/istanbul^2.0^3.0^2.0^2011-03-28^y^y^bdm^^euras^ca^http://en.wikipedia.org/wiki/band%c4%b1rma_airport
 bdn^0^opth^y^7730755^24.841519^68.838408^s^airp^pk^^05^^^^0^0^8^asia/karachi^5.0^5.0^5.0^2011-03-17^y^n^bdn^^asia^ca^
 bdo^0^wiib^y^6301223^-6.9^107.6^s^airp^id^^^^^^0^740^741^asia/jakarta^7.0^7.0^7.0^2006-10-29^y^y^bdo^^seasi^ca^
 bdp^0^vncg^y^7668616^26.57^88.08^s^airp^np^^er^10^^^0^0^94^asia/kathmandu^5.8^5.8^5.8^2011-03-10^y^y^bdp^^asia^ca^http://en.wikipedia.org/wiki/bhadrapur_airport
@@ -782,8 +782,8 @@ bjo^0^slbj^y^7668467^-22.773336^-64.312881^s^airp^bo^^09^^^^0^0^381^america/la_p
 bjp^0^zzzz^y^8298897^-22.95^-46.57^s^airp^br^^27^^^^0^0^927^america/sao_paulo^-2.0^-3.0^-3.0^2012-05-18^y^n^bjp^sp^samer^ca^
 bjq^0^zzzz^y^8260700^19.875^56.0619^s^airp^om^^^^^^0^0^157^asia/muscat^4.0^4.0^4.0^2012-04-29^y^n^bjq^^meast^ca^
 bjr^0^habd^y^6297263^11.608075^37.321644^s^airp^et^^^^^^0^1821^1821^africa/addis_ababa^3.0^3.0^3.0^2007-01-03^y^y^bjr^^afric^ca^
-bjs^0^zzzz^y^1816670^40.05^116.6^p^pplc^cn^^22^^^^7480601^0^49^asia/harbin^8.0^8.0^8.0^2011-03-10^n^n^bjs^^asia^c^
-bjt^0^zzzz^y^8298845^6.418^80^s^airp^lk^^^^^^0^0^16^asia/colombo^5.5^5.5^5.5^2012-05-18^y^y^bjt^^asia^ca^
+bjs^0^zzzz^y^1816670^40.05^116.6^p^pplc^cn^^22^^^^7480601^0^49^asia/shanghai^8.0^8.0^8.0^2011-03-10^n^n^bjs^^asia^c^
+bjt^0^zzzz^y^8298845^6.418^80^s^airp^lk^^^^^^0^0^16^asia/colombo^5.5^5.5^5.5^2012-05-18^y^n^bjt^^asia^ca^
 bju^0^vnbr^y^7668615^29.35^81.3^s^airp^np^^fr^14^^^0^0^1364^asia/kathmandu^5.8^5.8^5.8^2011-03-10^y^n^bju^^asia^ca^http://en.wikipedia.org/wiki/bajura_airport
 bjv^0^ltfe^y^6299771^37.250611^27.664311^s^airp^tr^^^^^^0^6^3^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^y^bxn^^euras^a^http://en.wikipedia.org/wiki/milas-bodrum_airport
 bjw^0^zzzz^y^8299216^-8.783^121^s^airp^id^^18^^^^0^0^1270^asia/makassar^8.0^8.0^8.0^2012-05-18^y^n^bjw^^seasi^ca^
@@ -801,7 +801,7 @@ bkh^0^phbk^y^6300268^22.022833^-159.785^s^airp^us^^hi^^^^0^7^2^pacific/honolulu^
 bki^0^wbkk^y^1772439^5.937208^116.051181^s^airp^my^^16^^^^0^3^9^asia/kuching^8.0^8.0^8.0^2007-01-03^y^y^bki^^seasi^ca^http://en.wikipedia.org/wiki/kota_kinabalu_international_airport
 bkj^0^guok^y^6297253^10.97^-14.28^s^airp^gn^^^^^^0^69^34^africa/conakry^0.0^0.0^0.0^2006-10-29^y^n^bkj^^afric^ca^http://en.wikipedia.org/wiki/bok%c3%a9_baralande_airport
 bkk^0^vtbs^y^6301137^13.6915200^100.7508900^s^airp^th^^42^^^^0^2^3^asia/bangkok^7.0^7.0^7.0^2011-07-30^y^y^bkk^^seasi^ca^
-bkl^0^kbkl^y^5148736^41.5175^-81.683333^s^airp^us^^oh^035^^^0^177^176^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^cle^oh^namer^a^http://en.wikipedia.org/wiki/cleveland_burke_lakefront_airport
+bkl^0^kbkl^y^5148736^41.5175^-81.683333^s^airp^us^^oh^035^^^0^177^176^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^y^cle^oh^namer^a^http://en.wikipedia.org/wiki/cleveland_burke_lakefront_airport
 bkm^0^wbgq^y^7730866^3.967^115.6^s^airp^my^^11^^^^0^0^923^asia/kuching^8.0^8.0^8.0^2011-03-17^y^y^bkm^^seasi^ca^
 bkn^0^zzzz^y^8260986^13.8^5.233^s^airp^ne^^06^^^^0^0^272^africa/niamey^1.0^1.0^1.0^2012-04-29^y^n^bkn^^afric^ca^
 bko^0^gabs^y^6297167^12.533544^-7.949944^s^airp^ml^^^^^^0^380^376^africa/bamako^0.0^0.0^0.0^2006-10-29^y^y^bko^^afric^ca^http://en.wikipedia.org/wiki/bamako-s%c3%a9nou_international_airport
@@ -991,7 +991,7 @@ bsi^0^zzzz^y^8299248^40.43^-79.27^s^airp^us^^pa^063^^^0^0^305^america/new_york^-
 bsj^0^ybns^y^7668688^-37.8875^147.567778^s^airp^au^^07^22110^^^0^0^52^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^n^bsj^vi^austl^ca^http://en.wikipedia.org/wiki/bairnsdale_airport
 bsk^0^daub^y^6296387^34.793289^5.738231^s^airp^dz^^^^^^0^88^76^africa/algiers^1.0^1.0^1.0^2011-03-28^y^y^bsk^^afric^ca^http://en.wikipedia.org/wiki/biskra_airport
 bsl^0^lfsb^y^6299466^47.6^7.533^s^airp^fr^^c1^68^^^0^269^263^europe/paris^1.0^2.0^1.0^2011-06-15^y^y^eap^^europ^a^http://en.wikipedia.org/wiki/euroairport_basel-mulhouse-freiburg
-bsm^0^oinj^y^7730746^36.65^52.35^s^airp^ir^^35^^^^0^0^235^asia/tehran^3.5^4.5^3.5^2011-03-17^y^n^bsm^^meast^ca^
+bsm^0^oinj^y^7730746^36.65^52.35^s^airp^ir^^35^^^^0^0^235^asia/tehran^3.5^4.5^3.5^2011-03-17^y^y^bsm^^meast^ca^
 bsn^0^fefs^y^6296979^6.5^17.43^s^airp^cf^^^^^^0^464^468^africa/bangui^1.0^1.0^1.0^2011-03-28^y^n^bsn^^afric^ca^http://en.wikipedia.org/wiki/bossangoa_airport
 bso^0^rpuo^y^6300486^20.451322^121.979883^s^airp^ph^^^^^^0^88^68^asia/manila^8.0^8.0^8.0^2011-03-28^y^y^bso^^pacif^ca^http://en.wikipedia.org/wiki/basco_airport
 bsp^0^zzzz^y^8260949^-9.05^141.1^s^airp^pg^^06^^^^0^0^4^pacific/port_moresby^10.0^10.0^10.0^2012-04-29^y^n^bsp^^austl^ca^
@@ -1150,7 +1150,7 @@ bze^0^mzbz^y^3582674^17.539144^-88.308203^s^airp^bz^^01^^^^0^4^4^america/belize^
 bzf^0^zzzz^n^0^40.58^-122.4^s^airp^us^^^^^^^^^us110^^^^-1^y^n^rdd^ca^namer^a^
 bzg^0^epby^y^7668225^53.5^18^s^airp^pl^^73^0403^040301^^0^0^68^europe/warsaw^1.0^2.0^1.0^2011-02-17^y^y^bzg^^eeuro^ca^http://en.wikipedia.org/wiki/bydgoszcz_ignacy_jan_paderewski_airport
 bzh^0^zzzz^y^894679^-16.82^28.35^p^ppl^zw^^00^^^^0^0^500^africa/harare^2.0^2.0^2.0^2012-01-17^y^n^bzh^^afric^ca^
-bzi^0^ltbf^y^6299746^39.619258^27.925958^s^airp^tr^^^^^^0^103^96^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^n^bzi^^euras^ca^http://en.wikipedia.org/wiki/bal%c4%b1kesir_airport
+bzi^0^ltbf^y^6299746^39.619258^27.925958^s^airp^tr^^^^^^0^103^96^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^y^bzi^^euras^ca^http://en.wikipedia.org/wiki/bal%c4%b1kesir_airport
 bzk^0^uubp^y^6301014^53.214194^34.176447^s^airp^ru^^^^^^0^202^197^europe/moscow^4.0^4.0^4.0^2007-01-03^y^n^bzk^^euras^ca^http://en.wikipedia.org/wiki/bryansk_international_airport
 bzl^0^vgbr^y^7668599^22.801031^90.301164^s^airp^bd^^32^^^^0^0^7^asia/dhaka^6.0^6.0^6.0^2011-02-17^y^n^bzl^^asia^ca^http://en.wikipedia.org/wiki/barisal_airport
 bzm^0^zzzz^y^8260376^-17.69328^45.08881^s^airp^mg^^^^^^0^0^288^indian/antananarivo^3.0^3.0^3.0^2012-04-21^y^z^bzm^^iocea^a^
@@ -1210,7 +1210,7 @@ cbq^0^dnca^y^2346228^4.976019^8.347197^s^airp^ng^^00^^^^0^64^63^africa/lagos^1.0
 cbr^0^yscb^y^6301342^-35.306944^149.195^s^airp^au^^01^^^^0^574^569^australia/sydney^11.0^10.0^10.0^2009-03-13^y^y^cbr^ac^austl^ca^http://en.wikipedia.org/wiki/canberra_international_airport
 cbs^0^svon^y^3631260^10.38^-71.47^s^airp^ve^^23^^^^0^0^55^america/caracas^-4.5^-4.5^-4.5^2012-02-02^y^n^cbs^^samer^ca^http://en.wikipedia.org/wiki/oro_negro_airport
 cbt^0^fnct^y^7668246^-12.45^13.48^s^airp^ao^^01^^^^0^0^6^africa/luanda^1.0^1.0^1.0^2011-02-17^y^y^cbt^^afric^ca^http://en.wikipedia.org/wiki/catumbela_airport
-cbu^0^edcd^y^3209131^51.72^14.35^s^airf^de^^11^^^^0^0^79^europe/berlin^1.0^2.0^1.0^2012-06-06^y^y^cbu^^europ^ca^http://en.wikipedia.org/wiki/cottbus-drewitz_airport
+cbu^0^edcd^y^3209131^51.72^14.35^s^airf^de^^11^^^^0^0^79^europe/berlin^1.0^2.0^1.0^2012-06-06^y^n^cbu^^europ^ca^http://en.wikipedia.org/wiki/cottbus-drewitz_airport
 cbv^0^mgcb^y^6299799^15.468958^-90.406742^s^airp^gt^^^^^^0^1322^1321^america/guatemala^-6.0^-6.0^-6.0^2007-01-03^y^n^cbv^^camer^ca^http://en.wikipedia.org/wiki/cob%c3%a1n_airport
 cbw^0^zzzz^y^8298747^-24^-52.36^s^airp^br^^18^^^^0^0^567^america/sao_paulo^-2.0^-3.0^-3.0^2012-05-18^y^n^cbw^pr^samer^ca^
 cbx^0^ycdo^y^7730904^-33.064444^147.209167^s^airp^au^^02^14600^^^0^0^195^australia/sydney^11.0^10.0^10.0^2011-06-04^y^n^cbx^ns^austl^ca^
@@ -1414,7 +1414,7 @@ ckt^0^oimc^y^6300063^36.501178^61.064903^s^airp^ir^^^^^^0^288^288^asia/tehran^3.
 cku^0^zzzz^y^5859889^60.54^-145.7^s^airp^us^^ak^261^^^0^57^23^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^n^cdv^ak^namer^a^http://en.wikipedia.org/wiki/cordova_municipal_airport
 ckv^0^kckv^y^4647512^36.62^-87.42^s^airp^us^^tn^125^^^0^167^163^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^n^ckv^tn^namer^ca^http://en.wikipedia.org/wiki/clarksville-montgomery_county_regional_airport
 ckx^0^zzzz^y^5859163^64.08^-141.9^s^airp^us^^ak^240^^^0^489^495^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^ckx^ak^namer^ca^http://en.wikipedia.org/wiki/chicken_airport
-cky^0^gucy^y^6297246^9.576889^-13.611961^s^airp^gn^^^^^^0^21^14^africa/conakry^0.0^0.0^0.0^2007-01-03^y^y^cky^^afric^ca^http://en.wikipedia.org/wiki/conakry_international_airport
+cky^0^gucy^y^6297246^9.576889^-13.611961^s^airp^gn^^^^^^0^21^14^africa/conakry^0.0^0.0^0.0^2012-06-11^y^y^cky^^afric^ca^http://en.wikipedia.org/wiki/conakry_international_airport
 ckz^0^ltbh^y^6299748^40.137722^26.426777^s^airp^tr^^^^^^0^7^8^europe/istanbul^2.0^3.0^2.0^2011-03-28^y^n^ckz^^euras^ca^http://en.wikipedia.org/wiki/%c3%87anakkale_airport
 cla^0^vgcm^y^7730922^23.43^91.18^s^airp^bd^^^^^^0^0^11^asia/dhaka^6.0^6.0^6.0^2011-03-17^y^n^cla^^asia^ca^
 clc^0^zzzz^n^0^29.55^-95.13^s^airp^us^^^^^^^^^us107^^^^-1^y^n^clc^tx^namer^ca^
@@ -1442,7 +1442,7 @@ clx^0^satc^y^3435365^-25.33^-57.67^s^airf^ar^^09^^^^0^0^65^america/argentina/cor
 cly^0^lfkc^y^6299393^42.530753^8.793189^s^airp^fr^^a5^2b^2b5^2b050^0^63^38^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^cly^^europ^ca^http://en.wikipedia.org/wiki/calvi_%e2%80%93_sainte-catherine_airport
 clz^0^svcl^y^3641807^8.924656^-67.417094^s^airp^ve^^12^^^^0^99^116^america/caracas^-4.5^-4.5^-4.5^2011-03-28^y^n^clz^^samer^ca^http://en.wikipedia.org/wiki/calabozo_airport
 cma^0^ycmu^y^7730248^-28.03^145.622222^s^airp^au^^04^35800^^^0^0^194^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^y^cma^ql^austl^ca^http://en.wikipedia.org/wiki/cunnamulla_airport
-cmb^0^vcbi^y^6301060^7.180756^79.884117^s^airp^lk^^^^^^0^9^10^asia/colombo^5.5^5.5^5.5^2007-01-03^y^y^cmb^^asia^ca^
+cmb^0^vcbi^y^6301060^7.180756^79.884117^s^airp^lk^^36^^^^0^9^10^asia/colombo^5.5^5.5^5.5^2012-06-12^y^y^cmb^^asia^ca^http://en.wikipedia.org/wiki/bandaranaike_international_airport
 cmc^0^snwc^y^7730925^-2.9^-40.83^s^airp^br^^06^^^^0^0^12^america/fortaleza^-3.0^-3.0^-3.0^2011-03-17^y^n^cmc^ce^samer^ca^
 cmd^0^yctm^y^7668706^-34.623889^148.028056^s^airp^au^^02^12200^^^0^0^336^australia/sydney^11.0^10.0^10.0^2011-06-04^y^n^cmd^ns^austl^ca^http://en.wikipedia.org/wiki/cootamundra_airport
 cme^0^mmce^y^6299831^18.653739^-91.799017^s^airp^mx^^^^^^0^3^4^america/merida^-6.0^-5.0^-6.0^2007-01-03^y^y^cme^^namer^ca^http://en.wikipedia.org/wiki/ciudad_del_carmen_international_airport
@@ -1728,7 +1728,7 @@ czl^0^dabc^y^6296371^36.276028^6.620386^s^airp^dz^^^^^^0^690^700^africa/algiers^
 czm^0^mmcz^y^6299840^20.522403^-86.925644^s^airp^mx^^^^^^0^4^9^america/cancun^-6.0^-5.0^-6.0^2007-01-03^y^y^czm^^namer^ca^
 czn^0^zzzz^y^5859282^62.08^-142.1^s^airp^us^^ak^261^^^0^1012^1016^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^n^czn^ak^namer^ca^http://en.wikipedia.org/wiki/chisana_airport
 czo^0^zzzz^y^5859295^62.57^-144.7^p^ppl^us^^ak^261^^^93^574^566^america/anchorage^-9.0^-8.0^-9.0^2011-05-14^y^n^czo^ak^namer^ca^
-czp^0^zzzz^y^5845149^55.97^-133.8^p^ppl^us^^ak^198^^^0^2^11^america/metlakatla^-8.0^-8.0^-8.0^2010-09-05^y^n^czp^ak^namer^ca^
+czp^0^zzzz^y^5845149^55.97^-133.8^p^ppl^us^^ak^198^^^0^2^11^america/juneau^-9.0^-8.0^-9.0^2010-09-05^y^n^czp^ak^namer^ca^
 czs^0^sbcz^y^6300618^-7.599906^-72.769489^s^airp^br^^^^^^0^194^194^america/eirunepe^-4.0^-4.0^-4.0^2007-01-03^y^y^czs^ac^samer^ca^http://en.wikipedia.org/wiki/cruzeiro_do_sul_international_airport
 czt^0^zzzz^n^0^28.52^-99.87^s^airp^us^^^^^^^^^us107^^^^-1^y^n^czt^tx^namer^ca^
 czu^0^skcz^y^3685830^9.332742^-75.285594^s^airf^co^^27^^^^0^0^160^america/bogota^-5.0^-5.0^-5.0^2012-01-19^y^y^czu^^samer^ca^http://en.wikipedia.org/wiki/las_brujas_airport_(colombia)
@@ -1938,7 +1938,7 @@ dob^0^wapd^y^7730983^-5.767^134.2^s^airp^id^^^^^^0^0^17^asia/jayapura^9.0^9.0^9.
 doc^0^zzzz^y^7730984^57.88^-4.083^s^airp^gb^^sct^v3^^^0^0^3^europe/london^0.0^1.0^0.0^2011-03-17^y^n^doc^^europ^ca^
 dod^0^htdo^y^6297354^-6.170436^35.752578^s^airp^tz^^^^^^0^1108^1118^africa/dar_es_salaam^3.0^3.0^3.0^2007-01-03^y^n^dod^^afric^ca^
 doe^0^zzzz^y^3384316^4.017^-55.48^p^ppl^sr^^18^^^^0^0^105^america/paramaribo^-3.0^-3.0^-3.0^2012-01-18^y^n^doe^^samer^ca^
-dof^0^zzzz^y^5845812^55.2^-132.3^p^ppl^us^^ak^198^^^0^680^694^america/metlakatla^-8.0^-8.0^-8.0^2010-01-30^y^n^dof^ak^namer^ca^
+dof^0^zzzz^y^5845812^55.2^-132.3^p^ppl^us^^ak^198^^^0^680^694^america/juneau^-9.0^-8.0^-9.0^2010-01-30^y^n^dof^ak^namer^ca^
 dog^0^hsdn^y^6297336^19.153867^30.430094^s^airp^sd^^^^^^0^235^234^africa/khartoum^3.0^3.0^3.0^2007-01-03^y^n^dog^^afric^ca^http://en.wikipedia.org/wiki/dongola_airport
 doh^0^otbd^y^6300133^25.261125^51.565056^s^airp^qa^^^^^^0^10^11^asia/qatar^3.0^3.0^3.0^2007-01-03^y^y^doh^^meast^ca^http://en.wikipedia.org/wiki/doha_international_airport
 doi^0^zzzz^y^8298829^-10.72^150.7^s^airp^pg^^^^^^0^0^-9999^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^doi^^austl^ca^
@@ -2285,7 +2285,7 @@ esf^0^kesf^y^4314531^31.394903^-92.295772^s^airp^us^^la^079^^^0^27^27^america/ch
 esg^0^sgme^y^6300731^-22.03^-60.62^s^airp^py^^^^^^0^168^164^america/asuncion^-3.0^-4.0^-4.0^2007-01-03^y^n^esg^^samer^ca^
 esh^0^egka^y^6296596^50.835556^-0.297222^s^airp^gb^^eng^p6^45ub^^0^2^255^europe/london^0.0^1.0^0.0^2011-03-03^y^n^esh^^europ^ca^http://en.wikipedia.org/wiki/shoreham_airport
 esi^0^zzzz^y^3463939^-14.93^-42.83^p^ppl^br^^15^^^^17548^0^567^america/sao_paulo^-2.0^-3.0^-3.0^2006-12-13^y^n^esi^mg^samer^ca^
-esk^0^ltbi^y^6299749^39.809858^30.519378^s^airp^tr^^^^^^0^786^781^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^n^esk^^euras^ca^http://en.wikipedia.org/wiki/eski%c5%9fehir_airport
+esk^0^ltbi^y^6299749^39.809858^30.519378^s^airp^tr^^^^^^0^786^781^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^y^esk^^euras^ca^http://en.wikipedia.org/wiki/eski%c5%9fehir_airport
 esl^0^urwi^y^6300997^46.373933^44.330872^s^airp^ru^^^^^^0^152^145^europe/moscow^4.0^4.0^4.0^2011-03-28^y^y^esl^^euras^ca^http://en.wikipedia.org/wiki/elista_airport
 esm^0^sees^y^6300712^0.978519^-79.62665^s^airp^ec^^09^^^^0^7^6^america/guayaquil^-5.0^-5.0^-5.0^2011-06-25^y^y^esm^^samer^ca^
 esn^0^kesn^y^4353968^38.8^-76.07^s^airp^us^^md^041^^^0^12^13^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^esn^md^namer^ca^http://en.wikipedia.org/wiki/easton_airport_%28maryland%29
@@ -2434,7 +2434,7 @@ fhz^0^ntkh^y^7730704^-16^-140^s^airp^pf^^^^^^0^0^4^pacific/tahiti^-10.0^-10.0^-1
 fic^0^zzzz^y^8299170^55.77^-131.5^s^airp^us^^ak^130^^^0^0^331^america/sitka^-9.0^-8.0^-9.0^2012-05-18^y^n^fic^ak^namer^ca^
 fid^0^zzzz^y^5116372^41.27^-72.03^s^airf^us^^ny^103^^^0^3^253^america/new_york^-5.0^-4.0^-5.0^2012-04-09^y^n^fid^ny^namer^ca^http://en.wikipedia.org/wiki/elizabeth_field
 fie^0^egef^y^7668197^59.5^-1.667^s^airp^gb^^sct^w3^^^0^0^75^europe/london^0.0^1.0^0.0^2011-02-17^y^n^fie^^europ^ca^http://en.wikipedia.org/wiki/fair_isle_airport
-fig^0^gufa^y^7730087^10.350556^-13.569167^s^airp^gn^^11^^^^0^0^159^africa/conakry^0.0^0.0^0.0^2011-03-16^y^n^fig^^afric^ca^http://en.wikipedia.org/wiki/fria_airport
+fig^0^gufa^y^7730087^10.350556^-13.569167^s^airp^gn^^b^11^^^0^0^159^africa/conakry^0.0^0.0^0.0^2012-06-14^y^n^fig^^afric^ca^http://en.wikipedia.org/wiki/fria_airport
 fih^0^fzaa^y^2312103^-4.38575^15.444569^s^airp^cd^^00^^^^0^313^306^africa/kinshasa^1.0^1.0^1.0^2007-01-03^y^y^fih^^afric^ca^http://en.wikipedia.org/wiki/kinshasa_international_airport
 fik^0^yfne^y^7731023^-25.58^134.6^s^airp^au^^03^72330^^^0^0^277^australia/darwin^9.5^9.5^9.5^2011-06-04^y^n^fik^nt^austl^ca^
 fil^0^kfom^y^5539099^38.97^-112.3^s^airp^us^^ut^027^^^0^1509^1506^america/denver^-7.0^-6.0^-7.0^2011-03-10^y^n^fil^ut^namer^ca^http://en.wikipedia.org/wiki/fillmore_municipal_airport
@@ -2763,7 +2763,7 @@ gjr^0^bigj^y^7668101^65.98^-21.35^s^airp^is^^44^^^^0^0^6^atlantic/reykjavik^0.0^
 gjt^0^kgjt^y^5412435^39.12^-108.5^s^airh^us^^co^077^^^0^1450^1450^america/denver^-7.0^-6.0^-7.0^2011-03-10^y^y^gjt^co^namer^ca^http://en.wikipedia.org/wiki/grand_junction_regional_airport
 gka^0^ayga^y^6940311^-6.05^145.4^s^airp^pg^^09^^^^0^0^1586^pacific/port_moresby^10.0^10.0^10.0^2011-03-28^y^y^gka^^austl^ca^http://en.wikipedia.org/wiki/goroka_airport
 gkd^0^ltfk^y^8181783^40.19955^25.8837^s^airp^tr^^17^7910945^^^0^0^24^europe/istanbul^2.0^3.0^2.0^2012-01-31^n^n^gkd^^euras^c^http://en.wikipedia.org/wiki/g%c3%b6k%c3%a7eada_airport
-gke^0^etng^y^3207674^50.95^6.12^s^airp^de^^07^^^^0^0^105^europe/berlin^1.0^2.0^1.0^2011-03-22^y^n^gke^^europ^ca^http://en.wikipedia.org/wiki/raf_geilenkirchen
+gke^0^etng^y^3207674^50.95^6.12^s^airp^de^^07^^^^0^0^105^europe/berlin^1.0^2.0^1.0^2011-03-22^y^n^gke^^europ^ca^http://en.wikipedia.org/wiki/nato_air_base_geilenkirchen
 gkh^0^vngk^y^7731057^28^84.67^s^airp^np^^wr^04^^^0^0^572^asia/kathmandu^5.8^5.8^5.8^2011-03-17^y^n^gkh^^asia^ca^
 gkj^0^kgkj^y^5206946^41.62589^-80.21617^s^airp^us^^pa^039^^^0^428^426^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^z^gkj^pa^namer^a^http://en.wikipedia.org/wiki/port_meadville_airport
 gkl^0^zzzz^y^8298684^-23.18^151^s^airp^au^^04^36360^^^0^0^70^australia/brisbane^10.0^10.0^10.0^2012-05-18^y^n^gkl^ql^austl^ca^
@@ -2880,7 +2880,7 @@ gro^0^lege^y^6299335^41.900969^2.760547^s^airp^es^^56^gi^17233^^0^142^129^europe
 grp^0^swgi^y^7731067^-11.67^-49.22^s^airp^br^^31^^^^0^0^349^america/araguaina^-3.0^-3.0^-3.0^2011-03-17^y^n^grp^go^samer^ca^http://en.wikipedia.org/wiki/gurupi_airport
 grq^0^ehgg^y^6296685^53.11972^6.579444^s^airp^nl^^01^1730^^^0^5^2^europe/amsterdam^1.0^2.0^1.0^2011-06-04^y^y^grq^^europ^ca^http://en.wikipedia.org/wiki/groningen_airport_eelde
 grr^0^kgrr^y^4998006^42.880833^-85.522806^s^airp^us^^mi^081^^^0^243^244^america/detroit^-5.0^-4.0^-5.0^2011-12-12^y^y^grr^mi^namer^ca^http://en.wikipedia.org/wiki/gerald_r._ford_international_airport
-grs^0^lirs^y^6299630^42.759747^11.071897^s^airp^it^^16^gr^053011^^0^4^2^europe/rome^1.0^2.0^1.0^2011-03-28^y^y^grs^^europ^ca^http://en.wikipedia.org/wiki/grosseto_airport
+grs^0^lirs^y^6299630^42.759747^11.071897^s^airp^it^^16^gr^053011^^0^4^2^europe/rome^1.0^2.0^1.0^2011-03-28^y^n^grs^^europ^ca^http://en.wikipedia.org/wiki/grosseto_airport
 grt^0^zzzz^y^7731068^32.57^74.08^s^airp^pk^^04^^^^0^0^234^asia/karachi^5.0^5.0^5.0^2011-03-17^y^n^grt^^asia^ca^
 gru^0^sbgr^y^6300629^-23.432075^-46.469511^s^airp^br^^27^^^^0^749^738^america/sao_paulo^-2.0^-3.0^-3.0^2011-07-30^y^y^sao^sp^samer^a^http://en.wikipedia.org/wiki/s%c3%a3o_paulo-guarulhos_international_airport
 grv^0^urmg^y^7729990^43.33^45.7^s^airp^ru^^12^^^^0^0^128^europe/moscow^4.0^4.0^4.0^2011-03-16^y^y^grv^^euras^ca^http://en.wikipedia.org/wiki/grozny_airport
@@ -3234,7 +3234,7 @@ hrj^0^zzzz^y^8299075^28^83.83^s^airp^np^^wr^04^^^0^0^1474^asia/kathmandu^5.8^5.8
 hrk^0^ukhh^y^6300958^49.924786^36.289986^s^airp^ua^^^^^^0^154^149^europe/zaporozhye^2.0^3.0^2.0^2012-06-03^y^y^hrk^^euras^ca^http://en.wikipedia.org/wiki/kharkiv_international_airport
 hrl^0^khrl^y^4722841^26.2285^-97.654389^s^airp^us^^tx^061^^^0^9^8^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^y^hrl^tx^namer^ca^http://en.wikipedia.org/wiki/valley_international_airport
 hrm^0^dafh^y^6296375^32.930431^3.311542^s^airp^dz^^^^^^0^774^756^africa/algiers^1.0^1.0^1.0^2011-03-28^y^n^hrm^^afric^ca^http://en.wikipedia.org/wiki/hassi_r%27mel_airport
-hrn^0^zzzz^n^0^-31.92^115.9^s^airp^au^^^^^^^^^au131^^^^-1^y^n^hrn^ql^austl^ch^
+hrn^0^zzzz^y^6354955^-31.92^115.9^p^ppl^au^^04^33360^^^0^0^6^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^hrn^ql^austl^ch^
 hro^0^khro^y^4102609^36.261519^-93.154728^s^airp^us^^ar^009^^^0^410^411^america/chicago^-6.0^-5.0^-6.0^2010-09-05^y^y^hro^ar^namer^ca^http://en.wikipedia.org/wiki/boone_county_airport_%28arkansas%29
 hrr^0^zzzz^y^3736997^3.217^-75.85^s^airf^co^^28^^^^0^0^2459^america/bogota^-5.0^-5.0^-5.0^2012-06-06^y^n^hrr^^samer^ca^
 hrs^0^zzzz^y^997751^-28.23^29.1^p^ppl^za^^03^^^^35108^0^1643^africa/johannesburg^2.0^2.0^2.0^2012-01-18^y^n^hrs^^afric^ca^
@@ -3927,8 +3927,8 @@ kcj^0^zzzz^y^2093635^-7.267^143.6^p^ppl^pg^^02^^^^0^0^31^pacific/port_moresby^10
 kck^0^uikk^y^6300948^57.77273^108.06461^s^airf^ru^^20^^^^0^258^260^asia/irkutsk^9.0^9.0^9.0^2012-05-14^y^n^kck^^euras^ca^http://en.wikipedia.org/wiki/kirensk_airport
 kcl^0^zzzz^y^5859203^56.3^-158.5^s^airp^us^^ak^164^^^0^2^6^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^kcl^ak^namer^ca^http://en.wikipedia.org/wiki/chignik_lagoon_airport
 kcm^0^ltcn^y^7591522^37.538967^36.953411^s^airp^tr^^46^^^^0^0^504^europe/istanbul^2.0^3.0^2.0^2011-03-28^y^y^kcm^^euras^ca^http://en.wikipedia.org/wiki/kahramanmara%c5%9f_airport
-kcn^0^zzzz^y^5859091^53.4^-167.6^p^ppl^us^^ak^016^^^0^0^-9999^america/nome^-9.0^-8.0^-9.0^2010-01-30^y^n^kcn^ak^namer^ca^
-kco^0^ltbq^y^6299754^40.73^30.08^s^airp^tr^^^^^^0^55^52^europe/istanbul^2.0^3.0^2.0^2011-04-01^y^n^kco^^euras^ca^http://en.wikipedia.org/wiki/cengiz_topel_naval_air_station
+kcn^0^zzzz^y^5859091^53.4^-167.6^p^ppl^us^^ak^016^^^0^0^-9999^america/adak^-10.0^-9.0^-10.0^2010-01-30^y^n^kcn^ak^namer^ca^
+kco^0^ltbq^y^6299754^40.73^30.08^s^airp^tr^^^^^^0^55^52^europe/istanbul^2.0^3.0^2.0^2011-04-01^y^y^kco^^euras^ca^http://en.wikipedia.org/wiki/cengiz_topel_naval_air_station
 kcp^0^zzzz^y^8298804^48.68^26.62^s^airp^ua^^09^^^^0^0^213^europe/uzhgorod^2.0^3.0^2.0^2012-05-18^y^n^kcp^^euras^ca^
 kcq^0^zzzz^y^5859206^56.25^-158.8^s^airp^us^^ak^164^^^0^5^4^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^kcl^ak^namer^a^http://en.wikipedia.org/wiki/chignik_lake_airport
 kcr^0^zzzz^n^0^64.5^-165.4^s^airp^us^^^^^^^^^us111^^^^-1^y^n^kcr^ak^namer^ca^
@@ -4155,7 +4155,7 @@ knj^0^fcbk^y^7730497^-3.733^14.22^s^airp^cg^^11^^^^0^0^355^africa/brazzaville^1.
 knk^0^pfkk^y^5865649^59.43^-154.9^s^airp^us^^ak^164^^^0^33^34^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^knk^ak^namer^ca^http://en.wikipedia.org/wiki/kokhanok_airport
 knl^0^zzzz^y^2094248^-6^147.5^p^ppl^pg^^14^^^^0^0^1^pacific/port_moresby^10.0^10.0^10.0^2012-01-17^y^n^knl^^austl^ca^
 knm^0^fztk^y^7730571^-7.583^24.15^s^airp^cd^^05^^^^0^0^904^africa/lubumbashi^2.0^2.0^2.0^2011-03-17^y^n^knm^^afric^ca^
-knn^0^guxd^y^6297255^10.4^-9.3^s^airp^gn^^32^^^^0^377^386^africa/conakry^0.0^0.0^0.0^2012-04-13^y^n^knn^^afric^ca^http://en.wikipedia.org/wiki/kankan_airport
+knn^0^guxd^y^6297255^10.4^-9.3^s^airp^gn^^k^32^^^0^377^386^africa/conakry^0.0^0.0^0.0^2012-06-14^y^n^knn^^afric^ca^http://en.wikipedia.org/wiki/kankan_airport
 knp^0^zzzz^y^7731180^-12.78^15.72^s^airp^ao^^12^^^^0^0^1024^africa/luanda^1.0^1.0^1.0^2011-03-17^y^n^knp^^afric^ca^
 knq^0^nwwd^y^7668381^-21.053428^164.837806^s^airp^nc^^^^^^0^0^5^pacific/noumea^11.0^11.0^11.0^2011-02-17^y^y^knq^^austl^ca^http://en.wikipedia.org/wiki/kon%c3%a9_airport
 knr^0^zzzz^y^6683623^27.85^52.12^s^airp^ir^^22^^^^0^0^646^asia/tehran^3.5^4.5^3.5^2012-01-20^y^n^knr^^meast^ca^
@@ -4180,7 +4180,7 @@ kok^0^efkk^y^6296549^63.721172^23.143131^s^airp^fi^^15^15^288^^0^25^27^europe/he
 kol^0^zzzz^y^8298741^8.5^21.25^s^airp^cf^^01^^^^0^0^662^africa/bangui^1.0^1.0^1.0^2012-05-18^y^n^kol^^afric^ca^
 kom^0^zzzz^n^0^-6.133^143.6^s^airp^pg^^^^^^^^^pg^^^^-1^y^n^kom^^austl^ca^
 kon^0^zzzz^y^7730314^14.35^108^s^airp^vn^^63^^^^0^0^535^asia/ho_chi_minh^7.0^7.0^7.0^2011-03-16^y^n^kon^^seasi^ca^
-koo^0^fzrq^y^6297158^-5.4^27^s^airp^cd^^^^^^0^561^592^africa/lubumbashi^2.0^2.0^2.0^2006-10-29^y^n^koo^^afric^ca^
+koo^0^fzrq^y^6297158^-5.4^27^s^airp^cd^^^^^^0^561^592^africa/lubumbashi^2.0^2.0^2.0^2006-10-29^y^y^koo^^afric^ca^
 kop^0^zzzz^y^1595861^17.383794^104.643022^s^airf^th^^73^^^^0^0^176^asia/bangkok^7.0^7.0^7.0^2012-01-27^y^y^kop^^seasi^ca^http://en.wikipedia.org/wiki/nakhon_phanom_airport
 koq^0^zzzz^n^0^51.72^11.95^s^airp^de^^^^^^^^^de040^^^^-1^y^n^koq^^europ^ca^
 kor^0^zzzz^y^8260981^-7.817^146.6^s^airp^pg^^01^^^^0^0^462^pacific/port_moresby^10.0^10.0^10.0^2012-04-29^y^n^kor^^austl^ca^
@@ -4217,7 +4217,7 @@ kql^0^zzzz^y^2093674^-5.667^144.8^p^ppl^pg^^16^^^^0^0^1527^pacific/port_moresby^
 kqt^0^utdt^y^7668543^37.87^68.85^s^airp^tj^^^^^^0^0^443^asia/dushanbe^5.0^5.0^5.0^2011-02-17^y^n^kqt^^euras^ca^http://en.wikipedia.org/wiki/qurghonteppa_international_airport
 kra^0^yker^y^7668728^-35.75^143.9^s^airp^au^^07^22250^^^0^0^80^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^n^kra^vi^austl^ca^http://en.wikipedia.org/wiki/kerang_airport
 krb^0^ykmb^y^7731185^-17.5^140.9^s^airp^au^^04^32250^^^0^0^4^australia/brisbane^10.0^10.0^10.0^2011-06-04^y^n^krb^ql^austl^ca^http://en.wikipedia.org/wiki/karumba_airport
-krc^0^zzzz^y^7731186^-1.7^101.3^s^airp^id^^24^^^^0^0^2678^asia/jakarta^7.0^7.0^7.0^2011-03-17^y^n^krc^^seasi^ca^
+krc^0^zzzz^y^7731186^-1.7^101.3^s^airp^id^^24^^^^0^0^2678^asia/jakarta^7.0^7.0^7.0^2011-03-17^y^y^krc^^seasi^ca^
 krd^0^zzzz^y^8261031^-20.5^134.6^s^airp^au^^03^70420^^^0^0^485^australia/darwin^9.5^9.5^9.5^2012-04-29^y^n^krd^nt^austl^ca^
 kre^0^zzzz^y^8299091^-2.55^30.1^s^airp^bi^^16^^^^0^0^1379^africa/bujumbura^2.0^2.0^2.0^2012-05-18^y^n^kre^^afric^ca^
 krf^0^esnk^y^6296802^63.048597^17.768856^s^airp^se^^24^2282^^^0^10^1^europe/stockholm^1.0^2.0^1.0^2011-10-30^y^y^krf^^europ^ca^http://en.wikipedia.org/wiki/kramfors_airport
@@ -4249,7 +4249,7 @@ kse^0^huks^y^6297379^0.1667^30.1^s^airp^ug^^^^^^0^959^963^africa/kampala^3.0^3.0
 ksf^0^edvk^y^6296531^51.408394^9.377631^s^airp^de^^^^^^0^276^274^europe/berlin^1.0^2.0^1.0^2007-01-03^y^n^ksf^^europ^ca^http://en.wikipedia.org/wiki/kassel_calden_airport
 ksg^0^zzzz^y^8299114^-6.35^146.7^s^airp^pg^^14^^^^0^0^1518^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^ksg^^austl^ca^
 ksh^0^oicc^y^6300046^34.345853^47.158128^s^airp^ir^^^^^^0^1310^1309^asia/tehran^3.5^4.5^3.5^2007-01-03^y^y^ksh^^meast^ca^http://en.wikipedia.org/wiki/shahid_ashrafi_esfahani_airport
-ksi^0^guku^y^6297249^9.167^-10.12^s^airp^gn^^17^^^^0^525^511^africa/conakry^0.0^0.0^0.0^2011-08-22^y^n^ksi^^afric^ca^http://en.wikipedia.org/wiki/kissidougou_airport
+ksi^0^guku^y^6297249^9.167^-10.12^s^airp^gn^^f^17^^^0^525^511^africa/conakry^0.0^0.0^0.0^2012-06-14^y^n^ksi^^afric^ca^http://en.wikipedia.org/wiki/kissidougou_airport
 ksj^0^lgks^y^7668313^35.421358^26.910047^s^airp^gr^^esye42^47^9281^^0^0^9^europe/athens^2.0^3.0^2.0^2012-01-17^y^y^ksj^^europ^ca^http://en.wikipedia.org/wiki/kassos_island_public_airport
 ksk^0^zzzz^y^2701715^59.345867^14.495922^p^ppla2^se^^15^1883^^^26949^0^119^europe/stockholm^1.0^2.0^1.0^2011-12-20^y^n^ksk^^europ^ca^
 ksl^0^hska^y^6297341^15.387494^36.328842^s^airp^sd^^^^^^0^509^510^africa/khartoum^3.0^3.0^3.0^2007-01-03^y^y^ksl^^afric^ca^http://en.wikipedia.org/wiki/kassala_airport
@@ -4313,7 +4313,7 @@ kur^0^zzzz^y^8299086^38.4^71.12^s^airp^af^^01^^^^0^0^1761^asia/kabul^4.5^4.5^4.5
 kus^0^bgkk^y^6295701^65.57^-37.12^s^airp^gl^^^^^^0^35^1^america/godthab^-3.0^-2.0^-3.0^2006-10-29^y^y^kus^^europ^ca^http://en.wikipedia.org/wiki/kulusuk_airport
 kut^0^ugko^y^800541^42.25^42.7^s^airf^ge^^00^^^^0^40^46^asia/tbilisi^4.0^4.0^4.0^2012-01-19^y^n^kut^^euras^ca^http://en.wikipedia.org/wiki/kopitnari_airport
 kuu^0^vibr^y^7668601^31.876706^77.154367^s^airp^in^^11^^^^0^0^1082^asia/kolkata^5.5^5.5^5.5^2011-02-17^y^y^kuu^^asia^ca^http://en.wikipedia.org/wiki/bhuntar_airport
-kuv^0^rkjk^y^6300416^35.903756^126.615906^s^airp^kr^^^^^^0^8^5^asia/seoul^9.0^9.0^9.0^2007-01-03^y^y^kuv^^asia^ca^http://en.wikipedia.org/wiki/gunsan_airport
+kuv^0^rkjk^y^6300416^35.903756^126.615906^s^airp^kr^^^^^^0^8^5^asia/seoul^9.0^9.0^9.0^2007-01-03^y^y^kuv^^asia^ca^http://en.wikipedia.org/wiki/kunsan_air_base
 kuw^0^zzzz^y^8260955^67.97^-162^s^airp^us^^ak^188^^^0^0^85^america/anchorage^-9.0^-8.0^-9.0^2012-04-29^y^n^kuw^ak^namer^ca^
 kux^0^zzzz^n^0^-5.367^141.6^p^pplc^pg^^^^^^^^^pg^^^^-1^n^n^kux^^austl^c^
 kuy^0^zzzz^y^7731198^-7.428^143.1^s^airp^pg^^06^^^^0^0^27^pacific/port_moresby^10.0^10.0^10.0^2011-03-17^y^n^kuy^^austl^ca^http://en.wikipedia.org/wiki/kamusi_airport
@@ -4524,7 +4524,7 @@ lgf^0^klgf^y^8085380^32.86^-114.4^s^airf^us^^az^027^^^0^115^110^america/phoenix^
 lgg^0^eblg^y^6296496^50.637417^5.443222^s^airp^be^^^^^^0^200^180^europe/brussels^1.0^2.0^1.0^2007-01-03^y^y^lgg^^europ^ca^http://en.wikipedia.org/wiki/li%c3%a8ge_airport
 lgh^0^ylec^y^6301334^-30.598333^138.425833^s^airp^au^^^^^^0^260^261^australia/adelaide^10.5^9.5^9.5^2007-01-03^y^n^lgh^sa^austl^ca^
 lgi^0^myld^y^7910227^23.179014^-75.093597^s^airp^bs^^^^^^0^3^4^america/nassau^-5.0^-4.0^-5.0^2011-07-20^y^y^lgi^^carib^ca^http://en.wikipedia.org/wiki/deadman%27s_cay_airport
-lgj^0^zzzz^y^674531^45.6878^21.9158^p^ppl^ro^^36^^^^43243^0^122^europe/bucharest^2.0^3.0^2.0^2012-01-18^y^n^lgj^^eeuro^cb^
+lgj^0^zzzz^y^674531^45.6878^21.9158^p^ppla2^ro^^36^155350^^^43243^0^122^europe/bucharest^2.0^3.0^2.0^2012-06-12^y^n^lgj^^eeuro^cb^
 lgk^0^wmkl^y^6301256^6.329728^99.728667^s^airp^my^^^^^^0^8^4^asia/kuala_lumpur^8.0^8.0^8.0^2007-01-03^y^y^lgk^^seasi^ca^http://en.wikipedia.org/wiki/langkawi_international_airport
 lgl^0^wbgf^y^7731219^3.417^115.2^s^airp^my^^11^^^^0^0^472^asia/kuching^8.0^8.0^8.0^2011-03-17^y^y^lgl^^seasi^ca^http://en.wikipedia.org/wiki/long_lellang_airport
 lgm^0^zzzz^y^2092705^-5.533^143.5^p^ppl^pg^^19^^^^921^0^2009^pacific/port_moresby^10.0^10.0^10.0^2012-01-17^y^n^lgm^^austl^ca^
@@ -4682,7 +4682,7 @@ loi^0^zzzz^y^8260688^-27.16104^-49.54345^s^airp^br^^26^^^^0^0^390^america/sao_pa
 lok^0^hklo^y^6297313^3.121967^35.608692^s^airp^ke^^^^^^0^522^499^africa/nairobi^3.0^3.0^3.0^2007-01-03^y^y^lok^^afric^ca^http://en.wikipedia.org/wiki/lodwar_airport
 lol^0^klol^y^5703217^40.05^-118.6^s^airp^us^^nv^027^^^0^1190^1191^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^lol^nv^namer^ca^http://en.wikipedia.org/wiki/derby_field
 lom^0^zzzz^y^4002224^21.35^-101.9^p^ppl^mx^^14^^^^84677^0^1872^america/mexico_city^-6.0^-5.0^-6.0^2012-01-18^y^n^lom^^namer^ca^
-lon^0^zzzz^y^2643743^51.5^-0.1667^p^pplc^gb^^eng^gla^p5^^7556900^0^25^europe/london^0.0^1.0^0.0^2012-05-30^n^n^lon^^europ^c^
+lon^0^zzzz^y^2643743^51.5^-0.1667^p^pplc^gb^^eng^gla^^^7556900^0^25^europe/london^0.0^1.0^0.0^2012-06-11^n^n^lon^^europ^c^
 loo^0^daul^y^6296393^33.764383^2.928344^s^airp^dz^^^^^^0^765^755^africa/algiers^1.0^1.0^1.0^2007-01-03^y^y^loo^^afric^ca^
 lop^0^wadl^y^8051259^-8.7591400^116.2765500^s^airp^id^^17^^^^0^97^94^asia/makassar^8.0^8.0^8.0^2011-11-02^y^y^lop^^seasi^ca^http://en.wikipedia.org/wiki/lombok_international_airport
 loq^0^zzzz^y^933521^-25.2^25.67^p^ppl^bw^^00^^^^30883^0^1164^africa/gaborone^2.0^2.0^2.0^2012-04-10^y^n^loq^^afric^ca^
@@ -5113,7 +5113,7 @@ mje^0^zzzz^y^4040504^7.833^168.2^s^airf^mh^^340^^^^0^0^8^pacific/kwajalein^12.0^
 mjf^0^enms^y^6296753^65.783997^13.214914^s^airp^no^^09^1824^^^0^72^21^europe/oslo^1.0^2.0^1.0^2011-03-28^y^y^mjf^^europ^ca^http://en.wikipedia.org/wiki/mosj%c3%b8en_airport%2c_kj%c3%a6rstad
 mjg^0^mumj^y^3547325^22.23^-79.07^s^airf^cu^^14^^^^0^0^51^america/havana^-5.0^-4.0^-5.0^2012-01-18^y^n^mjg^^carib^ca^
 mjh^0^zzzz^y^8298769^25.93^45.37^s^airp^sa^^10^^^^0^0^699^asia/riyadh^3.0^3.0^3.0^2012-05-18^y^n^mjh^^meast^ca^
-mji^0^hllm^y^7730096^32.894085^13.276^s^airp^ly^^61^^^^0^0^8^africa/tripoli^2.0^2.0^2.0^2012-01-22^y^n^mji^^afric^ca^http://en.wikipedia.org/wiki/mitiga_international_airport
+mji^0^hllm^y^7730096^32.894085^13.276^s^airp^ly^^61^^^^0^0^8^africa/tripoli^2.0^2.0^2.0^2012-01-22^y^y^mji^^afric^ca^http://en.wikipedia.org/wiki/mitiga_international_airport
 mjj^0^zzzz^y^8298831^-5.7^145.3^s^airp^pg^^12^^^^0^0^1367^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^mjj^^austl^ca^
 mjk^0^zzzz^y^2065971^-25.88^113.6^p^ppl^au^^08^57770^^^27^0^23^australia/perth^8.0^8.0^8.0^2012-01-18^y^n^mjk^wa^austl^ca^
 mjl^0^fogm^y^6297064^-1.845142^11.056656^s^airp^ga^^^^^^0^89^90^africa/libreville^1.0^1.0^1.0^2007-01-03^y^n^mjl^^afric^ca^
@@ -5493,7 +5493,7 @@ mxy^0^pamx^y^5868503^61.42^-142.9^s^airp^us^^ak^261^^^0^431^470^america/anchorag
 mxz^0^zgmx^y^7731315^24.35^116.1^s^airp^cn^^30^^^^0^0^110^asia/shanghai^8.0^8.0^8.0^2011-03-17^y^y^mxz^^asia^ca^http://en.wikipedia.org/wiki/meixian_airport
 mya^0^ymry^y^7668744^-35.897778^150.144444^s^airp^au^^02^12750^^^0^0^7^australia/sydney^11.0^10.0^10.0^2011-06-04^y^y^mya^ns^austl^ca^http://en.wikipedia.org/wiki/moruya_airport
 myb^0^fooy^y^6297077^-3.45^10.68^s^airp^ga^^^^^^0^31^1^africa/libreville^1.0^1.0^1.0^2006-10-29^y^n^myb^^afric^ca^
-myc^0^svbs^y^3632880^10.249978^-67.649419^s^airp^ve^^04^^^^0^407^433^america/caracas^-4.5^-4.5^-4.5^2011-04-24^y^n^myc^^samer^ca^http://en.wikipedia.org/wiki/mariscal_sucre_airport_(venezuela)
+myc^0^svbs^y^3632880^10.249978^-67.649419^s^airp^ve^^04^^^^0^407^433^america/caracas^-4.5^-4.5^-4.5^2012-06-13^y^n^myc^^samer^ca^http://en.wikipedia.org/wiki/mariscal_sucre_airport_(venezuela)
 myd^0^hkml^y^6297318^-3.25^40.08^s^airp^ke^^^^^^0^20^23^africa/nairobi^3.0^3.0^3.0^2011-03-28^y^y^myd^^afric^ca^http://en.wikipedia.org/wiki/malindi_airport
 mye^0^rjtq^y^6300411^34.073611^139.560278^s^airp^jp^^^^^^0^20^21^asia/tokyo^9.0^9.0^9.0^2007-01-03^y^y^mye^^asia^ca^http://en.wikipedia.org/wiki/miyakejima_airport
 myf^0^kmyf^y^5374485^32.81^-117.1^s^airp^us^^ca^073^^^0^128^129^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^san^ca^namer^a^http://en.wikipedia.org/wiki/montgomery_field
@@ -6024,7 +6024,7 @@ ole^0^zzzz^n^0^42.23^-78.37^s^airp^us^^^^^^^^^us105^^^^-1^y^n^ole^ny^namer^ca^
 olf^0^kolf^y^5664154^48.08^-105.6^s^airp^us^^mt^085^^^0^605^603^america/denver^-7.0^-6.0^-7.0^2006-10-29^y^y^olf^mt^namer^ca^http://en.wikipedia.org/wiki/l._m._clayton_airport
 olh^0^zzzz^y^5870747^57.2^-153.3^s^airp^us^^ak^150^^^0^19^15^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^olh^ak^namer^ca^http://en.wikipedia.org/wiki/old_harbor_airport
 oli^0^zzzz^y^8298735^65^-23.98^s^airp^is^^45^^^^0^0^-9999^atlantic/reykjavik^0.0^0.0^0.0^2012-05-18^y^n^oli^^europ^ca^
-olj^0^zzzz^n^0^-14.88^166.6^s^airp^vu^^^^^^^^^vu115^^^^-1^y^n^olj^^austl^ca^
+olj^0^zzzz^n^0^-14.88^166.6^s^airp^vu^^^^^^^^^vu115^^^^-1^y^y^olj^^austl^ca^
 olk^0^zzzz^y^7731366^-21.05^-57.88^s^airp^py^^23^^^^0^0^84^america/asuncion^-3.0^-4.0^-4.0^2011-03-18^y^n^olk^^samer^ca^
 olm^0^kolm^y^5805690^46.969406^-122.902544^s^airp^us^^wa^067^^^0^62^58^america/los_angeles^-8.0^-7.0^-8.0^2011-03-10^y^n^olm^wa^namer^ca^http://en.wikipedia.org/wiki/olympia_regional_airport
 oln^0^zzzz^y^3860710^-45.58^-69^s^airf^ar^^04^^^^0^0^266^america/argentina/catamarca^-3.0^-3.0^-3.0^2012-06-06^y^n^oln^cb^samer^ca^
@@ -6216,7 +6216,7 @@ paa^0^zzzz^y^8298859^16.88^97.67^s^airp^mm^^05^^^^0^0^15^asia/rangoon^6.5^6.5^6.
 pab^0^vabi^y^6301033^21.9884^82.110983^s^airp^in^^^^^^0^274^280^asia/kolkata^5.5^5.5^5.5^2011-03-28^y^n^pab^^asia^ca^http://en.wikipedia.org/wiki/bilaspur_airport
 pac^0^mpmg^y^3704579^8.973339^-79.555583^s^airp^pa^^08^^^^0^9^7^america/panama^-5.0^-5.0^-5.0^2007-01-03^y^y^pty^^camer^a^http://en.wikipedia.org/wiki/albrook_%22marcos_a._gelabert%22_international_airport
 pad^0^edlp^y^3207070^51.614089^8.616317^s^airp^de^^07^057^^^0^213^222^europe/berlin^1.0^2.0^1.0^2011-03-28^y^y^pad^^europ^ca^http://en.wikipedia.org/wiki/paderborn_lippstadt_airport
-pae^0^kpae^y^5787705^47.906342^-122.281564^s^airh^us^^wa^061^^^0^174^168^america/los_angeles^-8.0^-7.0^-8.0^2011-03-10^y^y^pae^wa^namer^ca^http://en.wikipedia.org/wiki/paine_field
+pae^0^kpae^y^5787705^47.906342^-122.281564^s^airh^us^^wa^061^^^0^174^168^america/los_angeles^-8.0^-7.0^-8.0^2011-03-10^y^y^pae^wa^namer^ca^http://en.wikipedia.org/wiki/paine_air_national_guard_base
 paf^0^zzzz^y^226837^38.703861^-9.035916^p^ppl^ug^^n^h2^^^0^0^623^africa/kampala^3.0^3.0^3.0^2012-04-28^y^n^paf^^afric^ca^
 pag^0^rpmp^y^7668424^7.827197^123.458294^s^airp^ph^^^^^^0^0^5^asia/manila^8.0^8.0^8.0^2011-02-17^y^y^pag^^pacif^ca^http://en.wikipedia.org/wiki/pagadian_airport
 pah^0^kpah^y^4283176^37.060289^-88.772958^s^airp^us^^ky^145^^^0^122^122^america/chicago^-6.0^-5.0^-6.0^2011-12-11^y^y^pah^ky^namer^ca^http://en.wikipedia.org/wiki/barkley_regional_airport
@@ -6446,7 +6446,7 @@ plh^0^eghd^y^6301514^50.422778^-4.105833^s^airp^gb^^eng^k4^^^0^145^140^europe/lo
 pli^0^zzzz^n^0^12.58^-61.38^s^airp^vc^^^^^^^^^vc^^^^-1^y^n^pli^^carib^ca^
 plj^0^zzzz^y^7910454^16.53^-88.35^s^airp^bz^^^^^^0^0^4^america/belize^-6.0^-6.0^-6.0^2011-07-26^y^y^plj^^camer^ca^http://en.wikipedia.org/wiki/placencia_airport
 plk^0^zzzz^n^0^36.62^-93.22^s^airp^us^^^^^^^^^us107^^^^-1^y^n^plk^mo^namer^ca^
-pll^0^sbmn^y^6301856^-3.146042^-59.9863^s^airp^br^^^^^^0^81^72^america/manaus^-4.0^-4.0^-4.0^2007-01-03^y^n^pll^am^samer^ca^http://en.wikipedia.org/wiki/ponta_pelada_airport
+pll^0^sbmn^y^6301856^-3.146042^-59.9863^s^airp^br^^^^^^0^81^72^america/manaus^-4.0^-4.0^-4.0^2007-01-03^y^n^pll^am^samer^ca^http://en.wikipedia.org/wiki/manaus_air_force_base
 plm^0^wipp^y^6301247^-2.89825^104.699903^s^airp^id^^^^^^0^14^8^asia/jakarta^7.0^7.0^7.0^2007-01-03^y^y^plm^^seasi^ca^http://en.wikipedia.org/wiki/sultan_mahmud_badaruddin_ii_airport
 pln^0^kpln^y^5005249^45.570927^-84.796715^s^airp^us^^mi^047^^^0^217^213^america/detroit^-5.0^-4.0^-5.0^2011-12-12^y^y^pln^mi^namer^ca^http://en.wikipedia.org/wiki/pellston_regional_airport
 plo^0^yplc^y^7668761^-34.6^135.9^s^airp^au^^05^43710^^^0^0^4^australia/adelaide^10.5^9.5^9.5^2011-06-04^y^y^plo^sa^austl^ca^http://en.wikipedia.org/wiki/port_lincoln_airport
@@ -6525,7 +6525,7 @@ pom^0^aypy^y^6295685^-9.443383^147.22005^s^airp^pg^^18^^^^0^44^39^pacific/port_m
 pon^0^mgpp^y^7730654^16.35^-89.43^s^airp^gt^^12^^^^0^0^516^america/guatemala^-6.0^-6.0^-6.0^2011-03-17^y^n^pon^^camer^ca^
 poo^0^sbpc^y^6300652^-21.843014^-46.567917^s^airp^br^^^^^^0^1260^1262^america/sao_paulo^-2.0^-3.0^-3.0^2007-01-03^y^n^poo^mg^samer^ca^
 pop^0^mdpp^y^3500019^19.7579^-70.570033^s^airp^do^do^18^^^^0^4^8^america/santo_domingo^-4.0^-4.0^-4.0^2009-10-13^y^y^pop^^carib^ca^http://en.wikipedia.org/wiki/gregorio_luper%c3%b3n_international_airport
-poq^0^zzzz^y^5556445^55.35^-132.5^p^ppl^us^^ak^198^^^0^286^271^america/metlakatla^-8.0^-8.0^-8.0^2010-01-30^y^n^poq^ak^namer^ca^
+poq^0^zzzz^y^5556445^55.35^-132.5^p^ppl^us^^ak^198^^^0^286^271^america/juneau^-9.0^-8.0^-9.0^2010-01-30^y^n^poq^ak^namer^ca^
 por^0^efpo^y^6296557^61.461686^21.799983^s^airp^fi^^15^04^609^^0^13^13^europe/helsinki^2.0^3.0^2.0^2011-12-31^y^y^por^^europ^ca^http://en.wikipedia.org/wiki/pori_airport
 pos^0^ttpp^y^6300909^10.595369^-61.337242^s^airp^tt^^^^^^0^17^13^america/port_of_spain^-4.0^-4.0^-4.0^2011-03-28^y^y^pos^^carib^ca^http://en.wikipedia.org/wiki/piarco_international_airport
 pot^0^mkkj^y^3489879^18.198806^-76.534528^s^airf^jm^^07^^^^0^0^5^america/jamaica^-5.0^-5.0^-5.0^2012-01-16^y^n^pot^^carib^ca^http://en.wikipedia.org/wiki/ken_jones_aerodrome
@@ -6623,12 +6623,12 @@ psy^0^sfal^y^6300726^-51.75^-59^s^airp^fk^^^^^^0^22^22^atlantic/stanley^-3.0^-3.
 psz^0^slps^y^6300780^-18.975281^-57.820586^s^airp^bo^^^^^^0^133^126^america/la_paz^-4.0^-4.0^-4.0^2007-01-03^y^n^psz^^samer^ca^http://en.wikipedia.org/wiki/puerto_su%c3%a1rez_international_airport
 pta^0^palj^y^5871907^60.2^-154.3^s^airp^us^^ak^164^^^0^89^84^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^pta^ak^namer^ca^http://en.wikipedia.org/wiki/port_alsworth_airport
 ptb^0^kptb^y^6298936^37.18^-77.52^s^airp^us^^va^^^^0^59^65^america/new_york^-5.0^-4.0^-5.0^2011-02-16^y^n^ptb^va^namer^ca^
-ptc^0^zzzz^y^5556481^55.78^-133.6^p^ppl^us^^ak^198^^^0^0^-9999^america/metlakatla^-8.0^-8.0^-8.0^2010-01-30^y^n^ptc^ak^namer^ca^
+ptc^0^zzzz^y^5556481^55.78^-133.6^p^ppl^us^^ak^198^^^0^0^-9999^america/juneau^-9.0^-8.0^-9.0^2010-01-30^y^n^ptc^ak^namer^ca^
 ptd^0^paap^y^5556494^56.24667^-134.64806^s^airp^us^^ak^220^^^0^6^255^america/sitka^-9.0^-8.0^-9.0^2012-04-21^y^n^ptd^ak^namer^ca^http://en.wikipedia.org/wiki/port_alexander_seaplane_base
 ptf^0^nffo^y^7730688^-17.78^177.2^s^airp^fj^^^^^^0^0^6^pacific/fiji^13.0^12.0^12.0^2011-03-17^y^n^ptf^^austl^ca^http://en.wikipedia.org/wiki/malolo_lailai_airport
 ptg^0^fapb^y^965294^-23.926089^29.484422^s^airp^za^^09^^^^0^0^1230^africa/johannesburg^2.0^2.0^2.0^2012-01-18^y^y^ptg^^afric^ca^
 pth^0^paph^y^5871922^56.97^-158.6^s^airp^us^^ak^164^^^0^29^29^america/anchorage^-9.0^-8.0^-9.0^2006-10-29^y^y^pth^ak^namer^ca^http://en.wikipedia.org/wiki/port_heiden_airport
-pti^0^zzzz^y^2152681^-16.48^145.5^p^ppl^au^^04^32070^^^3000^0^32^australia/lindeman^10.0^10.0^10.0^2012-02-28^y^n^pti^ql^austl^ch^
+pti^0^zzzz^y^2152681^-16.48^145.5^p^ppl^au^^04^32070^^^3000^0^32^australia/brisbane^10.0^10.0^10.0^2012-02-28^y^n^pti^ql^austl^ch^
 ptj^0^ypod^y^7730272^-38.318056^141.471111^s^airp^au^^07^22410^^^0^0^77^australia/melbourne^11.0^10.0^10.0^2011-06-04^y^y^ptj^vi^austl^ca^http://en.wikipedia.org/wiki/portland_airport_(australia)
 ptk^0^kptk^y^5004233^42.6655^-83.420083^s^airp^us^^mi^125^^^0^298^287^america/detroit^-5.0^-4.0^-5.0^2012-02-20^y^n^ptk^mi^namer^ca^http://en.wikipedia.org/wiki/oakland_county_international_airport
 ptl^0^zzzz^y^5556484^56.28^-134.7^p^ppl^us^^ak^220^^^0^51^20^america/sitka^-9.0^-8.0^-9.0^2010-01-30^y^n^ptl^ak^namer^ca^
@@ -7209,7 +7209,7 @@ qsr^0^liri^y^6299622^40.6204^14.911294^s^airp^it^^04^sa^065099^^0^37^31^europe/r
 qss^0^zzzz^y^3167096^40.7272^8.56028^p^ppla2^it^^14^ss^090064^^120729^0^211^europe/rome^1.0^2.0^1.0^2012-04-28^y^n^qss^^europ^o^
 qst^0^zzzz^n^0^40.735028^30.083336^x^xxxx^tr^^^^^^^^^tr101^^^^-1^n^n^qst^^euras^o^
 qsu^0^zzzz^n^0^30.97^31.433^x^xxxx^eg^^^^^^^^^eg044^^^^-1^n^n^qsu^^afric^o^
-qsv^0^zzzz^y^666395^46.5833300^25.0666700^p^ppl^ro^^00^^^^11465^0^454^europe/bucharest^2.0^3.0^2.0^2012-01-18^n^n^qsv^^eeuro^o^
+qsv^0^zzzz^y^666395^46.5833300^25.0666700^p^ppla2^ro^^27^114854^^^11465^0^454^europe/bucharest^2.0^3.0^2.0^2012-06-12^n^n^qsv^^eeuro^o^
 qsw^0^zzzz^n^0^0^0^x^xxxx^sy^^^^^^^^^sy098^^^^-1^n^n^qsw^^meast^o^
 qsx^0^syna^y^7731448^6.24^-57.52^s^airp^gy^^13^^^^0^0^5^america/guyana^-4.0^-4.0^-4.0^2011-03-18^n^n^qsx^^samer^o^
 qsy^0^zzzz^n^0^0^0^x^xxxx^de^^^^^^^^^de040^^^^-1^n^n^qsy^^europ^o^
@@ -7418,7 +7418,7 @@ rbd^0^krbd^y^4721997^32.68^-96.87^s^airp^us^^tx^113^^^0^200^207^america/chicago^
 rbe^0^vdrk^y^7730212^13.07^107^s^airp^kh^^23^^^^0^0^328^asia/phnom_penh^7.0^7.0^7.0^2011-03-16^y^n^rbe^^seasi^ca^http://en.wikipedia.org/wiki/ratanankiri_airport
 rbf^0^zzzz^y^5328153^34.27^-116.9^s^airp^us^^ca^071^^^0^2059^2060^america/los_angeles^-8.0^-7.0^-8.0^2011-12-12^y^n^rbf^ca^namer^ca^http://en.wikipedia.org/wiki/big_bear_city_airport
 rbg^0^krbg^y^5749363^43.23^-123.4^s^airp^us^^or^019^^^0^157^158^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^rbg^or^namer^ca^http://en.wikipedia.org/wiki/roseburg_regional_airport
-rbh^0^zzzz^y^5867071^58.55^-155.8^s^airp^us^^ak^164^^^0^10^12^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^n^rbh^ak^namer^ca^http://en.wikipedia.org/wiki/lake_brooks_seaplane_base
+rbh^0^zzzz^y^5867071^58.55^-155.8^s^airp^us^^ak^164^^^0^10^12^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^rbh^ak^namer^ca^http://en.wikipedia.org/wiki/lake_brooks_seaplane_base
 rbi^0^zzzz^y^8298889^-17.03^178.9^s^airp^fj^^^^^^0^0^-9999^pacific/fiji^13.0^12.0^12.0^2012-05-18^y^n^rbi^^austl^ca^
 rbj^0^rjcr^y^6300328^45.38^141^s^airp^jp^^^^^^0^27^-9999^asia/tokyo^9.0^9.0^9.0^2006-10-28^y^n^rbj^^asia^ca^http://en.wikipedia.org/wiki/rebun_airport
 rbk^0^zzzz^y^5350907^34.62^-120.1^s^airp^us^^ca^065^^^0^410^407^america/los_angeles^-8.0^-7.0^-8.0^2011-12-12^y^n^rbk^ca^namer^ca^http://en.wikipedia.org/wiki/french_valley_airport
@@ -7599,7 +7599,7 @@ rnl^0^aggr^y^7730406^-11.67^160.3^s^airp^sb^^^^^^0^0^16^pacific/guadalcanal^11.0
 rnm^0^zzzz^y^7910923^21.38^57.05^s^airp^om^^^^^^0^0^132^asia/muscat^4.0^4.0^4.0^2011-08-02^y^y^rnm^^meast^ca^
 rnn^0^ekrn^y^2614554^55.063267^14.759558^s^airp^dk^^17^400^^^0^15^13^europe/copenhagen^1.0^2.0^1.0^2011-12-20^y^y^rnn^^europ^ca^http://en.wikipedia.org/wiki/bornholm_airport
 rno^0^krno^y^5501263^39.499108^-119.768108^s^airp^us^^nv^031^^^0^1342^1342^america/los_angeles^-8.0^-7.0^-8.0^2012-01-13^y^y^rno^nv^namer^ca^http://en.wikipedia.org/wiki/reno-tahoe_international_airport
-rnp^0^krnp^y^5004793^11.15^166.9^s^airp^us^^mi^155^^^0^223^221^america/detroit^-5.0^-4.0^-5.0^2011-03-13^y^y^rnp^^pacif^ca^http://en.wikipedia.org/wiki/owosso_community_airport
+rnp^0^zzzz^y^7303968^11.15^166.9^s^airp^mh^^350^^^^0^0^8^pacific/kwajalein^12.0^12.0^12.0^2010-08-05^y^y^rnp^^pacif^ca^http://en.wikipedia.org/wiki/rongelap_airport
 rnr^0^zzzz^y^8260897^-10.15^148.8^s^airp^pg^^01^^^^0^0^14^pacific/port_moresby^10.0^10.0^10.0^2012-04-29^y^n^rnr^^austl^ca^
 rns^0^lfrn^y^6301774^48.069508^-1.734794^s^airp^fr^^a2^35^353^35281^0^37^36^europe/paris^1.0^2.0^1.0^2012-02-27^y^y^rns^^europ^ca^http://en.wikipedia.org/wiki/rennes_%e2%80%93_saint-jacques_airport
 rnt^0^krnt^y^5808194^47.49288^-122.21568^s^airp^us^^wa^033^^^0^8^1^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^rnt^wa^namer^ca^http://en.wikipedia.org/wiki/renton_municipal_airport
@@ -7713,7 +7713,7 @@ rvs^0^krvs^y^4549202^36.03^-95.98^s^airp^us^^ok^143^^^0^189^193^america/chicago^
 rvt^0^zzzz^y^8260894^-33.79^120.2^s^airp^au^^08^57420^^^0^0^59^australia/perth^8.0^8.0^8.0^2012-04-29^y^y^rvt^wa^austl^ca^
 rvv^0^zzzz^y^8260758^-23.88^-147.7^s^airp^pf^^^^^^0^0^-9999^pacific/tahiti^-10.0^-10.0^-10.0^2012-04-29^y^y^rvv^^pacif^ca^
 rvy^0^surv^y^3443192^-31.03^-55.62^s^airp^uy^^13^^^^0^0^202^america/montevideo^-2.0^-3.0^-3.0^2011-07-22^y^y^rvy^^samer^ca^http://en.wikipedia.org/wiki/rivera_international_airport
-rwb^0^zzzz^y^5556829^56.75^-134.1^p^ppl^us^^ak^195^^^0^0^-9999^america/juneau^-9.0^-8.0^-9.0^2010-01-30^y^n^rwb^ak^namer^ca^
+rwb^0^zzzz^y^5556829^56.75^-134.1^p^ppl^us^^ak^195^^^0^0^-9999^america/sitka^-9.0^-8.0^-9.0^2010-01-30^y^n^rwb^ak^namer^ca^
 rwf^0^zzzz^y^5042832^44.53^-95.12^p^ppla2^us^^mn^127^^^5254^317^320^america/chicago^-6.0^-5.0^-6.0^2011-05-14^y^n^rwf^mn^namer^ca^
 rwi^0^krwi^y^4488747^35.856253^-77.891933^s^airp^us^^nc^127^^^0^45^47^america/new_york^-5.0^-4.0^-5.0^2011-12-11^y^n^rwi^nc^namer^ca^http://en.wikipedia.org/wiki/rocky_mount-wilson_regional_airport
 rwl^0^krwl^y^5836082^41.8^-107.2^s^airp^us^^wy^007^^^0^2066^2064^america/denver^-7.0^-6.0^-7.0^2006-10-29^y^n^rwl^wy^namer^ca^http://en.wikipedia.org/wiki/rawlins_municipal_airport
@@ -7770,7 +7770,7 @@ sbe^0^zzzz^y^2086266^-6.083^142.3^p^ppl^pg^pg^05^^^^0^0^1892^pacific/port_moresb
 sbf^0^zzzz^y^1127289^32.08^72.67^p^ppl^af^^08^^^^0^0^2103^asia/kabul^4.5^4.5^4.5^2012-01-16^y^n^sbf^^meast^ca^
 sbg^0^wiaa^y^6301216^5.917^95.32^s^airp^id^^^^^^0^126^20^asia/jakarta^7.0^7.0^7.0^2006-10-28^y^n^sbg^^seasi^ca^
 sbh^0^tffj^y^3578477^17.87^-62.83^s^airf^bl^fr^00^^^^0^0^11^america/st_barthelemy^-4.0^-4.0^-4.0^2011-03-16^y^y^sbh^^carib^ca^http://en.wikipedia.org/wiki/gustaf_iii_airport
-sbi^0^gusb^y^7668290^12.48^-13.3^s^airp^gn^^18^^^^0^0^63^africa/conakry^0.0^0.0^0.0^2011-02-17^y^n^sbi^^afric^ca^http://en.wikipedia.org/wiki/sambailo_airport
+sbi^0^gusb^y^7668290^12.48^-13.3^s^airp^gn^^b^18^^^0^0^63^africa/conakry^0.0^0.0^0.0^2012-06-14^y^n^sbi^^afric^ca^http://en.wikipedia.org/wiki/sambailo_airport
 sbj^0^snmx^y^7731482^-18.72^-39.82^s^airp^br^^08^^^^0^0^30^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^y^n^sbj^es^samer^ca^
 sbk^0^lfrt^y^6299462^48.537777^-2.854445^s^airp^fr^^a2^22^224^22367^0^138^130^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^sbk^^europ^ca^http://en.wikipedia.org/wiki/saint-brieuc_%e2%80%93_armor_airport
 sbl^0^slsa^y^6300785^-13.762208^-65.435158^s^airp^bo^^^^^^0^143^144^america/la_paz^-4.0^-4.0^-4.0^2007-01-03^y^n^sbl^^samer^ca^http://en.wikipedia.org/wiki/santa_ana_del_yacuma_airport
@@ -7871,7 +7871,7 @@ sfg^0^tffg^y^3578420^18.099914^-63.047197^s^airf^mf^^00^^^^0^0^0^america/marigot
 sfh^0^mmsf^y^7668349^30.9302^-114.809^s^airp^mx^^02^^^^0^0^28^america/tijuana^-8.0^-7.0^-8.0^2011-02-17^y^n^sfh^^namer^ca^http://en.wikipedia.org/wiki/san_felipe_international_airport
 sfi^0^gmms^y^6297213^32.33^-9.283^s^airp^ma^^^^^^0^52^53^africa/casablanca^0.0^1.0^0.0^2006-10-29^y^z^sfi^^africa^a^
 sfj^0^bgsf^y^6295704^67.016969^-50.689325^s^airp^gl^^^^^^0^50^296^america/godthab^-3.0^-2.0^-3.0^2007-01-03^y^y^sfj^^europ^ca^http://en.wikipedia.org/wiki/kangerlussuaq_airport
-sfk^0^zzzz^y^3387204^-0.6667^-48.5^p^ppl^br^^16^^^^18212^0^17^america/santarem^-3.0^-3.0^-3.0^2006-12-13^y^n^sfk^pa^samer^ca^
+sfk^0^zzzz^y^3387204^-0.6667^-48.5^p^ppl^br^^16^^^^18212^0^17^america/belem^-3.0^-3.0^-3.0^2006-12-13^y^n^sfk^pa^samer^ca^
 sfl^0^gvsf^y^7668292^14.9^-24.52^s^airp^cv^^^^^^0^0^169^atlantic/cape_verde^-1.0^-1.0^-1.0^2011-02-17^y^y^sfl^^afric^ca^http://en.wikipedia.org/wiki/s%c3%a3o_filipe_airport
 sfm^0^ksfm^y^4977771^43.38^-70.7^s^airp^us^^me^031^^^0^74^72^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^n^sfm^me^namer^ca^http://en.wikipedia.org/wiki/sanford_regional_airport
 sfn^0^saav^y^6300515^-31.711666^-60.811668^s^airp^ar^^^^^^0^17^19^america/argentina/cordoba^-3.0^-3.0^-3.0^2011-03-28^y^y^sfn^sf^samer^ca^http://en.wikipedia.org/wiki/sauce_viejo_airport
@@ -7918,7 +7918,7 @@ shb^0^rjcn^y^6300326^43.5775^144.96^s^airp^jp^^^^^^0^71^63^asia/tokyo^9.0^9.0^9.
 shc^0^zzzz^y^7731491^14.08^38.28^s^airp^et^^37^^^^0^0^1891^africa/addis_ababa^3.0^3.0^3.0^2011-03-18^y^y^shc^^afric^ca^http://en.wikipedia.org/wiki/shire_airport
 shd^0^kshd^y^4785295^38.27^-78.9^s^airp^us^^va^015^^^0^362^359^america/new_york^-5.0^-4.0^-5.0^2011-12-12^y^y^shd^va^namer^ca^http://en.wikipedia.org/wiki/shenandoah_valley_regional_airport
 she^0^zytx^y^6301402^41.639842^123.483425^s^airp^cn^^^^^^0^60^55^asia/harbin^8.0^8.0^8.0^2007-01-03^y^y^she^^asia^ca^http://en.wikipedia.org/wiki/shenyang_taoxian_international_airport
-shf^0^zzzz^y^2034996^39.98^119.8^p^ppl^cn^cn^10^^^^0^0^13^asia/harbin^8.0^8.0^8.0^2012-01-18^y^n^shf^^asia^ca^
+shf^0^zzzz^y^2034996^39.98^119.8^p^ppl^cn^cn^10^^^^0^0^13^asia/shanghai^8.0^8.0^8.0^2012-01-18^y^n^shf^^asia^ca^
 shg^0^pagh^y^5874124^66.88^-157.1^s^airp^us^^ak^188^^^0^61^32^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^shg^ak^namer^ca^http://en.wikipedia.org/wiki/shungnak_airport
 shh^0^pash^y^5874016^66.25^-166.1^s^airp^us^^ak^180^^^0^6^1^america/nome^-9.0^-8.0^-9.0^2011-12-12^y^y^shh^ak^namer^ca^http://en.wikipedia.org/wiki/shishmaref_airport
 shi^0^rors^y^6300467^24.826667^125.144722^s^airp^jp^^^^^^0^16^12^asia/tokyo^9.0^9.0^9.0^2007-01-03^y^n^shi^^asia^ca^http://en.wikipedia.org/wiki/shimojishima_airport
@@ -7937,7 +7937,7 @@ shu^0^zzzz^n^0^-11.17^133.8^s^airp^au^^^^^^^^^au010^^^^-1^y^n^shu^nt^austl^ca^
 shv^0^kshv^y^4341523^32.446629^-93.8256^s^airp^us^^la^017^^^0^76^79^america/chicago^-6.0^-5.0^-6.0^2011-12-12^y^y^shv^la^namer^ca^http://en.wikipedia.org/wiki/shreveport_regional_airport
 shw^0^oesh^y^6300027^17.466875^47.121431^s^airp^sa^^^^^^0^720^728^asia/riyadh^3.0^3.0^3.0^2007-01-03^y^y^shw^^meast^ca^http://en.wikipedia.org/wiki/sharurah_domestic_airport
 shx^0^pahx^y^5873802^62.63^-159.6^s^airp^us^^ak^290^^^0^20^17^america/anchorage^-9.0^-8.0^-9.0^2011-12-12^y^y^shx^ak^namer^ca^http://en.wikipedia.org/wiki/shageluk_airport
-shy^0^htsy^y^6297369^-3.667^33.43^s^airp^tz^^^^^^0^1100^1173^africa/dar_es_salaam^3.0^3.0^3.0^2011-06-06^y^y^shy^^afric^ca^
+shy^0^htsy^y^6297369^-3.667^33.43^s^airp^tz^^^^^^0^1100^1173^africa/dar_es_salaam^3.0^3.0^3.0^2011-06-06^y^n^shy^^afric^ca^
 shz^0^fxss^y^7730546^-30.58^28^s^airp^ls^^12^^^^0^0^2151^africa/maseru^2.0^2.0^2.0^2011-03-17^y^n^shz^^afric^ca^
 sia^0^zzzz^y^8299103^34.25^108.9^s^airp^cn^^26^^^^0^0^401^asia/chongqing^8.0^8.0^8.0^2012-05-18^y^n^sia^^asia^ca^
 sib^0^fcbs^y^6296959^-3.733^13.4^s^airp^cg^^^^^^0^530^532^africa/brazzaville^1.0^1.0^1.0^2006-10-29^y^n^sib^^afric^ca^
@@ -8070,7 +8070,7 @@ smx^0^ksmx^y^5393181^34.898917^-120.457444^s^airp^us^^ca^083^^^0^68^67^america/l
 smy^0^zzzz^y^2245546^13.17^-13.17^p^ppl^sn^^05^^^^0^0^39^africa/dakar^0.0^0.0^0.0^2012-05-05^y^n^smy^^afric^ca^
 smz^0^smst^y^3383025^5.067^-55^s^airf^sr^^18^^^^0^0^59^america/paramaribo^-3.0^-3.0^-3.0^2012-01-18^y^n^smz^^samer^ca^http://en.wikipedia.org/wiki/stoelmans_eiland_airstrip
 sna^0^ksna^y^5360986^33.675667^-117.868222^s^airp^us^^ca^059^^^0^15^26^america/los_angeles^-8.0^-7.0^-8.0^2011-12-12^y^y^sna^ca^namer^ca^http://en.wikipedia.org/wiki/john_wayne_airport
-snb^0^ysnb^y^7668770^-11.422778^130.653611^s^airp^au^^03^74050^^^0^0^50^australia/darwin^9.5^9.5^9.5^2011-06-04^y^y^snb^nt^austl^ca^http://en.wikipedia.org/wiki/snake_bay_airport
+snb^0^ysnb^y^7668770^-11.422778^130.653611^s^airp^au^^03^74050^^^0^0^50^australia/darwin^9.5^9.5^9.5^2011-06-04^y^n^snb^nt^austl^ca^http://en.wikipedia.org/wiki/snake_bay_airport
 snc^0^sesa^y^6300722^-2.204994^-80.988878^s^airp^ec^^^^^^0^5^6^america/guayaquil^-5.0^-5.0^-5.0^2011-03-28^y^n^snc^^samer^ca^http://en.wikipedia.org/wiki/general_ulpiano_paez_airport
 snd^0^zzzz^y^8299043^16.67^105^s^airp^la^^20^^^^0^0^190^asia/vientiane^7.0^7.0^7.0^2012-05-18^y^n^snd^^seasi^ca^
 sne^0^gvsn^y^7668293^16.588356^-24.284656^s^airp^cv^^^^^^0^0^181^atlantic/cape_verde^-1.0^-1.0^-1.0^2011-02-17^y^y^sne^^afric^ca^http://en.wikipedia.org/wiki/pregui%c3%a7a_airport
@@ -8158,8 +8158,8 @@ sqk^0^zzzz^y^8260772^31.6^25.93^s^airp^eg^^22^^^^0^0^29^africa/cairo^2.0^2.0^2.0
 sql^0^ksql^y^5391761^37.48^-122.3^s^airp^us^^ca^081^^^0^2^253^america/los_angeles^-8.0^-7.0^-8.0^2006-10-29^y^n^sql^ca^namer^ca^http://en.wikipedia.org/wiki/san_carlos_airport
 sqm^0^swua^y^7731505^-13.27^-50.17^s^airp^br^^29^^^^0^0^373^america/sao_paulo^-2.0^-3.0^-3.0^2011-03-18^y^n^sqm^go^samer^ca^
 sqn^0^wapn^y^6301202^-2.067^126^s^airp^id^^^^^^0^2^-9999^asia/jayapura^9.0^9.0^9.0^2006-10-29^y^n^sqn^^seasi^ca^
-sqo^0^espd^y^6296812^64.95^17.8^s^airp^se^^23^2421^^^0^280^273^europe/stockholm^1.0^2.0^1.0^2011-10-30^y^y^sqo^^europ^ca^
-sqq^0^eysa^y^594742^55.893886^23.394975^s^airp^lt^^00^^^^0^135^129^europe/vilnius^2.0^3.0^2.0^2007-01-03^y^y^sqq^^eeuro^ca^http://en.wikipedia.org/wiki/%c5%a0iauliai_international_airport
+sqo^0^espd^y^6296812^64.95^17.8^s^airp^se^^23^2421^^^0^280^273^europe/stockholm^1.0^2.0^1.0^2011-10-30^y^n^sqo^^europ^ca^
+sqq^0^eysa^y^594742^55.893886^23.394975^s^airp^lt^^00^^^^0^135^129^europe/vilnius^2.0^3.0^2.0^2007-01-03^y^n^sqq^^eeuro^ca^http://en.wikipedia.org/wiki/%c5%a0iauliai_international_airport
 sqr^0^waws^y^7731506^-2.567^120.8^s^airp^id^^38^^^^0^0^421^asia/makassar^8.0^8.0^8.0^2011-03-18^y^n^sqr^^seasi^ca^http://en.wikipedia.org/wiki/soroako_airport
 sqs^0^zzzz^y^3581194^17.18^-89.03^p^ppl^bz^^02^^^^16812^0^85^america/belize^-6.0^-6.0^-6.0^2012-01-18^y^n^sqs^^camer^ca^
 sqt^0^zzzz^y^8298843^-10.55^150.7^s^airp^pg^^03^^^^0^0^36^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^sqt^^austl^ca^
@@ -8315,7 +8315,7 @@ swp^0^fysm^y^3352845^-22.67^14.57^s^airf^na^^29^^^^0^0^53^africa/windhoek^2.0^1.
 swq^0^wrrs^y^6301282^-8.5^117.4^s^airp^id^^^^^^0^3^1^asia/makassar^8.0^8.0^8.0^2006-10-29^y^n^swq^^seasi^ca^
 swr^0^zzzz^y^8299155^-5.883^148^s^airp^pg^^^^^^0^0^-9999^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^swr^^austl^ca^
 sws^0^egfh^y^6296586^51.605333^-4.067833^s^airp^gb^^wls^z1^^^0^91^84^europe/london^0.0^1.0^0.0^2011-03-28^y^n^sws^^europ^ca^http://en.wikipedia.org/wiki/swansea_airport
-swt^0^zzzz^y^1490796^60.5^77^p^ppl^ru^^75^^^^44784^0^42^asia/krasnoyarsk^8.0^8.0^8.0^2012-01-17^y^n^swt^^euras^ca^
+swt^0^zzzz^y^1490796^60.5^77^p^ppl^ru^^75^^^^44784^0^42^asia/novosibirsk^7.0^7.0^7.0^2012-01-17^y^n^swt^^euras^ca^
 swu^0^rksw^y^6301835^37.23^127^s^airp^kr^^^^^^0^26^24^asia/seoul^9.0^9.0^9.0^2007-02-21^y^n^swu^^asia^ca^
 swv^0^zzzz^y^7731523^27.95^68.63^s^airp^pk^^05^^^^0^0^70^asia/karachi^5.0^5.0^5.0^2011-03-18^y^n^swv^^asia^ca^
 sww^0^ksww^y^5516527^32.47^-100.5^s^airf^us^^tx^353^^^0^727^725^america/chicago^-6.0^-5.0^-6.0^2012-04-09^y^n^sww^tx^namer^ca^http://en.wikipedia.org/wiki/avenger_field
@@ -8508,7 +8508,7 @@ tem^0^ytem^y^7668776^-34.421389^147.511667^s^airp^au^^02^17350^^^0^0^270^austral
 ten^0^zutr^y^7910266^35.67^102.1^s^airp^cn^^11^^^^0^0^706^asia/chongqing^8.0^8.0^8.0^2011-07-21^y^y^ten^^asia^ca^http://en.wikipedia.org/wiki/tongren_fenghuang_airport
 teo^0^zzzz^y^8298930^-8.083^146.1^s^airp^pg^^^^^^0^0^14^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^teo^^austl^ca^
 tep^0^zzzz^y^2085549^-5.533^146.1^p^ppl^pg^^12^^^^0^0^2263^pacific/port_moresby^10.0^10.0^10.0^2012-05-05^y^n^tep^^austl^ca^
-teq^0^ltbu^y^6299758^41.13825^27.919094^s^airp^tr^^^^^^0^174^163^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^n^teq^^euras^ca^http://en.wikipedia.org/wiki/tekirda%c4%9f_%c3%87orlu_airport
+teq^0^ltbu^y^6299758^41.13825^27.919094^s^airp^tr^^^^^^0^174^163^europe/istanbul^2.0^3.0^2.0^2007-01-03^y^y^teq^^euras^ca^http://en.wikipedia.org/wiki/tekirda%c4%9f_%c3%87orlu_airport
 ter^0^lpla^y^6299683^38.761842^-27.090797^s^airp^pt^^23^4302^430206^^0^54^58^atlantic/azores^-1.0^0.0^-1.0^2011-09-04^y^y^ter^^europ^ca^http://en.wikipedia.org/wiki/lajes_field
 tes^0^hhts^y^6297282^15.12^36.68^s^airp^er^^^^^^0^615^598^africa/asmara^3.0^3.0^3.0^2012-01-27^y^n^tes^^afric^ca^
 tet^0^fqtt^y^6301546^-16.104817^33.640181^s^airp^mz^^^^^^0^160^146^africa/maputo^2.0^2.0^2.0^2011-03-28^y^y^tet^^afric^ca^http://en.wikipedia.org/wiki/chingozi_airport
@@ -8807,7 +8807,7 @@ tsn^0^zbtj^y^6301356^39.124353^117.346183^s^airp^cn^^28^^^^0^3^2^asia/shanghai^8
 tso^0^zzzz^y^7670770^49.95^-6.317^s^airp^gb^^eng^z9^00hf005^^0^0^2^europe/london^0.0^1.0^0.0^2011-03-03^y^n^isc^^europ^a^
 tsp^0^ktsp^y^5401308^35.13^-118.5^s^airp^us^^ca^029^^^0^1214^1216^america/los_angeles^-8.0^-7.0^-8.0^2011-12-12^y^n^tsp^ca^namer^ca^http://en.wikipedia.org/wiki/tehachapi_municipal_airport
 tsq^0^zzzz^y^8298765^-29.32^-49.73^s^airp^br^^26^^^^0^0^3^america/sao_paulo^-2.0^-3.0^-3.0^2012-05-18^y^n^tsq^rs^samer^ca^
-tsr^0^lrtr^y^6299713^45.809861^21.337861^s^airp^ro^^^^^^0^106^105^europe/bucharest^2.0^3.0^2.0^2007-01-03^y^y^tsr^^eeuro^ca^http://en.wikipedia.org/wiki/traian_vuia_international_airport
+tsr^0^lrtr^y^6299713^45.809861^21.337861^s^airp^ro^^^^^^0^106^105^europe/bucharest^2.0^3.0^2.0^2007-01-03^y^y^tsr^^eeuro^ca^http://en.wikipedia.org/wiki/roaf_93rd_air_base
 tss^0^zzzz^y^5115694^40.73^-73.97^s^airh^us^^ny^061^^^0^0^3^america/new_york^-5.0^-4.0^-5.0^2011-03-10^y^n^nyc^ny^namer^h^http://en.wikipedia.org/wiki/east_34th_street_heliport
 tst^0^vtst^y^6301160^7.508744^99.616578^s^airp^th^^^^^^0^20^18^asia/bangkok^7.0^7.0^7.0^2007-01-03^y^y^tst^^seasi^ca^http://en.wikipedia.org/wiki/trang_airport
 tsu^0^ngts^y^7521804^-1.333^174.8^s^airf^ki^^01^tr^^^0^0^6^pacific/tarawa^12.0^12.0^12.0^2010-08-20^y^n^tsu^^austl^ca^
@@ -9442,7 +9442,7 @@ wkm^0^zzzz^n^0^-18.629872^27.021042^s^airp^zw^^^^^^^^^zw^^^^-1^y^n^wkm^^afric^ca
 wkn^0^zzzz^y^2084041^-5.867^155.2^p^ppl^pg^pg^07^^^^0^0^4^pacific/port_moresby^10.0^10.0^10.0^2012-01-17^y^n^wkn^^austl^ca^
 wkr^0^zzzz^n^0^27.27^-78.4^s^airp^bs^^^^^^^^^bs021^^^^-1^y^n^wkr^^carib^ca^
 wla^0^ywal^y^7731620^-19.77^120.7^s^airp^au^^08^50980^^^0^0^10^australia/perth^8.0^8.0^8.0^2011-06-04^y^n^wla^wa^austl^ca^
-wlb^0^zzzz^y^5554818^56.28^-133.7^p^ppl^us^^ak^198^^^0^0^-9999^america/metlakatla^-8.0^-8.0^-8.0^2010-01-30^y^n^wlb^ak^namer^ca^
+wlb^0^zzzz^y^5554818^56.28^-133.7^p^ppl^us^^ak^198^^^0^0^-9999^america/juneau^-9.0^-8.0^-9.0^2010-01-30^y^n^wlb^ak^namer^ca^
 wlc^0^ywch^y^7731621^-30.98^151.6^s^airp^au^^02^17850^^^0^0^1154^australia/sydney^11.0^10.0^10.0^2011-06-04^y^n^wlc^ns^austl^ca^
 wld^0^kwld^y^4280091^37.17^-97.05^s^airp^us^^ks^035^^^0^354^354^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^n^wld^ks^namer^ca^http://en.wikipedia.org/wiki/strother_field
 wlg^0^nzwn^y^6244688^-41.327221^174.805278^s^airp^nz^^g2^047^^^0^12^6^pacific/auckland^13.0^12.0^12.0^2011-08-01^y^y^wlg^^austl^ca^http://en.wikipedia.org/wiki/wellington_international_airport
@@ -9621,7 +9621,7 @@ xbn^0^zzzz^y^2099444^-9.633^149.3^p^ppl^pg^^03^^^^0^0^132^pacific/port_moresby^1
 xbo^0^dfea^y^7668174^12.65^-0.5667^s^airp^bf^^x30^^^^0^0^314^africa/ouagadougou^0.0^0.0^0.0^2011-02-17^y^n^xbo^^afric^ca^http://en.wikipedia.org/wiki/boulsa_airport
 xbp^0^kxbp^y^4676333^33.1745600^-97.8286500^s^airp^us^^tx^497^^^0^254^259^america/chicago^-6.0^-5.0^-6.0^2006-10-29^y^n^xbp^^europ^o^http://en.wikipedia.org/wiki/bridgeport_municipal_airport
 xbq^0^lfoq^y^6694636^47.678492^1.208844^s^airp^fr^^a3^41^411^41281^0^0^121^europe/paris^1.0^2.0^1.0^2012-02-27^y^n^xbq^^europ^o^
-xbr^0^zzzz^y^5909294^44.58^-75.68^p^ppl^ca^^08^^^^23886^0^73^america/new_york^-5.0^-4.0^-5.0^2008-04-11^y^y^xbr^on^namer^ca^
+xbr^0^zzzz^y^5909294^44.58^-75.68^p^ppl^ca^^08^^^^23886^0^73^america/toronto^-5.0^-4.0^-5.0^2008-04-11^y^y^xbr^on^namer^ca^
 xbs^0^zzzz^y^3031133^50.7167^1.61667^p^ppla3^fr^^b4^62^623^62160^47013^0^25^europe/paris^1.0^2.0^1.0^2011-11-02^y^n^xbs^^europ^o^
 xbt^0^zzzz^y^3031137^48.83^2.25^p^ppla3^fr^^a8^92^923^92012^108782^0^38^europe/paris^1.0^2.0^1.0^2011-11-04^y^n^xbt^^europ^o^
 xbu^0^zzzz^n^0^42.4833^3.13333^s^airp^fr^^^^^^^^^fr052^^^^-1^y^n^xbu^^europ^o^
@@ -9787,7 +9787,7 @@ xic^0^zuxc^y^7668808^27.989083^102.184361^s^airp^cn^^32^^^^0^0^1547^asia/chongqi
 xid^0^zzzz^y^6068242^45.28^-74.85^p^ppl^ca^^08^^^^0^0^114^america/toronto^-5.0^-4.0^-5.0^2012-01-17^y^y^xid^on^namer^cr^
 xie^0^zzzz^n^0^19.62^100.8^s^airp^la^^^^^^^^^la^^^^-1^y^n^xie^^seasi^ca^
 xif^0^zzzz^y^6085931^44.25^-74.95^p^ppl^ca^^08^^^^0^0^92^america/toronto^-5.0^-4.0^-5.0^2012-01-17^y^y^xif^on^namer^cr^
-xig^0^zzzz^y^6318968^8.95^-79.5^p^ppl^br^^16^^^^0^0^265^america/santarem^-3.0^-3.0^-3.0^2006-12-14^y^n^xig^pa^samer^ca^
+xig^0^zzzz^y^6318968^8.95^-79.5^p^ppl^br^^16^^^^0^0^265^america/belem^-3.0^-3.0^-3.0^2006-12-14^y^n^xig^pa^samer^ca^
 xih^0^zzzz^n^0^0^0^x^xxxx^iq^^^^^^^^^iq066^^^^-1^n^n^xih^^meast^o^
 xii^0^zzzz^y^6113027^44.72^-75.55^p^ppl^ca^^08^^^^4466^0^90^america/toronto^-5.0^-4.0^-5.0^2008-04-11^y^n^xii^on^namer^cr^
 xij^0^zzzz^n^0^28.93^47.79^s^airp^kw^^^^^^^^^kw^^^^-1^y^n^xij^^meast^o^
@@ -10293,7 +10293,7 @@ ydh^0^zzzz^y^8260991^49.13^-55.35^s^airp^ca^^05^^^^0^0^-9999^america/st_johns^-3
 ydi^0^zzzz^y^8261020^55.93^-60.95^s^airp^ca^^^^^^0^0^42^america/goose_bay^-4.0^-3.0^-4.0^2012-04-29^y^n^ydi^nl^namer^ca^
 ydj^0^zzzz^n^0^39.63^-102.5^s^airp^ca^^^^^^^^^ca027^^^^-1^y^n^ydj^sk^namer^ca^
 ydk^0^zzzz^y^8299028^43.93^-76.62^s^airp^ca^^^^^^0^0^73^america/toronto^-5.0^-4.0^-5.0^2012-05-18^y^n^ydk^on^namer^ca^
-ydl^0^zzzz^y^8260801^58.58^-130^s^airp^ca^^02^^^^0^0^967^america/vancouver^-8.0^-7.0^-8.0^2012-04-29^y^n^ydl^bc^namer^ca^
+ydl^0^zzzz^y^8260801^58.58^-130^s^airp^ca^^02^^^^0^0^967^america/vancouver^-8.0^-7.0^-8.0^2012-04-29^y^y^ydl^bc^namer^ca^
 ydm^0^cydm^y^6296176^61.9666700^-132.4333300^s^airp^ca^^^^^^0^705^813^america/whitehorse^-8.0^-7.0^-8.0^2011-02-16^y^z^ydm^^namer^a^http://en.wikipedia.org/wiki/ross_river_airport
 ydn^0^cydn^y^6301451^51.1^-100.1^s^airp^ca^^^^^^0^304^301^america/winnipeg^-6.0^-5.0^-6.0^2007-01-03^y^y^ydn^mb^namer^ca^http://en.wikipedia.org/wiki/lt._col_w.g._%28billy%29_barker_vc_airport
 ydo^0^cydo^y^7730029^48.88^-72.23^s^airp^ca^^10^02^^^0^0^111^america/montreal^-5.0^-4.0^-5.0^2011-03-16^y^n^ydo^qc^namer^ca^http://en.wikipedia.org/wiki/dolbeau-st-f%c3%a9licien_airport
@@ -10642,7 +10642,7 @@ yus^0^zzzz^y^8260763^32.8364^97.0361^s^airp^cn^^06^^^^0^0^3904^asia/urumqi^8.0^8
 yut^0^cyut^y^6296299^66.521389^-86.224722^s^airp^ca^^^^^^0^24^1^america/rankin_inlet^-6.0^-5.0^-6.0^2007-01-03^y^y^yut^nu^namer^ca^http://en.wikipedia.org/wiki/repulse_bay_airport
 yux^0^cyux^y^6296301^68.776111^-81.243611^s^airp^ca^^^^^^0^8^5^america/iqaluit^-5.0^-4.0^-5.0^2011-03-28^y^y^yux^nu^namer^ca^http://en.wikipedia.org/wiki/hall_beach_airport
 yuy^0^cyuy^y^6296302^48.206111^-78.835556^s^airp^ca^^^^^^0^301^297^america/montreal^-5.0^-4.0^-5.0^2007-01-03^y^y^yuy^qc^namer^ca^http://en.wikipedia.org/wiki/rouyn-noranda_airport
-yva^0^fmcn^y^6453431^-11.7^43.23^s^airp^km^^^^^^0^10^10^indian/comoro^3.0^3.0^3.0^2007-03-30^y^n^yva^^iocea^ca^http://en.wikipedia.org/wiki/iconi_airport
+yva^0^fmcn^y^6453431^-11.7^43.23^s^airp^km^^^^^^0^10^10^indian/comoro^3.0^3.0^3.0^2007-03-30^y^y^yva^^iocea^ca^http://en.wikipedia.org/wiki/iconi_airport
 yvb^0^cyvb^y^7668147^48.071111^-65.460278^s^airp^ca^^10^11^^^0^0^32^america/montreal^-5.0^-4.0^-5.0^2011-02-17^y^y^yvb^qc^namer^ca^http://en.wikipedia.org/wiki/bonaventure_airport
 yvc^0^cyvc^y^6301484^55.15139^-105.261944^s^airp^ca^^^^^^0^378^370^america/regina^-6.0^-6.0^-6.0^2007-01-03^y^n^yvc^sk^namer^ca^http://en.wikipedia.org/wiki/la_ronge_%28barber_field%29_airport
 yvd^0^zzzz^y^8298951^-7.55^146.2^s^airp^pg^^02^^^^0^0^969^pacific/port_moresby^10.0^10.0^10.0^2012-05-18^y^n^yvd^^austl^ca^
@@ -10661,7 +10661,7 @@ yvt^0^cyvt^y^6301486^55.841944^-108.4175^s^airp^ca^^^^^^0^440^428^america/regina
 yvv^0^cyvv^y^6296307^44.745834^-81.107222^s^airp^ca^^^^^^0^222^220^america/toronto^-5.0^-4.0^-5.0^2011-03-28^y^n^yvv^on^namer^ca^http://en.wikipedia.org/wiki/wiarton_airport
 yvz^0^cyvz^y^7730041^52.67^-94.5^s^airp^ca^^08^^^^0^0^330^america/winnipeg^-6.0^-5.0^-6.0^2011-03-16^y^y^yvz^on^namer^ca^http://en.wikipedia.org/wiki/deer_lake_airport_(ontario)
 ywa^0^cywa^y^6296308^45.952221^-77.319168^s^airp^ca^^^^^^0^130^124^america/toronto^-5.0^-4.0^-5.0^2011-03-28^y^n^ywa^on^namer^ca^http://en.wikipedia.org/wiki/petawawa_airport
-ywb^0^cykg^y^7910228^61.6^-71.97^s^airp^ca^^10^17^^^0^153^163^america/montreal^-5.0^-4.0^-5.0^2011-07-20^y^y^ywb^qc^namer^ca^http://en.wikipedia.org/wiki/wakeham_bay_airport
+ywb^0^cykg^y^7910228^61.6^-71.97^s^airp^ca^^10^17^^^0^153^163^america/montreal^-5.0^-4.0^-5.0^2011-07-20^y^y^ywb^qc^namer^ca^http://en.wikipedia.org/wiki/kangiqsujuaq_%28wakeham_bay%29_airport
 ywf^0^zzzz^n^0^44.65^-63.6^s^airp^ca^^^^^^^^^ca023^^^^-1^y^n^yhz^ns^namer^h^
 ywg^0^cywg^y^6301487^49.910036^-97.239886^s^airp^ca^^^^^^0^238^235^america/winnipeg^-6.0^-5.0^-6.0^2007-03-23^y^y^ywg^mb^namer^ca^http://en.wikipedia.org/wiki/winnipeg_james_armstrong_richardson_international_airport
 ywh^0^cywh^y^7910164^48.42^-123.5^s^airp^ca^^02^^^^0^0^10^america/vancouver^-8.0^-7.0^-8.0^2011-07-20^y^y^yyj^bc^namer^a^http://en.wikipedia.org/wiki/victoria_inner_harbour_airport
@@ -10673,7 +10673,7 @@ ywn^0^zzzz^y^6183190^55.25^-85.12^p^ppll^ca^^08^^^^0^0^6^america/toronto^-5.0^-4
 ywo^0^zzzz^y^8260747^65.76^-111.3^s^airp^ca^^14^^^^0^0^465^america/cambridge_bay^-7.0^-6.0^-7.0^2012-04-29^y^n^ywo^nt^namer^ca^
 ywp^0^cywp^y^7668149^53^-87.33^s^airp^ca^^08^^^^0^0^202^america/toronto^-5.0^-4.0^-5.0^2011-07-18^y^y^ywp^on^namer^ca^http://en.wikipedia.org/wiki/webequie_airport
 ywq^0^zzzz^y^8260796^49.89^-71.25^s^airp^ca^^10^02^^^0^0^404^america/montreal^-5.0^-4.0^-5.0^2012-04-29^y^n^ywq^qc^namer^ca^
-ywr^0^zzzz^y^6696813^48.58^-85.25^p^ppl^ca^^08^^^^0^0^379^america/nipigon^-5.0^-4.0^-5.0^2008-09-18^y^n^ywr^on^namer^ca^
+ywr^0^zzzz^y^6696813^48.58^-85.25^p^ppl^ca^^08^^^^0^0^379^america/toronto^-5.0^-4.0^-5.0^2008-09-18^y^n^ywr^on^namer^ca^
 yws^0^zzzz^y^7871487^50.15^-123^s^airf^ca^^02^^^^0^0^636^america/vancouver^-8.0^-7.0^-8.0^2011-06-25^y^n^yws^bc^namer^ca^http://en.wikipedia.org/wiki/whistler/green_lake_water_aerodrome
 ywv^0^cywv^y^6296311^52.7958300^-110.8575000^s^airp^ca^^^^^^0^679^678^america/edmonton^-7.0^-6.0^-7.0^2007-01-03^y^z^ywv^^namer^a^http://en.wikipedia.org/wiki/wainwright_aerodrome
 ywy^0^cywy^y^6296312^63.209444^-123.436667^s^airp^ca^^^^^^0^149^91^america/yellowknife^-7.0^-6.0^-7.0^2007-01-03^y^n^ywy^nt^namer^ca^http://en.wikipedia.org/wiki/wrigley_airport
@@ -11390,4 +11390,4 @@ zzt^0^zzzz^y^2478554^36.7630400^5.8978800^p^ppl^dz^^24^^^^0^0^65^africa/algiers^
 zzu^0^fwuu^y^6297127^-11.45^34.02^s^airp^mw^^^^^^0^1254^1254^africa/blantyre^2.0^2.0^2.0^2011-03-28^y^n^zzu^^afric^ca^http://en.wikipedia.org/wiki/mzuzu_airport
 zzv^0^kzzv^y^4528929^39.95^-81.88^s^airp^us^^oh^119^^^0^270^270^america/new_york^-5.0^-4.0^-5.0^2006-10-29^y^n^zzv^oh^namer^ca^http://en.wikipedia.org/wiki/zanesville_municipal_airport
 zzw^0^zzzz^n^0^0.0002778^0.0002778^s^airp^au^^^^^^^^^au011^^^^-1^y^n^zzw^ns^austl^ca^
-zzz^0^zzzz^n^0^51.88^0.2333^s^airp^zz^^^^^^^^^zz205^^^^-1^y^y^zzz^^none^ca^
+zzz^0^zzzz^n^0^51.88^0.2333^s^airp^zz^^^^^^^^^zz205^^^^-1^y^n^zzz^^none^ca^
