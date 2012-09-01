@@ -1,8 +1,29 @@
+from sys import path
+from os import environ
 from piston.handler import BaseHandler
 import simplejson
 
+# Retrieve the database connection parameters
+from django.db import connection
+db_name = connection.settings_dict['NAME']
+db_user = connection.settings_dict['USER']
+db_password = connection.settings_dict['PASSWORD']
+db_host = connection.settings_dict['HOST']
+db_port = connection.settings_dict['PORT']
+
+# Retrieve the OpenTrep parameters
+traveldb_path = environ.get ('TREP_TRAVELDB', failobj='/tmp/opentrep/traveldb')
+trep_log_path = environ.get ('TREP_LOG', failobj='django_trep.log')
+trep_lib_dir = environ.get ('TREP_LIB', failobj='/usr/lib')
+
 # The first time a request is handled by Django (after that latter has been
 # started), the OpenTrep library has to be initialised
+path.append (trep_lib_dir)
+
+import libpyopentrep
+openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+openTrepLibrary.init (traveldb_path, trep_log_path,
+		      db_user, db_password, db_host, db_port, db_name)
 
 #
 class TrepHandler (BaseHandler):	
@@ -26,14 +47,18 @@ class TrepHandler (BaseHandler):
 		# the following parameters would be kept: LAX
 		if queryURL: query = queryURL
 
-		# Call the underlying Trep library, which returns JSON-formatted list of POR
-		jsonMessage = "SFO"
-		#message = json.loads (jsonMessage)	
-		message = jsonMessage	
+		#
+		query = str(query)
+
+		# Call the underlying Trep library, which returns JSON-formatted
+		# list of POR (points of reference).
+		opentrepOutputFormat = 'J'
+		jsonMessage = openTrepLibrary.search (opentrepOutputFormat, query)
+		response = simplejson.loads (jsonMessage)	
 		
 		# print 'Received reply ', request, '[', jsonMessage, ']'
-		#TESTING --- UNCOMMENT FOR NORMAL OPERATION ---		
-		#return message
-		print 'Message: ', message
+		#TESTING --- UNCOMMENT FOR NORMAL OPERATION ---
+		return response
+		#return response
 		#REMOVE OR COMMENT FOR NORMAL OPERATION ---
 

@@ -94,9 +94,25 @@ Then, as usual:
 * To run the local binary version:
   ./opentrep/opentrep -b
 * To run the installed version (the first following line must be done once
-  per session):
+  per session; replace lib by lib64 if on a 64-bit platform):
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${INSTALL_BASEDIR}/opentrep-stable/lib
   ${INSTALL_BASEDIR}/opentrep-stable/bin/opentrep -b
 
-Denis Arnaud (December 2011)
+Running the Django-based application server:
+--------------------------------------------
+# Replace lib by lib64 if on a 64-bit platform:
+export TREP_LIB=${INSTALL_BASEDIR}/opentrep-stable/lib
+# Optional:
+export TREP_TRAVELDB=/tmp/opentrep/traveldb
+export TREP_LOG=django_trep.log
+cd appserver/django/trep
+# The first time, the database must be initialised:
+#./manage.py syncdb localhost:8000
+./manage.py runserver localhost:8000
+# Check that everything went fine with, for instance:
+midori http://localhost:8000/trep/api/"rio de janero reykyavik sna francicso"
+
+
+--
+Denis Arnaud (September 2012)
 

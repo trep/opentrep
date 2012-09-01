@@ -18,6 +18,7 @@ display_resource = CsrfExemptResource (TrepHandler)
 
 #
 urlpatterns = patterns ('',
-	(r'^(?:/(?P<queryURL>))$', display_resource),
+	(r'^(?:q=(?P<queryURL>.+))?$', display_resource),
+	(r'^(?P<queryURL>.+)$', display_resource),
 )
 
