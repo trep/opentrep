@@ -1,5 +1,5 @@
 from piston.handler import BaseHandler
-import json
+import simplejson
 
 # The first time a request is handled by Django (after that latter has been
 # started), the OpenTrep library has to be initialised
