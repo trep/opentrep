@@ -4,7 +4,7 @@
 
 \section sec_synopsis SYNOPSIS
 
-<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-i|--input <path-to-input>] [-l|--log <path-to-output-log-file>]</tt>
+<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error <spelling error>] [-d|--database <Xapian-travel-database-path>] [-l|--log <path-to-output-log-file>] [-n|--nodb] [-u|--user <db-user>] [-p|--passwd <db-password>] [-H|--host <db-server-hostname>] [-P|--port <db-server-port>] [-m|--dbname <db-name>] [-t|--type <search-type>] [-q|--query <search-query>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -22,25 +22,47 @@
  \b -h, \b --help<br>
     Produce that message and show usage.
 
- \b -b, \b --builtin<br>
-    The sample BOM tree can be either built-in or parsed from an input
-    file.  When that option is selected, an input file must then be
-    given with the -y/--yield option. When that option is not selected,
-    the \b opentrep program builds a simple use case directly from internal
-    hard-coded parameters (yield rules).
+ \b -e, \b --error<br>
+    Allowed spelling error distance (e.g., 3).
 
- \b -y, \b --yield <path-to-input-file><br>
-    Path (absolute or relative) of the (CSV) input file specifying
-    the yield rules.<br>
+ \b -d, \b --database <Xapian-travel-database-path><br>
+    Path (directory) to the Xapian travel database.
 
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.
 
-See the output of the <tt>`opentrep --help'</tt> command for default options.
+ \b -n, \b --nodb<br>
+    Whether or not the (MySQL) database should be used.<br>
+	0 means that no MySQL database should be used. 1 means that the database is needed.
+
+ \b -u, \b --user <db-user><br>
+    MySQL database user (e.g., geo).
+
+ \b -p, \b --passwd <db-password><br>
+    MySQL database password (e.g., geo).
+
+ \b -H, \b --host <db-server-hostname><br>
+    MySQL database server hostname (e.g., localhost).
+
+ \b -P, \b --port <db-server-port><br>
+    MySQL database server hostname (e.g., 3306).
+
+ \b -m, \b --dbname <db-name><br>
+    MySQL database name (e.g., geo_trep).
+
+ \b -t, \b --type <search-type><br>
+    Type of search request (0 = full text, 1 = coordinates).
+
+ \b -q, \b --query <search-query><br>
+    Travel query word list (e.g. sna francicso rio de janero lso anglese reykyavki),
+	which sould be located at the end of the command line (otherwise, the other options
+	would be interpreted as part of that travel query word list).
+
+See the output of the <tt>`opentrep --help'</tt> command for the default options.
 
 
 \section sec_see_also SEE ALSO
-\b opentrep-indexer(1), \b opentrep-config(1), \b opentrep-library(3)
+\b opentrep-indexer(1), \b opentrep-config(1), \b opentrep-library(3), \b pyopentrep(1)
 
 
 \section sec_support SUPPORT
@@ -50,7 +72,7 @@ Please report any bugs to https://sourceforge.net/apps/trac/opentrep/report
 
 \section sec_copyright COPYRIGHT
 
-Copyright © 2009-2011 Denis Arnaud
+Copyright © 2009-2012 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
