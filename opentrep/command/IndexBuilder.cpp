@@ -162,7 +162,7 @@ namespace OPENTREP {
     OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDatabaseName
                         << "') will be cleared");
     boost::filesystem::remove_all (iTravelDatabaseName);
-    boost::filesystem::create_directory (iTravelDatabaseName);
+    boost::filesystem::create_directories (iTravelDatabaseName);
 
     // Create the Xapian database (index). As the directory has been fully
     // cleaned, deleted and re-created, that Xapian database (index) is empty.
