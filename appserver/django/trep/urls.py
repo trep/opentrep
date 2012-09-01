@@ -3,8 +3,11 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Map ^trep to trep/api/urls.py (trep.api.urls module)
-    (r'^trep/api/', include ('trep.api.urls')),
+    # Map ^trep to api/urls.py (api.urls module)
+    (r'^trep/api/', include ('api.urls')),
+
+    # Map ^test to test/views.py (test module)
+    (r'^trep/test/', 'test.views.myview'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     (r'^trep/admin/doc/', include ('django.contrib.admindocs.urls')),
