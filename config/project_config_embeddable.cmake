@@ -253,8 +253,9 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
   set (EDIT_IGNRD "\\\\.swp$;\\\\.#;/#;~$")
   set (SCM_IGNRD 
     "/CVS/;/\\\\.svn/;/\\\\.bzr/;/\\\\.hg/;/\\\\.git/;\\\\.gitignore$")
+  set (PYTHON_IGNRD "\\\\.pyc$;\\\\.pyo$")
   set (CPACK_SOURCE_IGNORE_FILES
-    "${AUTOTOOLS_IGNRD};${SCM_IGNRD};${EDIT_IGNRD};${PACK_IGNRD}"
+    "${AUTOTOOLS_IGNRD};${SCM_IGNRD};${EDIT_IGNRD};${PACK_IGNRD};${PYTHON_IGNRD}"
     CACHE STRING "CPACK will ignore these files")
   #set (CPACK_SOURCE_IGNORE_DIRECTORY ${CPACK_SOURCE_IGNORE_FILES} .git)
 
