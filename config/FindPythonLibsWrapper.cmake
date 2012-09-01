@@ -9,7 +9,7 @@
 if (PYTHON_INCLUDE_PATH AND "${PYTHON_INCLUDE_DIRS}" STREQUAL "")
   set (PYTHON_INCLUDE_DIRS ${PYTHON_INCLUDE_PATH} PARENT_SCOPE)
   set (PYTHON_INCLUDE_DIRS ${PYTHON_INCLUDE_PATH})
-endif ()
+endif (PYTHON_INCLUDE_PATH AND "${PYTHON_INCLUDE_DIRS}" STREQUAL "")
 
 #
 if ("${PYTHON_LIBRARIES}" MATCHES "libpython[1-9.]*.a")
@@ -19,13 +19,17 @@ if ("${PYTHON_LIBRARIES}" MATCHES "libpython[1-9.]*.a")
 
   # Set up the versions we know about, in the order we will search. Always add
   # the user supplied additional versions to the front.
+  set(_Python1_VERSIONS 1.6 1.5)
+  set(_Python2_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
+  set(_Python3_VERSIONS 3.3 3.2 3.1 3.0)
   set(_Python_VERSIONS ${Python_ADDITIONAL_VERSIONS}
-	2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.6 1.5)
+	${_Python1_VERSIONS} ${_Python2_VERSIONS} ${_Python3_VERSIONS})
 
   foreach (_CURRENT_VERSION ${_Python_VERSIONS})
 	string (REPLACE "." "" _CURRENT_VERSION_NO_DOTS ${_CURRENT_VERSION})
 	find_library (PYTHON_DYN_LIBRARY
-      NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION})
+      NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION}
+	  python${_CURRENT_VERSION_NO_DOTS}mu python${_CURRENT_VERSION}mu)
 	if (NOT "${PYTHON_DYN_LIBRARY}" STREQUAL "")
 	  set (PYTHON_LIBRARIES ${PYTHON_DYN_LIBRARY})
 	endif (NOT "${PYTHON_DYN_LIBRARY}" STREQUAL "")
@@ -45,7 +49,7 @@ if ("${PYTHON_LIBRARIES}" MATCHES "libpython[1-9.]*.a")
   if (PYTHONLIBSWRAPPER_FOUND)
 	mark_as_advanced (PYTHONLIBSWRAPPER_FOUND)
   else (PYTHONLIBSWRAPPER_FOUND)
-	message (FATAL_ERROR "Could not find the PythonLibs libraries! Please install the development-libraries and headers (e.g., 'pythonlibs-devel' for Fedora/RedHat).")
+	message (FATAL_ERROR "Could not find the PythonLibs libraries! Please install the development-libraries and headers (e.g., 'python-devel' for Fedora/RedHat).")
   endif (PYTHONLIBSWRAPPER_FOUND)
 
 endif ("${PYTHON_LIBRARIES}" MATCHES "libpython[1-9.]*.a")
