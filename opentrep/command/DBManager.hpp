@@ -17,7 +17,7 @@ namespace soci {
 namespace OPENTREP {
 
   // Forward declarations
-  struct PlaceKey;
+  struct LocationKey;
 
 
   /**
@@ -42,11 +42,11 @@ namespace OPENTREP {
      * data.
      *
      * @param soci::session& SOCI session handler.
-     * @param const PlaceKey& The primary key of the place to be retrieved.
+     * @param const LocationKey& The primary key of the place to be retrieved.
      * @param Place& The object corresponding to the place to be retrieved.
      *               It has to be given empty, and is filled by the method.
      */
-    static bool retrievePlace (soci::session&, const PlaceKey&, Place&);
+    static bool retrievePlace (soci::session&, const LocationKey&, Place&);
 
     /**
      * Retrieve, from the (MySQL) database, the row corresponding to

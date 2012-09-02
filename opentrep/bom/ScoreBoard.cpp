@@ -8,7 +8,6 @@
 #include <boost/lexical_cast.hpp>
 // OpenTrep
 #include <opentrep/basic/float_utils.hpp>
-#include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/ScoreBoard.hpp>
 #include <opentrep/service/Logger.hpp>

@@ -185,43 +185,148 @@ namespace OPENTREP {
     /////////////////////////////////////////////////////////////////////////
     /**
 
-       // POR: IataCode^XapianDocID^IcaoCode^IsGeonames^GeonameID^Latitude^Longitude^FeatClass^FeatCode^CountryCode^CC2^Admin1^Admin2^Admin3^Admin4^Population^Elevation^Gtopo30^TimeZone^GmtOffset^DstOffset^RawOffset^ModDate^IsAirport^IsCommercial^CityCode^StateCode^RegionCode^LocationType^WikiLink
-
-     IataCode                (3-char IATA airport code)
-     XapianDocID             (empty)
-     IcaoCode                (4-char ICAO airport code)
-     IsGeonames              (1-char boolean stating whether it is in Geonames)
-     GeonameID               (7-digit ID)
-     Latitude                (signed double for the geographical latitude)
-     Longitude               (signed double for the geographical latitude)
-     FeatClass               (1-char feature class)
-     FeatCode                (1-char feature code)
-     CountryCode             (2-char country code)
-     CC2                     (2-char alternate country code)
-     Admin1                  (5-alphanum code for rank-1 administrative center)
-     Admin2                  (5-alphanum code for rank-2 administrative center)
-     Admin3                  (5-alphanum code for rank-3 administrative center)
-     Admin4                  (5-alphanum code for rank-4 administrative center)
-     Population              (7-digit number of citizens)
-     Elevation               (signed integer for the geographical elevation)
-     Gtopo30                 (signed integer for the geographical topology)
-     TimeZone                (Continent[/Country]/City time zone)
-     GmtOffset               (signed 2-digit time off-set)
-     DstOffset               (signed 2-digit time off-set)
-     RawOffset               (signed 2-digit time off-set)
-     ModDate                 (yyyy-mm-dd)
-     IsAirport               (1-char boolean stating whether it is an airport)
-     IsCommercial            (1-char boolean stating whether it is commercial)
-     CityCode                (3-char city code)
-     StateCode               (2-char state code)
-     RegionCode              (5-char region code)
-     LocationType            (1-char IATA location type)
-     WikiLink                (URI)
-     AltNameList             (List of alternate names)
-     
+       -- Geonames-related part:
+       -- ----------------------
+       -- iata_code         : IATA code; varchar(3). See also:
+       --                    http://www.iata.org/ps/publications/Pages/code-search.aspx
+       -- icao_code         : ICAO code; varchar(4)
+       -- geonameid         : Integer ID of record in geonames database
+       -- name              : Name of geographical point
+       --                     (UTF8) varchar(200)
+       -- asciiname         : Name of geographical point in plain ascii characters
+       --                     (ASCII) varchar(200)
+       -- alternatenames    : Alternate names, comma separated
+       --                     varchar(5000)
+       -- latitude          : Latitude in decimal degrees (wgs84)
+       -- longitude         : Longitude in decimal degrees (wgs84)
+       -- feature class     : See http://www.geonames.org/export/codes.html
+       --                     char(1)
+       -- feature code      : See http://www.geonames.org/export/codes.html
+       --                     varchar(10)
+       -- country code      : ISO-3166 2-letter country code, 2 characters
+       -- cc2               : Alternate country codes, comma separated, ISO-3166
+       --                     2-letter country code, 60 characters
+       -- admin1 code       : FIPS code (subject to change to ISO code), see exceptions
+       --                     below. See file admin1Codes.txt for display names of
+       --                     this code; varchar(20)
+       -- admin2 code       : Code for the second administrative division, a county
+       --                     in the US. See file admin2Codes.txt; varchar(80)
+       -- admin3 code       : Code for third level administrative division
+       --                     varchar(20)
+       -- admin4 code       : Code for fourth level administrative division
+       --                     varchar(20)
+       -- population        : bigint (8 byte int) 
+       -- elevation         : In meters, integer
+       -- dem               : Digital elevation model, srtm3 or gtopo30, average
+       --                     elevation of 3''x3'' (ca 90mx90m) or 30''x30''
+       --                     (ca 900mx900m) area in meters, integer.
+       --                     srtm processed by cgiar/ciat.
+       -- timezone          : The time-zone ID (see file timeZone.txt)
+       -- gmt offset        : GMT offset on 1st of January
+       -- dst offset        : DST offset to GMT on 1st of July (of the current year)
+       -- raw offset        : Raw Offset without DST
+       -- modification date : Date of last modification in yyyy-MM-dd format
+       --
+       --
+       -- ORI-related part:
+       -- -----------------
+       --
+       -- is_geonames       : Whether that POR is known by Geonames; varchar(1)
+       -- is_airport        : Whether that POR is an airport; varchar(1)
+       -- is commercial     : Whether or not that POR hosts commercial activities
+       --                     varchar(1)
+       -- city_code         : The IATA code of the related city, when knwon; varchar(3)
+       -- state_code        : The ISO code of the related state; varchar(3)
+       -- region_code       : The code of the related region (see below); varchar(5)
+       -- location type     : A/APT airport; B/BUS bus/coach station; C/CITY City;
+       --                     G/GRD ground transport (this code is used for SK in
+       --                     Sweden only); H/HELI Heliport;
+       --                     O/OFF-PT off-line point, i.e. a city without an airport;
+       --                     R/RAIL railway Station; S/ASSOC a location without its
+       --                     own IATA code, but attached to an IATA location.
+       --
+       -- Regions:
+       -- --------
+       -- AFRIC / AF        : Africa (geonameId=6255146)
+       -- ASIA  / AS        : Asia (geonameId=6255147)
+       -- ATLAN             : Atlantic
+       -- AUSTL             : Australia
+       -- CAMER             : Central America
+       -- CARIB             : Carribean
+       -- EEURO             : Eastern Europe
+       -- EURAS             : Euras
+       -- EUROP / EU        : Europe (geonameId=6255148)
+       -- IOCEA / OC        : Oceania (geonameId=6255151)
+       -- MEAST             : Middle-East
+       -- NAMER / NA        : North America (geonameId=6255149)
+       -- NONE              : Non real POR
+       -- PACIF             : Pacific
+       -- SAMER / SA        : South America (geonameId=6255150)
+       -- SEASI             : South East
+       --       / AN        : Antarctica (geonameId=6255152)
+       --
+       -- Samples:
+       -- CDG^LFPG^6269554^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.0127800^2.5500000^FR^AIRP^0^Europe/Paris^1.0^2.0^1.0^CDG,LFPG,Paris - Charles de Gaulle,París - Charles de Gaulle,Roissy Charles de Gaulle
+       -- PAR^ZZZZ^2988507^Paris^Paris^48.8534100^2.3488000^FR^PPLC^2138551^Europe/Paris^1.0^2.0^1.0^Lungsod ng Paris,Lutece,Lutetia Parisorum,PAR,Pa-ri,Paarys,Paname,Pantruche,Paraeis,Paras,Pari,Paries,Pariggi,Parigi,Pariis,Pariisi,Parijs,Paris,Paris - Paris,Parisi,Pariz,Parize,Parizh,Parizo,Parizs,Parys,Paryz,Paryzh,Paryzius,Paryż,Paryžius,Paräis,París,París - Paris,Paríž,Parîs,Parīze,Paříž,Páras,Párizs,Ville-Lumiere,Ville-Lumière,ba li,barys,pali si,pari,paris,parys,paryzh,perisa,prys,pryz,pyaris,pyrs,Παρίσι,Париж,Париз,Парыж,Փարիզ,פריז,باريس,پارىژ,پاریس,پیرس,ܦܪܝܣ,पॅरिस,பாரிஸ்,ಪ್ಯಾರಿಸ್,ปารีส,პარიზი,ፓሪስ,パリ,巴黎,파리 시
+       --
+      
+       iata_code          varchar(3)
+       icao_code          varchar(4)
+       is_geonames        varchar(1)
+       geonameid          int(11)
+       name               varchar(200)
+       asciiname          varchar(200)
+       alternatenames     varchar(4000)
+       latitude           decimal(10,7)
+       longitude          decimal(10,7)
+       fclass             varchar(1)
+       fcode              varchar(10)
+       country_code       varchar(2)
+       cc2                varchar(60)
+       admin1             varchar(20)
+       admin2             varchar(80)
+       admin3             varchar(20)
+       admin4             varchar(20)
+       population         int(11)
+       elevation          int(11)
+       gtopo30            int(11)
+       timezone           varchar(40)
+       gmt_offset         decimal(3,1)
+       dst_offset         decimal(3,1)
+       raw_offset         decimal(3,1)
+       moddate            date
+       is_airport         varchar(1)
+       is_commercial      varchar(1)
+       city_code          varchar(3)
+       state_code         varchar(3)
+       region_code        varchar(5)
+       location_type      varchar(4)
+       wiki_link          varchar(200)
+       lang_alt1          varchar(7)
+       alt_name1          varchar(200)
+       lang_alt2          varchar(7)
+       alt_name2          varchar(200)
+       lang_alt3          varchar(7)
+       alt_name3          varchar(200)
+       lang_alt4          varchar(7)
+       alt_name4          varchar(200)
+       lang_alt5          varchar(7)
+       alt_name5          varchar(200)
+       lang_alt6          varchar(7)
+       alt_name6          varchar(200)
+       lang_alt7          varchar(7)
+       alt_name7          varchar(200)
+       lang_alt8          varchar(7)
+       alt_name8          varchar(200)
+       lang_alt9          varchar(7)
+       alt_name9          varchar(200)
+       lang_alt10         varchar(7)
+       alt_name10         varchar(200)
     */ 
 
-    /** Grammar for the Por-Rule parser. */
+    /**
+     * Grammar for the Por-Rule parser.
+     */
     template <typename Iterator>	
     struct LocationParser : 
       public boost::spirit::qi::grammar<Iterator, boost::spirit::ascii::space_type> {

@@ -71,7 +71,8 @@ namespace OPENTREP {
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.iata_code = pn.iata_code "
-         << "order by rpd.iata_code, icao_code, geonameid", soci::into (ioPlace));
+         << "order by rpd.iata_code, icao_code, geonameid",
+         soci::into (ioPlace));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -303,7 +304,8 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool DBManager::iterateOnStatement (soci::statement& ioStatement, Place& ioPlace) {
+  bool DBManager::iterateOnStatement (soci::statement& ioStatement,
+                                      Place& ioPlace) {
     bool hasStillData = false;
   
     try {
@@ -364,16 +366,17 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::retrievePlace (soci::session& ioSociSession,
-                                 const PlaceKey& iPlaceKey, Place& ioPlace) {
+                                 const LocationKey& iLocationKey,
+                                 Place& ioPlace) {
     bool oHasRetrievedPlace = false;
       
     try {
 
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (ioSociSession);
-      const std::string& lIataCode = iPlaceKey.getIataCode();
-      const std::string& lIcaoCode = iPlaceKey.getIcaoCode();
-      const GeonamesID_T& lGeonamesID = iPlaceKey.getGeonamesID();
+      const std::string& lIataCode = iLocationKey.getIataCode();
+      const std::string& lIcaoCode = iLocationKey.getIcaoCode();
+      const GeonamesID_T& lGeonamesID = iLocationKey.getGeonamesID();
       DBManager::prepareSelectOnPlaceCodeStatement (ioSociSession,
                                                     lSelectStatement,
                                                     lIataCode, lIcaoCode,
@@ -392,12 +395,12 @@ namespace OPENTREP {
         }
 
         // Debug
-        OPENTREP_LOG_DEBUG ("[" << iPlaceKey << "] " << ioPlace);
+        OPENTREP_LOG_DEBUG ("[" << iLocationKey << "] " << ioPlace);
       }
       
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to retrieve " << iPlaceKey
+      errorStr << "Error when trying to retrieve " << iLocationKey
                << " from the MySQL database: " << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());

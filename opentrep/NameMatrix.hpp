@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_NAMEMATRIX_HPP
-#define __OPENTREP_BOM_NAMEMATRIX_HPP
+#ifndef __OPENTREP_NAMEMATRIX_HPP
+#define __OPENTREP_NAMEMATRIX_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -10,8 +10,8 @@
 #include <list>
 #include <map>
 // OpenTrep
-#include <opentrep/basic/StructAbstract.hpp>
-#include <opentrep/bom/Names.hpp>
+#include <opentrep/OPENTREP_Abstract.hpp>
+#include <opentrep/Names.hpp>
 
 namespace OPENTREP {
 
@@ -19,7 +19,7 @@ namespace OPENTREP {
    * Structure holding names for a BOM type (place, day, month, etc.),
    * for a list of given languages.
    */
-  struct NameMatrix : public StructAbstract {
+  struct NameMatrix : public OPENTREP_Abstract {
   public:
     // //// Constructors / Destructors ///////
     /**
@@ -88,6 +88,11 @@ namespace OPENTREP {
      * @param istream& the input stream.
      */
     void fromStream (std::istream&);
+
+    /**
+     * Get the serialised version of the structure. 
+     */
+    std::string toString() const;
 
     /**
      * Display the key of the structure.

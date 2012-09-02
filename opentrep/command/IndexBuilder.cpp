@@ -189,24 +189,24 @@ namespace OPENTREP {
       Place& lClonedPlace = FacPlace::instance().clone (lPlace);
 
       // Retrieve the corresponding place key
-      const PlaceKey& lLastPlaceKey = lClonedPlace.getKey();
+      const LocationKey& lLastLocationKey = lClonedPlace.getKey();
 
       // Iterate on the MySQL database cursor. It alters the lPlace object.
       hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace);
 
       // Retrieve the corresponding place key
-      const PlaceKey& lNewPlaceKey = lPlace.getKey();
+      const LocationKey& lNewLocationKey = lPlace.getKey();
 
       // DEBUG
       /*
-      const char* areEqualStr = (lNewPlaceKey == lLastPlaceKey)?"Yes":"No";
+      const char* areEqualStr = (lNewLocationKey == lLastLocationKey)?"Yes":"No";
       OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] Cloned place key: "
                           << lClonedPlace.describeKey() << " -- Current place key: "
                           << lPlace.describeKey() << " -- Equals? " << areEqualStr);
       */
 
       //
-      if (lNewPlaceKey != lLastPlaceKey) {
+      if (lNewLocationKey != lLastLocationKey) {
         // Add the document, associated to the Place object, to the Xapian index
         IndexBuilder::addDocumentToIndex (lDatabase, lClonedPlace);
 

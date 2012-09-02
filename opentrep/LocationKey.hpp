@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_PLACEKEY_HPP
-#define __OPENTREP_BOM_PLACEKEY_HPP
+#ifndef __OPENTREP_LOCATIONKEY_HPP
+#define __OPENTREP_LOCATIONKEY_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -9,27 +9,28 @@
 #include <string>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/bom/KeyAbstract.hpp>
+#include <opentrep/OPENTREP_Abstract.hpp>
 
 namespace OPENTREP {
 
   /**
-   * @brief Class modelling the primary key of a place/POR (point of reference).
+   * @brief Class modelling the primary key of a location/POR (point of
+   *        reference).
    */
-  struct PlaceKey : public KeyAbstract {
+  struct LocationKey : public OPENTREP_Abstract {
   public:
     // //////////////// Getters ///////////////
     /**
      * Get the IATA code.
      */
-    const std::string& getIataCode() const {
+    const IATACode_T& getIataCode() const {
       return _iataCode;
     }
     
     /**
      * Get the ICAO code.
      */
-    const std::string& getIcaoCode() const {
+    const ICAOCode_T& getIcaoCode() const {
       return _icaoCode;
     }
     
@@ -47,14 +48,14 @@ namespace OPENTREP {
      * Set the IATA code.
      */
     void setIataCode (const std::string& iIataCode) {
-      _iataCode = iIataCode;
+      _iataCode = IATACode_T (iIataCode);
     }
     
     /**
      * Set the ICAO code.
      */
     void setIcaoCode (const std::string& iIcaoCode) {
-      _icaoCode = iIcaoCode;
+      _icaoCode = ICAOCode_T (iIcaoCode);
     }
     
     /**
@@ -98,36 +99,35 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    PlaceKey (const std::string& iIataCode, const std::string& iIcaoCode,
-              const GeonamesID_T&);
+    LocationKey (const IATACode_T&, const ICAOCode_T&, const GeonamesID_T&);
 
     /**
      * Default copy constructor.
      */
-    PlaceKey (const PlaceKey&);
+    LocationKey (const LocationKey&);
 
     /**
      * Destructor.
      */
-    ~PlaceKey();
+    ~LocationKey();
 
     /**
      * Comparison operator.
      */
-    bool operator== (const PlaceKey&) const;
+    bool operator== (const LocationKey&) const;
 
     /**
      * Comparison operator.
      */
-    bool operator!= (const PlaceKey& iPlaceKey) const {
-      return !(iPlaceKey == *this);
+    bool operator!= (const LocationKey& iLocationKey) const {
+      return !(iLocationKey == *this);
     }
 
   private:
     /**
      * Default constructor.
      */
-    PlaceKey();
+    LocationKey();
 
 
   private:
@@ -135,12 +135,12 @@ namespace OPENTREP {
     /**
      * IATA code (e.g., ORD, CHI, SFO, LAX, LHR, LON, CDG, PAR).
      */
-    std::string _iataCode;
+    IATACode_T _iataCode;
 
     /**
      * ICAO code (e.g., KORD).
      */
-    std::string _icaoCode;
+    ICAOCode_T _icaoCode;
 
     /**
      * Geonames ID (e.g., 4887479).
@@ -149,4 +149,4 @@ namespace OPENTREP {
   };
 
 }
-#endif // __OPENTREP_BOM_PLACEKEY_HPP
+#endif // __OPENTREP_LOCATIONKEY_HPP

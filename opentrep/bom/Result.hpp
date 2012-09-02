@@ -18,7 +18,7 @@ namespace OPENTREP {
 
   // Forward declarations
   class ResultHolder;
-  struct PlaceKey;
+  struct LocationKey;
   class Place;
 
 
@@ -136,7 +136,7 @@ namespace OPENTREP {
     /**
      * Get the primary key of the best matching document.
      */
-    const PlaceKey getBestDocPrimaryKey() const;
+    const LocationKey getBestDocPrimaryKey() const;
 
 
   public:
@@ -261,10 +261,10 @@ namespace OPENTREP {
      * data/content.
      *
      * @param Xapian::Document& The Xapian document.
-     * @return PlaceKey& The primary key of the place/POR (point of
+     * @return LocationKey& The primary key of the place/POR (point of
      *         reference).
      */
-    static PlaceKey getPrimaryKey (const Xapian::Document&);
+    static LocationKey getPrimaryKey (const Xapian::Document&);
 
     /**
      * Extract the PageRank from the data of the given Xapian document.

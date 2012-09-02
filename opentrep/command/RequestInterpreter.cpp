@@ -69,7 +69,7 @@ namespace OPENTREP {
   void retrieveAndFillPlaceFromDocData (const std::string& iDocData,
                                         Place& ioPlace) {
     // DEBUG
-    const PlaceKey& lKey = ioPlace.getKey();
+    const LocationKey& lKey = ioPlace.getKey();
     const Xapian::docid& lDocID = ioPlace.getDocID();
     OPENTREP_LOG_DEBUG (lKey << " (doc ID = " << lDocID << "): " << iDocData);
 
@@ -90,7 +90,7 @@ namespace OPENTREP {
     bool hasRetrievedPlace = false;
 
     // Retrieve the key of the Place
-    const PlaceKey& lKey = ioPlace.getKey();
+    const LocationKey& lKey = ioPlace.getKey();
 
     // Retrieve the Xapian document ID
     const Xapian::docid& lDocID = ioPlace.getDocID();
@@ -152,11 +152,11 @@ namespace OPENTREP {
       assert (hasFullTextMatched == true);
 
       // Retrieve the primary key of the place
-      const PlaceKey& lPlaceKey = lResult_ptr->getBestDocPrimaryKey();
+      const LocationKey& lLocationKey = lResult_ptr->getBestDocPrimaryKey();
 
       // Instanciate an empty place object, which will be filled from the
       // rows retrieved from the database.
-      Place& lPlace = FacPlace::instance().create (lPlaceKey);
+      Place& lPlace = FacPlace::instance().create (lLocationKey);
       
       // Insert the Place object within the PlaceHolder object
       FacPlaceHolder::initLinkWithPlace (ioPlaceHolder, lPlace);

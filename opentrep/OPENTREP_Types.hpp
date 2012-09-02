@@ -37,17 +37,16 @@ namespace OPENTREP {
    */
   struct TravelDatabaseName_T : public std::string {
   public:
-    explicit TravelDatabaseName_T (const std::string& iValue) : std::string (iValue) {
-    }
+    explicit TravelDatabaseName_T (const std::string& iValue)
+      : std::string (iValue) { }
   };
 
   /**
-   * IATA three-letter code (e.g., ORD).
+   * IATA three-letter code (e.g., ORD for Chicago O'Hare, IL, USA).
    */
   struct IATACode_T : public std::string {
   public:
-    explicit IATACode_T (const std::string& iValue) : std::string (iValue) {
-    }
+    explicit IATACode_T (const std::string& iValue) : std::string (iValue) { }
   };
 
   /**
@@ -55,8 +54,173 @@ namespace OPENTREP {
    */
   struct ICAOCode_T : public std::string {
   public:
-    explicit ICAOCode_T (const std::string& iValue) : std::string (iValue) {
+    explicit ICAOCode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Geonames ID.
+   */
+  typedef int GeonamesID_T;
+
+  /**
+   * FAA three-letter code (e.g., ORD).
+   */
+  struct FAACode_T : public std::string {
+  public:
+    explicit FAACode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Location name (e.g., Nice Côte d'Azur).
+   */
+  struct LocationName_T : public std::string {
+  public:
+    explicit LocationName_T (const std::string& iValue) : std::string (iValue) {
     }
+  };
+
+  /** 
+   * Common name (usually in American English, but not necessarily in ASCII,
+   * e.g., Nice Côte d'Azur).
+   */
+  struct CommonName_T : public LocationName_T {
+  public:
+    explicit CommonName_T (const std::string& iValue) : LocationName_T (iValue) {
+    }
+  };
+    
+  /** 
+   * ASCII name (not necessarily in English, e.g., Nice Cote d'Azur).
+   */
+  struct ASCIIName_T : public LocationName_T {
+  public:
+    explicit ASCIIName_T (const std::string& iValue) : LocationName_T (iValue) {
+    }
+  };
+
+  /**
+   * Language code (e.g., en). Note that some language codes may contain
+   * numerics; for instance, fr_1793.
+   */
+  struct LanguageCode_T : public std::string {
+  public:
+    explicit LanguageCode_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
+
+  /**
+   * IATA city code (e.g., CHI for Chicago, IL, USA).
+   */
+  struct CityCode_T : public IATACode_T {
+  public:
+    explicit CityCode_T (const std::string& iValue)
+      : IATACode_T (std::string (iValue)) {
+    }
+  };
+
+  /**
+   * State code (e.g., IL for Illinois, USA).
+   */
+  struct StateCode_T : public std::string {
+  public:
+    explicit StateCode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Country code (e.g., US for USA).
+   */
+  struct CountryCode_T : public std::string {
+  public:
+    explicit CountryCode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Alternative country code (e.g., US for USA).
+   */
+  struct AltCountryCode_T : public std::string {
+  public:
+    explicit AltCountryCode_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
+  /**
+   * Region code (e.g., NAMER for North America).
+   */
+  struct RegionCode_T : public std::string {
+  public:
+    explicit RegionCode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative code of rank 1 (e.g., IL for Illinois).
+   */
+  struct AdminCode1_T : public std::string {
+  public:
+    explicit AdminCode1_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative code of rank 2.
+   */
+  struct AdminCode2_T : public std::string {
+  public:
+    explicit AdminCode2_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative code of rank 3.
+   */
+  struct AdminCode3_T : public std::string {
+  public:
+    explicit AdminCode3_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative code of rank 4.
+   */
+  struct AdminCode4_T : public std::string {
+  public:
+    explicit AdminCode4_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Feature class (e.g., S for spot).
+   */
+  struct FeatureClass_T : public std::string {
+  public:
+    explicit FeatureClass_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
+
+  /**
+   * Feature code (e.g., AIRP for airport).
+   */
+  struct FeatureCode_T : public std::string {
+  public:
+    explicit FeatureCode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * IATA location type (e.g., A for airport).
+   */
+  struct IATAType_T : public std::string {
+  public:
+    explicit IATAType_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Geographical coordinate (e.g., -10.45 or 56.7).
+   */
+  typedef double GeoCoord_T;
+  typedef GeoCoord_T Latitude_T;
+  typedef GeoCoord_T Longitude_T;
+
+  /**
+   * Wikipedia link (e.g., http://en.wikipedia.org/wiki/Chicago).
+   */
+  struct WikiLink_T : public std::string {
+  public:
+    explicit WikiLink_T (const std::string& iValue) : std::string (iValue) { }
   };
 
   /**
@@ -65,14 +229,68 @@ namespace OPENTREP {
   typedef boost::gregorian::date Date_T;
     
   /**
+   * Population (e.g., 400,000).
+   */
+  typedef unsigned int Population_T;
+
+  /**
+   * Geographical elevation (e.g., 300).
+   */
+  typedef int Elevation_T;
+
+  /**
+   * Geographical topology 30.
+   */
+  typedef int GTopo30_T;
+
+  /**
+   * Time-zone (e.g., America/Chicago).
+   */
+  struct TimeZone_T : public std::string {
+  public:
+    explicit TimeZone_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * PageRank (e.g., 94.66%).
+   */
+  typedef double PageRank_T;
+
+  /**
    * Xapian document ID.
    */
   typedef int XapianDocID_T;
 
   /**
-   * Geonames ID.
+   * GMT offset (e.g., 1)
    */
-  typedef int GeonamesID_T;
+  typedef short GMTOffset_T;
+
+  /**
+   * DST offset (e.g., 2)
+   */
+  typedef short DSTOffset_T;
+
+  /**
+   * Raw offset (e.g., 1)
+   */
+  typedef short RawOffset_T;
+
+  /**
+   * Whether or not that POR is referenced by Geonames
+   */
+  typedef bool IsGeonames_T;
+
+  /**
+   * Whether or not that POR is an airport
+   */
+  typedef bool IsAirport_T;
+
+  /**
+   * Whether or not that POR is for commercial use
+   */
+  typedef bool IsCommercial_T;
+
 
   /**
    * Travel search query.

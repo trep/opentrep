@@ -8,12 +8,12 @@
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
 // OpenTREP
+#include <opentrep/LocationKey.hpp>
 #include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/Levenshtein.hpp>
-#include <opentrep/bom/PlaceKey.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -136,9 +136,9 @@ namespace OPENTREP {
 
     /**
     // DEBUG
-    const PlaceKey& lPlaceKey = getPrimaryKey (iDocument);
+    const LocationKey& lLocationKey = getPrimaryKey (iDocument);
     OPENTREP_LOG_DEBUG ("        '" << describeShortKey()
-                        << "', " << lPlaceKey << " (doc ID = " << lDocID
+                        << "', " << lLocationKey << " (doc ID = " << lDocID
                         << ") has the following weight: " << iScore << "%");
     */
 
@@ -158,7 +158,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const PlaceKey Result::getBestDocPrimaryKey() const {
+  const LocationKey Result::getBestDocPrimaryKey() const {
     const Xapian::Document& lBestDoc = getBestXapianDocument();
     return getPrimaryKey (lBestDoc);
   }
@@ -198,7 +198,7 @@ namespace OPENTREP {
     const Xapian::Document& lDocument = getBestXapianDocument();
     
     // Retrieve the parameters of the best matching document
-    const PlaceKey& lKey = getPrimaryKey (lDocument);
+    const LocationKey& lKey = getPrimaryKey (lDocument);
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("Place key: " << lKey << " - Xapian ID " << _bestDocID
@@ -225,7 +225,7 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
+  LocationKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
     // Retrieve the Xapian document data
     const std::string& lDocumentData = iDocument.get_data();
 
@@ -237,13 +237,24 @@ namespace OPENTREP {
     // By convention (within OpenTrep), the first three words of the Xapian
     // document data string constitute the primary key of the place
     WordList_T::const_iterator itWord = lWordList.begin();
-    const std::string& lIataCode = *itWord;
-    ++itWord; const std::string& lIcaoCode = *itWord;
+    const IATACode_T lIataCode = IATACode_T (*itWord);
+    ++itWord; const ICAOCode_T lIcaoCode = ICAOCode_T (*itWord);
     ++itWord; const std::string& lGeonamesIDStr = *itWord;
-    const GeonamesID_T lGeonamesID =
-      boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
 
-    return PlaceKey (lIataCode, lIcaoCode, lGeonamesID);
+    GeonamesID_T lGeonamesID = 0;
+
+    // Track the bad lexical cast exception
+    try {
+
+      lGeonamesID = boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
+
+    } catch (const std::exception& stde) {
+      OPENTREP_LOG_ERROR ("Expected a Geonames ID, got '" << lGeonamesIDStr
+                          << "'. Full document data: '" << lDocumentData << "'");
+      return LocationKey (lIataCode, lIcaoCode, lGeonamesID);
+    }
+
+    return LocationKey (lIataCode, lIcaoCode, lGeonamesID);
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -260,8 +271,20 @@ namespace OPENTREP {
     // document data string constitutes the PageRank percentage of the place
     WordList_T::const_iterator itWord = lWordList.begin();
     ++itWord; ++itWord; ++itWord; const std::string& lPercentageStr = *itWord;
-    Percentage_T oPercentage =
-      boost::lexical_cast<Percentage_T> (lPercentageStr);
+
+    Percentage_T oPercentage = K_DEFAULT_PAGE_RANK;
+
+    // Track the bad lexical cast exception
+    try {
+
+      oPercentage = boost::lexical_cast<Percentage_T> (lPercentageStr);
+
+    } catch (const std::exception& stde) {
+      OPENTREP_LOG_ERROR ("Expected a percentage value, got '"
+                          << lPercentageStr << "'. Full document data: '"
+                          << lDocumentData << "'");
+      return oPercentage;
+    }
 
     // Sanity check
     if (oPercentage <= 0.0) {
@@ -560,9 +583,9 @@ namespace OPENTREP {
 
       /**
       // DEBUG
-      const PlaceKey& lPlaceKey = getPrimaryKey (lXapianDoc);
+      const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
       OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
-                          << "', " << lPlaceKey << " (doc ID = " << lDocID
+                          << "', " << lLocationKey << " (doc ID = " << lDocID
                           << ") having the following weight: " << lPercentage
                           << "%; whole score board: " << lScoreBoard);
       */
@@ -579,10 +602,10 @@ namespace OPENTREP {
     if (hasFullTextMatched() == true) {
       // DEBUG
       const Xapian::Document& lXapianDoc = getDocument (lBestDocID);
-      const PlaceKey& lPlaceKey = getPrimaryKey (lXapianDoc);
+      const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
       OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
                           << "' matches at " << lMaxPercentage
-                          << "% for " << lPlaceKey << " (doc ID = "
+                          << "% for " << lLocationKey << " (doc ID = "
                           << lBestDocID << ")");
 
     } else {

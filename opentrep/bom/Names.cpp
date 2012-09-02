@@ -1,12 +1,11 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
-#include <cassert>
 // STL
+#include <cassert>
 #include <sstream>
 // OpenTrep
-#include <opentrep/bom/Names.hpp>
+#include <opentrep/Names.hpp>
 
 namespace OPENTREP {
 
@@ -76,12 +75,19 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  std::string Names::toString() const {
+    std::ostringstream oStr;
+    oStr << describe();
+    return oStr.str();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Names::addName (const std::string& iName) {
     _nameList.push_back (iName);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void Names::resetList () {
+  void Names::resetList() {
     _nameList.clear();
   }
   

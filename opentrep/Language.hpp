@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_LANGUAGE_HPP
-#define __OPENTREP_BOM_LANGUAGE_HPP
+#ifndef __OPENTREP_LANGUAGE_HPP
+#define __OPENTREP_LANGUAGE_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -23,7 +23,8 @@ namespace OPENTREP {
      * variations. For instance, "en" must be placed before "en_GB" or "en_US".
      */
     typedef enum { 
-      ar = 0, ar_DZ, ar_MA, ar_SA, ar_TN,
+      common = 0,
+      ar, ar_DZ, ar_MA, ar_SA, ar_TN,
       de, de_DE,
       en, en_GB, en_US,
       es, es_AR, es_ES, es_MX,
@@ -69,4 +70,4 @@ namespace OPENTREP {
   };
 
 }
-#endif // __OPENTREP_BOM_LANGUAGE_HPP
+#endif // __OPENTREP_LANGUAGE_HPP

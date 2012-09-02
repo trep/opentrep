@@ -83,10 +83,10 @@ namespace OPENTREP {
 
     for (PlaceOrderedList_T::const_iterator itPlace = _placeOrderedList.begin();
          itPlace != _placeOrderedList.end(); ++itPlace) {
-      const Place* lPlace_ptr = *itPlace;
+      Place* lPlace_ptr = *itPlace;
       assert (lPlace_ptr != NULL);
 
-      const Location& lLocation = lPlace_ptr->createLocation();
+      const Location& lLocation = lPlace_ptr->completeLocation();
       ioLocationList.push_back (lLocation);
     }
   }

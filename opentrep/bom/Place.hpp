@@ -10,10 +10,9 @@
 #include <set>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/NameMatrix.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
-#include <opentrep/bom/PlaceKey.hpp>
-#include <opentrep/bom/NameMatrix.hpp>
 #include <opentrep/bom/PlaceList.hpp>
 
 namespace OPENTREP {
@@ -42,114 +41,145 @@ namespace OPENTREP {
   public:
     // //////////////// Getters ///////////////
     /**
+     * Get the underlying Location structure, which is an extract of the
+     * Place object.
+     *
+     * @return const Location& The underlying Location structure.
+     */
+    const Location& getLocation() const {
+      return _location;
+    }
+
+    /**
      * Get the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
-    const PlaceKey& getKey() const {
-      return _key;
+    const LocationKey& getKey() const {
+      return _location.getKey();
     }
     
     /**
      * Get the IATA code.
      */
-    const std::string& getIataCode() const {
-      return _key.getIataCode();
+    const IATACode_T& getIataCode() const {
+      return _location.getIataCode();
     }
     
     /**
      * Get the ICAO code.
      */
-    const std::string& getIcaoCode() const {
-      return _key.getIcaoCode();
+    const ICAOCode_T& getIcaoCode() const {
+      return _location.getIcaoCode();
     }
     
     /**
      * Get the Geonames ID.
      */
     const GeonamesID_T& getGeonamesID() const {
-      return _key.getGeonamesID();
+      return _location.getGeonamesID();
     }
 
+    /** 
+     * Get the common name (usually in American English, but not necessarily in ASCII).
+     */
+    const CommonName_T& getCommonName() const {
+      return _location.getCommonName();
+    }
+    
+    /** 
+     * Get the ASCII name (not necessarily in English).
+     */
+    const ASCIIName_T& getAsciiName() const {
+      return _location.getAsciiName();
+    }
+    
     /**
      * Get the FAA code.
      */
-    const std::string& getFaaCode() const {
-      return _faaCode;
+    const FAACode_T& getFaaCode() const {
+      return _location.getFaaCode();
     }
     
     /**
      * Get the related/served IATA city code.
      */
-    std::string getCityCode() const {
-      return _cityCode;
+    const CityCode_T& getCityCode() const {
+      return _location.getCityCode();
     }
 
     /**
      * Get the state code.
      */
-    const std::string& getStateCode() const {
-      return _stateCode;
+    const StateCode_T& getStateCode() const {
+      return _location.getStateCode();
     }
     
     /**
      * Get the country code.
      */
-    const std::string& getCountryCode() const {
-      return _countryCode;
+    const CountryCode_T& getCountryCode() const {
+      return _location.getCountryCode();
     }
     
     /**
      * Get the region code.
      */
-    const std::string& getRegionCode() const {
-      return _regionCode;
+    const RegionCode_T& getRegionCode() const {
+      return _location.getRegionCode();
     }
     
     /**
-     * Get the time-zone group.
+     * Get the time-zone.
      */
-    const std::string& getTimeZoneGroup() const {
-      return _timeZoneGroup;
+    const TimeZone_T& getTimeZone() const {
+      return _location.getTimeZone();
     }
     
     /**
      * Get the geographical latitude.
      */
-    double getLatitude() const {
-      return _latitude;
+    const Latitude_T& getLatitude() const {
+      return _location.getLatitude();
     }
 
     /**
      * Get the geographical longitude.
      */
-    double getLongitude() const {
-      return _longitude;
+    const Longitude_T& getLongitude() const {
+      return _location.getLongitude();
     }
     
     /**
      * Get the PageRank/importance. 
      */
-    const double& getPageRank() const {
-      return _pageRank;
+    const PageRank_T& getPageRank() const {
+      return _location.getPageRank();
     }
     
     /**
      * Get the Wikipedia link.
      */
-    const std::string& getWikiLink() const {
-      return _wikiLink;
+    const WikiLink_T& getWikiLink() const {
+      return _location.getWikiLink();
     }
     
     /**
+     * Get the map of name lists.
+     */
+    const NameMatrix& getNameMatrix() const {
+      return _location.getNameMatrix();
+    }
+
+    /**
      * Get the original keywords.
      */
-    std::string getOriginalKeywords() const {
+    const std::string& getOriginalKeywords() const {
       return _originalKeywords;
     }
     
     /**
      * Get the corrected keywords.
      */
-    std::string getCorrectedKeywords() const {
+    const std::string& getCorrectedKeywords() const {
       return _correctedKeywords;
     }
     
@@ -183,13 +213,6 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the map of name lists.
-     */
-    const NameMatrix& getNameMatrix() const {
-      return _nameMatrix;
-    }
-
-    /**
      * Get, for a given language (code), the corresponding list of names.
      *
      * @param const Language::EN_Language& Language code.
@@ -200,7 +223,8 @@ namespace OPENTREP {
      */
     bool getNameList (const Language::EN_Language& iLanguageCode,
                       NameList_T& ioNameList) const {
-      return _nameMatrix.getNameList (iLanguageCode, ioNameList);
+      const NameMatrix& lNameMatrix = _location.getNameMatrix();
+      return lNameMatrix.getNameList (iLanguageCode, ioNameList);
     }
 
     /**
@@ -251,99 +275,113 @@ namespace OPENTREP {
     /**
      * Set the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
-    void setKey (const PlaceKey& iKey) {
-      _key = iKey;
+    void setKey (const LocationKey& iKey) {
+      _location.setKey (iKey);
     }
     
     /**
      * Set the IATA code.
      */
     void setIataCode (const std::string& iIataCode) {
-      _key.setIataCode (iIataCode);
+      _location.setIataCode (iIataCode);
     }
     
     /**
      * Set the ICAO code.
      */
     void setIcaoCode (const std::string& iIcaoCode) {
-      _key.setIcaoCode (iIcaoCode);
+      _location.setIcaoCode (iIcaoCode);
     }
     
     /**
      * Get the Geonames ID.
      */
     void setGeonamesID (const GeonamesID_T& iGeonamesID) {
-      _key.setGeonamesID (iGeonamesID);
+      _location.setGeonamesID (iGeonamesID);
     }
 
+    /** 
+     * Get the common name (usually in American English, but not necessarily in ASCII).
+     */
+    void setCommonName (const std::string& iName) {
+      _location.setCommonName (iName);
+    }
+    
+    /** 
+     * Get the ASCII name (not necessarily in English).
+     */
+    void setAsciiName (const std::string& iName) {
+      _location.setAsciiName (iName);
+    }
+    
     /**
      * Set the FAA code.
      */
     void setFaaCode (const std::string& iFaaCode) {
-      _faaCode = iFaaCode;
+      _location.setFaaCode (iFaaCode);
     }
     
     /**
      * Set the related/served IATA city code.
      */
     void setCityCode (const std::string& iCityCode) {
-      _cityCode = iCityCode;
+      _location.setCityCode (iCityCode);
     }
     
     /**
      * Set the state code.
      */
     void setStateCode (const std::string& iStateCode) {
-      _stateCode = iStateCode;
+      _location.setStateCode (iStateCode);
     }
     
     /**
      * Set the country code.
      */
     void setCountryCode (const std::string& iCountryCode) {
-      _countryCode = iCountryCode;
+      _location.setCountryCode (iCountryCode);
     }
     
     /**
      * Set the region code.
      */
     void setRegionCode (const std::string& iRegionCode) {
-      _regionCode = iRegionCode;
+      _location.setRegionCode (iRegionCode);
     }
     
     /**
-     * Set the time-zone group.
+     * Set the time-zone.
      */
-    void setTimeZoneGroup (const std::string& iTimeZoneGroup) {
-      _timeZoneGroup = iTimeZoneGroup;
+    void setTimeZone (const std::string& iTimeZone) {
+      _location.setTimeZone (iTimeZone);
     }
     
     /**
      * Set the geographical latitude.
      */
-    void setLatitude (const double& iLatitude) {
-      _latitude = iLatitude;
+    void setLatitude (const Latitude_T& iLatitude) {
+      _location.setLatitude (iLatitude);
     }
 
     /**
      * Set the geographical longitude.
      */
-    void setLongitude (const double& iLongitude) {
-      _longitude = iLongitude;
+    void setLongitude (const Longitude_T& iLongitude) {
+      _location.setLongitude (iLongitude);
     }
     
     /**
      * Set the PageRank.
      */
-    void setPageRank (const double& iPageRank) {
-      _pageRank = iPageRank;
+    void setPageRank (const PageRank_T& iPageRank) {
+      _location.setPageRank (iPageRank);
     }
     
     /**
      * Set the Wikipedia link.
      */
     void setWikiLink (const std::string& iWikiLink) {
-      _wikiLink = iWikiLink;
+      _location.setWikiLink (iWikiLink);
     }
     
     /**
@@ -399,14 +437,14 @@ namespace OPENTREP {
      * @param const std::string& Name to be added.
      */
     void addName (const Language::EN_Language& iLanguageCode, const std::string& iName) {
-      _nameMatrix.addName (iLanguageCode, iName);
+      _location.addName (iLanguageCode, iName);
     }
 
     /**
      * Reset the map of name lists.
      */
     void resetMatrix() {
-      _nameMatrix.reset();
+      _location.resetMatrix();
     }
 
     /**
@@ -418,14 +456,14 @@ namespace OPENTREP {
   public:
     // /////////// Business methods /////////
     /**
-     * Create a Location structure, which is a light copy of the Place
-     * object. That (Location) structure is passed back to the caller
+     * Get the underlying Location structure, which is an extract of the
+     * Place object. That (Location) structure is passed back to the caller
      * of the service.
      *
      * @return Location The Location structure just created and filled
      *                  with the parameters of the Place object.
      */
-    Location createLocation() const;
+    const Location& completeLocation();
 
     /**
      * Build the (STL) sets of (Xapian-related) terms, spelling,
@@ -451,6 +489,20 @@ namespace OPENTREP {
     void fromStream (std::istream&);
 
     /**
+     * Get a string describing the whole key (IATA and ICAO codes, Geonames ID).
+     */
+    std::string describeKey() const {
+      return "";
+    }
+
+    /**
+     * Get a string describing the whole key (IATA and ICAO codes, Geonames ID).
+     */
+    std::string describeShortKey() const {
+      return "";
+    }
+    
+    /**
      * Get the serialised version of the Place object.
      */
     std::string toString() const;
@@ -459,18 +511,6 @@ namespace OPENTREP {
      * Get a short display of the Business Object.
      */
     std::string toShortString() const;
-    
-    /**
-     * Get a string describing the whole key (differentiating two
-     * objects at any level).
-     */
-    std::string describeKey() const;
-
-    /**
-     * Get a string describing the short key (differentiating two
-     * objects at the same level).
-     */
-    std::string describeShortKey() const;
     
     /**
      * Get a string describing the (STL) sets of terms for the Xapian database.
@@ -492,7 +532,7 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    Place (const PlaceKey&);
+    Place (const LocationKey&);
 
     /**
      * Default constructor.
@@ -533,67 +573,13 @@ namespace OPENTREP {
   private:
     // ///////////////// Attributes ///////////////////////
     /**
-     * Primary key, made of the IATA and ICAO codes, as well as Geonames ID.
+     * Location structure, containing a key (IATA and ICAO codes, Geonames ID)
+     * and the full details of the POR (point of reference): name, geographical
+     * coordinates, etc.
      */
-    PlaceKey _key;
+    Location _location;
 
-    /**
-     * FAA code (e.g., ORD).
-     */
-    std::string _faaCode;
-
-    /**
-     * Related IATA city code (e.g., CHI).
-     * \note The related city code is empty when the Place object is itself a city.
-     */
-    std::string _cityCode;
-
-    /**
-     * State code (e.g., IL).
-     */
-    std::string _stateCode;
-
-    /**
-     * Country code (e.g., US).
-     */
-    std::string _countryCode;
-
-    /**
-     * Region code (e.g., NAMER).
-     */
-    std::string _regionCode;
-
-    /**
-     * Time-zone group (e.g., America/Chicago).
-     */
-    std::string _timeZoneGroup;
-
-    /**
-     * Geographical latitude (e.g., 41.978603).
-     */
-    double _latitude;
-
-    /**
-     * Geographical longitude (e.g., -87.904842).
-     */
-    double _longitude;
-
-    /**
-     * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
-     */
-    double _pageRank;
-
-    /**
-     * Link on the Wikipedia entry
-     */
-    std::string _wikiLink;
-
-    /**
-     * List of names, for each given language.
-     */
-    NameMatrix _nameMatrix;
-
-
+    
   private:
     // ///////////// Full-text matching process support attributes //////////
     /**

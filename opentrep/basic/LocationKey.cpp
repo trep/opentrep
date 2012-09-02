@@ -1,65 +1,66 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
-// OpenTrep BOM
-#include <opentrep/bom/PlaceKey.hpp>
+// OpenTrep
+#include <opentrep/LocationKey.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey::PlaceKey (const std::string& iIataCode, const std::string& iIcaoCode,
-                      const GeonamesID_T& iGeonamesID) :
+  LocationKey::LocationKey (const IATACode_T& iIataCode,
+                            const ICAOCode_T& iIcaoCode,
+                            const GeonamesID_T& iGeonamesID) :
     _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonamesID (iGeonamesID) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey::PlaceKey() :
-    _iataCode (""), _icaoCode (""), _geonamesID (0) {
+  LocationKey::LocationKey() :
+    _iataCode (IATACode_T ("")), _icaoCode (ICAOCode_T ("")), _geonamesID (0) {
     assert (false);
   }
   
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey::PlaceKey (const PlaceKey& iPlaceKey) :
-    _iataCode (iPlaceKey._iataCode), _icaoCode (iPlaceKey._icaoCode),
-    _geonamesID (iPlaceKey._geonamesID) {
+  LocationKey::LocationKey (const LocationKey& iLocationKey) :
+    _iataCode (iLocationKey._iataCode), _icaoCode (iLocationKey._icaoCode),
+    _geonamesID (iLocationKey._geonamesID) {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  PlaceKey::~PlaceKey() {
+  LocationKey::~LocationKey() {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool PlaceKey::operator== (const PlaceKey& iPlaceKey) const {
-    const bool areEqual = (_iataCode == iPlaceKey._iataCode
-                           && _icaoCode == iPlaceKey._icaoCode
-                           && _geonamesID == iPlaceKey._geonamesID);
+  bool LocationKey::operator== (const LocationKey& iLocationKey) const {
+    const bool areEqual = (_iataCode == iLocationKey._iataCode
+                           && _icaoCode == iLocationKey._icaoCode
+                           && _geonamesID == iLocationKey._geonamesID);
     return areEqual;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string PlaceKey::describe() const {
+  std::string LocationKey::describe() const {
     std::ostringstream oStr;
     oStr << _iataCode << "-" << _icaoCode << "-" << _geonamesID;
     return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string PlaceKey::toString() const {
+  std::string LocationKey::toString() const {
     std::ostringstream oStr;
     oStr << describe();      
     return oStr.str();
   }   
 
   // //////////////////////////////////////////////////////////////////////
-  void PlaceKey::toStream (std::ostream& ioOut) const {
+  void LocationKey::toStream (std::ostream& ioOut) const {
     ioOut << toString();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void PlaceKey::fromStream (std::istream& ioIn) {
+  void LocationKey::fromStream (std::istream& ioIn) {
   }
   
 }

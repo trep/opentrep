@@ -1,9 +1,9 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
-// OpenTrep BOM
+// OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/Place.hpp>
@@ -14,46 +14,35 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   Place::Place() :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
-    _key ("", "", 0),
-    _faaCode (""), _cityCode (""),
-    _stateCode (""), _countryCode (""),
-    _regionCode (""), _timeZoneGroup (""),
-    _latitude (0.0), _longitude (0.0), _pageRank (K_DEFAULT_PAGE_RANK),
-    _wikiLink (""),
-    _originalKeywords (""), _correctedKeywords (""), _docID (0),
-    _percentage (0), _editDistance (0), _allowableEditDistance (0) {
+    _location (IATACode_T (""), ICAOCode_T (""), 0,
+               CommonName_T (""), ASCIIName_T (""),
+               FAACode_T (""), CityCode_T (""),
+               StateCode_T (""), CountryCode_T (""),
+               RegionCode_T (""), TimeZone_T (""),
+               0.0, 0.0, K_DEFAULT_PAGE_RANK,
+               WikiLink_T (""), "", "", 0, 0, 0),
+    _docID (0) {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  Place::Place (const PlaceKey& iPlaceKey) :
+  Place::Place (const LocationKey& iKey) :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
-    _key (iPlaceKey),
-    _faaCode (""), _cityCode (""),
-    _stateCode (""), _countryCode (""),
-    _regionCode (""), _timeZoneGroup (""),
-    _latitude (0.0), _longitude (0.0), _pageRank (K_DEFAULT_PAGE_RANK),
-    _wikiLink (""),
-    _originalKeywords (""), _correctedKeywords (""), _docID (0),
-    _percentage (0), _editDistance (0), _allowableEditDistance (0) {
+    _location (iKey.getIataCode(), iKey.getIcaoCode(), iKey.getGeonamesID(),
+               CommonName_T (""), ASCIIName_T (""),
+               FAACode_T (""), CityCode_T (""),
+               StateCode_T (""), CountryCode_T (""),
+               RegionCode_T (""), TimeZone_T (""),
+               0.0, 0.0, K_DEFAULT_PAGE_RANK,
+               WikiLink_T (""), "", "", 0, 0, 0),
+    _docID (0) {
   }
   
   // //////////////////////////////////////////////////////////////////////
   Place::Place (const Place& iPlace) :
     _world (iPlace._world), _placeHolder (iPlace._placeHolder),
-    _mainPlace (iPlace._mainPlace), _key (iPlace._key),
-    _faaCode (iPlace._faaCode), _cityCode (iPlace._cityCode),
-    _stateCode (iPlace._stateCode), _countryCode (iPlace._countryCode),
-    _regionCode (iPlace._regionCode),
-    _timeZoneGroup (iPlace._timeZoneGroup),
-    _latitude (iPlace._latitude), _longitude (iPlace._longitude),
-    _pageRank (iPlace._pageRank),
-    _wikiLink (iPlace._wikiLink),
-    _nameMatrix (iPlace._nameMatrix),
-    _originalKeywords (iPlace._originalKeywords),
-    _correctedKeywords (iPlace._correctedKeywords),
+    _mainPlace (iPlace._mainPlace),
+    _location (iPlace._location),
     _docID (iPlace._docID), _percentage (iPlace._percentage),
-    _editDistance (iPlace._editDistance),
-    _allowableEditDistance (iPlace._allowableEditDistance),
     _termSet (iPlace._termSet), _spellingSet (iPlace._spellingSet),
     _stemmingSet (iPlace._stemmingSet), _synonymSet (iPlace._synonymSet) {
   }
@@ -63,35 +52,11 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string Place::describeShortKey() const {
-    std::ostringstream oStr;
-    oStr << _key.describe();
-    return oStr.str();
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  std::string Place::describeKey() const {
-    return describeShortKey();
-  }
-
-  // //////////////////////////////////////////////////////////////////////
   std::string Place::toString() const {
     std::ostringstream oStr;
-    oStr << describeShortKey();
-
-    oStr << ", " << _pageRank << "%"
-         << ", " << _faaCode
-         << ", " << _cityCode << ", " << _stateCode
-         << ", " << _countryCode << ", " << _regionCode
-         << ", " << _timeZoneGroup
-         << ", " << _latitude << ", " << _longitude
-         << ", " << _wikiLink
-         << ", " << _originalKeywords << ", " << _correctedKeywords
-         << ", " << _docID << ", " << _percentage
-         << ", " << _editDistance << ", " << _allowableEditDistance
+    oStr << _location.toString();
+    oStr << ", " << _docID
          << ". ";
-
-    oStr << _nameMatrix.describe();
     
     if (_extraPlaceList.empty() == false) {
       oStr << "; Extra matches: {";
@@ -135,20 +100,8 @@ namespace OPENTREP {
      * itself.
      */
     std::ostringstream oStr;
-    oStr << describeShortKey();
-
-    const std::string& lCityCode = getCityCode();
-    oStr << ", " << _pageRank << "%"
-         << ", " << lCityCode << ", " << _stateCode
-         << ", " << _countryCode << ", " << _regionCode
-         << ", " << _timeZoneGroup
-         << ", " << _latitude << ", " << _longitude
-         << ", " << _wikiLink
-         << ", " << _originalKeywords << ", " << _correctedKeywords
-         << ", " << _docID << ", " << _percentage
-         << ", " << _editDistance << ", " << _allowableEditDistance;
-
-    oStr << _nameMatrix.describe();
+    oStr << _location.toShortString();
+    oStr << ", " << _docID;
 
     if (_extraPlaceList.empty() == false) {
       oStr << " " << _extraPlaceList.size() << " extra match(es)";
@@ -208,25 +161,8 @@ namespace OPENTREP {
        not an airport. The city code is thus the same as the place code
        itself. */
     std::ostringstream oStr;
-    oStr << describeKey();
-
-    const std::string& lCityCode = getCityCode();
-    oStr << ", page rank = " << _pageRank << "%"
-         << ", FAA code = " << _faaCode
-         << ", city code = " << lCityCode
-         << ", state code = " << _stateCode
-         << ", country code = " << _countryCode
-         << ", region code = " << _regionCode
-         << ", time zone group = " << _timeZoneGroup
-         << ", latitude = " << _latitude
-         << ", longitude = " << _longitude
-         << ", wiki = " << _wikiLink
-         << ", original keywords = " << _originalKeywords
-         << ", corrected keywords = " << _correctedKeywords
-         << ", docID = " << _docID
-         << ", percentage = " << _percentage << "%"
-         << ", edit distance = " << _editDistance
-         << ", allowable edit distance = " << _allowableEditDistance;
+    oStr << _location.toBasicString();
+    oStr << ", " << _docID;
     return oStr.str();
   }
   
@@ -234,7 +170,6 @@ namespace OPENTREP {
   std::string Place::display() const {
     std::ostringstream oStr;
     oStr << shortDisplay() << std::endl;
-    oStr << _nameMatrix.describe();
     return oStr.str();
   }
 
@@ -260,39 +195,44 @@ namespace OPENTREP {
      */
 
     // Add the IATA code
-    const std::string& lIataCode = _key.getIataCode();
+    const std::string& lIataCode = _location.getIataCode();
     if (lIataCode.empty() == false) {
       _termSet.insert (lIataCode);
       _spellingSet.insert (lIataCode);
     }
 
     // Add the ICAO code
-    const std::string& lIcaoCode = _key.getIcaoCode();
+    const std::string& lIcaoCode = _location.getIcaoCode();
     if (lIcaoCode.empty() == false) {
       _termSet.insert (lIcaoCode);
       _spellingSet.insert (lIcaoCode);
     }
 
     // Add the city IATA code
-    if (_cityCode.empty() == false && _cityCode != lIataCode) {
-      _termSet.insert (_cityCode);
-      _spellingSet.insert (_cityCode);
+    const std::string& lCityCode = _location.getCityCode();
+    if (lCityCode.empty() == false && lCityCode != lIataCode) {
+      _termSet.insert (lCityCode);
+      _spellingSet.insert (lCityCode);
     }
 
     // Add the state code
-    if (_stateCode.empty() == false) {
-      _termSet.insert (_stateCode);
-      _spellingSet.insert (_stateCode);
+    const std::string& lStateCode = _location.getStateCode();
+    if (lStateCode.empty() == false) {
+      _termSet.insert (lStateCode);
+      _spellingSet.insert (lStateCode);
     }
 
     // Add the country code
-    _termSet.insert (_countryCode);
+    const std::string& lCountryCode = _location.getCountryCode();
+    _termSet.insert (lCountryCode);
 
     // Add the region code
-    _termSet.insert (_regionCode);
+    const std::string& lRegionCode = _location.getRegionCode();
+    _termSet.insert (lRegionCode);
 
     // Retrieve the place names in all the available languages
-    const NameMatrix_T& lNameMatrix = _nameMatrix.getNameMatrix();
+    const NameMatrix& lNameMatrixFull = _location.getNameMatrix();
+    const NameMatrix_T& lNameMatrix = lNameMatrixFull.getNameMatrix();
     for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
          itNameList != lNameMatrix.end(); ++itNameList) {
       // Retrieve the language code and locale
@@ -331,9 +271,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Location Place::createLocation() const {
-
-    const std::string& lCityCode = getCityCode();
+  const Location& Place::completeLocation() {
 
     NameList_T lNameList;
     const bool hasFoundNameList = getNameList (Language::en_US, lNameList);
@@ -349,15 +287,6 @@ namespace OPENTREP {
     }
     // assert (hasFoundNameList == true);
 
-    // Copy the parameters from the Place object to the Location structure
-    Location oLocation (_key.getIataCode(), _key.getIcaoCode(),
-                        _key.getGeonamesID(), _faaCode, lCityCode,
-                        _stateCode, _countryCode,
-                        _regionCode, _timeZoneGroup,
-                        _latitude, _longitude, _pageRank, _wikiLink, lNameList,
-                        _originalKeywords, _correctedKeywords,
-                        _percentage, _editDistance, _allowableEditDistance);
-
     // Add extra matching locations, whenever they exist
     if (_extraPlaceList.empty() == false) {
       for (PlaceOrderedList_T::const_iterator itLoc = _extraPlaceList.begin();
@@ -366,8 +295,8 @@ namespace OPENTREP {
         assert (lExtraPlace_ptr != NULL);
 
         // Add the extra matching location
-        const Location& lExtraLocation = lExtraPlace_ptr->createLocation();
-        oLocation.addExtraLocation (lExtraLocation);
+        const Location& lExtraLocation = lExtraPlace_ptr->getLocation();
+        _location.addExtraLocation (lExtraLocation);
       }
     }
     
@@ -380,12 +309,11 @@ namespace OPENTREP {
         assert (lAlternatePlace_ptr != NULL);
 
         // Add the alternate matching location
-        const Location& lAlternateLocation =
-          lAlternatePlace_ptr->createLocation();
-        oLocation.addAlternateLocation (lAlternateLocation);
+        const Location& lAlternateLocation = lAlternatePlace_ptr->getLocation();
+        _location.addAlternateLocation (lAlternateLocation);
       }
     }
     
-    return oLocation;
+    return _location;
   }
 }

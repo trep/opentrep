@@ -1,7 +1,7 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
 // OpenTrep
 #include <opentrep/bom/Place.hpp>
@@ -51,10 +51,10 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Place& FacPlace::create (const PlaceKey& iPlaceKey) {
+  Place& FacPlace::create (const LocationKey& iLocationKey) {
     Place* oPlace_ptr = NULL;
 
-    oPlace_ptr = new Place (iPlaceKey);
+    oPlace_ptr = new Place (iLocationKey);
     assert (oPlace_ptr != NULL);
 
     // The new object is added to the Bom pool

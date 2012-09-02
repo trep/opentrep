@@ -207,7 +207,7 @@ int readConfiguration (int argc, char* argv[],
   boost::program_options::variables_map vm;
   boost::program_options::
     store (boost::program_options::command_line_parser (argc, argv).
-	   options (cmdline_options).positional(p).run(), vm);
+           options (cmdline_options).positional(p).run(), vm);
 
   std::ifstream ifs ("opentrep-searcher.cfg");
   boost::program_options::store (parse_config_file (ifs, config_file_options),
@@ -330,13 +330,11 @@ std::string parseQuery (OPENTREP::OPENTREP_Service& ioOpentrepService,
 // /////////////// M A I N /////////////////
 int main (int argc, char* argv[]) {
 
-  try {
-
-    /*
+  /*
     const OPENTREP::NbOfLetters_T lScaleArray[5] = {3, 6, 9, 14, 19};
 
     const OPENTREP::DistanceErrorScaleArray_T lScaleBoostArray =
-      { {3, 6, 9, 14, 19} };
+    { {3, 6, 9, 14, 19} };
     
     OPENTREP::DistanceErrorRule lScale (5, lScaleArray);
     OPENTREP::DistanceErrorRule lScaleBoost (lScaleBoostArray);
@@ -345,101 +343,89 @@ int main (int argc, char* argv[]) {
     std::cout << "Boost array: " << lScaleBoost << std::endl;
 
     for (int idx = 0; idx != 20; ++idx) {
-      std::cout << "For " << idx << " letters => "
-                << lScale.getAllowedDistanceError(idx) << std::endl;
+    std::cout << "For " << idx << " letters => "
+    << lScale.getAllowedDistanceError(idx) << std::endl;
     }
     
     return 0;
-    */
+  */
     
-    // Travel query
-    OPENTREP::TravelQuery_T lTravelQuery;
+  // Travel query
+  OPENTREP::TravelQuery_T lTravelQuery;
 
-    // Output log File
-    std::string lLogFilename;
+  // Output log File
+  std::string lLogFilename;
 
-    // Xapian database name (directory of the index)
-    std::string lXapianDatabaseNameStr;
+  // Xapian database name (directory of the index)
+  std::string lXapianDatabaseNameStr;
 
-    // SQL database parameters
-    bool isDBUsed (true);
-    std::string lDBUser;
-    std::string lDBPasswd;
-    std::string lDBHost;
-    std::string lDBPort;
-    std::string lDBDBName;
+  // SQL database parameters
+  bool isDBUsed (true);
+  std::string lDBUser;
+  std::string lDBPasswd;
+  std::string lDBHost;
+  std::string lDBPort;
+  std::string lDBDBName;
 
-    // Type of search
-    unsigned short lSearchType;
+  // Type of search
+  unsigned short lSearchType;
       
-    // Xapian spelling error distance
-    unsigned short lSpellingErrorDistance;
+  // Xapian spelling error distance
+  unsigned short lSpellingErrorDistance;
 
-    // Call the command-line option parser
-    const int lOptionParserStatus = 
-      readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
-                         lXapianDatabaseNameStr, lLogFilename, isDBUsed,
-                         lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName,
-                         lSearchType);
+  // Call the command-line option parser
+  const int lOptionParserStatus = 
+    readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
+                       lXapianDatabaseNameStr, lLogFilename, isDBUsed,
+                       lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName,
+                       lSearchType);
 
-    if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
-      return 0;
-    }
+  if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
+    return 0;
+  }
     
-    // Set the database parameters
-    OPENTREP::DBParams lDBParams (lDBUser, lDBPasswd, lDBHost, lDBPort,
-                                  lDBDBName);
+  // Set the database parameters
+  OPENTREP::DBParams lDBParams (lDBUser, lDBPasswd, lDBHost, lDBPort,
+                                lDBDBName);
     
-    // Set the log parameters
-    std::ofstream logOutputFile;
-    // open and clean the log outputfile
-    logOutputFile.open (lLogFilename.c_str());
-    logOutputFile.clear();
+  // Set the log parameters
+  std::ofstream logOutputFile;
+  // open and clean the log outputfile
+  logOutputFile.open (lLogFilename.c_str());
+  logOutputFile.clear();
 
-    if (lSearchType == 0) {
+  if (lSearchType == 0) {
 
-      if (isDBUsed == true) {
-        // Initialise the context
-        const OPENTREP::TravelDatabaseName_T
-          lXapianDatabaseName (lXapianDatabaseNameStr);
-        OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
-                                                    lXapianDatabaseName);
+    if (isDBUsed == true) {
+      // Initialise the context
+      const OPENTREP::TravelDatabaseName_T
+        lXapianDatabaseName (lXapianDatabaseNameStr);
+      OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
+                                                  lXapianDatabaseName);
 
-        // Parse the query and retrieve the places from the database
-        const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
-        std::cout << lOutput << std::endl;
-
-      } else {
-        // Initialise the context
-        const OPENTREP::TravelDatabaseName_T
-          lXapianDatabaseName (lXapianDatabaseNameStr);
-        OPENTREP::OPENTREP_Service opentrepService (logOutputFile,
-                                                    lXapianDatabaseName);
-
-        // Parse the query and retrieve the places from Xapian only
-        const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
-        std::cout << lOutput;
-      }
+      // Parse the query and retrieve the places from the database
+      const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
+      std::cout << lOutput << std::endl;
 
     } else {
-      std::cout << "Finding the airports closest to: " << lTravelQuery
-                << std::endl;
-    }
-    
-    // Close the Log outputFile
-    logOutputFile.close();
+      // Initialise the context
+      const OPENTREP::TravelDatabaseName_T
+        lXapianDatabaseName (lXapianDatabaseNameStr);
+      OPENTREP::OPENTREP_Service opentrepService (logOutputFile,
+                                                  lXapianDatabaseName);
 
-  } catch (const OPENTREP::RootException& otexp) {
-    std::cerr << "OpenTREP exception: " << otexp.what() << std::endl;
-    return -1;
-    
-  } catch (const std::exception& stde) {
-    std::cerr << "Standard exception: " << stde.what() << std::endl;
-    return -1;
-    
-  } catch (...) {
-    return -1;
+      // Parse the query and retrieve the places from Xapian only
+      const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
+      std::cout << lOutput;
+    }
+
+  } else {
+    std::cout << "Finding the airports closest to: " << lTravelQuery
+              << std::endl;
   }
+    
+  // Close the Log outputFile
+  logOutputFile.close();
 
   return 0;
 }

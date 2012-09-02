@@ -100,7 +100,7 @@ namespace OPENTREP {
     ioPTLocation.put ("state_code", iLocation.getStateCode());
     ioPTLocation.put ("country_code", iLocation.getCountryCode());
     ioPTLocation.put ("region_code", iLocation.getRegionCode());
-    ioPTLocation.put ("tz_group", iLocation.getTimeZoneGroup());
+    ioPTLocation.put ("tz", iLocation.getTimeZone());
     ioPTLocation.put ("lon", iLocation.getLongitude());
     ioPTLocation.put ("lat", iLocation.getLatitude());
     ioPTLocation.put ("page_rank", iLocation.getPageRank());
@@ -109,18 +109,30 @@ namespace OPENTREP {
     ioPTLocation.put ("corrected_keywords", iLocation.getCorrectedKeywords());
     ioPTLocation.put ("matching_percentage", iLocation.getPercentage());
     ioPTLocation.put ("edit_distance", iLocation.getEditDistance());
-    ioPTLocation.put ("allowable_distance",
-		      iLocation.getAllowableEditDistance());
+    ioPTLocation.put ("allowable_distance", iLocation.getAllowableEditDistance());
 
     bpt::ptree ptLocationNameList;
-    const LocationNameList_T& lNameList = iLocation.getNameList();
-    for (LocationNameList_T::const_iterator itName = lNameList.begin();
-	 itName != lNameList.end(); ++itName) {
-      const std::string& lName = *itName;
-      if (lName.empty() == false) {
-	bpt::ptree ptLocationName;
-	ptLocationName.put ("name", lName);
-	ptLocationNameList.push_back (std::make_pair ("", ptLocationName));
+    // Retrieve the place names in all the available languages
+    const NameMatrix& lNameMatrixFull = iLocation.getNameMatrix();
+    const NameMatrix_T& lNameMatrix = lNameMatrixFull.getNameMatrix();
+    for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
+         itNameList != lNameMatrix.end(); ++itNameList) {
+      // Retrieve the language code and locale
+      // const Language::EN_Language& lLanguage = itNameList->first;
+      const Names& lNames = itNameList->second;
+
+      // For a given language, retrieve the list of place names
+      const NameList_T& lNameList = lNames.getNameList();
+        
+      for (NameList_T::const_iterator itName = lNameList.begin();
+           itName != lNameList.end(); ++itName) {
+        const std::string& lName = *itName;
+
+        if (lName.empty() == false) {
+          bpt::ptree ptLocationName;
+          ptLocationName.put ("name", lName);
+          ptLocationNameList.push_back (std::make_pair ("", ptLocationName));
+        }
       }
     }
 

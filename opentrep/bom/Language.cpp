@@ -1,15 +1,16 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
 // OpenTrep
-#include <opentrep/bom/Language.hpp>
+#include <opentrep/Language.hpp>
 
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   const std::string Language::_longLabels[LAST_VALUE] = {
+    "common",
     "ar", "ar_DZ", "ar_MA", "ar_SA", "ar_TN",
     "de", "de_DE", "en", "en_GB", "en_US", "es", "es_AR", "es_ES", "es_MX",
     "fa", "fa_IR",
@@ -20,6 +21,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   const std::string Language::_shortLabels[LAST_VALUE] = {
+    "",
     "ar", "ar", "ar", "ar", "ar",
     "de", "de", "en", "en", "en", "es", "es", "es", "es",
     "fa", "fa",

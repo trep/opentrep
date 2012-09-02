@@ -11,7 +11,7 @@ namespace OPENTREP {
 
   // Forward declarations.
   class Place;
-  struct PlaceKey;
+  struct LocationKey;
 
   /**
    * Factory for Place.
@@ -50,11 +50,11 @@ namespace OPENTREP {
      *
      * This new object is added to the list of instantiated objects.
      *
-     * @param const PlaceKey& The primary key (IATA and ICAO codes,
+     * @param const LocationKey& The primary key (IATA and ICAO codes,
      *        Geonames ID) of the place
      * @return Place& The newly created object.
      */
-    Place& create (const PlaceKey&);
+    Place& create (const LocationKey&);
     
     /**
      * Create a copy of a Place object.
