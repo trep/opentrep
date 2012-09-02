@@ -10,6 +10,9 @@
 #include <list>
 #include <map>
 #include <set>
+// Boost Date-Time
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 // Boost Array
 #include <boost/array.hpp>
 // OpenTrep
@@ -20,13 +23,21 @@ namespace OPENTREP {
 
   // //////// Type definitions /////////
   /** 
+   * File path.
+   */
+  struct FilePath_T : public std::string {
+  public:
+    explicit FilePath_T (const std::string& iValue) : std::string (iValue) {
+    }
+  };
+
+  /** 
    * Xapian database name, corresponding to the (potentially relative)
    * directory name (on the filesystem) where Xapian stores its index.
    */
   struct TravelDatabaseName_T : public std::string {
   public:
-    explicit TravelDatabaseName_T (const std::string& iValue)
-      : std::string (iValue) {
+    explicit TravelDatabaseName_T (const std::string& iValue) : std::string (iValue) {
     }
   };
 
@@ -48,6 +59,11 @@ namespace OPENTREP {
     }
   };
 
+  /**
+   * Date (e.g., modification date).
+   */
+  typedef boost::gregorian::date Date_T;
+    
   /**
    * Xapian document ID.
    */

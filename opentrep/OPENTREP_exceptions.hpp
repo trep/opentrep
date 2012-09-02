@@ -55,8 +55,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    NonInitialisedServiceException (const std::string& iWhat)
-      : RootException (iWhat) {}
+    NonInitialisedServiceException (const std::string& iWhat) : RootException (iWhat) {}
   };
 
   /**
@@ -91,8 +90,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    MemoryAllocationException (const std::string& iWhat)
-      : RootException (iWhat) {}
+    MemoryAllocationException (const std::string& iWhat) : RootException (iWhat) {}
   };
 
   /**
@@ -103,10 +101,31 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    ObjectNotFoundException (const std::string& iWhat)
-      : RootException (iWhat) {}
+    ObjectNotFoundException (const std::string& iWhat) : RootException (iWhat) {}
   };
 
+  /**
+   * File.
+   */
+  class FileException : public RootException { 
+  public:
+    /**
+     * Constructor.
+     */
+    FileException (const std::string& iWhat) : RootException (iWhat) {}
+  };
+  
+  /**
+   * File not found.
+   */
+  class FileNotFoundException : public RootException { 
+  public:
+    /**
+     * Constructor.
+     */
+    FileNotFoundException (const std::string& iWhat) : RootException (iWhat) {}
+  };
+  
   /**
    * Parser.
    */
@@ -119,6 +138,17 @@ namespace OPENTREP {
   };
   
   /**
+   * POR file parsing exception.
+   */
+  class PorFileParsingException : public ParserException {  
+  public:
+    /**
+     * Constructor.
+     */
+    PorFileParsingException (const std::string& iWhat) : ParserException (iWhat) {}
+  };
+  
+  /**
    * Code conversion.
    */
   class CodeConversionException : public ParserException {  
@@ -126,8 +156,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    CodeConversionException (const std::string& iWhat)
-      : ParserException (iWhat) {}
+    CodeConversionException (const std::string& iWhat) : ParserException (iWhat) {}
   };
   
   /**
@@ -138,8 +167,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    CodeDuplicationException (const std::string& iWhat)
-      : ParserException (iWhat) {}
+    CodeDuplicationException (const std::string& iWhat) : ParserException (iWhat) {}
   };
 
   /**
@@ -161,8 +189,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    DocumentNotFoundException (const std::string& iWhat)
-      : XapianException (iWhat) {}
+    DocumentNotFoundException (const std::string& iWhat) : XapianException (iWhat) {}
   };
 
   /**
@@ -173,8 +200,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    XapianDatabaseFailureException (const std::string& iWhat)
-      : XapianException (iWhat) {}
+    XapianDatabaseFailureException (const std::string& iWhat) : XapianException (iWhat) {}
   };
 
   /** 
@@ -267,8 +293,7 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    InterpreterUseCaseException (const std::string& iWhat)
-      : RootException (iWhat) {}
+    InterpreterUseCaseException (const std::string& iWhat) : RootException (iWhat) {}
   };
 
   /**

@@ -10,6 +10,7 @@
 #include <list>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/OPENTREP_ParserHelperTypes.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
 #include <opentrep/LocationList.hpp>
 
@@ -109,6 +110,13 @@ namespace OPENTREP {
      */
     const double& getPageRank() const {
       return _pageRank;
+    }
+    
+    /**
+     * Get the modification date. 
+     */
+    const Date_T& getModificationDate() const {
+      return _modificationDate;
     }
     
     /**
@@ -263,6 +271,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the modification date. 
+     */
+    void setModificationDate (const Date_T& iModDate) {
+      _modificationDate = iModDate;
+    }
+
+    /**
      * Set the Wikipedia link.
      */
     void setWikiLink (const std::string& iWikiLink) {
@@ -326,6 +341,14 @@ namespace OPENTREP {
       _alternateLocationList.push_back (iAlternateLocation);
     }
     
+
+  public:
+    // ///////// Parsing support methods ////////
+    /**
+     * Calculate the date from the staging details.
+     */
+    Date_T calculateDate() const;
+
 
   public:
     // ///////// Display methods ////////
@@ -428,7 +451,6 @@ namespace OPENTREP {
      */
     GeonamesID_T _geonameID;
 
-
     /**
      * FAA code (e.g., ORD).
      */
@@ -476,6 +498,11 @@ namespace OPENTREP {
     double _pageRank;
 
     /**
+     * Modification date
+     */
+    Date_T _modificationDate;
+
+    /**
      * Link on the Wikipedia entry
      */
     std::string _wikiLink;
@@ -520,6 +547,12 @@ namespace OPENTREP {
      * List of alternate matching (less similar) locations. 
      */
     LocationList_T _alternateLocationList;
+
+  public:
+    /** Staging Date. */
+    year_t _itYear;
+    month_t _itMonth;
+    day_t _itDay;
   };
 
 }

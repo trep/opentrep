@@ -17,6 +17,7 @@ namespace OPENTREP {
       _cityCode ("AAA"), _stateCode ("NA"), _countryCode ("NA"),
       _regionCode ("NA"), _timeZoneGroup ("NA"),
       _latitude (0), _longitude (0), _pageRank (K_DEFAULT_PAGE_RANK),
+      _modificationDate (2000, 01, 01),
       _wikiLink ("http://en.wikipedia.org"),
       _nameList (std::list<std::string> ()),
       _originalKeywords ("NA"), _correctedKeywords ("NA"),
@@ -33,6 +34,7 @@ namespace OPENTREP {
     _timeZoneGroup (iLocation._timeZoneGroup),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
     _pageRank (iLocation._pageRank),
+    _modificationDate (iLocation._modificationDate),
     _wikiLink (iLocation._wikiLink),
     _nameList (iLocation._nameList),
     _originalKeywords (iLocation._originalKeywords),
@@ -95,7 +97,7 @@ namespace OPENTREP {
          << ", " << _stateCode << ", " << _countryCode << ", " << _regionCode
          << ", " << _timeZoneGroup
          << ", " << _latitude << ", " << _longitude
-         << ", " << _pageRank << "%, " << _wikiLink
+         << ", " << _pageRank << "%, " << _modificationDate << ", " << _wikiLink
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage << "%"
          << ", " << _editDistance << ", " << _allowableEditDistance;
@@ -166,6 +168,12 @@ namespace OPENTREP {
     }
 
     return oStr.str();
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  Date_T Location::calculateDate() const {
+    _itYear.check(); _itMonth.check(); _itDay.check();
+    return Date_T (_itYear._value, _itMonth._value, _itDay._value);
   }
 
 }
