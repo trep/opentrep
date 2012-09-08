@@ -28,17 +28,17 @@ namespace OPENTREP {
       Location& _location;
     };
 
-    /** Store the parsed por Id. */
-    struct storeGeonamesId : public ParserSemanticAction {
+    /** Store the parsed Geonames ID. */
+    struct storeGeonamesID : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeGeonamesId (Location&);
+      storeGeonamesID (Location&);
       /** Actor Function (functor). */
       void operator() (unsigned int,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed origin. */
+    /** Store the parsed IATA code. */
     struct storeIataCode : public ParserSemanticAction {
       /** Actor Constructor. */
       storeIataCode (Location&);
@@ -48,7 +48,17 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed customer trip type. */
+    /** Store the parsed ICAO code. */
+    struct storeIcaoCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeIcaoCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<char>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed POR type. */
     struct storePORType : public ParserSemanticAction {
       /** Actor Constructor. */
       storePORType (Location&);
@@ -59,7 +69,7 @@ namespace OPENTREP {
     };
 
 
-    /** Store the parsed start of the date range. */
+    /** Store the parsed last modification date. */
     struct storeModDate : public ParserSemanticAction {
       /** Actor Constructor. */
       storeModDate (Location&);
@@ -79,12 +89,32 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed advance purchase days. */
-    struct storeAdvancePurchase : public ParserSemanticAction {
+    /** Store the parsed population. */
+    struct storePopulation : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeAdvancePurchase (Location&);
+      storePopulation (Location&);
       /** Actor Function (functor). */
       void operator() (unsigned int,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed elevation. */
+    struct storeElevation : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeElevation (Location&);
+      /** Actor Function (functor). */
+      void operator() (int,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed GTopo30. */
+    struct storeGTopo30 : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeGTopo30 (Location&);
+      /** Actor Function (functor). */
+      void operator() (int,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };
@@ -93,6 +123,16 @@ namespace OPENTREP {
     struct storeLatitude : public ParserSemanticAction {
       /** Actor Constructor. */
       storeLatitude (Location&);
+      /** Actor Function (functor). */
+      void operator() (double,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const; 
+    };
+    
+    /** Store the parsed longitude value. */
+    struct storeLongitude : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeLongitude (Location&);
       /** Actor Function (functor). */
       void operator() (double,
                        boost::spirit::qi::unused_type,

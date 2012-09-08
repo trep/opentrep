@@ -25,14 +25,14 @@ namespace OPENTREP {
     }      
    
     // //////////////////////////////////////////////////////////////////
-    storeGeonamesId::storeGeonamesId (Location& ioLocation)
+    storeGeonamesID::storeGeonamesID (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGeonamesId::operator() (unsigned int iPorId,
-                                 boost::spirit::qi::unused_type,
-                                 boost::spirit::qi::unused_type) const {
+    void storeGeonamesID::operator() (unsigned int iPorId,
+                                      boost::spirit::qi::unused_type,
+                                      boost::spirit::qi::unused_type) const {
       _location.setGeonamesID (iPorId);
       
       // DEBUG
@@ -53,6 +53,22 @@ namespace OPENTREP {
       _location.setIataCode (lIataCode);
        // DEBUG
        //OPENTREP_LOG_DEBUG ( "IATA code: " << _location.getIataCode());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeIcaoCode ::storeIcaoCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeIcaoCode::operator() (std::vector<char> iChar,
+                                    boost::spirit::qi::unused_type,
+                                    boost::spirit::qi::unused_type) const {
+      const std::string lIcaoCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::ICAOCode_T lIcaoCode (lIcaoCode);
+      _location.setIcaoCode (lIcaoCode);
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ( "ICAO code: " << _location.getIcaoCode());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -99,22 +115,49 @@ namespace OPENTREP {
       //const std::string cabinCodeStr = ostr.str();
      
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("Cabin Code: " << _location.getCabinCode ());                 
-    
+      //OPENTREP_LOG_DEBUG ("Cabin Code: " << _location.getCabinCode ());    
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeAdvancePurchase::storeAdvancePurchase (Location& ioLocation)
+    storePopulation::storePopulation (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAdvancePurchase::operator() (unsigned int iAdancePurchase,
-                                           boost::spirit::qi::unused_type,
-                                           boost::spirit::qi::unused_type) const {
-      //const unsigned int lAdancePurchase = iAdancePurchase;
+    void storePopulation::operator() (unsigned int iPopulation,
+                                      boost::spirit::qi::unused_type,
+                                      boost::spirit::qi::unused_type) const {
+      _location.setPopulation (iPopulation);
       // DEBUG
-      //OPENTREP_LOG_DEBUG ( "Advance Purchase: " << _location.getAdvancePurchase ());
+      //OPENTREP_LOG_DEBUG ("Population: " << _location.getPopulation());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    storeElevation::storeElevation (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeElevation::operator() (int iElevation,
+                                     boost::spirit::qi::unused_type,
+                                     boost::spirit::qi::unused_type) const {
+      _location.setElevation (iElevation);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Elevation: " << _location.getElevation());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    storeGTopo30::storeGTopo30 (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeGTopo30::operator() (int iGTopo30,
+                                   boost::spirit::qi::unused_type,
+                                   boost::spirit::qi::unused_type) const {
+      _location.setGTopo30 (iGTopo30);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("GTopo30: " << _location.getGTopo30());
     }
     
     // //////////////////////////////////////////////////////////////////
@@ -129,6 +172,20 @@ namespace OPENTREP {
       _location.setLatitude (iLatitude);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Latitude: " << _location.getLatitude());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeLongitude::storeLongitude (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeLongitude::operator() (double iLongitude,
+                                     boost::spirit::qi::unused_type,
+                                     boost::spirit::qi::unused_type) const {
+      _location.setLongitude (iLongitude);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Longitude: " << _location.getLongitude());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -157,7 +214,7 @@ namespace OPENTREP {
     namespace bsa = boost::spirit::ascii;
     
     /** 1-digit-integer parser */
-    OPENTREP::int1_p_t int1_p;
+    OPENTREP::uint1_p_t uint1_p;
     
     /** 2-digit-integer parser */
     OPENTREP::uint2_p_t uint2_p;
@@ -165,8 +222,14 @@ namespace OPENTREP {
     /** 4-digit-integer parser */
     OPENTREP::uint4_p_t uint4_p;
     
+    /** Up-to-5-digit-integer parser */
+    OPENTREP::int1_5_p_t int1_5_p;
+
     /** Up-to-4-digit-integer parser */
     OPENTREP::uint1_4_p_t uint1_4_p;
+
+    /** Up-to-9-digit-integer parser */
+    OPENTREP::uint1_9_p_t uint1_9_p;
 
     /** Time element parsers. */
     OPENTREP::hour_p_t hour_p;
@@ -266,10 +329,10 @@ namespace OPENTREP {
        --       / AN        : Antarctica (geonameId=6255152)
        --
        -- Samples:
-       -- CDG^LFPG^6269554^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.0127800^2.5500000^FR^AIRP^0^Europe/Paris^1.0^2.0^1.0^CDG,LFPG,Paris - Charles de Gaulle,París - Charles de Gaulle,Roissy Charles de Gaulle
-       -- PAR^ZZZZ^2988507^Paris^Paris^48.8534100^2.3488000^FR^PPLC^2138551^Europe/Paris^1.0^2.0^1.0^Lungsod ng Paris,Lutece,Lutetia Parisorum,PAR,Pa-ri,Paarys,Paname,Pantruche,Paraeis,Paras,Pari,Paries,Pariggi,Parigi,Pariis,Pariisi,Parijs,Paris,Paris - Paris,Parisi,Pariz,Parize,Parizh,Parizo,Parizs,Parys,Paryz,Paryzh,Paryzius,Paryż,Paryžius,Paräis,París,París - Paris,Paríž,Parîs,Parīze,Paříž,Páras,Párizs,Ville-Lumiere,Ville-Lumière,ba li,barys,pali si,pari,paris,parys,paryzh,perisa,prys,pryz,pyaris,pyrs,Παρίσι,Париж,Париз,Парыж,Փարիզ,פריז,باريس,پارىژ,پاریس,پیرس,ܦܪܝܣ,पॅरिस,பாரிஸ்,ಪ್ಯಾರಿಸ್,ปารีส,პარიზი,ፓሪስ,パリ,巴黎,파리 시
+       -- CDG^LFPG^Y^6269554^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^CDG,LFPG,Paris - Charles de Gaulle,París - Charles de Gaulle,Roissy Charles de Gaulle^49.012779^2.55^S^AIRP^FR^^A8^95^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^Y^Y^PAR^^EUROP^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es^París - Charles de Gaulle^p^^Roissy Charles de Gaulle^
+       -- PAR^ZZZZ^Y^2988507^Paris^Paris^Baariis,Bahliz,Gorad Paryzh,Lungsod ng Paris,Lutece,Lutetia,Lutetia Parisorum,PAR,Pa-ri,Paarys,Palika,Paname,Pantruche,Paraeis,Paras,Pari,Paries,Parigge,Pariggi,Parighji,Parigi,Pariis,Pariisi,Parij,Parijs,Paris,Parisi,Parixe,Pariz,Parize,Parizh,Parizh osh,Parizh',Parizo,Parizs,Pariž,Parys,Paryz,Paryzius,Paryż,Paryžius,Paräis,París,Paríž,Parîs,Parĩ,Parī,Parīze,Paříž,Páras,Párizs,Ville-Lumiere,Ville-Lumière,ba li,barys,pairisa,pali,pari,paris,parys,paryzh,perisa,pryz,pyaris,pyarisa,pyrs,pʾrys,Παρίσι,Горад Парыж,Париж,Париж ош,Парижь,Париз,Парис,Паріж,Փարիզ,פאריז,פריז,باريس,پارىژ,پاريس,پاریس,پیرس,ܦܐܪܝܣ,पॅरिस,पेरिस,पैरिस,প্যারিস,ਪੈਰਿਸ,પૅરિસ,பாரிஸ்,పారిస్,ಪ್ಯಾರಿಸ್,പാരിസ്,ปารีส,ཕ་རི།,ပ<U+102B>ရီမ<U+103C>ို့,პარიზი,ፓሪስ,ប៉ារីស,パリ,巴黎,파리^49.02^2.533^P^PPLC^FR^^A8^75^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^N^N^PAR^^EUROP^C^http://en.wikipedia.org/wiki/Paris^la^Lutetia Parisorum^^fr^Lutece^h^fr^Ville-Lumière^c^eo^Parizo^^es^París^ps^de^Paris^^en^Paris^p^af^Parys^^als^Paris^^an^París^^ar^باريس^^ast^París^^be^Горад Парыж^^bg^Париж^^ca^París^^cs^Paříž^^cy^Paris^^da^Paris^^el^Παρίσι^^et^Pariis^^eu^Paris^^fa^پاریس^^fi^Pariisi^^fr^Paris^p^ga^Páras^^gl^París^^he^פריז^^hr^Pariz^^hu^Párizs^^id^Paris^^io^Paris^^it^Parigi^^ja^パリ^^ka^პარიზი^^kn^ಪ್ಯಾರಿಸ್^^ko^파리^^ku^Parîs^^kw^Paris^^lb^Paräis^^li^Paries^^lt^Paryžius^^lv^Parīze^^mk^Париз^^ms^Paris^^na^Paris^^nds^Paris^^nl^Parijs^^nn^Paris^^no^Paris^^oc^París^^pl^Paryż^^pt^Paris^^ro^Paris^^ru^Париж^^scn^Pariggi^^sco^Paris^^sl^Pariz^^sq^Paris^^sr^Париз^^sv^Paris^^ta^பாரிஸ்^^th^ปารีส^^tl^Paris^^tr^Paris^^uk^Париж^^vi^Paris^p^zh^巴黎^^ia^Paris^^fy^Parys^^ln^Pari^^os^Париж^^pms^Paris^^sk^Paríž^^sq^Parisi^^sw^Paris^^tl^Lungsod ng Paris^^ug^پارىژ^^fr^Paname^c^fr^Pantruche^c^am^ፓሪስ^^arc^ܦܐܪܝܣ^^br^Pariz^^gd^Paris^^gv^Paarys^^hy^Փարիզ^^ksh^Paris^^lad^Paris^^lmo^Paris^^mg^Paris^^mr^पॅरिस^^tet^París^^tg^Париж^^ty^Paris^^ur^پیرس^^vls^Parys^^is^París^^vi^Pa-ri^^ml^പാരിസ്^^uz^Parij^^rue^Паріж^^ne^पेरिस^^jbo^paris^^mn^Парис^^lij^Pariggi^^vec^Parixe^^yo^Parisi^^yi^פאריז^^mrj^Париж^^hi^पैरिस^^fur^Parîs^^tt^Париж^^szl^Paryż^^mhr^Париж^^te^పారిస్^^tk^Pariž^^bn^প্যারিস^^ha^Pariis^^sah^Париж^^mzn^پاریس^^bo^ཕ་རི།^^haw^Palika^^mi^Parī^^ext^París^^ps^پاريس^^pa^ਪੈਰਿਸ^^ckb^پاریس^^cu^Парижь^^cv^Парис^^co^Parighji^^bs^Pariz^^so^Baariis^^sh^Pariz^^gu^પૅરિસ^^xmf^პარიზი^^ba^Париж^^pnb^پیرس^^arz^باريس^^la^Lutetia^^kk^Париж^^kv^Париж^^gn^Parĩ^^ky^Париж^^myv^Париж ош^^nap^Parigge^^km^ប៉ារីស^^krc^Париж^^udm^Париж^^wo^Pari^^gan^巴黎^^sc^Parigi^^za^Bahliz^^my^ပ<U+102B>ရီမ<U+103C>ို့^
        --
-      
+
        iata_code          varchar(3)
        icao_code          varchar(4)
        is_geonames        varchar(1)
@@ -322,6 +385,8 @@ namespace OPENTREP {
        alt_name9          varchar(200)
        lang_alt10         varchar(7)
        alt_name10         varchar(200)
+
+       iata_code^icao_code^is_geonames^geonameid^name^asciiname^alternatenames^latitude^longitude^fclass^fcode^country_code^cc2^admin1^admin2^admin3^admin4^population^elevation^gtopo30^timezone^gmt_offset^dst_offset^raw_offset^moddate^is_airport^is_commercial^city_code^state_code^region_code^location_type^wiki_link^lang_alt1^alt_name1^lang_alt2^alt_name2^lang_alt3^alt_name3^lang_alt4^alt_name4^lang_alt5^alt_name5^lang_alt6^alt_name6^lang_alt7^alt_name7^lang_alt8^alt_name8^lang_alt9^alt_name9^lang_alt10^alt_name10
     */ 
 
     /**
@@ -331,8 +396,8 @@ namespace OPENTREP {
     struct LocationParser : 
       public boost::spirit::qi::grammar<Iterator, boost::spirit::ascii::space_type> {
 
-      LocationParser (Location& ioporRule) : 
-        LocationParser::base_type(start), _location(ioporRule) {
+      LocationParser (Location& ioPORRule) : 
+        LocationParser::base_type(start), _location(ioPORRule) {
 
       start = *(header | por_rule);
 
@@ -340,25 +405,43 @@ namespace OPENTREP {
                             >> +(bsa::char_ - bsq::eol) >> bsq::eol]);
 
       por_rule = por_key
+        >> '^' >> por_details
+        >> alt_name_section
         >> por_rule_end[doEndPor(_location)];
       // >> +( '^' >> segment )
 
       por_rule_end = bsa::char_('^');
 
-      por_key = por_id
-        >> '^' >> iata_code
+      por_key = iata_code
+        >> '^' >> icao_code
+        >> '^' >> is_geonames
+        >> '^' >> geonameid
+        ;
+
+      por_details = utf_name
+        >> '^' >> ascii_name
+        >> '^' >> alt_name_short_list
         >> '^' >> tripType
         >> '^' >> modDate
         >> '^' >> cabinCode
-        >> '^' >> advancePurchase
-        >> '^' >> latitude;
-
-      por_id = uint1_4_p[storeGeonamesId(_location)];
+        >> '^' >> population
+        >> '^' >> elevation
+        >> '^' >> gtopo30
+        >> '^' >> latitude
+        >> '^' >> longitude
+        ;
 
       iata_code = bsq::repeat(3)[bsa::char_("A-Z")][storeIataCode(_location)];
+
+      icao_code = bsq::repeat(4)[bsa::char_("A-Z")][storeIcaoCode(_location)];
       
-      tripType =
-        bsq::repeat(2)[bsa::char_("A-Z")][storePORType(_location)];
+      geonameid = uint1_9_p[storeGeonamesID(_location)];
+
+      latitude = bsq::double_[storeLatitude(_location)];
+
+      longitude = bsq::double_[storeLongitude(_location)];
+
+      tripType = bsq::repeat(2)[bsa::char_("A-Z")][storePORType(_location)];
       
       modDate = date[storeModDate(_location)];
 
@@ -371,9 +454,18 @@ namespace OPENTREP {
 
       cabinCode = bsa::char_("A-Z")[storeCabinCode(_location)];
             
-      advancePurchase = uint1_4_p[storeAdvancePurchase(_location)];
+      population = uint1_9_p[storePopulation(_location)];
 
-      latitude = bsq::double_[storeLatitude(_location)];
+      elevation = int1_5_p[storeElevation(_location)];
+
+      gtopo30 = int1_5_p[storeGTopo30(_location)];
+
+      alt_name_section = *('^' >>  alt_name_details);
+
+      alt_name_details = alt_lang_code
+        >> '^' >>  alt_name
+        >> '^' >>  alt_name_qualifiers        
+        ;
 
       /*
       segment = bsq::repeat(2)[bsa::char_("A-Z")][storeAirlineCode(_location)]
@@ -387,20 +479,40 @@ namespace OPENTREP {
       BOOST_SPIRIT_DEBUG_NODE (por_rule);
       BOOST_SPIRIT_DEBUG_NODE (por_rule_end);
       BOOST_SPIRIT_DEBUG_NODE (por_key);
-      BOOST_SPIRIT_DEBUG_NODE (por_id);
+      BOOST_SPIRIT_DEBUG_NODE (por_details);
       BOOST_SPIRIT_DEBUG_NODE (iata_code);
+      BOOST_SPIRIT_DEBUG_NODE (icao_code);
+      BOOST_SPIRIT_DEBUG_NODE (is_geonames);
+      BOOST_SPIRIT_DEBUG_NODE (geonameid);
+      BOOST_SPIRIT_DEBUG_NODE (utf_name);
+      BOOST_SPIRIT_DEBUG_NODE (ascii_name);
+      BOOST_SPIRIT_DEBUG_NODE (alt_name_short_list);
+      BOOST_SPIRIT_DEBUG_NODE (latitude);
+      BOOST_SPIRIT_DEBUG_NODE (longitude);
+      BOOST_SPIRIT_DEBUG_NODE (population);
+      BOOST_SPIRIT_DEBUG_NODE (elevation);
+      BOOST_SPIRIT_DEBUG_NODE (gtopo30);
+      BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
+      BOOST_SPIRIT_DEBUG_NODE (alt_name_details);
+      BOOST_SPIRIT_DEBUG_NODE (alt_lang_code);
+      BOOST_SPIRIT_DEBUG_NODE (alt_name);
+      BOOST_SPIRIT_DEBUG_NODE (alt_name_qualifiers);
       BOOST_SPIRIT_DEBUG_NODE (tripType);
       BOOST_SPIRIT_DEBUG_NODE (modDate);
       BOOST_SPIRIT_DEBUG_NODE (date);
       BOOST_SPIRIT_DEBUG_NODE (cabinCode);
-      BOOST_SPIRIT_DEBUG_NODE (advancePurchase);
-      BOOST_SPIRIT_DEBUG_NODE (latitude);
       }
 
       // Instantiation of rules
       boost::spirit::qi::rule<Iterator, boost::spirit::ascii::space_type>
-      start, header, por_rule, por_rule_end, por_key, por_id, iata_code,
-        destination, tripType, modDate, date, cabinCode, advancePurchase, latitude;
+      start, header, por_rule, por_rule_end, por_key, por_details,
+        iata_code, icao_code, is_geonames, geonameid,
+        utf_name, ascii_name, alt_name_short_list,
+        latitude, longitude,
+        population, elevation, gtopo30,
+        alt_name_section, alt_name_details,
+        alt_lang_code, alt_name, alt_name_qualifiers,
+        destination, tripType, modDate, date, cabinCode;
       
       // Parser Context
       Location& _location;

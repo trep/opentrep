@@ -32,7 +32,7 @@ namespace OPENTREP {
   //
   // ////////////////////////////////////////////////////////////////////
   /** 1-digit-integer parser */
-  typedef boost::spirit::qi::int_parser<unsigned int, 10, 1, 1> int1_p_t;
+  typedef boost::spirit::qi::uint_parser<int, 10, 1, 1> uint1_p_t;
     
   /** 2-digit-integer parser */
   typedef boost::spirit::qi::uint_parser<int, 10, 2, 2> uint2_p_t;
@@ -40,8 +40,14 @@ namespace OPENTREP {
   /** 4-digit-integer parser */
   typedef boost::spirit::qi::uint_parser<int, 10, 4, 4> uint4_p_t;
 
+  /** Up-to-5-digit-integer parser */
+  typedef boost::spirit::qi::int_parser<int, 10, 1, 5> int1_5_p_t;
+
   /** Up-to-4-digit-integer parser */
   typedef boost::spirit::qi::uint_parser<int, 10, 1, 4> uint1_4_p_t;
+
+  /** Up-to-9-digit-integer parser */
+  typedef boost::spirit::qi::uint_parser<int, 10, 1, 9> uint1_9_p_t;
 
   /** Date & time element parsers. */
   typedef boost::spirit::qi::uint_parser<hour_t, 10, 2, 2> hour_p_t;

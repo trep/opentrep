@@ -52,7 +52,8 @@ namespace OPENTREP {
     }
 
     /** 
-     * Get the common name (usually in American English, but not necessarily in ASCII).
+     * Get the common name (usually in American English, but not necessarily
+     * in ASCII).
      */
     const CommonName_T& getCommonName() const {
       return _commonName;
@@ -101,26 +102,47 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Time-zone.
+     * Get the time-zone.
      */
     const TimeZone_T& getTimeZone() const {
       return _timeZone;
     }
     
     /**
-     * Get the Latitude. 
+     * Get the latitude.
      */
     const Latitude_T& getLatitude() const {
       return _latitude;
     }
 
     /**
-     * Get the Longitude. 
+     * Get the longitude.
      */
     const Longitude_T& getLongitude() const {
       return _longitude;
     }
     
+    /**
+     * Get the population (number of inhabitants).
+     */
+    const Population_T& getPopulation() const {
+      return _population;
+    }
+
+    /**
+     * Get the elevation.
+     */
+    const Elevation_T& getElevation() const {
+      return _elevation;
+    }
+
+    /**
+     * Get the GTopo30.
+     */
+    const GTopo30_T& getGTopo30() const {
+      return _gTopo30;
+    }
+
     /**
      * Get the PageRank/importance. 
      */
@@ -245,7 +267,8 @@ namespace OPENTREP {
     }
 
     /** 
-     * Get the common name (usually in American English, but not necessarily in ASCII).
+     * Get the common name (usually in American English, but not necessarily
+     * in ASCII).
      */
     void setCommonName (const std::string& iName) {
       _commonName = CommonName_T (iName);
@@ -303,21 +326,42 @@ namespace OPENTREP {
     /**
      * Set the Latitude.
      */
-    void setLatitude (const double& iLatitude) {
+    void setLatitude (const Latitude_T& iLatitude) {
       _latitude = iLatitude;
     }
 
     /**
      * Set the Longitude.
      */
-    void setLongitude (const double& iLongitude) {
+    void setLongitude (const Longitude_T& iLongitude) {
       _longitude = iLongitude;
     }
     
     /**
+     * Set the population (number of inhabitants).
+     */
+    void setPopulation (const Population_T& iPopulation) {
+      _population = iPopulation;
+    }
+
+    /**
+     * Set the elevation.
+     */
+    void setElevation (const Elevation_T& iElevation) {
+      _elevation = iElevation;
+    }
+
+    /**
+     * Set the GTopo30.
+     */
+    void setGTopo30 (const GTopo30_T& iGTopo30) {
+      _gTopo30 = iGTopo30;
+    }
+
+    /**
      * Set the PageRank.
      */
-    void setPageRank (const double& iPageRank) {
+    void setPageRank (const PageRank_T& iPageRank) {
       _pageRank = iPageRank;
     }
     
@@ -341,7 +385,8 @@ namespace OPENTREP {
      * @param const Language::EN_Language& Language in which to add the name.
      * @param const std::string& Name to be added.
      */
-    void addName (const Language::EN_Language& iLanguageCode, const std::string& iName) {
+    void addName (const Language::EN_Language& iLanguageCode,
+                  const std::string& iName) {
       _nameMatrix.addName (iLanguageCode, iName);
     }
 
