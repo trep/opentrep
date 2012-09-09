@@ -8,6 +8,9 @@
 
 namespace OPENTREP {
 
+  /** Default file-path for the POR file for the OPENTREP_Service. */
+  extern const std::string DEFAULT_OPENTREP_SERVICE_POR_FILEPATH;
+  
   /** Default Xapian database name for the OPENTREP_Service. */
   extern const std::string DEFAULT_OPENTREP_SERVICE_DB_NAME;
   

@@ -11,8 +11,6 @@
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/basic/BasChronometer.hpp>
 #include <opentrep/factory/FacWorld.hpp>
-#include <opentrep/command/DBSessionManager.hpp>
-#include <opentrep/command/DBManager.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
 #include <opentrep/factory/FacOpenTrepServiceContext.hpp>
@@ -25,10 +23,10 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_Service::
-  OPENTREP_Service (std::ostream& ioLogStream, const DBParams& iDBParams,
+  OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T& iPORFilepath,
                     const TravelDatabaseName_T& iXapianDatabaseFilepath)
     : _opentrepServiceContext (NULL) {
-    init (ioLogStream, iDBParams, iXapianDatabaseFilepath);
+    init (ioLogStream, iPORFilepath, iXapianDatabaseFilepath);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -79,15 +77,15 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   void OPENTREP_Service::init(std::ostream& ioLogStream,
-                              const DBParams& iDBParams,
+                              const PORFilePath_T& iPORFilepath,
                               const TravelDatabaseName_T& iTravelDatabaseName) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
     // Initialise the context
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
-      FacOpenTrepServiceContext::instance().create (iTravelDatabaseName,
-                                                    iDBParams);
+      FacOpenTrepServiceContext::instance().create (iPORFilepath,
+                                                    iTravelDatabaseName);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
@@ -110,8 +108,8 @@ namespace OPENTREP {
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext= *_opentrepServiceContext;
 
-    // Retrieve the SOCI Session
-    soci::session& lDBSession = lOPENTREP_ServiceContext.getDBSessionRef();
+    // Retrieve the file-path of the POR (points of reference) file
+    const PORFilePath_T& lPORFilePath= lOPENTREP_ServiceContext.getPORFilePath();
       
     // Retrieve the Xapian database name (directorty of the index)
     const TravelDatabaseName_T& lTravelDatabaseName =
@@ -120,8 +118,8 @@ namespace OPENTREP {
     // Delegate the index building to the dedicated command
     BasChronometer lBuildSearchIndexChronometer;
     lBuildSearchIndexChronometer.start();
-    oNbOfEntries = IndexBuilder::buildSearchIndex (lDBSession,
-                                                   lTravelDatabaseName);
+    oNbOfEntries =
+      IndexBuilder::buildSearchIndex (lPORFilePath, lTravelDatabaseName);
     const double lBuildSearchIndexMeasure =
       lBuildSearchIndexChronometer.elapsed();
       
@@ -167,9 +165,6 @@ namespace OPENTREP {
       throw TravelRequestEmptyException (errorStr.str());
     }
     
-    // Retrieve the SOCI Session
-    soci::session* lDBSession_ptr = lOPENTREP_ServiceContext.getDBSession();
-      
     // Retrieve the Xapian database name (directorty of the index)
     const TravelDatabaseName_T& lTravelDatabaseName =
       lOPENTREP_ServiceContext.getTravelDatabaseName();
@@ -178,8 +173,7 @@ namespace OPENTREP {
     BasChronometer lRequestInterpreterChronometer;
     lRequestInterpreterChronometer.start();
     nbOfMatches =
-      RequestInterpreter::interpretTravelRequest (lDBSession_ptr,
-                                                  lTravelDatabaseName,
+      RequestInterpreter::interpretTravelRequest (lTravelDatabaseName,
                                                   iTravelQuery,
                                                   ioLocationList,
                                                   ioWordList);

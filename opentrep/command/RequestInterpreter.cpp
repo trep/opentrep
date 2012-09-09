@@ -21,7 +21,6 @@
 #include <opentrep/factory/FacResultCombination.hpp>
 #include <opentrep/factory/FacResultHolder.hpp>
 #include <opentrep/factory/FacResult.hpp>
-#include <opentrep/command/DBManager.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
 #include <opentrep/service/Logger.hpp>
 // Xapian
@@ -79,54 +78,8 @@ namespace OPENTREP {
      */
   }
 
-  /**
-   * Helper function to retrieve, from the database, the details of a
-   * given point of reference (POR). The corresponding Place BOM
-   * object is then filled with those details.
-   */
-  // //////////////////////////////////////////////////////////////////////
-  bool retrieveAndFillPlaceFromDB (soci::session& ioSociSession,
-                                   Place& ioPlace) {
-    bool hasRetrievedPlace = false;
-
-    // Retrieve the key of the Place
-    const LocationKey& lKey = ioPlace.getKey();
-
-    // Retrieve the Xapian document ID
-    const Xapian::docid& lDocID = ioPlace.getDocID();
-
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("Place key: " << lKey);
-
-    // Fill the Place object with the row retrieved from the
-    // (MySQL) database and corresponding to the given place code
-    // (e.g., 'sfo' for the San Francisco Intl airport).
-    hasRetrievedPlace = DBManager::retrievePlace (ioSociSession, lKey, ioPlace);
-
-    if (hasRetrievedPlace == false) {
-      /**
-       * The Xapian database/index should contain only places
-       * available within the SQL database, as the first is built from
-       * the latter.  If that happens, it means that the user gave a
-       * wrong Xapian database.
-       */
-      std::ostringstream errorStr;
-      errorStr << "There is no document corresponding to " << lKey
-               << " (Xapian doc ID = " << lDocID << ") in the SQL database. "
-               << "It usually means that the Xapian index/database "
-               << "is not synchronised with the SQL database. "
-               << "[Hint] Rebuild the Xapian index/database "
-               << "from the SQL database.";
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw XapianTravelDatabaseNotInSyncWithSQLDatabaseException (errorStr.str());
-    }
-    
-    return hasRetrievedPlace;
-  }
-  
   // //////////////////////////////////////////////////////////////////////
   void createPlaces (const ResultCombination& iResultCombination,
-                     soci::session* ioSociSession_ptr,
                      PlaceHolder& ioPlaceHolder) {
     
     // Retrieve the best matching ResultHolder object.
@@ -164,26 +117,11 @@ namespace OPENTREP {
       // Fill the place with the Xapian document details.
       lResult_ptr->fillPlace (lPlace);
 
-      if (ioSociSession_ptr != NULL) {
-        // Retrieve, in the MySQL database, the place corresponding to
-        // the place code located as the first word of the Xapian
-        // document data.
-        bool hasRetrievedPlace = retrieveAndFillPlaceFromDB (*ioSociSession_ptr,
-                                                             lPlace);
+      // Retrieve the Xapian document data (string)
+      const std::string& lDocData = lResult_ptr->getBestDocData();
 
-        // If there was no place corresponding to the place code with
-        // the SQL database, an exception is thrown. Hence, here, by
-        // construction, the place has been retrieved from the SQL
-        // database.
-        assert (hasRetrievedPlace == true);
-
-      } else {
-        // Retrieve the Xapian document data (string)
-        const std::string& lDocData = lResult_ptr->getBestDocData();
-
-        // Fill the Place object with those details
-        retrieveAndFillPlaceFromDocData (lDocData, lPlace);
-      }
+      // Fill the Place object with those details
+      retrieveAndFillPlaceFromDocData (lDocData, lPlace);
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("Retrieved Document: " << lPlace.toString());
@@ -335,8 +273,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
-  interpretTravelRequest (soci::session* ioSociSession_ptr,
-                          const TravelDatabaseName_T& iTravelDatabaseName,
+  interpretTravelRequest (const TravelDatabaseName_T& iTravelDatabaseName,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
                           WordList_T& ioWordList) {
@@ -396,7 +333,7 @@ namespace OPENTREP {
      *    look-up is made in the SQL database (e.g., MySQL or Oracle)
      *    to retrieve complementary data.
      */
-    createPlaces (lResultCombination, ioSociSession_ptr, lPlaceHolder);
+    createPlaces (lResultCombination, lPlaceHolder);
       
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl

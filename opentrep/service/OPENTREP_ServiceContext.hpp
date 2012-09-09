@@ -8,7 +8,6 @@
 #include <string>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/command/DBSessionManager.hpp>
 #include <opentrep/service/ServiceAbstract.hpp>
 
 // Forward declarations
@@ -41,24 +40,19 @@ namespace OPENTREP {
     World& getWorldHandler() const;
 
     /**
+     * Get the file-path of the file of POR (points of reference).
+     */
+    const PORFilePath_T& getPORFilePath() const {
+      return _porFilePath;
+    }
+
+    /**
      * Get the Xapian database name.
      */
     const TravelDatabaseName_T& getTravelDatabaseName() const {
       return _travelDatabaseName;
     }
     
-    /**
-     * Get the SOCI Session.
-     */
-    soci::session* getDBSession() const {
-      return _dbSessionManager.getDBSession();
-    }      
-
-    /**
-     * Get the SOCI Session.
-     */
-    soci::session& getDBSessionRef() const;
-
 
   public:
     // ////////////////// Setters /////////////////////
@@ -70,10 +64,17 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the file-path of the file of POR (points of reference).
+     */
+    void setPORFilePath (const PORFilePath_T& iPORFilePath) {
+      _porFilePath = iPORFilePath;
+    }
+
+    /**
      * Set the Xapian database name.
      */
-    void setTravelDatabaseName (const TravelDatabaseName_T& iTravelDatabaseName) {
-      _travelDatabaseName = iTravelDatabaseName;
+    void setTravelDatabaseName (const TravelDatabaseName_T& iTravelDBName) {
+      _travelDatabaseName = iTravelDBName;
     }
 
 
@@ -99,7 +100,7 @@ namespace OPENTREP {
     /**
      * Main constructor with database usage.
      */
-    OPENTREP_ServiceContext (const TravelDatabaseName_T&, const DBParams&);
+    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDatabaseName_T&);
     /**
      * Default constructor.
      */
@@ -123,14 +124,14 @@ namespace OPENTREP {
     World* _world;
     
     /**
+     * File-path of the file of POR (points of reference).
+     */
+    PORFilePath_T _porFilePath;
+
+    /**
      * Xapian Database (directory of the index).
      */
     TravelDatabaseName_T _travelDatabaseName;
-
-    /**
-     * Database session manager.
-     */
-    DBSessionManager _dbSessionManager;
   };
 
 }

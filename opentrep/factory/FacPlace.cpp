@@ -64,6 +64,19 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  Place& FacPlace::create (const Location& iLocation) {
+    Place* oPlace_ptr = NULL;
+
+    oPlace_ptr = new Place (iLocation);
+    assert (oPlace_ptr != NULL);
+
+    // The new object is added to the Bom pool
+    _pool.push_back (oPlace_ptr);
+
+    return *oPlace_ptr;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   Place& FacPlace::clone (const Place& iPlace) {
     Place* oPlace_ptr = NULL;
 

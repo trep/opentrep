@@ -234,10 +234,7 @@ namespace OPENTREP {
      * Wrapper around the search use case. 
      */
     bool init (const std::string& iXapianDatabaseFilepath,
-               const std::string& iLogFilepath,
-               const std::string& iDBUser, const std::string& iDBPasswd,
-               const std::string& iDBHost, const std::string& iDBPort,
-               const std::string& iDBDBName) {
+               const std::string& iLogFilepath) {
       bool isEverythingOK = true;
 
       try {
@@ -261,11 +258,10 @@ namespace OPENTREP {
         *_logOutputStream << "Python wrapper initialisation" << std::endl;
         
         // Initialise the context
-        DBParams lDBParams (iDBUser, iDBPasswd, iDBHost, iDBPort, iDBDBName);
         const OPENTREP::TravelDatabaseName_T
-          lXapianDatabaseName (iXapianDatabaseFilepath);
-        _opentrepService = new OPENTREP_Service (*_logOutputStream, lDBParams,
-                                                 lXapianDatabaseName);
+          lXapianDBName (iXapianDatabaseFilepath);
+        _opentrepService = new OPENTREP_Service (*_logOutputStream,
+                                                 lXapianDBName);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;

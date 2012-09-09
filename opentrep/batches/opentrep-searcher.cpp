@@ -13,7 +13,6 @@
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
-#include <opentrep/DBParams.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 
 
@@ -36,20 +35,6 @@ const std::string K_OPENTREP_DEFAULT_DATABSE_FILEPATH("/tmp/opentrep/traveldb");
  * Default travel query string, to be seached against the Xapian database.
  */
 const std::string K_OPENTREP_DEFAULT_QUERY_STRING ("sna francicso rio de janero lso angles reykyavki");
-
-/**
- * State whether or not the database should be used by default.
- */
-const bool K_OPENTREP_DEFAULT_USE_DB = true;
-
-/**
- * Default name and location for the Xapian database.
- */
-const std::string K_OPENTREP_DEFAULT_DB_USER ("geo");
-const std::string K_OPENTREP_DEFAULT_DB_PASSWD ("geo");
-const std::string K_OPENTREP_DEFAULT_DB_DBNAME ("geo_trep");
-const std::string K_OPENTREP_DEFAULT_DB_HOST ("localhost");
-const std::string K_OPENTREP_DEFAULT_DB_PORT ("3306");
 
 /**
  * Default type for the search request.
@@ -121,20 +106,15 @@ const int K_OPENTREP_EARLY_RETURN_STATUS = 99;
 int readConfiguration (int argc, char* argv[], 
                        unsigned short& ioSpellingErrorDistance, 
                        std::string& ioQueryString,
-                       std::string& ioDatabaseFilepath, 
-                       std::string& ioLogFilename, bool& ioIsDBUsed,
-                       std::string& ioDBUser, std::string& ioDBPasswd,
-                       std::string& ioDBHost, std::string& ioDBPort,
-                       std::string& ioDBDBName, unsigned short& ioSearchType) {
+                       std::string& ioDatabaseFilepath,
+                       std::string& ioLogFilename,
+                       unsigned short& ioSearchType) {
 
   // Initialise the travel query string, if that one is empty
   if (ioQueryString.empty() == true) {
     ioQueryString = K_OPENTREP_DEFAULT_QUERY_STRING;
   }
   
-  // Default for the database usage
-  ioIsDBUsed = K_OPENTREP_DEFAULT_USE_DB;
-
   // Transform the query string into a list of words (STL strings)
   WordList_T lWordList;
   tokeniseStringIntoWordList (ioQueryString, lWordList);
@@ -159,23 +139,6 @@ int readConfiguration (int argc, char* argv[],
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
-    ("nodb,n",
-     "Whether or not the database should be used (0 = no DB, 1 = with DB)")
-    ("user,u",
-     boost::program_options::value< std::string >(&ioDBUser)->default_value(K_OPENTREP_DEFAULT_DB_USER),
-     "SQL database username (e.g., geo)")
-    ("passwd,p",
-     boost::program_options::value< std::string >(&ioDBPasswd)->default_value(K_OPENTREP_DEFAULT_DB_PASSWD),
-     "SQL database password (e.g., geo)")
-    ("host,H",
-     boost::program_options::value< std::string >(&ioDBHost)->default_value(K_OPENTREP_DEFAULT_DB_HOST),
-     "SQL database hostname (e.g., localhost)")
-    ("port,P",
-     boost::program_options::value< std::string >(&ioDBPort)->default_value(K_OPENTREP_DEFAULT_DB_PORT),
-     "SQL database port (e.g., 3306)")
-    ("dbname,m",
-     boost::program_options::value< std::string >(&ioDBDBName)->default_value(K_OPENTREP_DEFAULT_DB_DBNAME),
-     "SQL database name (e.g., geo_trep)")
     ("type,t",
      boost::program_options::value<unsigned short>(&ioSearchType)->default_value(K_OPENTREP_DEFAULT_SEARCH_TYPE), 
      "Type of search request (0 = full text, 1 = coordinates)")
@@ -229,13 +192,6 @@ int readConfiguration (int argc, char* argv[],
     return K_OPENTREP_EARLY_RETURN_STATUS;
   }
 
-  if (vm.count ("nodb")) {
-    ioIsDBUsed = false;
-  }
-  const std::string isDBUsedStr = (ioIsDBUsed == true)?"yes":"no";
-  std::cout << "The database should be used? " << isDBUsedStr << std::endl;
-   
-
   if (vm.count ("database")) {
     ioDatabaseFilepath = vm["database"].as< std::string >();
     std::cout << "Xapian database filepath is: " << ioDatabaseFilepath
@@ -245,31 +201,6 @@ int readConfiguration (int argc, char* argv[],
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
     std::cout << "Log filename is: " << ioLogFilename << std::endl;
-  }
-
-  if (vm.count ("user")) {
-    ioDBUser = vm["user"].as< std::string >();
-    std::cout << "SQL database user name is: " << ioDBUser << std::endl;
-  }
-
-  if (vm.count ("passwd")) {
-    ioDBPasswd = vm["passwd"].as< std::string >();
-    // std::cout << "SQL database user password is: " << ioDBPasswd << std::endl;
-  }
-
-  if (vm.count ("host")) {
-    ioDBHost = vm["host"].as< std::string >();
-    std::cout << "SQL database host name is: " << ioDBHost << std::endl;
-  }
-
-  if (vm.count ("port")) {
-    ioDBPort = vm["port"].as< std::string >();
-    std::cout << "SQL database port number is: " << ioDBPort << std::endl;
-  }
-
-  if (vm.count ("dbname")) {
-    ioDBDBName = vm["dbname"].as< std::string >();
-    std::cout << "SQL database name is: " << ioDBDBName << std::endl;
   }
 
   std::cout << "The type of search is: " << ioSearchType << std::endl;
@@ -357,15 +288,7 @@ int main (int argc, char* argv[]) {
   std::string lLogFilename;
 
   // Xapian database name (directory of the index)
-  std::string lXapianDatabaseNameStr;
-
-  // SQL database parameters
-  bool isDBUsed (true);
-  std::string lDBUser;
-  std::string lDBPasswd;
-  std::string lDBHost;
-  std::string lDBPort;
-  std::string lDBDBName;
+  std::string lXapianDBNameStr;
 
   // Type of search
   unsigned short lSearchType;
@@ -376,17 +299,11 @@ int main (int argc, char* argv[]) {
   // Call the command-line option parser
   const int lOptionParserStatus = 
     readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
-                       lXapianDatabaseNameStr, lLogFilename, isDBUsed,
-                       lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName,
-                       lSearchType);
+                       lXapianDBNameStr, lLogFilename, lSearchType);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
   }
-    
-  // Set the database parameters
-  OPENTREP::DBParams lDBParams (lDBUser, lDBPasswd, lDBHost, lDBPort,
-                                lDBDBName);
     
   // Set the log parameters
   std::ofstream logOutputFile;
@@ -395,29 +312,13 @@ int main (int argc, char* argv[]) {
   logOutputFile.clear();
 
   if (lSearchType == 0) {
+    // Initialise the context
+    const OPENTREP::TravelDatabaseName_T lXapianDBName (lXapianDBNameStr);
+    OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBName);
 
-    if (isDBUsed == true) {
-      // Initialise the context
-      const OPENTREP::TravelDatabaseName_T
-        lXapianDatabaseName (lXapianDatabaseNameStr);
-      OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
-                                                  lXapianDatabaseName);
-
-      // Parse the query and retrieve the places from the database
-      const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
-      std::cout << lOutput << std::endl;
-
-    } else {
-      // Initialise the context
-      const OPENTREP::TravelDatabaseName_T
-        lXapianDatabaseName (lXapianDatabaseNameStr);
-      OPENTREP::OPENTREP_Service opentrepService (logOutputFile,
-                                                  lXapianDatabaseName);
-
-      // Parse the query and retrieve the places from Xapian only
-      const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
-      std::cout << lOutput;
-    }
+    // Parse the query and retrieve the places from Xapian only
+    const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
+    std::cout << lOutput;
 
   } else {
     std::cout << "Finding the airports closest to: " << lTravelQuery

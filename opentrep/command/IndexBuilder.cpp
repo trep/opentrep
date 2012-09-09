@@ -15,16 +15,9 @@
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
-#include <opentrep/factory/FacPlace.hpp>
-#include <opentrep/command/DBManager.hpp>
+#include <opentrep/command/PORParser.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/service/Logger.hpp>
-// SOCI
-#if defined(SOCI_HEADERS_BURIED)
-#include <soci/core/soci.h>
-#else // SOCI_HEADERS_BURIED
-#include <soci/soci.h>
-#endif // SOCI_HEADERS_BURIED
 // Xapian
 #include <xapian.h>
 
@@ -115,9 +108,8 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void IndexBuilder::
-  addDocumentToIndex (Xapian::WritableDatabase& ioDatabase,
-                      Place& ioPlace) {
+  void IndexBuilder::addDocumentToIndex (Xapian::WritableDatabase& ioDatabase,
+                                         Place& ioPlace) {
 
     // Build a Xapian document
     Xapian::Document lDocument;
@@ -143,18 +135,9 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
-  buildSearchIndex (soci::session& ioSociSession,
+  buildSearchIndex (const PORFilePath_T& iPORFilePath,
                     const TravelDatabaseName_T& iTravelDatabaseName) {
     NbOfDBEntries_T oNbOfEntries = 0;
-
-    // Instanciate an empty place object, which will be filled from the
-    // rows retrieved from the database.
-    Place& lPlace = FacPlace::instance().create();
-
-    // Prepare and execute the select statement
-    soci::statement lSelectStatement (ioSociSession);
-    DBManager::prepareSelectFromCodeStatement (ioSociSession,
-                                               lSelectStatement, lPlace);
 
     // Check that the directory for the Xapian database (index) exists and,
     // if not, create it.
@@ -168,9 +151,6 @@ namespace OPENTREP {
     // cleaned, deleted and re-created, that Xapian database (index) is empty.
     Xapian::WritableDatabase lDatabase (iTravelDatabaseName, Xapian::DB_CREATE);
 
-    // Iterate through the retrieved database rows
-    bool hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace);
-
     /**
      * Begin a transation on the Xapian database (index).
      *
@@ -181,29 +161,13 @@ namespace OPENTREP {
      */
     lDatabase.begin_transaction();
 
+    // Parse the list of POR (points of reference)
+    PORParser::PORGeneration (iPORFilePath);
+
+    /**
     while (hasStillData == true) {
-      /**
-       * Clone the Place object, as most of the time, the next row will correspond to
-       * a different place, and we must keep track of the fields of the last place.
-       */
-      Place& lClonedPlace = FacPlace::instance().clone (lPlace);
-
-      // Retrieve the corresponding place key
-      const LocationKey& lLastLocationKey = lClonedPlace.getKey();
-
       // Iterate on the MySQL database cursor. It alters the lPlace object.
       hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace);
-
-      // Retrieve the corresponding place key
-      const LocationKey& lNewLocationKey = lPlace.getKey();
-
-      // DEBUG
-      /*
-      const char* areEqualStr = (lNewLocationKey == lLastLocationKey)?"Yes":"No";
-      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] Cloned place key: "
-                          << lClonedPlace.describeKey() << " -- Current place key: "
-                          << lPlace.describeKey() << " -- Equals? " << areEqualStr);
-      */
 
       //
       if (lNewLocationKey != lLastLocationKey) {
@@ -217,15 +181,7 @@ namespace OPENTREP {
         OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lClonedPlace);
       }
     }
-
-    // Add the document, associated to the Place object, to the Xapian index
-    IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
-
-    // Iteration
-    ++oNbOfEntries;
-
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+    */
 
     // Commit the pending modifications on the Xapian database (index)
     lDatabase.commit_transaction();

@@ -6,15 +6,18 @@
 
 namespace OPENTREP {
 
+  /** Default file-path for the POR file for the OPENTREP_Service. */
+  const std::string DEFAULT_OPENTREP_SERVICE_POR_FILEPATH ("por_default.csv");
+  
   /**
    * Default Xapian database name for the OPENTREP_Service.
    */
-  const std::string DEFAULT_OPENTREP_SERVICE_DB_NAME = "traveldb";
+  const std::string DEFAULT_OPENTREP_SERVICE_DB_NAME ("traveldb");
 
   /**
    * Default PageRank (e.g., 0.1% == 0.001)
    */
-  const Percentage_T K_DEFAULT_PAGE_RANK = 0.1;
+  const Percentage_T K_DEFAULT_PAGE_RANK (0.1);
 
   /**
    * Black list, i.e., a list of words which should not be indexed

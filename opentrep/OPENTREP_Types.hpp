@@ -32,6 +32,14 @@ namespace OPENTREP {
   };
 
   /** 
+   * File-path for the ORI-maintained list of POR (points of reference).
+   */
+  struct PORFilePath_T : public FilePath_T {
+  public:
+    explicit PORFilePath_T (const std::string& iValue) : FilePath_T (iValue) { }
+  };
+
+  /** 
    * Xapian database name, corresponding to the (potentially relative)
    * directory name (on the filesystem) where Xapian stores its index.
    */

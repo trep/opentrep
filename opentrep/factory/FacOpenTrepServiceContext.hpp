@@ -11,7 +11,6 @@ namespace OPENTREP {
 
   // Forward declarations.
   class OPENTREP_ServiceContext;
-  struct DBParams;
 
 
   /**
@@ -51,10 +50,12 @@ namespace OPENTREP {
      *
      * This new object is added to the list of instantiated objects.
      *
+     * @param const PORFilePath_T& File-path of the POR file.
+     * @param const TravelDatabaseName_T& File-path of the Xapian database.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
-    OPENTREP_ServiceContext& create (const TravelDatabaseName_T&,
-                                     const DBParams&);
+    OPENTREP_ServiceContext& create (const PORFilePath_T&,
+                                     const TravelDatabaseName_T&);
 
 
   protected:

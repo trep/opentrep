@@ -44,15 +44,15 @@ struct UnitTestConfig {
 
 
 // //////////// Constants for the tests ///////////////
-/** Xapian database name (directory containing the index). */
+/**
+ * File-path of the POR (points of reference) file.
+ */
+const std::string K_POR_FILEPATH ("por_default.csv");
+
+/**
+ * Xapian database name (directory containing the index).
+ */
 const std::string K_XAPIAN_DB_NAME ("traveldb");
-/** The airport/city details are specified within a MySQL database.
-    The connection parameters are specified below. */
-const std::string K_MYSQL_DB_USER ("geo");
-const std::string K_MYSQL_DB_PASSWD ("geo");
-const std::string K_MYSQL_DB_HOSTNAME ("localhost");
-const std::string K_MYSQL_DB_PORT ("3306");
-const std::string K_MYSQL_DB_DBNAME ("geo_trep");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -80,15 +80,11 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   logOutputFile.open (lLogFilename.c_str());
   logOutputFile.clear();
 
-  // SQL database parameters
-  OPENTREP::DBParams lDBParams (K_MYSQL_DB_USER, K_MYSQL_DB_PASSWD,
-                                K_MYSQL_DB_HOSTNAME, K_MYSQL_DB_PORT,
-                                K_MYSQL_DB_DBNAME);
-  
   // Initialise the context
-  const OPENTREP::TravelDatabaseName_T lXapianDatabaseName (K_XAPIAN_DB_NAME);
-  OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lDBParams,
-                                               lXapianDatabaseName);
+  const OPENTREP::PORFilePath_T lPORFilePath (K_POR_FILEPATH);
+  const OPENTREP::TravelDatabaseName_T lXapianDBName (K_XAPIAN_DB_NAME);
+  OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lPORFilePath,
+                                               lXapianDBName);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;
@@ -98,9 +94,9 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
     opentrepService.buildSearchIndex();
 
   BOOST_CHECK_MESSAGE (nbOfEntries == 11133,
-                       "The Xapian index ('" << lXapianDatabaseName
+                       "The Xapian index ('" << lXapianDBName
                        << "') contains " << nbOfEntries
-                       << " entries, whereas 11133 are expected.");
+                       << " entries, where as 11133 are expected.");
 
   // DEBUG
   std::cout << nbOfEntries << " entries have been created" << std::endl;

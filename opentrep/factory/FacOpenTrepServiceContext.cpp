@@ -1,11 +1,10 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
+// STL
 #include <cassert>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/DBParams.hpp>
 #include <opentrep/factory/FacSupervisor.hpp>
 #include <opentrep/factory/FacOpenTrepServiceContext.hpp>
 #include <opentrep/service/OPENTREP_ServiceContext.hpp>
@@ -48,12 +47,12 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext& FacOpenTrepServiceContext::
-  create (const TravelDatabaseName_T& iTravelDatabaseName,
-          const DBParams& iDBParams) {
+  create (const PORFilePath_T& iPORFilePath,
+          const TravelDatabaseName_T& iTravelDatabaseName) {
     OPENTREP_ServiceContext* aOPENTREP_ServiceContext_ptr = NULL;
 
     aOPENTREP_ServiceContext_ptr =
-      new OPENTREP_ServiceContext (iTravelDatabaseName, iDBParams);
+      new OPENTREP_ServiceContext (iPORFilePath, iTravelDatabaseName);
     assert (aOPENTREP_ServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool

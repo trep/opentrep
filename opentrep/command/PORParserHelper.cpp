@@ -9,6 +9,8 @@
 //#define BOOST_SPIRIT_DEBUG
 // OpenTREP
 #include <opentrep/basic/BasParserTypes.hpp>
+#include <opentrep/bom/Place.hpp>
+#include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/service/Logger.hpp>
 #include <opentrep/command/PORParserHelper.hpp>
 
@@ -195,13 +197,16 @@ namespace OPENTREP {
     
     // //////////////////////////////////////////////////////////////////
     void doEndPor::operator() (boost::spirit::qi::unused_type,
-                                boost::spirit::qi::unused_type,
-                                boost::spirit::qi::unused_type) const {
+                               boost::spirit::qi::unused_type,
+                               boost::spirit::qi::unused_type) const {
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Do End");
-      // Generation of the por rule object.
-      // LocationGenerator::createAirportPair (_location);
-      OPENTREP_LOG_DEBUG (_location.toString());
+
+      // Generation of the Place object from the Location structure.
+      Place& lPlace = FacPlace::instance().create (_location);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG (lPlace);
     }  
 
     // ///////////////////////////////////////////////////////////////////
@@ -572,7 +577,8 @@ namespace OPENTREP {
                                         boost::spirit::ascii::space);
       
     if (hasParsingBeenSuccesful == false) {
-      OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename << " failed");
+      OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename
+                          << " failed");
       throw PorFileParsingException ("Parsing of por input file: "
                                      + _filename + " failed");
     }

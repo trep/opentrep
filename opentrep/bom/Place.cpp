@@ -38,6 +38,12 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  Place::Place (const Location& iLocation) :
+    _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
+    _location (iLocation), _docID (0) {
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
   Place::Place (const Place& iPlace) :
     _world (iPlace._world), _placeHolder (iPlace._placeHolder),
     _mainPlace (iPlace._mainPlace),

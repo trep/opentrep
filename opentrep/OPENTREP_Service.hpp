@@ -9,7 +9,6 @@
 #include <string>
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/DBParams.hpp>
 #include <opentrep/LocationList.hpp>
 #include <opentrep/DistanceErrorRule.hpp>
 
@@ -59,11 +58,12 @@ namespace OPENTREP {
      *  Constructor.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const DBParams& The SQL database parameters.
+     * @param const PORFilePath_T& File-path of the file of POR
+     *                             (points of reference).
      * @param const TravelDatabaseName_T& File-path of the Xapian
      *                                    index/database. 
      */
-    OPENTREP_Service (std::ostream& ioLogStream, const DBParams&,
+    OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
                       const TravelDatabaseName_T&);
 
     /** 
@@ -96,11 +96,12 @@ namespace OPENTREP {
      * Initialise.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const DBParams& The SQL database parameters.
+     * @param const PORFilePath_T& File-path of the file of POR
+     *                             (points of reference).
      * @param const TravelDatabaseName_T& File-path of the Xapian
      *                                    index/database. 
      */
-    void init (std::ostream& ioLogStream, const DBParams&,
+    void init (std::ostream& ioLogStream, const PORFilePath_T&,
                const TravelDatabaseName_T&);
 
     /**

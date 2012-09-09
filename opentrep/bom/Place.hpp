@@ -79,7 +79,8 @@ namespace OPENTREP {
     }
 
     /** 
-     * Get the common name (usually in American English, but not necessarily in ASCII).
+     * Get the common name (usually in American English, but not necessarily
+     * in ASCII).
      */
     const CommonName_T& getCommonName() const {
       return _location.getCommonName();
@@ -294,21 +295,22 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Geonames ID.
+     * Set the Geonames ID.
      */
     void setGeonamesID (const GeonamesID_T& iGeonamesID) {
       _location.setGeonamesID (iGeonamesID);
     }
 
     /** 
-     * Get the common name (usually in American English, but not necessarily in ASCII).
+     * Set the common name (usually in American English, but not necessarily
+     * in ASCII).
      */
     void setCommonName (const std::string& iName) {
       _location.setCommonName (iName);
     }
     
     /** 
-     * Get the ASCII name (not necessarily in English).
+     * Set the ASCII name (not necessarily in English).
      */
     void setAsciiName (const std::string& iName) {
       _location.setAsciiName (iName);
@@ -436,7 +438,8 @@ namespace OPENTREP {
      * @param const Language::EN_Language& Language in which to add the name.
      * @param const std::string& Name to be added.
      */
-    void addName (const Language::EN_Language& iLanguageCode, const std::string& iName) {
+    void addName (const Language::EN_Language& iLanguageCode,
+                  const std::string& iName) {
       _location.addName (iLanguageCode, iName);
     }
 
@@ -530,9 +533,14 @@ namespace OPENTREP {
     
   private:
     /**
-     * Main constructor.
+     * Main constructor from a primary key.
      */
     Place (const LocationKey&);
+
+    /**
+     * Main constructor from a full Location structure.
+     */
+    Place (const Location&);
 
     /**
      * Default constructor.

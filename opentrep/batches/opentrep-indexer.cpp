@@ -11,7 +11,6 @@
 #include <boost/program_options.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
-#include <opentrep/DBParams.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 
 
@@ -23,15 +22,11 @@ typedef std::vector<std::string> WordList_T;
 /** Default name and location for the log file. */
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-indexer.log");
 
-/** Default name and location for the Xapian database. */
-const std::string K_OPENTREP_DEFAULT_DATABSE_FILEPATH("/tmp/opentrep/traveldb");
+/** Default name and location for the list of POR (points of reference). */
+const std::string K_OPENTREP_DEFAULT_POR_FILEPATH ("ori_por_public.csv");
 
 /** Default name and location for the Xapian database. */
-const std::string K_OPENTREP_DEFAULT_DB_USER ("geo");
-const std::string K_OPENTREP_DEFAULT_DB_PASSWD ("geo");
-const std::string K_OPENTREP_DEFAULT_DB_DBNAME ("geo_trep");
-const std::string K_OPENTREP_DEFAULT_DB_HOST ("localhost");
-const std::string K_OPENTREP_DEFAULT_DB_PORT ("3306");
+const std::string K_OPENTREP_DEFAULT_DATABASE_FILEPATH("/tmp/opentrep/traveldb");
 
 
 // ///////// Parsing of Options & Configuration /////////
@@ -40,11 +35,9 @@ const int K_OPENTREP_EARLY_RETURN_STATUS = 99;
 
 /** Read and parse the command line options. */
 int readConfiguration (int argc, char* argv[], 
+                       std::string& ioPORFilepath, 
                        std::string& ioDatabaseFilepath, 
-                       std::string& ioLogFilename,
-                       std::string& ioDBUser, std::string& ioDBPasswd,
-                       std::string& ioDBHost, std::string& ioDBPort,
-                       std::string& ioDBDBName) {
+                       std::string& ioLogFilename) {
 
   // Declare a group of options that will be allowed only on command line
   boost::program_options::options_description generic ("Generic options");
@@ -57,27 +50,15 @@ int readConfiguration (int argc, char* argv[],
   // line and in config file
   boost::program_options::options_description config ("Configuration");
   config.add_options()
+    ("porfile,p",
+     boost::program_options::value< std::string >(&ioPORFilepath)->default_value(K_OPENTREP_DEFAULT_POR_FILEPATH),
+     "POR file-path (e.g., ori_por_public.csv)")
     ("database,d",
-     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(K_OPENTREP_DEFAULT_DATABSE_FILEPATH),
-     "Xapian database filepath (e.g., /tmp/opentrep/traveldb)")
+     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(K_OPENTREP_DEFAULT_DATABASE_FILEPATH),
+     "Xapian database file-path (e.g., /tmp/opentrep/traveldb)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
-    ("user,u",
-     boost::program_options::value< std::string >(&ioDBUser)->default_value(K_OPENTREP_DEFAULT_DB_USER),
-     "SQL database username (e.g., geo)")
-    ("passwd,p",
-     boost::program_options::value< std::string >(&ioDBPasswd)->default_value(K_OPENTREP_DEFAULT_DB_PASSWD),
-     "SQL database password (e.g., geo)")
-    ("host,H",
-     boost::program_options::value< std::string >(&ioDBHost)->default_value(K_OPENTREP_DEFAULT_DB_HOST),
-     "SQL database hostname (e.g., localhost)")
-    ("port,P",
-     boost::program_options::value< std::string >(&ioDBPort)->default_value(K_OPENTREP_DEFAULT_DB_PORT),
-     "SQL database port (e.g., 3306)")
-    ("dbname,m",
-     boost::program_options::value< std::string >(&ioDBDBName)->default_value(K_OPENTREP_DEFAULT_DB_DBNAME),
-     "SQL database name (e.g., geo_trep)")
     ;
 
   // Hidden options, will be allowed both on command line and
@@ -125,6 +106,11 @@ int readConfiguration (int argc, char* argv[],
     return K_OPENTREP_EARLY_RETURN_STATUS;
   }
 
+  if (vm.count ("porfile")) {
+    ioPORFilepath = vm["porfile"].as< std::string >();
+    std::cout << "POR file-path is: " << ioPORFilepath << std::endl;
+  }
+
   if (vm.count ("database")) {
     ioDatabaseFilepath = vm["database"].as< std::string >();
     std::cout << "Xapian database filepath is: " << ioDatabaseFilepath
@@ -134,31 +120,6 @@ int readConfiguration (int argc, char* argv[],
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
     std::cout << "Log filename is: " << ioLogFilename << std::endl;
-  }
-
-  if (vm.count ("user")) {
-    ioDBUser = vm["user"].as< std::string >();
-    std::cout << "SQL database user name is: " << ioDBUser << std::endl;
-  }
-
-  if (vm.count ("passwd")) {
-    ioDBPasswd = vm["passwd"].as< std::string >();
-    // std::cout << "SQL database user password is: " << ioDBPasswd << std::endl;
-  }
-
-  if (vm.count ("host")) {
-    ioDBHost = vm["host"].as< std::string >();
-    std::cout << "SQL database host name is: " << ioDBHost << std::endl;
-  }
-
-  if (vm.count ("port")) {
-    ioDBPort = vm["port"].as< std::string >();
-    std::cout << "SQL database port number is: " << ioDBPort << std::endl;
-  }
-
-  if (vm.count ("dbname")) {
-    ioDBDBName = vm["dbname"].as< std::string >();
-    std::cout << "SQL database name is: " << ioDBDBName << std::endl;
   }
 
   return 0;
@@ -171,29 +132,21 @@ int main (int argc, char* argv[]) {
   // Output log File
   std::string lLogFilename;
 
-  // Xapian database name (directory of the index)
-  std::string lXapianDatabaseNameStr;
+  // File-path of POR (points of reference)
+  std::string lPORFilepathStr;
 
-  // SQL database parameters
-  std::string lDBUser;
-  std::string lDBPasswd;
-  std::string lDBHost;
-  std::string lDBPort;
-  std::string lDBDBName;
-                       
+  // Xapian database name (directory of the index)
+  std::string lXapianDBNameStr;
+
   // Call the command-line option parser
-  const int lOptionParserStatus = 
-    readConfiguration (argc, argv, lXapianDatabaseNameStr, lLogFilename,
-                       lDBUser, lDBPasswd, lDBHost, lDBPort, lDBDBName);
+  const int lOptionParserStatus =
+    readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
+                       lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
   }
 
-  // Set the database parameters
-  OPENTREP::DBParams lDBParams (lDBUser, lDBPasswd, lDBHost, lDBPort,
-                                lDBDBName);
-    
   // Set the log parameters
   std::ofstream logOutputFile;
   // open and clean the log outputfile
@@ -206,10 +159,10 @@ int main (int argc, char* argv[]) {
             << std::endl;
     
   // Initialise the context
-  const OPENTREP::TravelDatabaseName_T
-    lXapianDatabaseName (lXapianDatabaseNameStr);
-  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lDBParams,
-                                              lXapianDatabaseName);
+  const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
+  const OPENTREP::TravelDatabaseName_T lXapianDBName (lXapianDBNameStr);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
+                                              lXapianDBName);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =

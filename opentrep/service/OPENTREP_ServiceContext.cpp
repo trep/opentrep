@@ -23,7 +23,7 @@ namespace OPENTREP {
     // Check that the Xapian travel database is not empty
     if (iTravelDatabaseName.empty() == true) {
       std::ostringstream errorStr;
-      errorStr << "The filepath for the Xapian travel database is "
+      errorStr << "The file-path for the Xapian travel database is "
                << "not specified.";
       std::cerr << errorStr.str() << std::endl;
       throw XapianTravelDatabaseWrongPathnameException (errorStr.str());
@@ -32,23 +32,25 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::OPENTREP_ServiceContext()
-    : _world (NULL), _travelDatabaseName (DEFAULT_OPENTREP_SERVICE_DB_NAME) {
+    : _world (NULL), _porFilePath (DEFAULT_OPENTREP_SERVICE_POR_FILEPATH),
+      _travelDatabaseName (DEFAULT_OPENTREP_SERVICE_DB_NAME) {
     assert (false);
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
   OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName)
-    : _world (NULL), _travelDatabaseName (iTravelDatabaseName) {
+    : _world (NULL), _porFilePath (DEFAULT_OPENTREP_SERVICE_POR_FILEPATH),
+      _travelDatabaseName (iTravelDatabaseName) {
     OPENTREP::checkXapian (iTravelDatabaseName);
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
-  OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName,
-                           const DBParams& iDBParams)
-    : _world (NULL), _travelDatabaseName (iTravelDatabaseName),
-      _dbSessionManager (iDBParams) {
+  OPENTREP_ServiceContext (const PORFilePath_T& iPORFilePath,
+                           const TravelDatabaseName_T& iTravelDatabaseName)
+    : _world (NULL), _porFilePath (iPORFilePath),
+      _travelDatabaseName (iTravelDatabaseName) {
     OPENTREP::checkXapian (iTravelDatabaseName);
   }
 
@@ -56,13 +58,6 @@ namespace OPENTREP {
   OPENTREP_ServiceContext::~OPENTREP_ServiceContext() {
   }
   
-  // //////////////////////////////////////////////////////////////////////
-  soci::session& OPENTREP_ServiceContext::getDBSessionRef() const {
-    soci::session* lSession_ptr = _dbSessionManager.getDBSession();
-    assert (lSession_ptr != NULL);
-    return *lSession_ptr;
-  }
-
   // //////////////////////////////////////////////////////////////////////
   World& OPENTREP_ServiceContext::getWorldHandler() const {
     assert (_world != NULL);
@@ -72,8 +67,11 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   const std::string OPENTREP_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
-    oStr << "OPENTREP_ServiceContext: " << std::endl
-         << "Xapian Database (directory of the index): " << _travelDatabaseName
+    oStr << "OPENTREP_ServiceContext: ";
+    if (_porFilePath != DEFAULT_OPENTREP_SERVICE_POR_FILEPATH) {
+      oStr << "File-path of the POR file: " << _porFilePath << ", ";
+    }
+    oStr << "Xapian Database (directory of the index): " << _travelDatabaseName
          << std::endl;
     return oStr.str();
   }
