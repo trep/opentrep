@@ -43,7 +43,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Names::describeKey() const {
     std::ostringstream oStr;
-    oStr << "[" << Language::getLongLabel (_languageCode) << "]: ";
+    //oStr << "[" << Language::getLongLabel (_languageCode) << "]: ";
     return oStr.str();
   }
 
@@ -52,14 +52,18 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeKey();
 
+    // The language code is the same for all the items of the list. But it
+    // is repeated for every item, so that it can be parsed easily.
+    const std::string& lLangCode = Language::getShortLabel (_languageCode);
+
     unsigned short idx = 0;
     for (NameList_T::const_iterator itName = _nameList.begin();
          itName != _nameList.end(); ++itName, ++idx) {
       if (idx != 0) {
-        oStr << ", ";
+        oStr << ",";
       }
       const std::string& lName = *itName;
-      oStr << lName;
+      oStr << lLangCode << "," << lName;
     }
 
     return oStr.str();

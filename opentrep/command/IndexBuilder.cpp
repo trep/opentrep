@@ -8,6 +8,7 @@
 #include <exception>
 // Boost
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/tokenizer.hpp>
 // OpenTrep
 #include <opentrep/bom/Utilities.hpp>
@@ -15,7 +16,8 @@
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
-#include <opentrep/command/PORParser.hpp>
+#include <opentrep/factory/FacPlace.hpp>
+#include <opentrep/command/PORParserHelper.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/service/Logger.hpp>
 // Xapian
@@ -161,27 +163,64 @@ namespace OPENTREP {
      */
     lDatabase.begin_transaction();
 
-    // Parse the list of POR (points of reference)
-    PORParser::PORGeneration (iPORFilePath);
-
     /**
-    while (hasStillData == true) {
-      // Iterate on the MySQL database cursor. It alters the lPlace object.
-      hasStillData = DBManager::iterateOnStatement (lSelectStatement, lPlace);
+     * Parse the list of POR (points of reference).
+     */
 
-      //
-      if (lNewLocationKey != lLastLocationKey) {
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Parsing por input file: " << iPORFilePath);
+
+    // Check whether the file to be parsed exists and is readable.
+    if (!(boost::filesystem::exists (iPORFilePath)
+          && boost::filesystem::is_regular_file (iPORFilePath))) {
+      OPENTREP_LOG_ERROR ("The POR file " << iPORFilePath
+                          << " does not exist or cannot be open." << std::endl);
+
+      throw FileNotFoundException ("The POR file " + iPORFilePath
+                                   + " does not exist or cannot be read");
+    }
+
+    // Open the file to be parsed
+    boost::filesystem::ifstream fileToBeParsed (iPORFilePath);
+    Place& lPlace = FacPlace::instance().create();
+    std::string itReadLine;
+    while (std::getline (fileToBeParsed, itReadLine)) {
+      // Initialise the parser
+      PORStringParser lStringParser (itReadLine);
+
+      // Parse the string
+      const Location& lLocation = lStringParser.generateLocation();
+      //const LocationKey& lLocationKey = lLocation.getKey();
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+
+      // When the line/string was relevant, create a BOM instance from
+      // the Location structure.
+      if (!(lLocation.getCommonName() == "NotAvailable")) {
+        // Fill the Place object with the Location structure.
+        lPlace.setLocation (lLocation);
+
         // Add the document, associated to the Place object, to the Xapian index
-        IndexBuilder::addDocumentToIndex (lDatabase, lClonedPlace);
+        IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
+
+        // DEBUG
+        /*
+        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
+                            << ", Place: " << lPlace);
+        */
 
         // Iteration
         ++oNbOfEntries;
 
         // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lClonedPlace);
+        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+
+        // Reset for next turn
+        lPlace.resetMatrix();
+        lPlace.resetIndexSets();
       }
     }
-    */
 
     // Commit the pending modifications on the Xapian database (index)
     lDatabase.commit_transaction();

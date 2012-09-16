@@ -23,7 +23,7 @@ namespace OPENTREP {
      * variations. For instance, "en" must be placed before "en_GB" or "en_US".
      */
     typedef enum { 
-      common = 0,
+      lg_com = 0,
       ar, ar_DZ, ar_MA, ar_SA, ar_TN,
       de, de_DE,
       en, en_GB, en_US,
@@ -61,12 +61,12 @@ namespace OPENTREP {
      * Long string version (language and localisation) of the
      * enumeration.
      */
-    static const std::string _longLabels[LAST_VALUE];
+    static const std::string _longLabels[LAST_VALUE+1];
 
     /**
      * Short string version (just the language code) of the enumeration.
      */
-    static const std::string _shortLabels[LAST_VALUE];
+    static const std::string _shortLabels[LAST_VALUE+1];
   };
 
 }

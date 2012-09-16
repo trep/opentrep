@@ -76,8 +76,8 @@ namespace OPENTREP {
     /** 
      * Get the short list of alternate names (without language codes).
      */
-    const AltShortNameListString_T& getAltShortNameList() const {
-      return _altShortNameListString;
+    const AltNameShortListString_T& getAltNameShortListString() const {
+      return _altNameShortListString;
     }
 
     /** 
@@ -176,6 +176,13 @@ namespace OPENTREP {
      */
     const FeatureCode_T& getFeatureCode() const {
       return _featCode;
+    }
+
+    /**
+     * Get the IATA location type (e.g., A for airport).
+     */
+    const IATAType_T& getIATAType() const {
+      return _iataType;
     }
 
     /**
@@ -358,14 +365,14 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Geonames ID.
+     * Set the Geonames ID.
      */
     void setGeonamesID (const GeonamesID_T& iGeonamesID) {
       _key.setGeonamesID (iGeonamesID);
     }
 
     /** 
-     * Get the common name (usually in American English, but not necessarily
+     * Set the common name (usually in American English, but not necessarily
      * in ASCII).
      */
     void setCommonName (const std::string& iName) {
@@ -373,17 +380,17 @@ namespace OPENTREP {
     }
     
     /** 
-     * Get the ASCII name (not necessarily in English).
+     * Set the ASCII name (not necessarily in English).
      */
     void setAsciiName (const std::string& iName) {
       _asciiName = ASCIIName_T (iName);
     }
     
     /** 
-     * Get the short list of alternate names (without language codes).
+     * Set the short list of alternate names (without language codes).
      */
-    void setAltShortNameList (const AltShortNameListString_T& iNameList) {
-      _altShortNameListString = iNameList;
+    void setAltNameShortListString (const std::string& iNameListString) {
+      _altNameShortListString = AltNameShortListString_T (iNameListString);
     }
 
     /**
@@ -394,21 +401,21 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the City code. 
+     * Set the related/served IATA city code.
      */
     void setCityCode (const std::string& iCityCode) {
       _cityCode = CityCode_T (iCityCode);
     }
     
     /**
-     * Set the State code. 
+     * Set the state code. 
      */
     void setStateCode (const std::string& iStateCode) {
       _stateCode = StateCode_T (iStateCode);
     }
     
     /**
-     * Set the Country code. 
+     * Set the country code. 
      */
     void setCountryCode (const std::string& iCountryCode) {
       _countryCode = CountryCode_T (iCountryCode);
@@ -422,7 +429,7 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the Region code. 
+     * Set the region code. 
      */
     void setRegionCode (const std::string& iRegionCode) {
       _regionCode = RegionCode_T (iRegionCode);
@@ -457,14 +464,14 @@ namespace OPENTREP {
     }
 
     /**
-     * Set the Latitude.
+     * Set the geographical latitude.
      */
     void setLatitude (const Latitude_T& iLatitude) {
       _latitude = iLatitude;
     }
 
     /**
-     * Set the Longitude.
+     * Set the geographical longitude.
      */
     void setLongitude (const Longitude_T& iLongitude) {
       _longitude = iLongitude;
@@ -482,6 +489,13 @@ namespace OPENTREP {
      */
     void setFeatureCode (const std::string& iFeatCode) {
       _featCode = FeatureCode_T (iFeatCode);
+    }
+
+    /**
+     * Set the IATA location type (e.g., A for airport).
+     */
+    void setIATAType (const std::string& iIATAType) {
+      _iataType = IATAType_T (iIATAType);
     }
 
     /**
@@ -648,7 +662,7 @@ namespace OPENTREP {
      * Aggregate the temporary alternate names into the short list of alternate
      * names.
      */
-    void consolidateAltShortNameList();
+    void consolidateAltNameShortListString();
 
 
   public:
@@ -716,9 +730,17 @@ namespace OPENTREP {
     Location (const IATACode_T&, const ICAOCode_T&, const GeonamesID_T&,
               const CommonName_T&, const ASCIIName_T&,
               const FAACode_T&, const CityCode_T&, const StateCode_T&, 
-              const CountryCode_T&, const RegionCode_T&, const TimeZone_T&,
+              const CountryCode_T&, const AltCountryCode_T&, const RegionCode_T&,
               const Latitude_T&, const Longitude_T&,
-              const PageRank_T&, const WikiLink_T&,
+              const FeatureClass_T&, const FeatureCode_T&,
+              const IATAType_T&, const Admin1Code_T&, const Admin2Code_T&,
+              const Admin3Code_T&, const Admin4Code_T&,
+              const Population_T&, const Elevation_T&, const GTopo30_T&,
+              const TimeZone_T&,
+              const GMTOffset_T&, const DSTOffset_T&, const RawOffset_T&,
+              const Date_T& iModDate,
+              const bool isAirport, const bool isCommercial,
+              const WikiLink_T&, const PageRank_T&,
               const std::string& iOriginalKeywords,
               const std::string& iCorrectedKeywords,
               const MatchingPercentage_T& iPercentage,
@@ -760,9 +782,10 @@ namespace OPENTREP {
     
     /** 
      * Short list of alternate names, without the language codes (e.g.,
-     * "Aéroport de Nice Côte d'Azur,Nice Airport,Flughafen Nizza").
+     * "Aéroport de Nice Côte d'Azur,Nice Airport,Flughafen Nizza"),
+     * aggregated within a single string.
      */
-    AltShortNameListString_T _altShortNameListString;
+    AltNameShortListString_T _altNameShortListString;
 
     /**
      * FAA code (e.g., ORD).
@@ -906,6 +929,8 @@ namespace OPENTREP {
      */
     NameMatrix _nameMatrix;
 
+  private:
+    // ///////////// Full-text matching process support attributes //////////
     /**
      * Original keywords. 
      */
@@ -943,6 +968,7 @@ namespace OPENTREP {
     LocationList_T _alternateLocationList;
 
   public:
+    // ///////// Parsing support temporary attributes ////////
     /**
      * Staging Date.
      */
@@ -953,7 +979,8 @@ namespace OPENTREP {
     /**
      * Staging alternate names.
      */
-    AltShortNameList_T _altShortNameList;
+    Language::EN_Language _itLanguageCode;
+    AltNameShortList_T _itAltNameShortList;
   };
 
 }

@@ -78,6 +78,13 @@ namespace OPENTREP {
       return _location.getGeonamesID();
     }
 
+    /**
+     * State whether that POR is referenced by Geonames.
+     */
+    const IsGeonames_T& isGeonames() const {
+      return _location.isGeonames();
+    }
+
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -93,6 +100,13 @@ namespace OPENTREP {
       return _location.getAsciiName();
     }
     
+    /** 
+     * Get the short list of alternate names (without language codes).
+     */
+    const AltNameShortListString_T& getAltNameShortListString() const {
+      return _location.getAltNameShortListString();
+    }
+
     /**
      * Get the FAA code.
      */
@@ -122,6 +136,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the alternative country code. 
+     */
+    const AltCountryCode_T& getAltCountryCode() const {
+      return _location.getAltCountryCode();
+    }
+    
+    /**
      * Get the region code.
      */
     const RegionCode_T& getRegionCode() const {
@@ -135,6 +156,27 @@ namespace OPENTREP {
       return _location.getTimeZone();
     }
     
+    /**
+     * Get the GMT offset (e.g., 1)
+     */
+    const GMTOffset_T& getGMTOffset() const {
+      return _location.getGMTOffset();
+    }
+
+    /**
+     * Get the DST offset (e.g., 2)
+     */
+    const DSTOffset_T& getDSTOffset() const {
+      return _location.getDSTOffset();
+    }
+
+    /**
+     * Get the raw offset (e.g., -1)
+     */
+    const RawOffset_T& getRawOffset() const {
+      return _location.getRawOffset();
+    }
+
     /**
      * Get the geographical latitude.
      */
@@ -150,12 +192,103 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the feature class (e.g., S for spot).
+     */
+    const FeatureClass_T& getFeatureClass() const {
+      return _location.getFeatureClass();
+    }
+
+    /**
+     * Get the feature code (e.g., AIRP for airport).
+     */
+    const FeatureCode_T& getFeatureCode() const {
+      return _location.getFeatureCode();
+    }
+
+    /**
+     * Get the IATA location type (e.g., A for airport).
+     */
+    const IATAType_T& getIATAType() const {
+      return _location.getIATAType();
+    }
+
+    /**
+     * Get the administrative code of rank 1 (e.g., IL for Illinois).
+     */
+    const Admin1Code_T& getAdmin1Code() const {
+      return _location.getAdmin1Code();
+    }
+
+    /**
+     * Get the administrative code of rank 2.
+     */
+    const Admin2Code_T& getAdmin2Code() const {
+      return _location.getAdmin2Code();
+    }
+
+    /**
+     * Get the administrative code of rank 3.
+     */
+    const Admin3Code_T& getAdmin3Code() const {
+      return _location.getAdmin3Code();
+    }
+
+    /**
+     * Get the administrative code of rank 4.
+     */
+    const Admin4Code_T& getAdmin4Code() const {
+      return _location.getAdmin4Code();
+    }
+
+    /**
+     * Get the population (number of inhabitants).
+     */
+    const Population_T& getPopulation() const {
+      return _location.getPopulation();
+    }
+
+    /**
+     * Get the elevation.
+     */
+    const Elevation_T& getElevation() const {
+      return _location.getElevation();
+    }
+
+    /**
+     * Get the GTopo30.
+     */
+    const GTopo30_T& getGTopo30() const {
+      return _location.getGTopo30();
+    }
+
+    /**
      * Get the PageRank/importance. 
      */
     const PageRank_T& getPageRank() const {
       return _location.getPageRank();
     }
     
+    /**
+     * Get the modification date. 
+     */
+    const Date_T& getModificationDate() const {
+      return _location.getModificationDate();
+    }
+    
+    /**
+     * State whether that POR is an airport.
+     */
+    const IsAirport_T& isAirport() const {
+      return _location.isAirport();
+    }
+
+    /**
+     * State whether that POR is commercial.
+     */ 
+    const IsCommercial_T& isCommercial() const {
+      return _location.isCommercial();
+    }
+
     /**
      * Get the Wikipedia link.
      */
@@ -171,49 +304,6 @@ namespace OPENTREP {
     }
 
     /**
-     * Get the original keywords.
-     */
-    const std::string& getOriginalKeywords() const {
-      return _originalKeywords;
-    }
-    
-    /**
-     * Get the corrected keywords.
-     */
-    const std::string& getCorrectedKeywords() const {
-      return _correctedKeywords;
-    }
-    
-    /**
-     * Get the Xapian document ID.
-     */
-    const XapianDocID_T& getDocID() const {
-      return _docID;
-    }
-
-    /**
-     * Get the matching percentage.
-     */
-    const MatchingPercentage_T& getPercentage() const {
-      return _percentage;
-    }
-
-    /**
-     * Get the allowed edit distance/error.
-     */
-    const NbOfErrors_T& getEditDistance() const {
-      return _editDistance;
-    }
-
-    /**
-     * Get the maximal allowable edit distance/error, with which the
-     * matching has been made.
-     */
-    const NbOfErrors_T& getAllowableEditDistance() const {
-      return _allowableEditDistance;
-    }
-    
-    /**
      * Get, for a given language (code), the corresponding list of names.
      *
      * @param const Language::EN_Language& Language code.
@@ -224,8 +314,50 @@ namespace OPENTREP {
      */
     bool getNameList (const Language::EN_Language& iLanguageCode,
                       NameList_T& ioNameList) const {
-      const NameMatrix& lNameMatrix = _location.getNameMatrix();
-      return lNameMatrix.getNameList (iLanguageCode, ioNameList);
+      return _location.getNameList (iLanguageCode, ioNameList);
+    }
+
+    /**
+     * Get the original keywords.
+     */
+    const std::string& getOriginalKeywords() const {
+      return _location.getOriginalKeywords();
+    }
+    
+    /**
+     * Get the corrected keywords.
+     */
+    const std::string& getCorrectedKeywords() const {
+      return _location.getCorrectedKeywords();
+    }
+    
+    /**
+     * Get the matching percentage.
+     */
+    const MatchingPercentage_T& getPercentage() const {
+      return _location.getPercentage();
+    }
+
+    /**
+     * Get the allowed edit distance/error.
+     */
+    const NbOfErrors_T& getEditDistance() const {
+      return _location.getEditDistance();
+    }
+
+    /**
+     * Get the maximal allowable edit distance/error, with which the
+     * matching has been made.
+     */
+    const NbOfErrors_T& getAllowableEditDistance() const {
+      return _location.getAllowableEditDistance();
+    }
+    
+    /**
+     * Get the Xapian document ID.
+     */
+    const XapianDocID_T& getDocID() const {
+      return _docID;
     }
 
     /**
@@ -274,6 +406,13 @@ namespace OPENTREP {
   public:
     // ////////////////// Setters /////////////////
     /**
+     * Set the full Location structure.
+     */
+    void setLocation (const Location& iLocation) {
+      _location = iLocation;
+    }
+    
+    /**
      * Set the primary key (IATA and ICAO codes, Geonames ID) of the place.
      */
     void setKey (const LocationKey& iKey) {
@@ -316,6 +455,13 @@ namespace OPENTREP {
       _location.setAsciiName (iName);
     }
     
+    /** 
+     * Set the short list of alternate names (without language codes).
+     */
+    void setAltNameShortListString (const std::string& iNameListString) {
+      _location.setAltNameShortListString (iNameListString);
+    }
+
     /**
      * Set the FAA code.
      */
@@ -345,6 +491,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the alternative country code. 
+     */
+    void setAltCountryCode (const std::string& iCountryCode) {
+      _location.setAltCountryCode (iCountryCode);
+    }
+    
+    /**
      * Set the region code.
      */
     void setRegionCode (const std::string& iRegionCode) {
@@ -358,6 +511,27 @@ namespace OPENTREP {
       _location.setTimeZone (iTimeZone);
     }
     
+    /**
+     * Set the GMT offset (e.g., 1)
+     */
+    void setGMTOffset (const GMTOffset_T& iOffset) {
+      _location.setGMTOffset (iOffset);
+    }
+
+    /**
+     * Set the DST offset (e.g., 2)
+     */
+    void setDSTOffset (const DSTOffset_T& iOffset) {
+      _location.setDSTOffset (iOffset);
+    }
+
+    /**
+     * Set the raw offset (e.g., 1)
+     */
+    void setRawOffset (const RawOffset_T& iOffset) {
+      _location.setRawOffset (iOffset);
+    }
+
     /**
      * Set the geographical latitude.
      */
@@ -373,12 +547,103 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the feature class (e.g., S for spot).
+     */
+    void setFeatureClass (const std::string& iFeatClass) {
+      _location.setFeatureClass (iFeatClass);
+    }
+
+    /**
+     * Set the feature code (e.g., AIRP for airport).
+     */
+    void setFeatureCode (const std::string& iFeatCode) {
+      _location.setFeatureCode (iFeatCode);
+    }
+
+    /**
+     * Set the IATA location type (e.g., A for airport).
+     */
+    void setIATAType (const std::string& iIATAType) {
+      _location.setIATAType (iIATAType);
+    }
+
+    /**
+     * Set the administrative code of rank 1 (e.g., IL for Illinois).
+     */
+    void setAdmin1Code (const std::string& iAdminCode) {
+      _location.setAdmin1Code (iAdminCode);
+    }
+
+    /**
+     * Set the administrative code of rank 2.
+     */
+    void setAdmin2Code (const std::string& iAdminCode) {
+      _location.setAdmin2Code (iAdminCode);
+    }
+
+    /**
+     * Set the administrative code of rank 3.
+     */
+    void setAdmin3Code (const std::string& iAdminCode) {
+      _location.setAdmin3Code (iAdminCode);
+    }
+
+    /**
+     * Set the administrative code of rank 4.
+     */
+    void setAdmin4Code (const std::string& iAdminCode) {
+      _location.setAdmin4Code (iAdminCode);
+    }
+
+    /**
+     * Set the population (number of inhabitants).
+     */
+    void setPopulation (const Population_T& iPopulation) {
+      _location.setPopulation (iPopulation);
+    }
+
+    /**
+     * Set the elevation.
+     */
+    void setElevation (const Elevation_T& iElevation) {
+      _location.setElevation (iElevation);
+    }
+
+    /**
+     * Set the GTopo30.
+     */
+    void setGTopo30 (const GTopo30_T& iGTopo30) {
+      _location.setGTopo30 (iGTopo30);
+    }
+
+    /**
      * Set the PageRank.
      */
     void setPageRank (const PageRank_T& iPageRank) {
       _location.setPageRank (iPageRank);
     }
     
+    /**
+     * Set the modification date. 
+     */
+    void setModificationDate (const Date_T& iModDate) {
+      _location.setModificationDate (iModDate);
+    }
+
+    /**
+     * State whether that POR is an airport.
+     */
+    void setIsAirport (const IsAirport_T& isAirport) {
+      _location.setIsAirport (isAirport);
+    }
+
+    /**
+     * State whether that POR is commercial.
+     */ 
+    void setIsCommercial (const IsCommercial_T& isCommercial) {
+      _location.setIsCommercial (isCommercial);
+    }
+
     /**
      * Set the Wikipedia link.
      */
@@ -390,35 +655,28 @@ namespace OPENTREP {
      * Set the original keywords.
      */
     void setOriginalKeywords (const std::string& iOriginalKeywords) {
-      _originalKeywords = iOriginalKeywords;
+      _location.setOriginalKeywords (iOriginalKeywords);
     }
     
     /**
      * Set the corrected keywords.
      */
     void setCorrectedKeywords (const std::string& iCorrectedKeywords) {
-      _correctedKeywords = iCorrectedKeywords;
+      _location.setCorrectedKeywords (iCorrectedKeywords);
     }
     
-    /**
-     * Set the Xapian document ID.
-     */
-    void setDocID (const XapianDocID_T& iDocID) {
-      _docID = iDocID;
-    }
-
     /**
      * Set the Xapian matching percentage.
      */
     void setPercentage (const MatchingPercentage_T& iPercentage) {
-      _percentage = iPercentage;
+      _location.setPercentage (iPercentage);
     }
 
     /**
      * Set the allowed edit distance/error.
      */
     void setEditDistance (const NbOfErrors_T& iEditDistance) {
-      _editDistance = iEditDistance;
+      _location.setEditDistance (iEditDistance);
     }
 
     /**
@@ -426,7 +684,14 @@ namespace OPENTREP {
      * matching has been made.
      */
     void setAllowableEditDistance (const NbOfErrors_T& iAllowableEditDistance) {
-      _allowableEditDistance = iAllowableEditDistance;
+      _location.setAllowableEditDistance (iAllowableEditDistance);
+    }
+
+    /**
+     * Set the Xapian document ID.
+     */
+    void setDocID (const XapianDocID_T& iDocID) {
+      _docID = iDocID;
     }
 
     
@@ -495,14 +760,14 @@ namespace OPENTREP {
      * Get a string describing the whole key (IATA and ICAO codes, Geonames ID).
      */
     std::string describeKey() const {
-      return "";
+      return _location.describeKey();
     }
 
     /**
      * Get a string describing the whole key (IATA and ICAO codes, Geonames ID).
      */
     std::string describeShortKey() const {
-      return "";
+      return _location.describeShortKey();
     }
     
     /**
@@ -591,16 +856,6 @@ namespace OPENTREP {
   private:
     // ///////////// Full-text matching process support attributes //////////
     /**
-     * Original keywords.
-     */
-    std::string _originalKeywords;
-    
-    /**
-     * Original keywords.
-     */
-    std::string _correctedKeywords;
-    
-    /**
      * Xapian document ID.
      *
      * That ID is set only when inserting the Document structure into
@@ -608,22 +863,6 @@ namespace OPENTREP {
      */
     XapianDocID_T _docID;
 
-    /**
-     * Matching percentage.
-     */
-    MatchingPercentage_T _percentage;
-
-    /**
-     * Allowed edit error/distance.
-     */
-    NbOfErrors_T _editDistance;
-
-    /**
-     * Maximum allowable edit distance/error, with which the matching
-     * has been made.
-     */
-    NbOfErrors_T _allowableEditDistance;
-    
     /**
      * List of extra matching (similar) places.
      */

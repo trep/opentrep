@@ -5,7 +5,8 @@
 #include <cassert>
 #include <vector>
 #include <fstream>
-// Opentrep
+// Boost
+#include <boost/lexical_cast.hpp>
 #define BOOST_SPIRIT_DEBUG
 #define BOOST_SPIRIT_UNICODE
 // OpenTREP
@@ -20,8 +21,8 @@ namespace OPENTREP {
   /** Namespaces. */
   namespace bsq = boost::spirit::qi;
   //namespace bsa = boost::spirit::ascii;
-  namespace bsa = boost::spirit::unicode;
   namespace bsu = boost::spirit::unicode;
+  namespace bsc = boost::spirit::classic;
 
   namespace PorParserHelper {
       
@@ -34,20 +35,6 @@ namespace OPENTREP {
     }      
    
     // //////////////////////////////////////////////////////////////////
-    storeGeonamesID::storeGeonamesID (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeGeonamesID::operator() (unsigned int iPorId,
-                                      bsq::unused_type, bsq::unused_type) const {
-      _location.setGeonamesID (iPorId);
-      
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ( "Por Id: " << _location.getPorID ());
-    }
-    
-    // //////////////////////////////////////////////////////////////////
     storeIataCode::storeIataCode (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -59,7 +46,12 @@ namespace OPENTREP {
       const std::string lIataCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::IATACode_T lIataCode (lIataCodeStr);
       _location.setIataCode (lIataCode);
-       // DEBUG
+
+      // Reset the values
+      //_location.resetMatrix();
+      //_location._itAltNameShortList.clear();
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ( "IATA code: " << _location.getIataCode());
     }
 
@@ -79,6 +71,20 @@ namespace OPENTREP {
        //OPENTREP_LOG_DEBUG ( "ICAO code: " << _location.getIcaoCode());
     }
 
+    // //////////////////////////////////////////////////////////////////
+    storeGeonamesID::storeGeonamesID (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeGeonamesID::operator() (unsigned int iPorId,
+                                      bsq::unused_type, bsq::unused_type) const {
+      _location.setGeonamesID (iPorId);
+      
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ( "Por Id: " << _location.getPorID ());
+    }
+    
     // //////////////////////////////////////////////////////////////////
     storeCommonName::storeCommonName (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
@@ -112,49 +118,60 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeAltAsciiName::storeAltAsciiName (Location& ioLocation)
+    storeAltNameShort::storeAltNameShort (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltAsciiName::operator() (std::vector<uchar_t> iChar,
+    void storeAltNameShort::operator() (std::vector<uchar_t> iChar,
                                         bsq::unused_type,
                                         bsq::unused_type)const {
 
-      const std::string lAltAsciiNameStr (iChar.begin(), iChar.end());
-      const OPENTREP::AltShortNameListString_T lAltAsciiName (lAltAsciiNameStr);
-      _location._altShortNameList.push_back (lAltAsciiName);
+      const std::string lAltNameShortStr (iChar.begin(), iChar.end());
+      const OPENTREP::AltNameShortListString_T lAltNameShort (lAltNameShortStr);
+      _location._itAltNameShortList.push_back (lAltNameShort);
        // DEBUG
-       //OPENTREP_LOG_DEBUG ("Ascii name: " << _location.getAltShortNameList());
+       //OPENTREP_LOG_DEBUG ("Alt name short: " << lAltNameShortStr);
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeAltUtfName::storeAltUtfName (Location& ioLocation)
+    storeAltNameShortListString::
+    storeAltNameShortListString (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltUtfName::operator() (std::vector<uchar_t> iChar,
-                                      bsq::unused_type, bsq::unused_type)const {
-
-      const std::string lAltUtfNameStr (iChar.begin(), iChar.end());
-      const OPENTREP::AltShortNameListString_T lAltUtfName (lAltUtfNameStr);
-      _location._altShortNameList.push_back (lAltUtfName);
+    void storeAltNameShortListString::
+    operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type)const {
+      _location.consolidateAltNameShortListString();
        // DEBUG
-       //OPENTREP_LOG_DEBUG ("UTF name: " << _location.getAltShortNameList());
+       //OPENTREP_LOG_DEBUG ("Common name: " << _location.getAltNameShortListString());
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeAltShortNameList::storeAltShortNameList (Location& ioLocation)
+    storeLatitude::storeLatitude (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltShortNameList::operator() (bsq::unused_type, bsq::unused_type,
-                                            bsq::unused_type)const {
-      _location.consolidateAltShortNameList();
-       // DEBUG
-       //OPENTREP_LOG_DEBUG ("Common name: " << _location.getAltShortNameList());
+    void storeLatitude::operator() (double iLatitude,
+                                    bsq::unused_type, bsq::unused_type) const {
+      _location.setLatitude (iLatitude);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Latitude: " << _location.getLatitude());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeLongitude::storeLongitude (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeLongitude::operator() (double iLongitude,
+                                     bsq::unused_type, bsq::unused_type) const {
+      _location.setLongitude (iLongitude);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Longitude: " << _location.getLongitude());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -163,11 +180,10 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeFeatureClass::operator() (uchar_t iChar, bsq::unused_type,
+    void storeFeatureClass::operator() (std::vector<uchar_t> iChar,
+                                        bsq::unused_type,
                                         bsq::unused_type) const {
-      std::ostringstream oStr;
-      oStr << iChar;
-      const std::string lFeatClassStr (oStr.str());
+      const std::string lFeatClassStr (iChar.begin(), iChar.end());
       const FeatureClass_T lFeatClass (lFeatClassStr);
       _location.setFeatureClass (lFeatClass);
       // DEBUG
@@ -204,6 +220,22 @@ namespace OPENTREP {
       _location.setCountryCode (lCountryCode);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Country code: " << _location.getCountryCode());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeAltCountryCode::storeAltCountryCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeAltCountryCode::operator() (std::vector<uchar_t> iChar,
+                                          bsq::unused_type,
+                                          bsq::unused_type) const {
+      const std::string lCountryCodeStr (iChar.begin(), iChar.end());
+      const CountryCode_T lCountryCode (lCountryCodeStr);
+      _location.setAltCountryCode (lCountryCode);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Alt country code: " << _location.getAltCountryCode());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -268,6 +300,45 @@ namespace OPENTREP {
       _location.setAdmin4Code (lAdmCode);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm4 code: " << _location.getAdmin4Code());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storePopulation::storePopulation (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storePopulation::operator() (unsigned int iPopulation,
+                                      bsq::unused_type, bsq::unused_type) const {
+      _location.setPopulation (iPopulation);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Population: " << _location.getPopulation());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    storeElevation::storeElevation (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeElevation::operator() (int iElevation,
+                                     bsq::unused_type, bsq::unused_type) const {
+      _location.setElevation (iElevation);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Elevation: " << _location.getElevation());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    storeGTopo30::storeGTopo30 (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeGTopo30::operator() (int iGTopo30,
+                                   bsq::unused_type, bsq::unused_type) const {
+      _location.setGTopo30 (iGTopo30);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("GTopo30: " << _location.getGTopo30());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -421,9 +492,11 @@ namespace OPENTREP {
     // //////////////////////////////////////////////////////////////////
     void storePORType::operator() (std::vector<uchar_t> iChar,
                                    bsq::unused_type, bsq::unused_type) const {
-      const std::string lPORType (iChar.begin(), iChar.end());
+      const std::string lIATATypeStr (iChar.begin(), iChar.end());
+      const IATAType_T lIATAType (lIATATypeStr);
+      _location.setIATAType (lIATAType);
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("POR type: " << _location.getPORType());
+      //OPENTREP_LOG_DEBUG ("IATA type: " << _location.getIATAType());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -439,74 +512,45 @@ namespace OPENTREP {
       const OPENTREP::WikiLink_T lWikiLink (lWikiLinkStr);
       _location.setWikiLink (lWikiLink);
        // DEBUG
-       OPENTREP_LOG_DEBUG ("Wiki link: " << _location.getWikiLink());
+       // OPENTREP_LOG_DEBUG ("Wiki link: " << _location.getWikiLink());
     }
 
     // //////////////////////////////////////////////////////////////////
-    storePopulation::storePopulation (Location& ioLocation)
+    storeAltLangCode::storeAltLangCode (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storePopulation::operator() (unsigned int iPopulation,
+    void storeAltLangCode::operator()(std::vector<uchar_t> iChar,
                                       bsq::unused_type, bsq::unused_type) const {
-      _location.setPopulation (iPopulation);
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("Population: " << _location.getPopulation());
+
+      const std::string lAltLangCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::Language::EN_Language iLanguageCode =
+        OPENTREP::Language::getCode (lAltLangCodeStr);
+      _location._itLanguageCode = iLanguageCode;
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("Alt lang code: " << OPENTREP::Language::getShortLabel (_location._itLanguageCode));
     }
-    
+
     // //////////////////////////////////////////////////////////////////
-    storeElevation::storeElevation (Location& ioLocation)
+    storeAltName::storeAltName (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeElevation::operator() (int iElevation,
-                                     bsq::unused_type, bsq::unused_type) const {
-      _location.setElevation (iElevation);
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("Elevation: " << _location.getElevation());
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    storeGTopo30::storeGTopo30 (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeGTopo30::operator() (int iGTopo30,
+    void storeAltName::operator() (std::vector<uchar_t> iChar,
                                    bsq::unused_type, bsq::unused_type) const {
-      _location.setGTopo30 (iGTopo30);
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("GTopo30: " << _location.getGTopo30());
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    storeLatitude::storeLatitude (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeLatitude::operator() (double iLatitude,
-                                    bsq::unused_type, bsq::unused_type) const {
-      _location.setLatitude (iLatitude);
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("Latitude: " << _location.getLatitude());
+
+      const std::string lAltNameStr (iChar.begin(), iChar.end());
+      const OPENTREP::AltNameShortListString_T lAltName (lAltNameStr);
+      _location.addName (_location._itLanguageCode, lAltName);
+      // Reset the values
+      _location._itLanguageCode = OPENTREP::Language::LAST_VALUE;
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("Alt name: " << _location.getAltNameShortList());
     }
 
-    // //////////////////////////////////////////////////////////////////
-    storeLongitude::storeLongitude (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
     
-    // //////////////////////////////////////////////////////////////////
-    void storeLongitude::operator() (double iLongitude,
-                                     bsq::unused_type, bsq::unused_type) const {
-      _location.setLongitude (iLongitude);
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("Longitude: " << _location.getLongitude());
-    }
-
     // //////////////////////////////////////////////////////////////////
     doEndPor::doEndPor (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
@@ -516,13 +560,13 @@ namespace OPENTREP {
     void doEndPor::operator() (bsq::unused_type,
                                bsq::unused_type, bsq::unused_type) const {
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("Do End");
+      //OPENTREP_LOG_DEBUG ("Do End. Location structure: " << _location);
 
       // Generation of the Place object from the Location structure.
-      Place& lPlace = FacPlace::instance().create (_location);
+      //Place& lPlace = FacPlace::instance().create (_location);
 
       // DEBUG
-      OPENTREP_LOG_DEBUG (lPlace);
+      // OPENTREP_LOG_DEBUG (lPlace);
     }  
 
     // ///////////////////////////////////////////////////////////////////
@@ -728,237 +772,361 @@ namespace OPENTREP {
      * Grammar for the Por-Rule parser.
      */
     template <typename Iterator>	
-    struct LocationParser : public bsq::grammar<Iterator, bsa::space_type> {
+    struct LocationParser : public bsq::grammar<Iterator, bsu::blank_type> {
 
       LocationParser (Location& ioPORRule) : 
         LocationParser::base_type(start), _location(ioPORRule) {
 
-      start = *(header | por_rule);
+        start = bsq::eps
+          >> *(header | por_rule);
 
-      header = (bsq::lexeme[bsq::lit("iata_code")
-                            >> +(bsa::char_ - bsq::eol) >> bsq::eol]);
+        header = bsq::lit("iata_code") >> +(bsu::char_ - bsq::eoi - bsq::eol)
+                                       >> (bsq::eoi | bsq::eol);
 
-      por_rule = por_key
-        >> '^' >> por_details
-        >> alt_name_section
-        >> por_rule_end[doEndPor(_location)];
-      // >> +( '^' >> segment )
+        por_rule = por_key
+          >> '^' >> por_details
+          >> -alt_name_section
+          >> por_rule_end[doEndPor(_location)];
+        // >> +( '^' >> segment )
 
-      por_rule_end = *bsq::eol;
+        por_rule_end = bsq::eps;
 
-      por_key = iata_code
-        >> '^' >> icao_code
-        >> '^' >> is_geonames
-        >> '^' >> geonameid
-        ;
+        por_key = iata_code
+          >> '^' >> icao_code
+          >> '^' >> is_geonames
+          >> '^' >> geonameid
+          ;
 
-      por_details = common_name
-        >> '^' >> ascii_name
-        >> '^' >> alt_name_short_list[storeAltShortNameList(_location)]
-        >> '^' >> latitude
-        >> '^' >> longitude
-        >> '^' >> feat_class
-        >> '^' >> feat_code
-        >> '^' >> country_code
-        >> '^' >> country_code2
-        >> '^' >> adm1_code
-        >> '^' >> adm2_code
-        >> '^' >> adm3_code
-        >> '^' >> adm4_code
-        >> '^' >> population
-        >> '^' >> elevation
-        >> '^' >> gtopo30
-        >> '^' >> time_zone
-        >> '^' >> gmt_offset
-        >> '^' >> dst_offset
-        >> '^' >> raw_offset
-        >> '^' >> mod_date
-        >> '^' >> is_airport
-        >> '^' >> is_commercial
-        >> '^' >> city_code
-        >> '^' >> state_code
-        >> '^' >> region_code
-        >> '^' >> tripType
-        >> '^' >> wiki_link
-        ;
+        por_details = common_name
+          >> '^' >> ascii_name
+          >> '^' >> -alt_name_short_list[storeAltNameShortListString(_location)]
+          >> '^' >> -latitude
+          >> '^' >> -longitude
+          >> '^' >> feat_class
+          >> '^' >> feat_code
+          >> '^' >> country_code
+          >> '^' >> -country_code2
+          >> '^' >> -adm1_code
+          >> '^' >> -adm2_code
+          >> '^' >> -adm3_code
+          >> '^' >> -adm4_code
+          >> '^' >> -population
+          >> '^' >> -elevation
+          >> '^' >> -gtopo30
+          >> '^' >> -time_zone
+          >> '^' >> -gmt_offset
+          >> '^' >> -dst_offset
+          >> '^' >> -raw_offset
+          >> '^' >> (mod_date | bsq::lit("-1"))
+          >> '^' >> is_airport
+          >> '^' >> is_commercial
+          >> '^' >> city_code
+          >> '^' >> -state_code
+          >> '^' >> -region_code
+          >> '^' >> por_type
+          >> '^' >> -wiki_link
+          ;
 
-      iata_code = bsq::repeat(3)[bsa::char_('A', 'Z')][storeIataCode(_location)];
+        iata_code =
+          bsq::repeat(3)[bsu::char_('A', 'Z')][storeIataCode(_location)];
 
-      icao_code = bsq::repeat(4)[bsa::char_('A', 'Z')][storeIcaoCode(_location)];
+        icao_code =
+          bsq::repeat(4)[bsu::char_("A-Z0-9")][storeIcaoCode(_location)];
 
-      geonameid = uint1_9_p[storeGeonamesID(_location)];
+        geonameid = uint1_9_p[storeGeonamesID(_location)];
 
-      is_geonames = boolean_p;
+        is_geonames = boolean_p;
 
-      common_name = (+(bsa::char_ - bsa::char_('^')))[storeCommonName(_location)]
-        ;
+        common_name =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeCommonName(_location)]
+          ;
 
-      ascii_name = (+(bsa::char_ - bsa::char_('^')))[storeAsciiName(_location)]
-        ;
+        ascii_name =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAsciiName(_location)]
+          ;
 
-      alt_name_short_list = *(alt_name | alt_name_sep);
+        alt_name_short_list = alt_name_short % ',';
 
-      alt_name =
-        (+(bsa::char_ - bsa::char_('^') - bsa::char_(',')
-           - bsq::eol))[storeAltUtfName(_location)]
-        ;
+        alt_name_short =
+          (bsq::no_skip[+~bsu::char_("^,")]
+           - (bsq::eoi|bsq::eol))[storeAltNameShort(_location)]
+          ;
 
-      alt_name_sep = bsa::char_(',');
+        latitude = bsq::double_[storeLatitude(_location)];
 
-      latitude = bsq::double_[storeLatitude(_location)];
+        longitude = bsq::double_[storeLongitude(_location)];
 
-      longitude = bsq::double_[storeLongitude(_location)];
+        feat_class =
+          bsq::repeat(1)[bsu::char_("A-Z")][storeFeatureClass(_location)]
+          ;
 
-      feat_class = bsa::char_("A-Z")[storeFeatureClass(_location)];
+        feat_code =
+          bsq::repeat(3,5)[bsu::char_("A-Z1-5")][storeFeatureCode(_location)]
+          ;
 
-      feat_code =
-        bsq::repeat(3,5)[bsa::char_("A-Z")][storeFeatureCode(_location)]
-        ;
+        country_code =
+          bsq::repeat(2,3)[bsu::char_("A-Z")][storeCountryCode(_location)]
+          ;
 
-      country_code =
-        bsq::repeat(2,3)[bsa::char_("A-Z")][storeCountryCode(_location)]
-        ;
+        country_code2 =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAltCountryCode(_location)]
+          ;
 
-      country_code2 =
-        (*(bsa::char_ - bsa::char_('^')))
-        ;
+        adm1_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm1Code(_location)]
+          ;
 
-      adm1_code = (*(bsa::char_ - bsa::char_('^')))[storeAdm1Code(_location)]
-        ;
+        adm2_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm2Code(_location)]
+          ;
 
-      adm2_code = (*(bsa::char_ - bsa::char_('^')))[storeAdm2Code(_location)]
-        ;
+        adm3_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm3Code(_location)]
+          ;
 
-      adm3_code = (*(bsa::char_ - bsa::char_('^')))[storeAdm3Code(_location)]
-        ;
+        adm4_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm4Code(_location)]
+          ;
 
-      adm4_code = (*(bsa::char_ - bsa::char_('^')))[storeAdm4Code(_location)]
-        ;
+        population = uint1_9_p[storePopulation(_location)];
 
-      population = uint0_9_p[storePopulation(_location)];
+        elevation = int1_5_p[storeElevation(_location)];
 
-      elevation = int0_5_p[storeElevation(_location)];
+        gtopo30 = int1_5_p[storeGTopo30(_location)];
 
-      gtopo30 = int0_5_p[storeGTopo30(_location)];
+        time_zone =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeTimeZone(_location)]
+          ;
 
-      time_zone = (*(bsa::char_ - bsa::char_('^')))[storeTimeZone(_location)];
+        gmt_offset = bsq::float_[storeGMTOffset(_location)];
 
-      gmt_offset = bsq::float_[storeGMTOffset(_location)];
+        dst_offset = bsq::float_[storeDSTOffset(_location)];
 
-      dst_offset = bsq::float_[storeDSTOffset(_location)];
+        raw_offset = bsq::float_[storeRawOffset(_location)];
 
-      raw_offset = bsq::float_[storeRawOffset(_location)];
+        mod_date = date[storeModDate(_location)];
 
-      mod_date = date[storeModDate(_location)];
+        date = bsq::lexeme
+          [year_p[boost::phoenix::ref(_location._itYear) = bsq::labels::_1]
+           >> '-'
+           >> month_p[boost::phoenix::ref(_location._itMonth) = bsq::labels::_1]
+           >> '-'
+           >> day_p[boost::phoenix::ref(_location._itDay) = bsq::labels::_1] ];
 
-      date = bsq::lexeme
-        [year_p[boost::phoenix::ref(_location._itYear) = bsq::labels::_1]
-        >> '-'
-        >> month_p[boost::phoenix::ref(_location._itMonth) = bsq::labels::_1]
-        >> '-'
-        >> day_p[boost::phoenix::ref(_location._itDay) = bsq::labels::_1] ];
+        is_airport = boolean_p[storeIsAirport(_location)];
 
-      is_airport = boolean_p[storeIsAirport(_location)];
-
-      is_commercial = boolean_p[storeIsCommercial(_location)];
+        is_commercial = boolean_p[storeIsCommercial(_location)];
       
-      city_code = bsq::repeat(3)[bsa::char_('A', 'Z')][storeCityCode(_location)];
+        city_code =
+          bsq::repeat(3)[bsu::char_('A', 'Z')][storeCityCode(_location)]
+          ;
 
-      state_code = (*(bsa::char_ - bsa::char_('^')))[storeStateCode(_location)];
+        state_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeStateCode(_location)]
+          ;
 
-      region_code= (*(bsa::char_ - bsa::char_('^')))[storeRegionCode(_location)];
+        region_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeRegionCode(_location)]
+          ;
 
-      tripType = bsq::repeat(2)[bsa::char_("A-Z")][storePORType(_location)];
+        por_type =
+          bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
+          ;
       
-      wiki_link =
-        bsq::lexeme[*(bsa::char_ - bsa::char_('^') - bsq::eol)][storeWikiLink(_location)]
-        ;
+        wiki_link =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeWikiLink(_location)]
+          ;
 
-      alt_name_section = *('^' >>  alt_name_details);
+        alt_name_section = +('^' >>  alt_name_details);
 
-      alt_name_details = alt_lang_code
-        >> '^' >>  alt_name
-        >> '^' >>  alt_name_qualifiers        
-        ;
+        alt_name_details = -alt_lang_code
+          >> '^' >> alt_name
+          >> '^' >> -alt_name_qualifiers        
+          ;
 
-      alt_lang_code =
-        bsq::repeat(0,8)[bsa::char_("a-z_0-9")]
-        ;
+        alt_lang_code =
+          bsq::repeat(1,8)[bsu::char_("a-z_0-9")][storeAltLangCode(_location)]
+          ;
 
-      alt_name_qualifiers =
-        bsq::repeat(0,4)[bsa::char_("shpc")]
-        ;
+        alt_name =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAltName(_location)]
+          ;
 
-      //BOOST_SPIRIT_DEBUG_NODE (LocationParser);
-      BOOST_SPIRIT_DEBUG_NODE (start);
-      BOOST_SPIRIT_DEBUG_NODE (header);
-      BOOST_SPIRIT_DEBUG_NODE (por_rule);
-      BOOST_SPIRIT_DEBUG_NODE (por_rule_end);
-      BOOST_SPIRIT_DEBUG_NODE (por_key);
-      BOOST_SPIRIT_DEBUG_NODE (por_details);
-      BOOST_SPIRIT_DEBUG_NODE (iata_code);
-      BOOST_SPIRIT_DEBUG_NODE (icao_code);
-      BOOST_SPIRIT_DEBUG_NODE (geonameid);
-      BOOST_SPIRIT_DEBUG_NODE (is_geonames);
-      BOOST_SPIRIT_DEBUG_NODE (common_name);
-      BOOST_SPIRIT_DEBUG_NODE (ascii_name);      
-      BOOST_SPIRIT_DEBUG_NODE (alt_name_short_list);
-      BOOST_SPIRIT_DEBUG_NODE (alt_name_sep);
-      BOOST_SPIRIT_DEBUG_NODE (latitude);
-      BOOST_SPIRIT_DEBUG_NODE (longitude);
-      BOOST_SPIRIT_DEBUG_NODE (feat_class);
-      BOOST_SPIRIT_DEBUG_NODE (feat_code);
-      BOOST_SPIRIT_DEBUG_NODE (country_code);
-      BOOST_SPIRIT_DEBUG_NODE (country_code2);
-      BOOST_SPIRIT_DEBUG_NODE (adm1_code);
-      BOOST_SPIRIT_DEBUG_NODE (adm2_code);
-      BOOST_SPIRIT_DEBUG_NODE (adm3_code);
-      BOOST_SPIRIT_DEBUG_NODE (adm4_code);
-      BOOST_SPIRIT_DEBUG_NODE (population);
-      BOOST_SPIRIT_DEBUG_NODE (elevation);
-      BOOST_SPIRIT_DEBUG_NODE (gtopo30);
-      BOOST_SPIRIT_DEBUG_NODE (time_zone);
-      BOOST_SPIRIT_DEBUG_NODE (gmt_offset);
-      BOOST_SPIRIT_DEBUG_NODE (raw_offset);
-      BOOST_SPIRIT_DEBUG_NODE (dst_offset);
-      BOOST_SPIRIT_DEBUG_NODE (mod_date);
-      BOOST_SPIRIT_DEBUG_NODE (date);
-      BOOST_SPIRIT_DEBUG_NODE (city_code);
-      BOOST_SPIRIT_DEBUG_NODE (state_code);
-      BOOST_SPIRIT_DEBUG_NODE (region_code);
-      BOOST_SPIRIT_DEBUG_NODE (is_airport);
-      BOOST_SPIRIT_DEBUG_NODE (is_commercial);
-      BOOST_SPIRIT_DEBUG_NODE (tripType);
-      BOOST_SPIRIT_DEBUG_NODE (wiki_link);
-      BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
-      BOOST_SPIRIT_DEBUG_NODE (alt_name_details);
-      BOOST_SPIRIT_DEBUG_NODE (alt_lang_code);
-      BOOST_SPIRIT_DEBUG_NODE (alt_name);
-      BOOST_SPIRIT_DEBUG_NODE (alt_name_qualifiers);
+        alt_name_qualifiers =
+          bsq::repeat(1,4)[bsu::char_("shpc")]
+          ;
+
+        //BOOST_SPIRIT_DEBUG_NODE (LocationParser);
+        BOOST_SPIRIT_DEBUG_NODE (start);
+        BOOST_SPIRIT_DEBUG_NODE (header);
+        BOOST_SPIRIT_DEBUG_NODE (por_rule);
+        BOOST_SPIRIT_DEBUG_NODE (por_rule_end);
+        BOOST_SPIRIT_DEBUG_NODE (por_key);
+        BOOST_SPIRIT_DEBUG_NODE (por_details);
+        BOOST_SPIRIT_DEBUG_NODE (iata_code);
+        BOOST_SPIRIT_DEBUG_NODE (icao_code);
+        BOOST_SPIRIT_DEBUG_NODE (geonameid);
+        BOOST_SPIRIT_DEBUG_NODE (is_geonames);
+        BOOST_SPIRIT_DEBUG_NODE (common_name);
+        BOOST_SPIRIT_DEBUG_NODE (ascii_name);      
+        BOOST_SPIRIT_DEBUG_NODE (alt_name_short_list);
+        BOOST_SPIRIT_DEBUG_NODE (alt_name_short);
+        BOOST_SPIRIT_DEBUG_NODE (alt_name_sep);
+        BOOST_SPIRIT_DEBUG_NODE (latitude);
+        BOOST_SPIRIT_DEBUG_NODE (longitude);
+        BOOST_SPIRIT_DEBUG_NODE (feat_class);
+        BOOST_SPIRIT_DEBUG_NODE (feat_code);
+        BOOST_SPIRIT_DEBUG_NODE (country_code);
+        BOOST_SPIRIT_DEBUG_NODE (country_code2);
+        BOOST_SPIRIT_DEBUG_NODE (adm1_code);
+        BOOST_SPIRIT_DEBUG_NODE (adm2_code);
+        BOOST_SPIRIT_DEBUG_NODE (adm3_code);
+        BOOST_SPIRIT_DEBUG_NODE (adm4_code);
+        BOOST_SPIRIT_DEBUG_NODE (population);
+        BOOST_SPIRIT_DEBUG_NODE (elevation);
+        BOOST_SPIRIT_DEBUG_NODE (gtopo30);
+        BOOST_SPIRIT_DEBUG_NODE (time_zone);
+        BOOST_SPIRIT_DEBUG_NODE (gmt_offset);
+        BOOST_SPIRIT_DEBUG_NODE (raw_offset);
+        BOOST_SPIRIT_DEBUG_NODE (dst_offset);
+        BOOST_SPIRIT_DEBUG_NODE (mod_date);
+        BOOST_SPIRIT_DEBUG_NODE (date);
+        BOOST_SPIRIT_DEBUG_NODE (city_code);
+        BOOST_SPIRIT_DEBUG_NODE (state_code);
+        BOOST_SPIRIT_DEBUG_NODE (region_code);
+        BOOST_SPIRIT_DEBUG_NODE (is_airport);
+        BOOST_SPIRIT_DEBUG_NODE (is_commercial);
+        BOOST_SPIRIT_DEBUG_NODE (por_type);
+        BOOST_SPIRIT_DEBUG_NODE (wiki_link);
+        BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
+        BOOST_SPIRIT_DEBUG_NODE (alt_name_details);
+        BOOST_SPIRIT_DEBUG_NODE (alt_lang_code);
+        BOOST_SPIRIT_DEBUG_NODE (alt_name);
+        BOOST_SPIRIT_DEBUG_NODE (alt_name_qualifiers);
       }
 
       // Instantiation of rules
-      bsq::rule<Iterator, bsa::space_type>
+      bsq::rule<Iterator, bsu::blank_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
         iata_code, icao_code, geonameid,
         is_geonames, is_airport, is_commercial,
         common_name, ascii_name,
-        alt_utf_name, alt_ascii_name, alt_name_sep, alt_name_short_list,
+        alt_name_short_list, alt_name_short, alt_name_sep,
         latitude, longitude, feat_class, feat_code,
-        country_code, country_code2, adm1_code, adm2_code, adm3_code, adm4_code,
+        country_code, country_code2,
+        adm1_code, adm2_code, adm3_code, adm4_code,
         population, elevation, gtopo30,
         time_zone, gmt_offset, dst_offset, raw_offset,
         mod_date, date,
         city_code, state_code, region_code,
-        tripType, wiki_link,
+        por_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_name, alt_name_qualifiers,
         destination;
       
       // Parser Context
       Location& _location;
-    };
+    };    
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////
+  //
+  //  Entry class for the string parser
+  //
+  /////////////////////////////////////////////////////////////////////////
     
+  // //////////////////////////////////////////////////////////////////////
+  PORStringParser::PORStringParser (const std::string& iString)
+    : _string (iString) {
+    init();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void PORStringParser::init() {
+  }
+    
+  // //////////////////////////////////////////////////////////////////////
+  PORStringParser::~PORStringParser() {
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  const Location& PORStringParser::generateLocation() {
+    // DEBUG
+    // OPENTREP_LOG_DEBUG ("Parsing POR string: '" << _string << "'");
+
+    // String to be parsed
+    std::istringstream stringToBeParsed (_string);
+    
+    // Create an input iterator
+    OPENTREP::base_iterator_t iStr (stringToBeParsed);
+
+    // Convert input iterator to an iterator usable by spirit parser  
+    OPENTREP::iterator_t fwd_start(boost::spirit::make_default_multi_pass(iStr));
+    OPENTREP::iterator_t fwd_end;
+
+    // Initialise the positional iterators
+    OPENTREP::pos_iterator_t pos_start (fwd_start, fwd_end, _string);
+    OPENTREP::pos_iterator_t pos_end;
+
+    // Initialise the parser (grammar) with the helper/staging structure.
+    PorParserHelper::LocationParser<OPENTREP::iterator_t> lPORParser (_location);
+      
+    // Launch the parsing of the file and, thanks to the doEndPor
+    // call-back structure, the building of the whole BomRoot BOM
+    bool hasParsingBeenSuccesful = false;
+    try {
+
+      hasParsingBeenSuccesful = bsq::phrase_parse (fwd_start, fwd_end,
+                                                   lPORParser, bsu::blank);
+
+    } catch (const bsq::expectation_failure<pos_iterator_t>& e) {
+      const bsc::file_position_base<std::string>& pos = e.first.get_position();
+      std::ostringstream oStr;
+      oStr << "Parse error on POR string '" << _string
+           << "', position " << pos.column << std::endl
+           << "'" << e.first.get_currentline() << "'" << std::endl
+           << std::setw(pos.column) << " " << "^- here";
+      OPENTREP_LOG_ERROR (oStr.str());
+      throw PorFileParsingException (oStr.str());
+    }
+      
+    if (hasParsingBeenSuccesful == false) {
+      OPENTREP_LOG_ERROR ("Parsing of POR input string: '" << _string
+                          << "' failed");
+      throw PorFileParsingException ("Parsing of POR input string: '"
+                                     + _string + "' failed");
+    }
+    
+    if  (fwd_start != fwd_end) {
+      OPENTREP_LOG_ERROR ("Parsing of POR input string: '" << _string
+                          << "' failed");
+      throw PorFileParsingException ("Parsing of POR input file: '"
+                                     + _string + "' failed");
+    }
+    
+    //
+    if (hasParsingBeenSuccesful == true && fwd_start == fwd_end) {
+      // DEBUG
+      /*
+      OPENTREP_LOG_DEBUG ("Parsing of POR input string: '" << _string
+                          << "' succeeded");
+      */
+    }
+
+    return _location;
   }
 
 
@@ -997,10 +1165,10 @@ namespace OPENTREP {
     }
     
     // Create an input iterator
-    OPENTREP::base_iterator_t inputBegin (fileToBeParsed);
+    OPENTREP::base_iterator_t iStr (fileToBeParsed);
 
     // Convert input iterator to an iterator usable by spirit parser  
-    OPENTREP::iterator_t start (boost::spirit::make_default_multi_pass (inputBegin));
+    OPENTREP::iterator_t start (boost::spirit::make_default_multi_pass (iStr));
     OPENTREP::iterator_t end;
 
     // Initialise the parser (grammar) with the helper/staging structure.
@@ -1009,7 +1177,7 @@ namespace OPENTREP {
     // Launch the parsing of the file and, thanks to the doEndPor
     // call-back structure, the building of the whole BomRoot BOM
     const bool hasParsingBeenSuccesful = 
-       bsq::phrase_parse (start, end, lPORParser, bsa::space);
+       bsq::phrase_parse (start, end, lPORParser, bsu::blank);
       
     if (hasParsingBeenSuccesful == false) {
       OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename
@@ -1028,8 +1196,7 @@ namespace OPENTREP {
     if (hasParsingBeenSuccesful == true && start == end) {
       OPENTREP_LOG_DEBUG ("Parsing of por input file: " << _filename
                           << " succeeded");
-    }
- 
+    } 
   }
-    
+
 }

@@ -34,8 +34,12 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeKey();
 
+    unsigned short idx = 0;
     for (NameMatrix_T::const_iterator itNameList = _nameMatrix.begin();
-         itNameList != _nameMatrix.end(); ++itNameList) {
+         itNameList != _nameMatrix.end(); ++itNameList, ++idx) {
+      if (idx != 0) {
+        oStr << ",";
+      }
       const Names& lNameList = itNameList->second;
       oStr << lNameList.describe();
     }

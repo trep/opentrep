@@ -16,10 +16,11 @@ namespace OPENTREP {
     _key (IATACode_T ("AAA"), ICAOCode_T ("AAAA"), 0),
     _commonName (CommonName_T ("NotAvailable")),
     _asciiName (ASCIIName_T ("NotAvailable")),
-    _altShortNameListString (AltShortNameListString_T ("NotAvailable")),
-    _faaCode (FAACode_T ("AAA")), _cityCode (CityCode_T ("AAA")),
+    _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
+    _faaCode (FAACode_T ("")), _cityCode (CityCode_T ("ZZZ")),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
-    _altCountryCode (AltCountryCode_T ("NA")), _regionCode (RegionCode_T ("NA")),
+    _altCountryCode (AltCountryCode_T ("")),
+    _regionCode (RegionCode_T ("NOTAVL")),
     _latitude (0), _longitude (0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
     _iataType (IATAType_T ("Z")),
@@ -33,14 +34,15 @@ namespace OPENTREP {
     _wikiLink (WikiLink_T ("http://en.wikipedia.org")),
     _pageRank (K_DEFAULT_PAGE_RANK),
     _originalKeywords ("NA"), _correctedKeywords ("NA"),
-    _percentage (0), _editDistance (0), _allowableEditDistance (0) {
+    _percentage (0), _editDistance (0), _allowableEditDistance (0),
+    _itLanguageCode (Language::LAST_VALUE) {
   }
 
   // //////////////////////////////////////////////////////////////////////
   Location::Location (const Location& iLocation) :
     _key (iLocation._key),
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
-    _altShortNameListString (iLocation._altShortNameListString),
+    _altNameShortListString (iLocation._altNameShortListString),
     _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
@@ -65,7 +67,8 @@ namespace OPENTREP {
     _editDistance (iLocation._editDistance),
     _allowableEditDistance (iLocation._allowableEditDistance),
     _extraLocationList (iLocation._extraLocationList),
-    _alternateLocationList (iLocation._alternateLocationList) { 
+    _alternateLocationList (iLocation._alternateLocationList),
+    _itLanguageCode (iLocation._itLanguageCode) { 
   }
     
   // //////////////////////////////////////////////////////////////////////
@@ -76,10 +79,25 @@ namespace OPENTREP {
                       const FAACode_T& iFaaCode, const CityCode_T& iCityCode,
                       const StateCode_T& iStateCode,
                       const CountryCode_T& iCountryCode,
+                      const AltCountryCode_T& iAltCountryCode,
                       const RegionCode_T& iRegionCode,
-                      const TimeZone_T& iTimeZone,
                       const Latitude_T& iLatitude, const Longitude_T& iLongitude,
-                      const PageRank_T& iPageRank, const WikiLink_T& iWikiLink,
+                      const FeatureClass_T& iFeatureClass,
+                      const FeatureCode_T& iFeatureCode,
+                      const IATAType_T& iIATAType,
+                      const Admin1Code_T& iAdmin1Code,
+                      const Admin2Code_T& iAdmin2Code,
+                      const Admin3Code_T& iAdmin3Code,
+                      const Admin4Code_T& iAdmin4Code,
+                      const Population_T& iPopulation,
+                      const Elevation_T& iElevation, const GTopo30_T& iGTopo30,
+                      const TimeZone_T& iTimeZone,
+                      const GMTOffset_T& iGMTOffset,
+                      const DSTOffset_T& iDSTOffset,
+                      const RawOffset_T& iRawOffset,
+                      const Date_T& iModDate,
+                      const bool isAirport, const bool isCommercial,
+                      const WikiLink_T& iWikiLink, const PageRank_T& iPageRank,
                       const std::string& iOriginalKeywords,
                       const std::string& iCorrectedKeywords,
                       const MatchingPercentage_T& iPercentage,
@@ -87,25 +105,25 @@ namespace OPENTREP {
                       const NbOfErrors_T& iAllowableEditDistance) :
     _key (iIataCode, iIcaoCode, iGeonamesID),
     _commonName (iCommonName),_asciiName (iASCIIName),
-    _altShortNameListString (AltShortNameListString_T ("NotAvailable")),
+    _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _faaCode (iFaaCode), _cityCode (iCityCode), _stateCode (iStateCode),
-    _countryCode (iCountryCode), _altCountryCode (AltCountryCode_T ("NA")),
+    _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
     _regionCode (iRegionCode),
     _latitude (iLatitude), _longitude (iLongitude),
-    _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
-    _iataType (IATAType_T ("Z")),
-    _admin1Code (Admin1Code_T ("Z")), _admin2Code (Admin2Code_T ("Z")),
-    _admin3Code (Admin3Code_T ("Z")), _admin4Code (Admin4Code_T ("Z")),
-    _population (0), _elevation (0), _gTopo30 (0),
+    _featClass (iFeatureClass), _featCode (iFeatureCode), _iataType (iIATAType),
+    _admin1Code (iAdmin1Code), _admin2Code (iAdmin2Code),
+    _admin3Code (iAdmin3Code), _admin4Code (iAdmin4Code),
+    _population (iPopulation), _elevation (iElevation), _gTopo30 (iGTopo30),
     _timeZone (iTimeZone),
-    _gmtOffset (0), _dstOffset (0), _rawOffset (0),
-    _modificationDate (2000, 01, 01),
-    _isAirport (false), _isCommercial (false),
+    _gmtOffset (iGMTOffset), _dstOffset (iDSTOffset), _rawOffset (iRawOffset),
+    _modificationDate (iModDate),
+    _isAirport (isAirport), _isCommercial (isCommercial),
     _wikiLink (iWikiLink), _pageRank (iPageRank),
     _originalKeywords (iOriginalKeywords),
     _correctedKeywords (iCorrectedKeywords),
     _percentage (iPercentage), _editDistance (iEditDistance),
-    _allowableEditDistance (iAllowableEditDistance) {
+    _allowableEditDistance (iAllowableEditDistance),
+    _itLanguageCode (Language::LAST_VALUE) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -172,6 +190,9 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeShortKey();
 
+    const std::string isAirportString = (_isAirport)?"Y":"N";
+    const std::string isCommercialString = (_isCommercial)?"Y":"N";
+    
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
          << ", " << _faaCode << ", " << _cityCode << ", " << _stateCode
@@ -185,7 +206,7 @@ namespace OPENTREP {
          << ", " << _timeZone
          << ", " << _gmtOffset << ", " << _dstOffset << ", " << _rawOffset
          << ", " << _modificationDate
-         << ", " << _isAirport << ", " << _isCommercial
+         << ", " << isAirportString << ", " << isCommercialString
          << ", " << _wikiLink
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage << "%"
@@ -263,15 +284,15 @@ namespace OPENTREP {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void Location::consolidateAltShortNameList() {
+  void Location::consolidateAltNameShortListString() {
     std::ostringstream oStr;
     unsigned short idx = 0;
-    for (AltShortNameList_T::const_iterator itName = _altShortNameList.begin();
-         itName != _altShortNameList.end(); ++itName, ++idx) {
+    for (AltNameShortList_T::const_iterator itName = _itAltNameShortList.begin();
+         itName != _itAltNameShortList.end(); ++itName, ++idx) {
       if (idx != 0) {
         oStr << ",";
       }
-      const AltShortNameListString_T& lAlternateLocation = *itName;
+      const AltNameShortListString_T& lAlternateLocation = *itName;
       oStr << lAlternateLocation;
     }
   }

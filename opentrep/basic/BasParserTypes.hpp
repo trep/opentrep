@@ -11,6 +11,7 @@
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
+#include <boost/spirit/include/classic_position_iterator.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_ParserHelperTypes.hpp>
 
@@ -25,6 +26,10 @@ namespace OPENTREP {
   // the parsing unit.
   typedef std::istreambuf_iterator<char> base_iterator_t;
   typedef boost::spirit::multi_pass<base_iterator_t> iterator_t;  
+
+  // Wrap the forward iterator with position iterator, to record the position
+  typedef boost::spirit::classic::position_iterator2<iterator_t> pos_iterator_t;
+
 
   // ////////////////////////////////////////////////////////////////////
   //
@@ -81,6 +86,9 @@ namespace OPENTREP {
     static bool parse_false (Iterator& first, Iterator const& last,
                              Attribute& attr) {
       if (boost::spirit::qi::detail::string_parse ("N", first, last,
+                                                   boost::spirit::qi::unused)
+          ||
+          boost::spirit::qi::detail::string_parse ("Z", first, last,
                                                    boost::spirit::qi::unused)) {
         // Result is false
         boost::spirit::traits::assign_to (false, attr);

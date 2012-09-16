@@ -108,15 +108,16 @@ namespace OPENTREP {
 
   /** 
    * Short list of alternate names, without the language codes (e.g.,
-   * "Aéroport de Nice Côte d'Azur,Nice Airport,Flughafen Nizza").
+   * "Aéroport de Nice Côte d'Azur,Nice Airport,Flughafen Nizza"),
+   * aggregated within a single string.
    */
-  struct AltShortNameListString_T : public LocationName_T {
+  struct AltNameShortListString_T : public LocationName_T {
   public:
-    explicit AltShortNameListString_T (const std::string& iValue)
+    explicit AltNameShortListString_T (const std::string& iValue)
       : LocationName_T (iValue) {
     }
   };
-  typedef std::list<AltShortNameListString_T> AltShortNameList_T;
+  typedef std::list<AltNameShortListString_T> AltNameShortList_T;
 
   /**
    * Language code (e.g., en). Note that some language codes may contain

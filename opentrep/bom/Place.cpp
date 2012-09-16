@@ -16,11 +16,15 @@ namespace OPENTREP {
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _location (IATACode_T (""), ICAOCode_T (""), 0,
                CommonName_T (""), ASCIIName_T (""),
-               FAACode_T (""), CityCode_T (""),
-               StateCode_T (""), CountryCode_T (""),
-               RegionCode_T (""), TimeZone_T (""),
-               0.0, 0.0, K_DEFAULT_PAGE_RANK,
-               WikiLink_T (""), "", "", 0, 0, 0),
+               FAACode_T (""), CityCode_T (""), StateCode_T (""),
+               CountryCode_T (""), AltCountryCode_T (""), RegionCode_T (""), 
+               0.0, 0.0,
+               FeatureClass_T (""), FeatureCode_T (""), IATAType_T (""),
+               Admin1Code_T (""), Admin2Code_T (""),
+               Admin3Code_T (""), Admin4Code_T (""),
+               0, 0, 0, TimeZone_T (""), 0, 0, 0,
+               Date_T (2000, 01, 01), false, false,
+               WikiLink_T (""),  K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0),
     _docID (0) {
   }
   
@@ -29,11 +33,15 @@ namespace OPENTREP {
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _location (iKey.getIataCode(), iKey.getIcaoCode(), iKey.getGeonamesID(),
                CommonName_T (""), ASCIIName_T (""),
-               FAACode_T (""), CityCode_T (""),
-               StateCode_T (""), CountryCode_T (""),
-               RegionCode_T (""), TimeZone_T (""),
-               0.0, 0.0, K_DEFAULT_PAGE_RANK,
-               WikiLink_T (""), "", "", 0, 0, 0),
+               FAACode_T (""), CityCode_T (""), StateCode_T (""),
+               CountryCode_T (""), AltCountryCode_T (""), RegionCode_T (""), 
+               0.0, 0.0,
+               FeatureClass_T (""), FeatureCode_T (""), IATAType_T (""),
+               Admin1Code_T (""), Admin2Code_T (""),
+               Admin3Code_T (""), Admin4Code_T (""),
+               0, 0, 0, TimeZone_T (""), 0, 0, 0,
+               Date_T (2000, 01, 01), false, false,
+               WikiLink_T (""), K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0),
     _docID (0) {
   }
   
@@ -48,7 +56,7 @@ namespace OPENTREP {
     _world (iPlace._world), _placeHolder (iPlace._placeHolder),
     _mainPlace (iPlace._mainPlace),
     _location (iPlace._location),
-    _docID (iPlace._docID), _percentage (iPlace._percentage),
+    _docID (iPlace._docID),
     _termSet (iPlace._termSet), _spellingSet (iPlace._spellingSet),
     _stemmingSet (iPlace._stemmingSet), _synonymSet (iPlace._synonymSet) {
   }
