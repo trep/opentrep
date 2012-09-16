@@ -106,6 +106,18 @@ namespace OPENTREP {
     }
   };
 
+  /** 
+   * Short list of alternate names, without the language codes (e.g.,
+   * "Aéroport de Nice Côte d'Azur,Nice Airport,Flughafen Nizza").
+   */
+  struct AltShortNameListString_T : public LocationName_T {
+  public:
+    explicit AltShortNameListString_T (const std::string& iValue)
+      : LocationName_T (iValue) {
+    }
+  };
+  typedef std::list<AltShortNameListString_T> AltShortNameList_T;
+
   /**
    * Language code (e.g., en). Note that some language codes may contain
    * numerics; for instance, fr_1793.
@@ -162,33 +174,33 @@ namespace OPENTREP {
   /**
    * Administrative code of rank 1 (e.g., IL for Illinois).
    */
-  struct AdminCode1_T : public std::string {
+  struct Admin1Code_T : public std::string {
   public:
-    explicit AdminCode1_T (const std::string& iValue) : std::string (iValue) { }
+    explicit Admin1Code_T (const std::string& iValue) : std::string (iValue) { }
   };
 
   /**
    * Administrative code of rank 2.
    */
-  struct AdminCode2_T : public std::string {
+  struct Admin2Code_T : public std::string {
   public:
-    explicit AdminCode2_T (const std::string& iValue) : std::string (iValue) { }
+    explicit Admin2Code_T (const std::string& iValue) : std::string (iValue) { }
   };
 
   /**
    * Administrative code of rank 3.
    */
-  struct AdminCode3_T : public std::string {
+  struct Admin3Code_T : public std::string {
   public:
-    explicit AdminCode3_T (const std::string& iValue) : std::string (iValue) { }
+    explicit Admin3Code_T (const std::string& iValue) : std::string (iValue) { }
   };
 
   /**
    * Administrative code of rank 4.
    */
-  struct AdminCode4_T : public std::string {
+  struct Admin4Code_T : public std::string {
   public:
-    explicit AdminCode4_T (const std::string& iValue) : std::string (iValue) { }
+    explicit Admin4Code_T (const std::string& iValue) : std::string (iValue) { }
   };
 
   /**

@@ -41,6 +41,13 @@ namespace OPENTREP {
       return _geonamesID;
     }
 
+    /**
+     * State whether that POR is referenced by Geonames.
+     */
+    const IsGeonames_T& isGeonames() const {
+      return _isGeonames;
+    }
+
 
   public:
     // ////////////////// Setters /////////////////
@@ -59,11 +66,18 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Geonames ID.
+     * Set the Geonames ID.
      */
     void setGeonamesID (const GeonamesID_T& iGeonamesID) {
       _geonamesID = iGeonamesID;
     }    
+
+    /**
+     * Set the Geonames flag.
+     */
+    void setIsGeonames (const IsGeonames_T& isGeonames) {
+      _isGeonames = isGeonames;
+    }
 
 
   public:
@@ -146,6 +160,11 @@ namespace OPENTREP {
      * Geonames ID (e.g., 4887479).
      */
     GeonamesID_T _geonamesID;
+
+    /**
+     * Whether or not that POR is referenced by Geonames
+     */
+    IsGeonames_T _isGeonames;
   };
 
 }

@@ -51,6 +51,13 @@ namespace OPENTREP {
       return _key.getGeonamesID();
     }
 
+    /**
+     * State whether that POR is referenced by Geonames.
+     */
+    const IsGeonames_T& isGeonames() const {
+      return _key.isGeonames();
+    }
+
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -66,6 +73,13 @@ namespace OPENTREP {
       return _asciiName;
     }
     
+    /** 
+     * Get the short list of alternate names (without language codes).
+     */
+    const AltShortNameListString_T& getAltShortNameList() const {
+      return _altShortNameListString;
+    }
+
     /** 
      * Get the FAA code. 
      */
@@ -88,10 +102,17 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Country code. 
+     * Get the country code. 
      */
     const CountryCode_T& getCountryCode() const {
       return _countryCode;
+    }
+    
+    /**
+     * Get the alternative country code. 
+     */
+    const AltCountryCode_T& getAltCountryCode() const {
+      return _altCountryCode;
     }
     
     /**
@@ -109,6 +130,27 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the GMT offset (e.g., 1)
+     */
+    const GMTOffset_T& getGMTOffset() const {
+      return _gmtOffset;
+    }
+
+    /**
+     * Get the DST offset (e.g., 2)
+     */
+    const DSTOffset_T& getDSTOffset() const {
+      return _dstOffset;
+    }
+
+    /**
+     * Get the raw offset (e.g., 1)
+     */
+    const RawOffset_T& getRawOffset() const {
+      return _rawOffset;
+    }
+
+    /**
      * Get the latitude.
      */
     const Latitude_T& getLatitude() const {
@@ -122,6 +164,48 @@ namespace OPENTREP {
       return _longitude;
     }
     
+    /**
+     * Get the feature class (e.g., S for spot).
+     */
+    const FeatureClass_T& getFeatureClass() const {
+      return _featClass;
+    }
+
+    /**
+     * Get the feature code (e.g., AIRP for airport).
+     */
+    const FeatureCode_T& getFeatureCode() const {
+      return _featCode;
+    }
+
+    /**
+     * Get the administrative code of rank 1 (e.g., IL for Illinois).
+     */
+    const Admin1Code_T& getAdmin1Code() const {
+      return _admin1Code;
+    }
+
+    /**
+     * Get the administrative code of rank 2.
+     */
+    const Admin2Code_T& getAdmin2Code() const {
+      return _admin2Code;
+    }
+
+    /**
+     * Get the administrative code of rank 3.
+     */
+    const Admin3Code_T& getAdmin3Code() const {
+      return _admin3Code;
+    }
+
+    /**
+     * Get the administrative code of rank 4.
+     */
+    const Admin4Code_T& getAdmin4Code() const {
+      return _admin4Code;
+    }
+
     /**
      * Get the population (number of inhabitants).
      */
@@ -157,6 +241,20 @@ namespace OPENTREP {
       return _modificationDate;
     }
     
+    /**
+     * State whether that POR is an airport.
+     */
+    const IsAirport_T& isAirport() const {
+      return _isAirport;
+    }
+
+    /**
+     * State whether that POR is commercial.
+     */ 
+    const IsCommercial_T& isCommercial() const {
+      return _isCommercial;
+    }
+
     /**
      * Get the Wikipedia link.
      */
@@ -281,6 +379,13 @@ namespace OPENTREP {
       _asciiName = ASCIIName_T (iName);
     }
     
+    /** 
+     * Get the short list of alternate names (without language codes).
+     */
+    void setAltShortNameList (const AltShortNameListString_T& iNameList) {
+      _altShortNameListString = iNameList;
+    }
+
     /**
      * Set the FAA code. 
      */
@@ -310,6 +415,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the alternative country code. 
+     */
+    void setAltCountryCode (const std::string& iCountryCode) {
+      _altCountryCode = AltCountryCode_T (iCountryCode);
+    }
+    
+    /**
      * Set the Region code. 
      */
     void setRegionCode (const std::string& iRegionCode) {
@@ -324,6 +436,27 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the GMT offset (e.g., 1)
+     */
+    void setGMTOffset (const GMTOffset_T& iOffset) {
+      _gmtOffset = iOffset;
+    }
+
+    /**
+     * Set the DST offset (e.g., 2)
+     */
+    void setDSTOffset (const DSTOffset_T& iOffset) {
+      _dstOffset = iOffset;
+    }
+
+    /**
+     * Set the raw offset (e.g., 1)
+     */
+    void setRawOffset (const RawOffset_T& iOffset) {
+      _rawOffset = iOffset;
+    }
+
+    /**
      * Set the Latitude.
      */
     void setLatitude (const Latitude_T& iLatitude) {
@@ -337,6 +470,48 @@ namespace OPENTREP {
       _longitude = iLongitude;
     }
     
+    /**
+     * Set the feature class (e.g., S for spot).
+     */
+    void setFeatureClass (const std::string& iFeatClass) {
+      _featClass = FeatureClass_T (iFeatClass);
+    }
+
+    /**
+     * Set the feature code (e.g., AIRP for airport).
+     */
+    void setFeatureCode (const std::string& iFeatCode) {
+      _featCode = FeatureCode_T (iFeatCode);
+    }
+
+    /**
+     * Set the administrative code of rank 1 (e.g., IL for Illinois).
+     */
+    void setAdmin1Code (const std::string& iAdminCode) {
+      _admin1Code = Admin1Code_T (iAdminCode);
+    }
+
+    /**
+     * Set the administrative code of rank 2.
+     */
+    void setAdmin2Code (const std::string& iAdminCode) {
+      _admin2Code = Admin2Code_T (iAdminCode);
+    }
+
+    /**
+     * Set the administrative code of rank 3.
+     */
+    void setAdmin3Code (const std::string& iAdminCode) {
+      _admin3Code = Admin3Code_T (iAdminCode);
+    }
+
+    /**
+     * Set the administrative code of rank 4.
+     */
+    void setAdmin4Code (const std::string& iAdminCode) {
+      _admin4Code = Admin4Code_T (iAdminCode);
+    }
+
     /**
      * Set the population (number of inhabitants).
      */
@@ -370,6 +545,20 @@ namespace OPENTREP {
      */
     void setModificationDate (const Date_T& iModDate) {
       _modificationDate = iModDate;
+    }
+
+    /**
+     * State whether that POR is an airport.
+     */
+    void setIsAirport (const IsAirport_T& isAirport) {
+      _isAirport = isAirport;
+    }
+
+    /**
+     * State whether that POR is commercial.
+     */ 
+    void setIsCommercial (const IsCommercial_T& isCommercial) {
+      _isCommercial = isCommercial;
     }
 
     /**
@@ -454,6 +643,12 @@ namespace OPENTREP {
      * Calculate the date from the staging details.
      */
     Date_T calculateDate() const;
+
+    /**
+     * Aggregate the temporary alternate names into the short list of alternate
+     * names.
+     */
+    void consolidateAltShortNameList();
 
 
   public:
@@ -563,6 +758,12 @@ namespace OPENTREP {
      */
     ASCIIName_T _asciiName;
     
+    /** 
+     * Short list of alternate names, without the language codes (e.g.,
+     * "Aéroport de Nice Côte d'Azur,Nice Airport,Flughafen Nizza").
+     */
+    AltShortNameListString_T _altShortNameListString;
+
     /**
      * FAA code (e.g., ORD).
      */
@@ -570,7 +771,8 @@ namespace OPENTREP {
 
     /**
      * Related IATA city code (e.g., CHI).
-     * \note The related city code is empty when the Location structure is itself a city.
+     * \note The related city code is empty when the Location structure
+     *       is itself a city.
      */
     CityCode_T _cityCode;
 
@@ -622,22 +824,22 @@ namespace OPENTREP {
     /**
      * Administrative code of rank 1 (e.g., IL for Illinois).
      */
-    AdminCode1_T _adminCode1;
+    Admin1Code_T _admin1Code;
 
     /**
      * Administrative code of rank 2.
      */
-    AdminCode2_T _adminCode2;
+    Admin2Code_T _admin2Code;
 
     /**
      * Administrative code of rank 3.
      */
-    AdminCode3_T _adminCode3;
+    Admin3Code_T _admin3Code;
 
     /**
      * Administrative code of rank 4.
      */
-    AdminCode4_T _adminCode4;
+    Admin4Code_T _admin4Code;
 
     /**
      * Population.
@@ -678,11 +880,6 @@ namespace OPENTREP {
      * Modification date
      */
     Date_T _modificationDate;
-
-    /**
-     * Whether or not that POR is referenced by Geonames
-     */
-    IsGeonames_T _isGeonames;
 
     /**
      * Whether or not that POR is an airport
@@ -752,6 +949,11 @@ namespace OPENTREP {
     year_t _itYear;
     month_t _itMonth;
     day_t _itDay;
+
+    /**
+     * Staging alternate names.
+     */
+    AltShortNameList_T _altShortNameList;
   };
 
 }

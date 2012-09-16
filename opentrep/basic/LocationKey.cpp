@@ -14,18 +14,25 @@ namespace OPENTREP {
                             const ICAOCode_T& iIcaoCode,
                             const GeonamesID_T& iGeonamesID) :
     _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonamesID (iGeonamesID) {
+    if (_geonamesID == 0) {
+      _isGeonames = false;
+    } else {
+      _isGeonames = true;
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
   LocationKey::LocationKey() :
-    _iataCode (IATACode_T ("")), _icaoCode (ICAOCode_T ("")), _geonamesID (0) {
+    _iataCode (IATACode_T ("")), _icaoCode (ICAOCode_T ("")),
+    _geonamesID (0), _isGeonames (false) {
     assert (false);
   }
   
   // //////////////////////////////////////////////////////////////////////
   LocationKey::LocationKey (const LocationKey& iLocationKey) :
     _iataCode (iLocationKey._iataCode), _icaoCode (iLocationKey._icaoCode),
-    _geonamesID (iLocationKey._geonamesID) {
+    _geonamesID (iLocationKey._geonamesID),
+    _isGeonames (iLocationKey._isGeonames) {
   }
   
   // //////////////////////////////////////////////////////////////////////
