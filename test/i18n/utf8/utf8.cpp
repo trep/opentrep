@@ -145,7 +145,7 @@ int u8_toutf8(char *dest, int sz, const u_int32_t *src, int srcsz)
 int u8_wc_toutf8(char *dest, u_int32_t ch)
 {
     if (ch < 0x80) {
-        dest[0] = (char)ch;
+      dest[0] = static_cast<char> (ch);
         return 1;
     }
     if (ch < 0x800) {
@@ -480,9 +480,15 @@ int u8_printf(char *fmt, ...)
 // ////////////////// M A I N ///////////////////
 int main (int argc, char* argv[]) {
   
-  const char query2[] = { 0xd9, 0x83, 0xd8, 0xa7, 0xd9, 0x81, ' ', 0xd8,
-                          0xa7, 0xd9, 0x84, 0xd8, 0xac, 0xd8, 0xa7, 0xd8,
-                          0xb9, 0 };
+  const char query2[18] = { static_cast<char> (0xd9), static_cast<char> (0x83),
+                            static_cast<char> (0xd8), static_cast<char> (0xa7),
+                            static_cast<char> (0xd9), static_cast<char> (0x81),
+                            ' ', static_cast<char> (0xd8),
+                            static_cast<char> (0xa7), static_cast<char> (0xd9),
+                            static_cast<char> (0x84), static_cast<char> (0xd8),
+                            static_cast<char> (0xac), static_cast<char> (0xd8),
+                            static_cast<char> (0xa7), static_cast<char> (0xd8),
+                            static_cast<char> (0xb9), '\0' };
 
   std::cout << "String: '" << query2 << "'" << std::endl;
   
