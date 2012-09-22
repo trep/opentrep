@@ -11,7 +11,7 @@
 #include <map>
 // OpenTrep
 #include <opentrep/OPENTREP_Abstract.hpp>
-#include <opentrep/Language.hpp>
+#include <opentrep/OPENTREP_Types.hpp>
 
 namespace OPENTREP {
 
@@ -29,7 +29,7 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    Names (const Language::EN_Language&);
+    Names (const LanguageCode_T&);
     /**
      * Copy constructor.
      */
@@ -50,7 +50,7 @@ namespace OPENTREP {
     /**
      * Get the language code.
      */
-    Language::EN_Language getLanguageCode() const {
+    LanguageCode_T getLanguageCode() const {
       return _languageCode;
     }
 
@@ -74,7 +74,7 @@ namespace OPENTREP {
     /**
      * Set the language code.
      */
-    void setLanguageCode (const Language::EN_Language& iLanguageCode) {
+    void setLanguageCode (const LanguageCode_T& iLanguageCode) {
       _languageCode = iLanguageCode;
     }
 
@@ -130,7 +130,7 @@ namespace OPENTREP {
     /**
      * Language code (e.g., en_US, fr_FR, etc.).
      */
-    Language::EN_Language _languageCode;
+    LanguageCode_T _languageCode;
 
     /**
      * List of names, for the given place, and in the current language.
@@ -146,7 +146,7 @@ namespace OPENTREP {
    * For instance, MUC corresponds to Munich in English, München
    * in German, Munique in French, Мюнхен in Russian, etc.
    */
-  typedef std::map<Language::EN_Language, Names> NameMatrix_T;
+  typedef std::map<LanguageCode_T, Names> NameMatrix_T;
 
 }
 #endif // __OPENTREP_NAMES_HPP

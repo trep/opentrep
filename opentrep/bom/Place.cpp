@@ -250,7 +250,7 @@ namespace OPENTREP {
     for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
          itNameList != lNameMatrix.end(); ++itNameList) {
       // Retrieve the language code and locale
-      // const Language::EN_Language& lLanguage = itNameList->first;
+      // const LanguageCode_T& lLanguage = itNameList->first;
       const Names& lNames = itNameList->second;
 
       // For a given language, retrieve the list of place names
@@ -288,13 +288,14 @@ namespace OPENTREP {
   const Location& Place::completeLocation() {
 
     NameList_T lNameList;
-    const bool hasFoundNameList = getNameList (Language::en_US, lNameList);
+    LanguageCode_T K_DEFAULT_LANGUAGE_CODE ("en_US");
+    const bool hasFoundNameList = getNameList (K_DEFAULT_LANGUAGE_CODE, lNameList);
 
     if (hasFoundNameList == false) {
       //
       std::ostringstream errorStr;
-      errorStr << "No list of names in (American) English (en_US "
-               << "locale) can be found for the following place: "
+      errorStr << "No list of names in (American) English (" << K_DEFAULT_LANGUAGE_CODE
+               << " locale) can be found for the following place: "
                << toShortString();
       OPENTREP_LOG_ERROR (errorStr.str());
       // throw LanguageCodeNotDefinedInNameTableException (errorStr.str());

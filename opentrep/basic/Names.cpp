@@ -10,12 +10,12 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  Names::Names() : _languageCode (Language::en_US) {
+  Names::Names() : _languageCode ("en_US") {
     assert (false);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  Names::Names (const Language::EN_Language& iLanguageCode)
+  Names::Names (const LanguageCode_T& iLanguageCode)
     : _languageCode (iLanguageCode) {
   }
   
@@ -54,7 +54,7 @@ namespace OPENTREP {
 
     // The language code is the same for all the items of the list. But it
     // is repeated for every item, so that it can be parsed easily.
-    const std::string& lLangCode = Language::getShortLabel (_languageCode);
+    // const std::string& lLangCode = Language::getShortLabel (_languageCode);
 
     unsigned short idx = 0;
     for (NameList_T::const_iterator itName = _nameList.begin();
@@ -63,7 +63,7 @@ namespace OPENTREP {
         oStr << ",";
       }
       const std::string& lName = *itName;
-      oStr << lLangCode << "," << lName;
+      oStr << _languageCode << "," << lName;
     }
 
     return oStr.str();

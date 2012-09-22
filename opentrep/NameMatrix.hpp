@@ -48,13 +48,13 @@ namespace OPENTREP {
     /**
      * Get, for a given language (code), the corresponding list of names.
      *
-     * @param const Language::EN_Language& Language code.
+     * @param const LanguageCode_T& Language code.
      * @param NameList_T& Empty list of names, which will be filled by the
      *        method if a list exists for that language code.
      * @return bool Whether or not such a list exists for the given
      *         language.
      */
-    bool getNameList (const Language::EN_Language&, NameList_T&) const;
+    bool getNameList (const LanguageCode_T&, NameList_T&) const;
 
 
   public:
@@ -62,10 +62,10 @@ namespace OPENTREP {
     /**
      * Add a name for the place.
      *
-     * @param const Language::EN_Language& Language in which to add the name.
+     * @param const LanguageCode_T& Language in which to add the name.
      * @param const std::string& Name to be added.
      */
-    void addName (const Language::EN_Language&, const std::string& iName);
+    void addName (const LanguageCode_T&, const std::string& iName);
 
     /**
      * Reset the map of name lists.

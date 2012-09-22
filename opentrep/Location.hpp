@@ -11,6 +11,7 @@
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/OPENTREP_ParserHelperTypes.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
+#include <opentrep/Language.hpp>
 #include <opentrep/LocationKey.hpp>
 #include <opentrep/NameMatrix.hpp>
 #include <opentrep/LocationList.hpp>
@@ -279,13 +280,13 @@ namespace OPENTREP {
     /**
      * Get, for a given language (code), the corresponding list of names.
      *
-     * @param const Language::EN_Language& Language code.
+     * @param const LanguageCode_T& Language code.
      * @param NameList_T& Empty list of names, which will be filled by the
      *        method if a list exists for that language code.
      * @return bool Whether or not such a list exists for the given
      *         language.
      */
-    bool getNameList (const Language::EN_Language& iLanguageCode,
+    bool getNameList (const LanguageCode_T& iLanguageCode,
                       NameList_T& ioNameList) const {
       return _nameMatrix.getNameList (iLanguageCode, ioNameList);
     }
@@ -585,10 +586,10 @@ namespace OPENTREP {
     /**
      * Add a name for that location.
      *
-     * @param const Language::EN_Language& Language in which to add the name.
+     * @param const LanguageCode_T& Language in which to add the name.
      * @param const std::string& Name to be added.
      */
-    void addName (const Language::EN_Language& iLanguageCode,
+    void addName (const LanguageCode_T& iLanguageCode,
                   const std::string& iName) {
       _nameMatrix.addName (iLanguageCode, iName);
     }
@@ -979,7 +980,11 @@ namespace OPENTREP {
     /**
      * Staging alternate names.
      */
-    Language::EN_Language _itLanguageCode;
+    Language::EN_Language _itLanguageCodeNum;
+    LanguageCode_T _itLanguageCode;
+    std::string _itLangCode2Char;
+    std::string _itLangCodeExt;
+    std::string _itLangCodeHist;
     AltNameShortList_T _itAltNameShortList;
   };
 

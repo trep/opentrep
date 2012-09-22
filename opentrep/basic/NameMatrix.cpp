@@ -64,7 +64,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool NameMatrix::getNameList (const Language::EN_Language& iLanguageCode,
+  bool NameMatrix::getNameList (const LanguageCode_T& iLanguageCode,
                                 NameList_T& ioNameList) const {
     bool oFoundNameList = false;
     
@@ -79,7 +79,7 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void NameMatrix::addName (const Language::EN_Language& iLanguageCode,
+  void NameMatrix::addName (const LanguageCode_T& iLanguageCode,
                             const std::string& iName) {
 
     // Check whether a name in that language has already been recorded
@@ -102,8 +102,7 @@ namespace OPENTREP {
       if (insertSucceeded == false) {
         OPENTREP_LOG_ERROR ("The " << iName << " name can not be inserted in "
                             << "the dedicated list for the "
-                            << Language::getLongLabel (iLanguageCode)
-                            << " language");
+                            << iLanguageCode << " language");
       }
       assert (insertSucceeded == true);
     }

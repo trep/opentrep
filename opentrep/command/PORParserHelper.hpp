@@ -354,12 +354,52 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the language code of an alternate name. */
-    struct storeAltLangCode : public ParserSemanticAction {
+    /** Store the full language code of an alternate name. */
+    struct storeAltLangCodeFull : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeAltLangCode (Location&);
+      storeAltLangCodeFull (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<boost::uint32_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the first 2 characters of the language code of an alternate name. */
+    struct storeAltLangCode2Char : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAltLangCode2Char (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<boost::uint32_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the country-specific part of the language code of an alternate name. */
+    struct storeAltLangCodeExt : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAltLangCodeExt (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<boost::uint32_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the historical part of the language code of an alternate name. */
+    struct storeAltLangCodeHist : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAltLangCodeHist (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<boost::uint32_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the re-aggregated language code of an alternate name. */
+    struct storeAltLangCodeEnd : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAltLangCodeEnd (Location&);
+      /** Actor Function (functor). */
+      void operator() (boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };

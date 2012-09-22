@@ -35,7 +35,8 @@ namespace OPENTREP {
     _pageRank (K_DEFAULT_PAGE_RANK),
     _originalKeywords ("NA"), _correctedKeywords ("NA"),
     _percentage (0), _editDistance (0), _allowableEditDistance (0),
-    _itLanguageCode (Language::LAST_VALUE) {
+    _itLanguageCodeNum (Language::LAST_VALUE),
+    _itLanguageCode (LanguageCode_T ("")) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -68,7 +69,8 @@ namespace OPENTREP {
     _allowableEditDistance (iLocation._allowableEditDistance),
     _extraLocationList (iLocation._extraLocationList),
     _alternateLocationList (iLocation._alternateLocationList),
-    _itLanguageCode (iLocation._itLanguageCode) { 
+    _itLanguageCodeNum (iLocation._itLanguageCodeNum),
+    _itLanguageCode (LanguageCode_T ("")) { 
   }
     
   // //////////////////////////////////////////////////////////////////////
@@ -123,7 +125,8 @@ namespace OPENTREP {
     _correctedKeywords (iCorrectedKeywords),
     _percentage (iPercentage), _editDistance (iEditDistance),
     _allowableEditDistance (iAllowableEditDistance),
-    _itLanguageCode (Language::LAST_VALUE) {
+    _itLanguageCodeNum (Language::LAST_VALUE),
+    _itLanguageCode (LanguageCode_T ("")) {
   }
 
   // //////////////////////////////////////////////////////////////////////
