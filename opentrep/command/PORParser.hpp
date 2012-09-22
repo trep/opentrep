@@ -18,9 +18,9 @@ namespace OPENTREP {
      * Parses the CSV file describing the POR (points of reference), and generates
      * the POR BOM tree accordingly.
      *
-     * @param const FilePath_T& The file-name of the CSV-formatted POR input file.
+     * @param const PORFilePath_T& The file-name of the CSV-formatted POR input file.
      */
-    static void PORGeneration (const FilePath_T&);
+    static void PORGeneration (const PORFilePath_T&);
   };
 }
 #endif // __OPENTREP_CMD_PORPARSER_HPP

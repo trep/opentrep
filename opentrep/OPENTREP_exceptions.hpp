@@ -149,6 +149,17 @@ namespace OPENTREP {
   };
   
   /**
+   * PR file parsing exception.
+   */
+  class PrFileParsingException : public ParserException {  
+  public:
+    /**
+     * Constructor.
+     */
+    PrFileParsingException (const std::string& iWhat) : ParserException (iWhat) {}
+  };
+  
+  /**
    * Code conversion.
    */
   class CodeConversionException : public ParserException {  

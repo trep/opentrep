@@ -7,30 +7,30 @@
 // OpenTREP
 #include <opentrep/basic/BasFileMgr.hpp>
 #include <opentrep/service/Logger.hpp>
-#include <opentrep/command/PORParserHelper.hpp>
-#include <opentrep/command/PORParser.hpp>
+#include <opentrep/command/PRParserHelper.hpp>
+#include <opentrep/command/PRParser.hpp>
 
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  void PORParser::PORGeneration (const PORFilePath_T& iPORFilename) {
+  void PRParser::PRGeneration (const PRFilePath_T& iPRFilename) {
 
     // Check that the file path given as input corresponds to an actual file
     const bool doesExistAndIsReadable =
-      BasFileMgr::doesExistAndIsReadable (iPORFilename);
+      BasFileMgr::doesExistAndIsReadable (iPRFilename);
     if (doesExistAndIsReadable == false) {
-      OPENTREP_LOG_ERROR ("The POR input file, '" << iPORFilename
+      OPENTREP_LOG_ERROR ("The PR input file, '" << iPRFilename
                           << "', can not be retrieved on the file-system");
-      throw FileNotFoundException ("The POR input file '" + iPORFilename
+      throw FileNotFoundException ("The PR input file '" + iPRFilename
                                    + "' does not exist or can not be read");
     }
 
-    // Initialise the POR file parser.
-    PORFileParser lPorFileParser (iPORFilename);
+    // Initialise the PR file parser.
+    PRFileParser lPrFileParser (iPRFilename);
 
-    // Parse the CSV-formatted POR input file and generate the corresponding
-    // POR structures.
-    lPorFileParser.generateLocations();
+    // Parse the CSV-formatted PR input file and generate the corresponding
+    // PR structures.
+    lPrFileParser.generateLocations();
   }
 
 }

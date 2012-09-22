@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_CMD_PORPARSERHELPER_HPP
-#define __OPENTREP_CMD_PORPARSERHELPER_HPP
+#ifndef __OPENTREP_CMD_PRPARSERHELPER_HPP
+#define __OPENTREP_CMD_PRPARSERHELPER_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -14,7 +14,7 @@
 
 namespace OPENTREP {
 
-  namespace PorParserHelper {
+  namespace PrParserHelper {
 
     /** Unicode character. */
     //typedef char uchar_t;
@@ -25,7 +25,7 @@ namespace OPENTREP {
     //  Semantic actions
     // ////////////////////////////////////////////////////
     ///////////////
-    /** Generic Semantic Action (Actor / Functor) for the Por Parser. */
+    /** Generic Semantic Action (Actor / Functor) for the Pr Parser. */
     struct ParserSemanticAction {
       /** Actor Constructor. */
       ParserSemanticAction (Location&);
@@ -333,10 +333,10 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed POR type. */
-    struct storePORType : public ParserSemanticAction {
+    /** Store the parsed PR type. */
+    struct storePRType : public ParserSemanticAction {
       /** Actor Constructor. */
-      storePORType (Location&);
+      storePRType (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
@@ -414,10 +414,10 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Mark the end of the por-rule parsing. */
-    struct doEndPor : public ParserSemanticAction {
+    /** Mark the end of the pr-rule parsing. */
+    struct doEndPr : public ParserSemanticAction {
       /** Actor Constructor. */
-      doEndPor (Location&);
+      doEndPr (Location&);
       /** Actor Function (functor). */
       void operator() (boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type,
@@ -439,17 +439,17 @@ namespace OPENTREP {
    * the actual parser, which is a templatised Boost Spirit grammar.
    * Hence, the actual parser is instantiated within that class object code.
    */
-  class PORStringParser {
+  class PRStringParser {
   public:
     /**
      * Constructor.
      */
-    PORStringParser (const std::string& iString);
+    PRStringParser (const std::string& iString);
 
     /**
      * Destructor.
      */
-    ~PORStringParser();
+    ~PRStringParser();
 
     /**
      * Parse the input string and generate the Location structures.
@@ -470,7 +470,7 @@ namespace OPENTREP {
     std::string _string;
 
     /**
-     * POR Structure.
+     * PR Structure.
      */
     Location _location;
   };
@@ -488,12 +488,12 @@ namespace OPENTREP {
    * the actual parser, which is a templatised Boost Spirit grammar.
    * Hence, the actual parser is instantiated within that class object code.
    */
-  class PORFileParser {
+  class PRFileParser {
   public:
     /**
      * Constructor.
      */
-    PORFileParser (const PORFilePath_T& iFilename);
+    PRFileParser (const PRFilePath_T& iFilename);
 
     /**
      * Parse the input file and generate the Location structures.
@@ -509,15 +509,15 @@ namespace OPENTREP {
   private:
     // Attributes
     /**
-     * File-name of the CSV-formatted por input file.
+     * File-name of the CSV-formatted pr input file.
      */
-    PORFilePath_T _filename;
+    PRFilePath_T _filename;
 
     /**
-     * POR Structure.
+     * PR Structure.
      */
     Location _location;
   };
     
 }
-#endif // __OPENTREP_CMD_PORPARSERHELPER_HPP
+#endif // __OPENTREP_CMD_PRPARSERHELPER_HPP

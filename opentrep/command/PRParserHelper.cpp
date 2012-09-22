@@ -14,7 +14,7 @@
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/service/Logger.hpp>
-#include <opentrep/command/PORParserHelper.hpp>
+#include <opentrep/command/PRParserHelper.hpp>
 
 namespace OPENTREP {
 
@@ -24,7 +24,7 @@ namespace OPENTREP {
   namespace bsu = boost::spirit::unicode;
   namespace bsc = boost::spirit::classic;
 
-  namespace PorParserHelper {
+  namespace PrParserHelper {
       
     // //////////////////////////////////////////////////////////////////
     //  Semantic actions
@@ -77,12 +77,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGeonamesID::operator() (unsigned int iPorId,
+    void storeGeonamesID::operator() (unsigned int iPrId,
                                       bsq::unused_type, bsq::unused_type) const {
-      _location.setGeonamesID (iPorId);
+      _location.setGeonamesID (iPrId);
       
       // DEBUG
-      //OPENTREP_LOG_DEBUG ( "Por Id: " << _location.getPorID ());
+      //OPENTREP_LOG_DEBUG ( "Pr Id: " << _location.getPrID ());
     }
     
     // //////////////////////////////////////////////////////////////////
@@ -485,12 +485,12 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storePORType::storePORType (Location& ioLocation)
+    storePRType::storePRType (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storePORType::operator() (std::vector<uchar_t> iChar,
+    void storePRType::operator() (std::vector<uchar_t> iChar,
                                    bsq::unused_type, bsq::unused_type) const {
       const std::string lIATATypeStr (iChar.begin(), iChar.end());
       const IATAType_T lIATAType (lIATATypeStr);
@@ -623,12 +623,12 @@ namespace OPENTREP {
 
     
     // //////////////////////////////////////////////////////////////////
-    doEndPor::doEndPor (Location& ioLocation)
+    doEndPr::doEndPr (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void doEndPor::operator() (bsq::unused_type,
+    void doEndPr::operator() (bsq::unused_type,
                                bsq::unused_type, bsq::unused_type) const {
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Do End. Location structure: " << _location);
@@ -840,35 +840,35 @@ namespace OPENTREP {
     */ 
 
     /**
-     * Grammar for the Por-Rule parser.
+     * Grammar for the Pr-Rule parser.
      */
     template <typename Iterator>	
     struct LocationParser : public bsq::grammar<Iterator, bsu::blank_type> {
 
-      LocationParser (Location& ioPORRule) : 
-        LocationParser::base_type(start), _location(ioPORRule) {
+      LocationParser (Location& ioPRRule) : 
+        LocationParser::base_type(start), _location(ioPRRule) {
 
         start = bsq::eps
-          >> *(header | por_rule);
+          >> *(header | pr_rule);
 
         header = bsq::lit("iata_code") >> +(bsu::char_ - bsq::eoi - bsq::eol)
                                        >> (bsq::eoi | bsq::eol);
 
-        por_rule = por_key
-          >> '^' >> por_details
+        pr_rule = pr_key
+          >> '^' >> pr_details
           >> -alt_name_section
-          >> por_rule_end[doEndPor(_location)];
+          >> pr_rule_end[doEndPr(_location)];
         // >> +( '^' >> segment )
 
-        por_rule_end = bsq::eps;
+        pr_rule_end = bsq::eps;
 
-        por_key = iata_code
+        pr_key = iata_code
           >> '^' >> icao_code
           >> '^' >> is_geonames
           >> '^' >> geonameid
           ;
 
-        por_details = common_name
+        pr_details = common_name
           >> '^' >> ascii_name
           >> '^' >> -alt_name_short_list[storeAltNameShortListString(_location)]
           >> '^' >> -latitude
@@ -894,7 +894,7 @@ namespace OPENTREP {
           >> '^' >> city_code
           >> '^' >> -state_code
           >> '^' >> -region_code
-          >> '^' >> por_type
+          >> '^' >> pr_type
           >> '^' >> -wiki_link
           ;
 
@@ -1010,8 +1010,8 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeRegionCode(_location)]
           ;
 
-        por_type =
-          bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
+        pr_type =
+          bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePRType(_location)]
           ;
       
         wiki_link =
@@ -1058,10 +1058,10 @@ namespace OPENTREP {
         //BOOST_SPIRIT_DEBUG_NODE (LocationParser);
         BOOST_SPIRIT_DEBUG_NODE (start);
         BOOST_SPIRIT_DEBUG_NODE (header);
-        BOOST_SPIRIT_DEBUG_NODE (por_rule);
-        BOOST_SPIRIT_DEBUG_NODE (por_rule_end);
-        BOOST_SPIRIT_DEBUG_NODE (por_key);
-        BOOST_SPIRIT_DEBUG_NODE (por_details);
+        BOOST_SPIRIT_DEBUG_NODE (pr_rule);
+        BOOST_SPIRIT_DEBUG_NODE (pr_rule_end);
+        BOOST_SPIRIT_DEBUG_NODE (pr_key);
+        BOOST_SPIRIT_DEBUG_NODE (pr_details);
         BOOST_SPIRIT_DEBUG_NODE (iata_code);
         BOOST_SPIRIT_DEBUG_NODE (icao_code);
         BOOST_SPIRIT_DEBUG_NODE (geonameid);
@@ -1095,7 +1095,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (region_code);
         BOOST_SPIRIT_DEBUG_NODE (is_airport);
         BOOST_SPIRIT_DEBUG_NODE (is_commercial);
-        BOOST_SPIRIT_DEBUG_NODE (por_type);
+        BOOST_SPIRIT_DEBUG_NODE (pr_type);
         BOOST_SPIRIT_DEBUG_NODE (wiki_link);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_details);
@@ -1111,7 +1111,7 @@ namespace OPENTREP {
 
       // Instantiation of rules
       bsq::rule<Iterator, bsu::blank_type>
-      start, header, por_rule, por_rule_end, por_key, por_details,
+      start, header, pr_rule, pr_rule_end, pr_key, pr_details,
         iata_code, icao_code, geonameid,
         is_geonames, is_airport, is_commercial,
         common_name, ascii_name,
@@ -1123,7 +1123,7 @@ namespace OPENTREP {
         time_zone, gmt_offset, dst_offset, raw_offset,
         mod_date, date,
         city_code, state_code, region_code,
-        por_type, wiki_link,
+        pr_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,
         lang_code_opt, lang_code_2char, lang_code_ext, lang_code_hist,
@@ -1142,23 +1142,23 @@ namespace OPENTREP {
   /////////////////////////////////////////////////////////////////////////
     
   // //////////////////////////////////////////////////////////////////////
-  PORStringParser::PORStringParser (const std::string& iString)
+  PRStringParser::PRStringParser (const std::string& iString)
     : _string (iString) {
     init();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void PORStringParser::init() {
+  void PRStringParser::init() {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  PORStringParser::~PORStringParser() {
+  PRStringParser::~PRStringParser() {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const Location& PORStringParser::generateLocation() {
+  const Location& PRStringParser::generateLocation() {
     // DEBUG
-    // OPENTREP_LOG_DEBUG ("Parsing POR string: '" << _string << "'");
+    // OPENTREP_LOG_DEBUG ("Parsing PR string: '" << _string << "'");
 
     // String to be parsed
     std::istringstream stringToBeParsed (_string);
@@ -1175,38 +1175,38 @@ namespace OPENTREP {
     OPENTREP::pos_iterator_t pos_end;
 
     // Initialise the parser (grammar) with the helper/staging structure.
-    PorParserHelper::LocationParser<OPENTREP::iterator_t> lPORParser (_location);
+    PrParserHelper::LocationParser<OPENTREP::iterator_t> lPRParser (_location);
       
-    // Launch the parsing of the file and, thanks to the doEndPor
+    // Launch the parsing of the file and, thanks to the doEndPr
     // call-back structure, the building of the whole BomRoot BOM
     bool hasParsingBeenSuccesful = false;
     try {
 
       hasParsingBeenSuccesful = bsq::phrase_parse (fwd_start, fwd_end,
-                                                   lPORParser, bsu::blank);
+                                                   lPRParser, bsu::blank);
 
     } catch (const bsq::expectation_failure<pos_iterator_t>& e) {
       const bsc::file_position_base<std::string>& pos = e.first.get_position();
       std::ostringstream oStr;
-      oStr << "Parse error on POR string '" << _string
+      oStr << "Parse error on PR string '" << _string
            << "', position " << pos.column << std::endl
            << "'" << e.first.get_currentline() << "'" << std::endl
            << std::setw(pos.column) << " " << "^- here";
       OPENTREP_LOG_ERROR (oStr.str());
-      throw PorFileParsingException (oStr.str());
+      throw PrFileParsingException (oStr.str());
     }
       
     if (hasParsingBeenSuccesful == false) {
-      OPENTREP_LOG_ERROR ("Parsing of POR input string: '" << _string
+      OPENTREP_LOG_ERROR ("Parsing of PR input string: '" << _string
                           << "' failed");
-      throw PorFileParsingException ("Parsing of POR input string: '"
+      throw PrFileParsingException ("Parsing of PR input string: '"
                                      + _string + "' failed");
     }
     
     if  (fwd_start != fwd_end) {
-      OPENTREP_LOG_ERROR ("Parsing of POR input string: '" << _string
+      OPENTREP_LOG_ERROR ("Parsing of PR input string: '" << _string
                           << "' failed");
-      throw PorFileParsingException ("Parsing of POR input file: '"
+      throw PrFileParsingException ("Parsing of PR input file: '"
                                      + _string + "' failed");
     }
     
@@ -1214,7 +1214,7 @@ namespace OPENTREP {
     if (hasParsingBeenSuccesful == true && fwd_start == fwd_end) {
       // DEBUG
       /*
-      OPENTREP_LOG_DEBUG ("Parsing of POR input string: '" << _string
+      OPENTREP_LOG_DEBUG ("Parsing of PR input string: '" << _string
                           << "' succeeded");
       */
     }
@@ -1230,19 +1230,19 @@ namespace OPENTREP {
   /////////////////////////////////////////////////////////////////////////
     
   // //////////////////////////////////////////////////////////////////////
-  PORFileParser::PORFileParser (const PORFilePath_T& iFilename)
+  PRFileParser::PRFileParser (const PRFilePath_T& iFilename)
     : _filename (iFilename) {
     init();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void PORFileParser::init() {
+  void PRFileParser::init() {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  void PORFileParser::generateLocations() {
+  void PRFileParser::generateLocations() {
       
-    OPENTREP_LOG_DEBUG ("Parsing por input file: " << _filename);
+    OPENTREP_LOG_DEBUG ("Parsing pr input file: " << _filename);
 
     // File to be parsed
     const char* lFilenameStr = _filename.c_str();
@@ -1250,7 +1250,7 @@ namespace OPENTREP {
 
     // Check if the filename exist and can be open
     if (fileToBeParsed.is_open() == false) {
-      OPENTREP_LOG_ERROR ("The por file " << _filename << " can not be open."
+      OPENTREP_LOG_ERROR ("The pr file " << _filename << " can not be open."
                           << std::endl);
 
       throw FileNotFoundException ("The file " + _filename
@@ -1265,29 +1265,29 @@ namespace OPENTREP {
     OPENTREP::iterator_t end;
 
     // Initialise the parser (grammar) with the helper/staging structure.
-    PorParserHelper::LocationParser<OPENTREP::iterator_t> lPORParser (_location);
+    PrParserHelper::LocationParser<OPENTREP::iterator_t> lPRParser (_location);
       
-    // Launch the parsing of the file and, thanks to the doEndPor
+    // Launch the parsing of the file and, thanks to the doEndPr
     // call-back structure, the building of the whole BomRoot BOM
     const bool hasParsingBeenSuccesful = 
-       bsq::phrase_parse (start, end, lPORParser, bsu::blank);
+       bsq::phrase_parse (start, end, lPRParser, bsu::blank);
       
     if (hasParsingBeenSuccesful == false) {
-      OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename
+      OPENTREP_LOG_ERROR ("Parsing of pr input file: " << _filename
                           << " failed");
-      throw PorFileParsingException ("Parsing of por input file: "
+      throw PrFileParsingException ("Parsing of pr input file: "
                                      + _filename + " failed");
     }
     
     if  (start != end) {
-      OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename
+      OPENTREP_LOG_ERROR ("Parsing of pr input file: " << _filename
                           << " failed");
-      throw PorFileParsingException ("Parsing of por input file: "
+      throw PrFileParsingException ("Parsing of pr input file: "
                                      + _filename + " failed");
     }
     
     if (hasParsingBeenSuccesful == true && start == end) {
-      OPENTREP_LOG_DEBUG ("Parsing of por input file: " << _filename
+      OPENTREP_LOG_DEBUG ("Parsing of pr input file: " << _filename
                           << " succeeded");
     } 
   }
