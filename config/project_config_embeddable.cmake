@@ -476,8 +476,9 @@ macro (get_boost)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
   set (BOOST_REQUIRED_COMPONENTS
-    regex program_options date_time iostreams serialization filesystem 
+    regex program_options date_time iostreams serialization filesystem locale
     unit_test_framework python)
+  # locale
 
   # The first check is for the required components.
   find_package (Boost COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
@@ -495,7 +496,8 @@ macro (get_boost)
     list (APPEND PROJ_DEP_LIBS_FOR_LIB
       ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
 	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-	  ${Boost_DATE_TIME_LIBRARY} ${Boost_PYTHON_LIBRARY})
+	  ${Boost_LOCALE_LIBRARY} ${Boost_DATE_TIME_LIBRARY}
+	  ${Boost_PYTHON_LIBRARY})
     list (APPEND PROJ_DEP_LIBS_FOR_BIN
 	  ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY})
     list (APPEND PROJ_DEP_LIBS_FOR_TST ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
@@ -504,7 +506,8 @@ macro (get_boost)
     set (BOOST_REQUIRED_LIBS
       ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
 	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-	  ${Boost_DATE_TIME_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY}
+	  ${Boost_LOCALE_LIBRARY} ${Boost_DATE_TIME_LIBRARY}
+	  ${Boost_PROGRAM_OPTIONS_LIBRARY}
 	  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${Boost_PYTHON_LIBRARY})
   endif (Boost_FOUND)
 
