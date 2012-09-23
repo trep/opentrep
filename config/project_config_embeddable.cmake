@@ -536,6 +536,23 @@ macro (get_zeromq)
 endmacro (get_zeromq)
 
 # ~~~~~~~~~~ BOOST ~~~~~~~~~~
+#
+macro (register_boost_lib _boost_lib_list_name _boost_lib_list)
+  # Update the list of library dependencies for the project
+  foreach (_lib_cpt ${_boost_lib_list})
+	string (TOUPPER ${_lib_cpt} _lib_cpt_up)
+
+	if (Boost_${_lib_cpt_up}_LIBRARY)
+	  # Update the list of dependencies for the project
+	  list (APPEND ${_boost_lib_list_name} ${Boost_${_lib_cpt_up}_LIBRARY})
+
+	  # Update the list of libraries to be displayed
+	  list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
+	endif (Boost_${_lib_cpt_up}_LIBRARY)
+  endforeach (_lib_cpt ${_boost_lib_list})
+endmacro (register_boost_lib _boost_lib_list_name _boost_lib_list)
+
+#
 macro (get_boost)
   unset (_required_version)
   if (${ARGC} GREATER 0)
@@ -580,37 +597,16 @@ macro (get_boost)
     set (BOOST_REQUIRED_LIBS "")
 
     # Update the list of library dependencies for the project
-	foreach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_LIB})
-	  string (TOUPPER ${_lib_cpt} _lib_cpt_up)
-
-      # Update the list of dependencies for the project
-      list (APPEND PROJ_DEP_LIBS_FOR_LIB ${Boost_${_lib_cpt_up}_LIBRARY})
-
-      # Update the list of libraries to be displayed
-      list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
-	endforeach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_LIB})
+	register_boost_lib ("PROJ_DEP_LIBS_FOR_LIB"
+	  "${BOOST_REQUIRED_COMPONENTS_FOR_LIB}")
 
     # Update the list of binary dependencies for the project
-	foreach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_BIN})
-	  string (TOUPPER ${_lib_cpt} _lib_cpt_up)
-
-      # Update the list of dependencies for the project
-      list (APPEND PROJ_DEP_LIBS_FOR_BIN ${Boost_${_lib_cpt_up}_LIBRARY})
-
-      # Update the list of binaries to be displayed
-      list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
-	endforeach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_BIN})
+	register_boost_lib ("PROJ_DEP_LIBS_FOR_BIN"
+	  "${BOOST_REQUIRED_COMPONENTS_FOR_BIN}")
 
     # Update the list of test dependencies for the project
-	foreach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
-	  string (TOUPPER ${_lib_cpt} _lib_cpt_up)
-
-      # Update the list of dependencies for the project
-      list (APPEND PROJ_DEP_LIBS_FOR_TST ${Boost_${_lib_cpt_up}_LIBRARY})
-
-      # Update the list of tests to be displayed
-      list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
-	endforeach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
+	register_boost_lib ("PROJ_DEP_LIBS_FOR_TST"
+	  "${BOOST_REQUIRED_COMPONENTS_FOR_TST}")
 
   endif (Boost_FOUND)
 
