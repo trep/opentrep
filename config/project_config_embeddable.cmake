@@ -303,6 +303,10 @@ macro (get_external_libs)
       get_python (${_arg_version})
     endif (${_arg_lower} STREQUAL "python")
 
+    if (${_arg_lower} STREQUAL "icu")
+      get_icu (${_arg_version})
+    endif (${_arg_lower} STREQUAL "icu")
+
     if (${_arg_lower} STREQUAL "zeromq")
       get_zeromq (${_arg_version})
     endif (${_arg_lower} STREQUAL "zeromq")
@@ -435,6 +439,37 @@ macro (get_python)
   endif (PYTHONLIBS_FOUND)
 
 endmacro (get_python)
+
+# ~~~~~~~~~~ ICU ~~~~~~~~~
+macro (get_icu)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires ICU-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires ICU without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  # 
+  set (ICU_REQUIRED_COMPONENTS i18n uc data)
+  find_package (ICU ${_required_version}
+	COMPONENTS ${ICU_REQUIRED_COMPONENTS} REQUIRED)
+
+  icudebug (ICU_I18N_FOUND)
+  if (ICU_FOUND)
+	#
+	#if (ICU_I18N_FOUND)
+	#  icudebug (ICU_I18N_FOUND)
+	#endif (ICU_I18N_FOUND)
+
+    # Update the list of include directories for the project
+    include_directories (${ICU_INCLUDE_DIRS})
+
+    # Update the list of dependencies for the project
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${ICU_LIBRARIES})
+  endif (ICU_FOUND)
+
+endmacro (get_icu)
 
 # ~~~~~~~~~~ ZeroMQ ~~~~~~~~~
 macro (get_zeromq)
@@ -2000,6 +2035,17 @@ macro (display_python)
   endif (PYTHONLIBS_FOUND)
 endmacro (display_python)
 
+# ICU
+macro (display_icu)
+  if (ICU_FOUND)
+    message (STATUS)
+	message (STATUS "* ICU:")
+	message (STATUS "  - ICU_VERSION ................... : ${ICU_VERSION}")
+	message (STATUS "  - ICU_LIBRARIES ................. : ${ICU_LIBRARIES}")
+	message (STATUS "  - ICU_INCLUDE_DIRS .............. : ${ICU_INCLUDE_DIR}")
+  endif (ICU_FOUND)
+endmacro (display_icu)
+
 # ZeroMQ
 macro (display_zeromq)
   if (ZEROMQ_FOUND)
@@ -2349,6 +2395,7 @@ macro (display_status)
   message (STATUS "------------------------------------")
   #
   display_python ()
+  display_icu ()
   display_zeromq ()
   display_boost ()
   display_xapian ()
