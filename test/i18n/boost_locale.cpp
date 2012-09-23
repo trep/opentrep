@@ -1,6 +1,6 @@
 // STL
 #include <iostream>
-// Boost String
+// Boost Locale
 #include <boost/locale.hpp>
 
 // ////////////// M A I N //////////////
@@ -22,10 +22,10 @@ int main (int argc, char* argv[]) {
   // Create locale generator with the system default locale
   std::locale::global (locGen ("")); 
 
-  // With STL locale feature
+  // A few instances of languages
   std::string mucDE ("München");
   std::string mucRU ("Мюнхен");
-  std::string pacaFR ("Provence Alpes Côtes d'Azur");
+  std::string sideFR ("Côté");
   std::string pvgZH ("上海浦东国际机场");
 
   // Test the Boost Locale string conversions
@@ -47,13 +47,19 @@ int main (int argc, char* argv[]) {
             << boost::locale::normalize (mucRU, boost::locale::norm_nfkc)
             << std::endl;
 
-  std::cout << "Original: " << pacaFR << std::endl
-            <<"Upper " << boost::locale::to_upper (pacaFR) << std::endl
-            <<"Lower " << boost::locale::to_lower (pacaFR) << std::endl
-            <<"Title " << boost::locale::to_title (pacaFR) << std::endl
-            <<"Fold  " << boost::locale::fold_case (pacaFR) << std::endl
-            << "Normalise: "
-            << boost::locale::normalize (pacaFR, boost::locale::norm_nfkc)
+  std::cout << "Original: " << sideFR << std::endl
+            <<"Upper " << boost::locale::to_upper (sideFR) << std::endl
+            <<"Lower " << boost::locale::to_lower (sideFR) << std::endl
+            <<"Title " << boost::locale::to_title (sideFR) << std::endl
+            <<"Fold  " << boost::locale::fold_case (sideFR) << std::endl
+            << "Normalised - [NFD]: "
+            << boost::locale::normalize (sideFR, boost::locale::norm_nfd)
+            << "; [NFC]: "
+            << boost::locale::normalize (sideFR, boost::locale::norm_nfc)
+            << ";  [NFKD]: "
+            << boost::locale::normalize (sideFR, boost::locale::norm_nfkd)
+            << "; [NFKC]: "
+            << boost::locale::normalize (sideFR, boost::locale::norm_nfkc)
             << std::endl;
   
   std::cout << "Original: " << pvgZH << std::endl
