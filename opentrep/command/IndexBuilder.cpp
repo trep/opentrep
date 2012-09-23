@@ -146,8 +146,10 @@ namespace OPENTREP {
     // DEBUG
     OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDatabaseName
                         << "') will be cleared");
-    boost::filesystem::remove_all (iTravelDatabaseName);
-    boost::filesystem::create_directories (iTravelDatabaseName);
+    boost::filesystem::path lTravelDatabasePath (iTravelDatabaseName.begin(),
+                                                 iTravelDatabaseName.end());
+    boost::filesystem::remove_all (lTravelDatabasePath);
+    boost::filesystem::create_directories (lTravelDatabasePath);
 
     // Create the Xapian database (index). As the directory has been fully
     // cleaned, deleted and re-created, that Xapian database (index) is empty.
@@ -171,8 +173,10 @@ namespace OPENTREP {
     OPENTREP_LOG_DEBUG ("Parsing por input file: " << iPORFilePath);
 
     // Check whether the file to be parsed exists and is readable.
-    if (!(boost::filesystem::exists (iPORFilePath)
-          && boost::filesystem::is_regular_file (iPORFilePath))) {
+    boost::filesystem::path lPORFilePath (iPORFilePath.begin(),
+                                          iPORFilePath.end());
+    if (!(boost::filesystem::exists (lPORFilePath)
+          && boost::filesystem::is_regular_file (lPORFilePath))) {
       OPENTREP_LOG_ERROR ("The POR file " << iPORFilePath
                           << " does not exist or cannot be open." << std::endl);
 
@@ -181,7 +185,7 @@ namespace OPENTREP {
     }
 
     // Open the file to be parsed
-    boost::filesystem::ifstream fileToBeParsed (iPORFilePath);
+    boost::filesystem::ifstream fileToBeParsed (lPORFilePath);
     Place& lPlace = FacPlace::instance().create();
     std::string itReadLine;
     while (std::getline (fileToBeParsed, itReadLine)) {
