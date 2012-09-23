@@ -16,7 +16,7 @@ set_project_versions (0 4 0)
 # The parameters are:
 #  * Whether or not to build and check the unit tests
 #  * whether or not the documentation must be built and installed
-set_project_options (on on)
+set_project_options (on on off)
 
 
 #####################################

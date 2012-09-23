@@ -71,8 +71,9 @@ endmacro (set_project_versions)
 #  * INSTALL_INCLUDE_DIR - Installation directory for the header files
 #  * INSTALL_DATA_DIR    - Installation directory for the data files
 #  * INSTALL_SAMPLE_DIR  - Installation directory for the (CSV) sample files
+#  * RUN_GCOV            - Whether or not to perform code coverage
 #
-macro (set_project_options _build_doc _enable_tests)
+macro (set_project_options _build_doc _enable_tests _run_gcov)
   # Shared libraries
   option (BUILD_SHARED_LIBS "Set to OFF to build static libraries" ON)
 
@@ -101,14 +102,17 @@ macro (set_project_options _build_doc _enable_tests)
 
   # Offer the user the choice of overriding the installation directories
   set (INSTALL_LIB_DIR ${LIBDIR} CACHE PATH
-    "Installation directory for libraries")
+	"Installation directory for libraries")
   set (INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
   set (INSTALL_INCLUDE_DIR include CACHE PATH
     "Installation directory for header files")
-  set (INSTALL_DATA_DIR share CACHE PATH
-    "Installation directory for data files")
+  set (INSTALL_DATA_DIR share CACHE PATH "Installation directory for data files")
   set (INSTALL_SAMPLE_DIR share/${PROJECT_NAME}/samples CACHE PATH
     "Installation directory for (CSV) sample files")
+  set (INSTALL_ETC_DIR etc CACHE PATH "Installation directory for Config files")
+
+  # GCOV
+  option (RUN_GCOV "Set to OFF to skip code coverage" ${_run_gcov})
 
   # Make relative paths absolute (needed later on)
   foreach (_path_type LIB BIN INCLUDE DATA SAMPLE)
@@ -184,6 +188,8 @@ macro (store_in_cache)
     "Set to OFF to skip build/check unit tests" FORCE)
   set (INSTALL_DOC "${INSTALL_DOC}" CACHE BOOL
     "Set to OFF to skip build/install Documentation" FORCE)
+  set (RUN_GCOV "${RUN_GCOV}" CACHE BOOL
+    "Set to OFF to skip coverage tests" FORCE)
 endmacro (store_in_cache)
 
 
@@ -299,6 +305,14 @@ macro (get_external_libs)
       get_git (${_arg_version})
     endif (${_arg_lower} STREQUAL "git")
 
+    if (${_arg_lower} STREQUAL "gcov")
+      get_gcov (${_arg_version})
+    endif (${_arg_lower} STREQUAL "gcov")
+
+    if (${_arg_lower} STREQUAL "lcov")
+      get_lcov (${_arg_version})
+    endif (${_arg_lower} STREQUAL "lcov")
+
     if (${_arg_lower} STREQUAL "python")
       get_python (${_arg_version})
     endif (${_arg_lower} STREQUAL "python")
@@ -401,6 +415,34 @@ macro (get_git)
     message (STATUS "Current Git revision name: ${PROJ_WC_REVISION_NAME}")
   endif (Git_FOUND)
 endmacro (get_git)
+
+# ~~~~~~~~~~ Gcov ~~~~~~~~~~
+macro (get_gcov)
+  if (${RUN_GCOV} STREQUAL "ON")	
+    message (STATUS "Requires gcov without specifying any version")
+
+    find_package (GCOV)
+    if (GCOV_FOUND)
+      GCOV_WC_INFO (${CMAKE_CURRENT_SOURCE_DIR} PROJ)
+      set (GCOV_REVISION ${PROJ_WC_REVISION_HASH})
+      message (STATUS "Current gcov revision name: ${PROJ_WC_REVISION_NAME}")
+    endif (GCOV_FOUND)
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (get_gcov)
+
+# ~~~~~~~~~~ Lcov ~~~~~~~~~~
+macro (get_lcov)
+  if (${RUN_GCOV} STREQUAL "ON")	
+    message (STATUS "Requires lcov without specifying any version")
+
+    find_package (LCOV)
+    if (LCOV_FOUND)
+      LCOV_WC_INFO (${CMAKE_CURRENT_SOURCE_DIR} PROJ)
+      set (LCOV_REVISION ${PROJ_WC_REVISION_HASH})
+      message (STATUS "Current lcov revision name: ${PROJ_WC_REVISION_NAME}")
+    endif (LCOV_FOUND)
+  endif (${RUN_GCOV} STREQUAL "ON")	
+endmacro (get_lcov)
 
 # ~~~~~~~~~~ Python ~~~~~~~~~
 macro (get_python)
@@ -510,13 +552,20 @@ macro (get_boost)
   set (Boost_USE_STATIC_LIBS OFF)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
-  set (BOOST_REQUIRED_COMPONENTS
-    regex program_options date_time iostreams serialization filesystem locale
-    unit_test_framework python)
-  # locale
+  set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
+    date_time iostreams serialization filesystem locale python)
+  set (BOOST_REQUIRED_COMPONENTS_FOR_BIN regex program_options)
+  set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
+  set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
+	${BOOST_REQUIRED_COMPONENTS_FOR_BIN} ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
 
   # The first check is for the required components.
   find_package (Boost COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
+
+  # Fix a bug for some old CMake package finder scripts (e.g., on Fedora 15)
+  if (Boost_VERSION)
+    set (Boost_FOUND ON)
+  endif (Boost_VERSION)
 
   # The second check is for the required version (FindBoostWrapper.cmake is
   # provided by us). Indeed, the Fedora/RedHat FindBoost.cmake does not seem
@@ -527,23 +576,42 @@ macro (get_boost)
     # Update the list of include directories for the project
     include_directories (${Boost_INCLUDE_DIRS})
 
-    # Update the list of dependencies for the project
-    list (APPEND PROJ_DEP_LIBS_FOR_LIB
-      ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
-	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-	  ${Boost_LOCALE_LIBRARY} ${Boost_DATE_TIME_LIBRARY}
-	  ${Boost_PYTHON_LIBRARY})
-    list (APPEND PROJ_DEP_LIBS_FOR_BIN
-	  ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY})
-    list (APPEND PROJ_DEP_LIBS_FOR_TST ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+	# For display purposes
+    set (BOOST_REQUIRED_LIBS "")
 
-    # For display purposes
-    set (BOOST_REQUIRED_LIBS
-      ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
-	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-	  ${Boost_LOCALE_LIBRARY} ${Boost_DATE_TIME_LIBRARY}
-	  ${Boost_PROGRAM_OPTIONS_LIBRARY}
-	  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${Boost_PYTHON_LIBRARY})
+    # Update the list of library dependencies for the project
+	foreach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_LIB})
+	  string (TOUPPER ${_lib_cpt} _lib_cpt_up)
+
+      # Update the list of dependencies for the project
+      list (APPEND PROJ_DEP_LIBS_FOR_LIB ${Boost_${_lib_cpt_up}_LIBRARY})
+
+      # Update the list of libraries to be displayed
+      list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
+	endforeach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_LIB})
+
+    # Update the list of binary dependencies for the project
+	foreach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_BIN})
+	  string (TOUPPER ${_lib_cpt} _lib_cpt_up)
+
+      # Update the list of dependencies for the project
+      list (APPEND PROJ_DEP_LIBS_FOR_BIN ${Boost_${_lib_cpt_up}_LIBRARY})
+
+      # Update the list of binaries to be displayed
+      list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
+	endforeach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_BIN})
+
+    # Update the list of test dependencies for the project
+	foreach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
+	  string (TOUPPER ${_lib_cpt} _lib_cpt_up)
+
+      # Update the list of dependencies for the project
+      list (APPEND PROJ_DEP_LIBS_FOR_TST ${Boost_${_lib_cpt_up}_LIBRARY})
+
+      # Update the list of tests to be displayed
+      list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
+	endforeach (_lib_cpt ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
+
   endif (Boost_FOUND)
 
 endmacro (get_boost)
@@ -1104,7 +1172,11 @@ macro (init_build)
   #    will set CMAKE_CXX_FLAGS as being equal to -O2.
   if (NOT CMAKE_CXX_FLAGS)
 	#set (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror")
-	set (CMAKE_CXX_FLAGS "-Wall -Werror")
+    if (${RUN_GCOV} STREQUAL "ON")
+	  set (CMAKE_CXX_FLAGS "-Wall -Werror -fprofile-arcs -ftest-coverage")
+    else (${RUN_GCOV} STREQUAL "ON")
+      set (CMAKE_CXX_FLAGS "-Wall -Werror")
+	endif (${RUN_GCOV} STREQUAL "ON")
   endif (NOT CMAKE_CXX_FLAGS)
   # Tell the source code the version of Boost (only once)
   if (NOT "${CMAKE_CXX_FLAGS}" MATCHES "-DBOOST_VERSION=")
@@ -1158,9 +1230,9 @@ macro (set_install_directories)
   set (pdfdir        ${htmldir})
   set (mandir        ${datarootdir}/man)
   set (infodir       ${datarootdir}/info)
-  set (pkgincludedir ${includedir}/stdair)
-  set (pkglibdir     ${libdir}/stdair)
-  set (pkglibexecdir ${libexecdir}/stdair)
+  set (pkgincludedir ${includedir}/${PACKAGE})
+  set (pkglibdir     ${libdir}/${PACKAGE})
+  set (pkglibexecdir ${libexecdir}/${PACKAGE})
 endmacro (set_install_directories)
 
 
@@ -1527,6 +1599,30 @@ macro (module_binary_add _exec_source_dir)
   set (${MODULE_NAME}_ALL_EXECS ${${MODULE_NAME}_ALL_EXECS} PARENT_SCOPE)
 
 endmacro (module_binary_add)
+
+##
+# Installation of the configuration INI file (format cfg).
+# The two parameters (among which only the first one is mandatory) are:
+#  * The path/directory where the configuration file can be found.
+#  * If specified, the name to be given to the file. If no such name
+#    is given as parameter, the configuration file is given the name of 
+#    the current module.
+macro (module_config_add _config_source_dir)
+  # First, derive the name to be given to the config file, defaulting
+  # to the name of the module
+  set (_config_name ${MODULE_NAME})
+  if (${ARGC} GREATER 1})
+    set (_config_name ${ARGV1})
+  endif (${ARGC} GREATER 1})
+
+  # Define the macro path of the configuration file
+  set (PROJ_PATH_CFG_SRC ${_config_source_dir}/${_config_name}.cfg)
+
+  # Installation of the cfg file
+  install (FILES ${PROJ_PATH_CFG_SRC} 
+    DESTINATION "${INSTALL_ETC_DIR}" COMPONENT runtime)
+
+endmacro (module_config_add)
 
 ##
 # Add a (Shell, Python, Perl, Ruby, etc) script to be installed.
@@ -1960,6 +2056,52 @@ endmacro (doc_add_man_pages)
 
 
 ###################################################################
+##                            GCOV                               ##
+###################################################################
+
+macro (gcov_task)
+  if (${RUN_GCOV} STREQUAL "ON")
+    set (GCDA_GCNO_PATH
+	  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/CMakeFiles/${PROJECT_NAME}lib.dir")
+    set (GCDA_FILE "${GCDA_GCNO_PATH}/command/CmdBomSerialiser.cpp.gcda")
+    set (GCNO_FILE "${GCDA_GCNO_PATH}/command/CmdBomSerialiser.cpp.gcno")
+    # Removed generated gcda and gcno files relative to the CmdBomSerialiser
+	# object: gcov failed processing the CmdBomSerialiser.cpp.gcda file
+	# without displaying a clear message
+    add_custom_command (TARGET check
+      # This task is post-build and post-check
+      POST_BUILD  
+      # Because the "-f" option is given, the commands do not fail
+	  # when the files are missing
+	  COMMAND "rm" "-f" "${GCDA_FILE}"
+      COMMAND "rm" "-f" "${GCNO_FILE}"
+      ) 
+    # Build a coverage report info and html pages using gcda and gcno files
+    add_custom_command (TARGET check
+      # This task is post-build and post-check
+      POST_BUILD 
+      # Create a directory for the gcov reports
+      COMMAND "mkdir" "-p" "${CMAKE_BINARY_DIR}/gcov" 
+      # Generate a global gcov report using the directory containing
+	  # the gcda/gcno files
+      COMMAND "geninfo" "${GCDA_GCNO_PATH}" "-o"
+	  "${CMAKE_BINARY_DIR}/gcov/gcov_tmp_report.info"	
+      # Extract from the global report the data relative to the module files
+	  # (i, e remove external libraries) and copy them in a second report
+	  COMMAND "lcov" "-e" "${CMAKE_BINARY_DIR}/gcov/gcov_tmp_report.info"
+	  "'${CMAKE_CURRENT_SOURCE_DIR}/*'" ">>"
+	  "${CMAKE_BINARY_DIR}/gcov/gcov_report.info"
+      # Generate html documentation about the module files coverage
+      COMMAND "genhtml" "-o" "${CMAKE_BINARY_DIR}/gcov" "-p"
+	  "${CMAKE_CURRENT_SOURCE_DIR}*" "${CMAKE_BINARY_DIR}/gcov/gcov_report.info"
+      # Delete heavy .info files
+      COMMAND "rm" "${CMAKE_BINARY_DIR}/gcov/*.info"
+	  )
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (gcov_task)
+
+
+###################################################################
 ##                    Development Helpers                        ##
 ###################################################################
 # For other projects to use this component (let us name it myproj),
@@ -2021,6 +2163,30 @@ macro (display_doxygen)
   message (STATUS "  - DOXYGEN_DOT_PATH .............. : ${DOXYGEN_DOT_PATH}")
 endmacro (display_doxygen)
 
+# Gcov
+macro (display_gcov)
+  if (${RUN_GCOV} STREQUAL "ON")
+    message (STATUS)
+    message (STATUS "* gcov:")
+    message (STATUS "  - GCOV_VERSION .................. : ${GCOV_VERSION}")
+    message (STATUS "  - GCOV_EXECUTABLE ............... : ${GCOV_EXECUTABLE}")
+    message (STATUS "  - GCOV_DOT_EXECUTABLE ........... : ${GCOV_DOT_EXECUTABLE}")
+    message (STATUS "  - GCOV_DOT_PATH ................. : ${GCOV_DOT_PATH}")
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (display_gcov)
+
+# Lcov
+macro (display_lcov)
+  if (${RUN_GCOV} STREQUAL "ON")
+    message (STATUS)
+    message (STATUS "* lcov:")
+    message (STATUS "  - LCOV_VERSION .................. : ${LCOV_VERSION}")
+    message (STATUS "  - LCOV_EXECUTABLE ............... : ${LCOV_EXECUTABLE}")
+    message (STATUS "  - LCOV_DOT_EXECUTABLE ........... : ${LCOV_DOT_EXECUTABLE}")
+    message (STATUS "  - LCOV_DOT_PATH ................. : ${LCOV_DOT_PATH}")
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (display_lcov)
+
 # Python
 macro (display_python)
   if (PYTHONLIBS_FOUND)
@@ -2068,6 +2234,9 @@ macro (display_boost)
     message (STATUS "  - Boost_INCLUDE_DIRS ............ : ${Boost_INCLUDE_DIRS}")
     message (STATUS "  - Boost required components ..... : ${BOOST_REQUIRED_COMPONENTS}")
     message (STATUS "  - Boost required libraries ...... : ${BOOST_REQUIRED_LIBS}")
+    message (STATUS "  - Boost required libs for lib ... : ${PROJ_DEP_LIBS_FOR_LIB}")
+    message (STATUS "  - Boost required libs for bin ... : ${PROJ_DEP_LIBS_FOR_BIN}")
+    message (STATUS "  - Boost required libs for test .. : ${PROJ_DEP_LIBS_FOR_TST}")
   endif (Boost_FOUND)
 endmacro (display_boost)
 
@@ -2360,9 +2529,12 @@ macro (display_status)
   message (STATUS " * BUILD_FLAGS .................... : ${BUILD_FLAGS}")
   message (STATUS " * COMPILE_FLAGS .................. : ${COMPILE_FLAGS}")
   message (STATUS "ENABLE_TEST ....................... : ${ENABLE_TEST}" )
+  message (STATUS "RUN_GCOV .......................... : ${RUN_GCOV}" )
   message (STATUS "CMAKE_MODULE_PATH ................. : ${CMAKE_MODULE_PATH}")
   message (STATUS "CMAKE_INSTALL_PREFIX .............. : ${CMAKE_INSTALL_PREFIX}")
   display_doxygen ()
+  display_gcov ()
+  display_lcov ()
   message (STATUS)
   message (STATUS "-------------------------------------")
   message (STATUS "---  Installation Configuration   ---")
