@@ -8,6 +8,7 @@
 #include <string>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/service/ServiceAbstract.hpp>
 
 // Forward declarations
@@ -53,6 +54,12 @@ namespace OPENTREP {
       return _travelDatabaseName;
     }
     
+    /**
+     * Get the Unicode transliterator.
+     */
+    const OTransliterator& getTransliterator() const {
+      return _transliterator;
+    }
 
   public:
     // ////////////////// Setters /////////////////////
@@ -75,6 +82,13 @@ namespace OPENTREP {
      */
     void setTravelDatabaseName (const TravelDatabaseName_T& iTravelDBName) {
       _travelDatabaseName = iTravelDBName;
+    }
+
+    /**
+     * Set the Unicode transliterator.
+     */
+    void setTransliterator (const OTransliterator& iTransliterator) {
+      _transliterator = iTransliterator;
     }
 
 
@@ -132,6 +146,11 @@ namespace OPENTREP {
      * Xapian Database (directory of the index).
      */
     TravelDatabaseName_T _travelDatabaseName;
+
+    /**
+     * Unicode transliterator.
+     */
+    OTransliterator _transliterator;
   };
 
 }

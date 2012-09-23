@@ -20,6 +20,7 @@ namespace OPENTREP {
   // Forward declarations
   class World;
   class PlaceHolder;
+  struct OTransliterator;
   
   /**
    * @brief Class modelling a place/POR (point of reference).
@@ -735,8 +736,10 @@ namespace OPENTREP {
     /**
      * Build the (STL) sets of (Xapian-related) terms, spelling,
      * synonyms, etc.
+     *
+     * @param const OTransliterator& Unicode transliterator
      */
-    void buildIndexSets();
+    void buildIndexSets (const OTransliterator&);
 
 
   public:

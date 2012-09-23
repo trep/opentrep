@@ -115,11 +115,16 @@ namespace OPENTREP {
     const TravelDatabaseName_T& lTravelDatabaseName =
       lOPENTREP_ServiceContext.getTravelDatabaseName();
       
+    // Retrieve the Unicode transliterator
+    const OTransliterator& lTransliterator =
+      lOPENTREP_ServiceContext.getTransliterator();
+      
     // Delegate the index building to the dedicated command
     BasChronometer lBuildSearchIndexChronometer;
     lBuildSearchIndexChronometer.start();
-    oNbOfEntries =
-      IndexBuilder::buildSearchIndex (lPORFilePath, lTravelDatabaseName);
+    oNbOfEntries = IndexBuilder::buildSearchIndex (lPORFilePath,
+                                                   lTravelDatabaseName,
+                                                   lTransliterator);
     const double lBuildSearchIndexMeasure =
       lBuildSearchIndexChronometer.elapsed();
       

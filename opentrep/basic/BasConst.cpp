@@ -1,12 +1,16 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
+#include <opentrep/basic/BasConst_Unicode.hpp>
+#include <opentrep/basic/BasConst_General.hpp>
 
 namespace OPENTREP {
 
-  /** Default file-path for the POR file for the OPENTREP_Service. */
+  // ////////////// OPENTREP_Service ///////////////
+  /**
+   * Default file-path for the POR file for the OPENTREP_Service.
+   */
   const std::string DEFAULT_OPENTREP_SERVICE_POR_FILEPATH ("por_default.csv");
   
   /**
@@ -14,6 +18,35 @@ namespace OPENTREP {
    */
   const std::string DEFAULT_OPENTREP_SERVICE_DB_NAME ("traveldb");
 
+
+  // //////////////// Unicode (ICU) ////////////////
+  /**
+   * Default Unicode transliterator rule (e.g., "NFD; [:M:] Remove; NFC;")
+   */
+  const char* K_ICU_ACCENT_REMOVAL_RULE = "NFD; [:M:] Remove; NFC;";
+
+  /**
+   * Default Unicode transliterator rule for the removal of
+   * quotes (e.g., "[\\u02B9] > \\u0027; [\\u002D] > \\u0020;")
+   */
+  const char* K_ICU_QUOTATION_REMOVAL_RULE =
+    "[\\u02B9] > \\u0027; [\\u002D] > \\u0020; [\\u0027] > \\u0020;";
+
+  /**
+   * Default Unicode transliterator rule for the removal of
+   * punctuation (e.g., "[:P:] Remove;")
+   */
+  const char* K_ICU_PUNCTUATION_REMOVAL_RULE = "[:P:] Remove;";
+
+  /**
+   * Default Unicode transliterator rule for the removal of
+   * punctuation (e.g., "Any-Latin;")
+   */
+  const char* K_ICU_GENERIC_TRANSLITERATOR_RULE =
+    "Any-Latin; NFD; [:M:] Remove; NFC; Lower;";
+
+
+  // /////////////// General ////////////////
   /**
    * Default PageRank (e.g., 0.1% == 0.001)
    */

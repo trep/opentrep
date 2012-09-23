@@ -9,6 +9,7 @@
 module_test_add_suite (opentrep IndexBuildingTestSuite IndexBuildingTestSuite.cpp)
 module_test_add_suite (opentrep SearchingTestSuite SearchingTestSuite.cpp)
 module_test_add_suite (opentrep PartitionTestSuite PartitionTestSuite.cpp)
+module_test_add_suite (opentrep UnicodeTestSuite UnicodeTestSuite.cpp)
 
 
 ##

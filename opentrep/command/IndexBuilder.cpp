@@ -11,6 +11,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/tokenizer.hpp>
 // OpenTrep
+#include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/bom/Utilities.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
@@ -110,8 +111,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void IndexBuilder::addDocumentToIndex (Xapian::WritableDatabase& ioDatabase,
-                                         Place& ioPlace) {
+  void IndexBuilder::addDocumentToIndex(Xapian::WritableDatabase& ioDatabase,
+                                        Place& ioPlace,
+                                        const OTransliterator& iTransliterator) {
 
     // Build a Xapian document
     Xapian::Document lDocument;
@@ -122,7 +124,7 @@ namespace OPENTREP {
       
     // Build the (STL) sets of terms to be added to the Xapian index and
     // spelling dictionary
-    ioPlace.buildIndexSets();
+    ioPlace.buildIndexSets (iTransliterator);
 
     // Add the (STL) sets of terms to the Xapian index and spelling dictionary
     addToXapian (ioPlace, lDocument, ioDatabase);
@@ -138,7 +140,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
-                    const TravelDatabaseName_T& iTravelDatabaseName) {
+                    const TravelDatabaseName_T& iTravelDatabaseName,
+                    const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
     // Check that the directory for the Xapian database (index) exists and,
@@ -206,7 +209,7 @@ namespace OPENTREP {
         lPlace.setLocation (lLocation);
 
         // Add the document, associated to the Place object, to the Xapian index
-        IndexBuilder::addDocumentToIndex (lDatabase, lPlace);
+        IndexBuilder::addDocumentToIndex (lDatabase, lPlace, iTransliterator);
 
         // DEBUG
         /*

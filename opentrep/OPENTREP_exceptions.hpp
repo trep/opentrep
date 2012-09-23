@@ -59,6 +59,29 @@ namespace OPENTREP {
   };
 
   /**
+   * Unicode failure.
+   */
+  class UnicodeException : public RootException {
+  public:
+    /**
+     * Constructor.
+     */
+    UnicodeException (const std::string& iWhat) : RootException (iWhat) {}
+  };
+
+  /**
+   * Unicode transliterator failure.
+   */
+  class UnicodeTransliteratorCreationException : public UnicodeException {
+  public:
+    /**
+     * Constructor.
+     */
+    UnicodeTransliteratorCreationException (const std::string& iWhat)
+      : UnicodeException (iWhat) {}
+  };
+
+  /**
    * Multiple rows for a single Xapian document ID.
    */
   class MultipleRowsForASingleDocIDException : public RootException {

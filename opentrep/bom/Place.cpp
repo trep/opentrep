@@ -5,6 +5,7 @@
 #include <cassert>
 // OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
+#include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -196,7 +197,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void Place::buildIndexSets() {
+  void Place::buildIndexSets (const OTransliterator& iTransliterator) {
 
     /**
      * Add the place/POR details into Xapian:
@@ -274,10 +275,16 @@ namespace OPENTREP {
                  lStringList.begin();
                itString != lStringList.end(); ++itString) {
             const std::string& lWordCombination = *itString;
+            const std::string& lNormalisedWordCombination =
+              iTransliterator.normalise (lWordCombination);
 
             // Add that combination of words into the set of terms
             _termSet.insert (lWordCombination);
             _spellingSet.insert (lWordCombination);
+
+            // Add the normalised combination of words into the set of terms
+            _termSet.insert (lNormalisedWordCombination);
+            _spellingSet.insert (lNormalisedWordCombination);
           }
         }
       }

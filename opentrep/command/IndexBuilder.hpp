@@ -16,6 +16,7 @@ namespace OPENTREP {
 
   // Forward declarations
   class Place;
+  struct OTransliterator;
 
   /**
    * @brief Command wrapping the travel request process.
@@ -26,17 +27,24 @@ namespace OPENTREP {
 
     /**
      * Add a document, corresponding to a Place object, to the Xapian index.
+     *
+     * @param Xapian::WritableDatabase& Xapian database.
+     * @param Place& Place object instance.
+     * @param const OTransliterator& Unicode transliterator.
      */
-    static void addDocumentToIndex (Xapian::WritableDatabase&, Place&);
+    static void addDocumentToIndex (Xapian::WritableDatabase&, Place&,
+                                    const OTransliterator&);
 
     /**
      * Build Xapian database.
      *
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDatabaseName_T& File-path of the Xapian database.
+     * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
-                                             const TravelDatabaseName_T&);
+                                             const TravelDatabaseName_T&,
+                                             const OTransliterator&);
 
   private:
     /** Constructors. */
