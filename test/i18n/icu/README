@@ -1,0 +1,5 @@
+
+`icu-config --cxx --cxxflags --cppflags --ldflags` -o icuutext icuutext.cpp
+`icu-config --cxx --cxxflags --cppflags --ldflags` -o icutranslit icutranslit.cpp icutranslit_util.hpp icutranslit_util.cpp
+`icu-config --cxx --cxxflags --cppflags --ldflags` -o icutranslit_simple icutranslit_simple.cpp icutranslit_util.hpp icutranslit_util.cpp
+
