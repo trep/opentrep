@@ -55,7 +55,8 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    NonInitialisedServiceException (const std::string& iWhat) : RootException (iWhat) {}
+    NonInitialisedServiceException (const std::string& iWhat)
+      : RootException (iWhat) {}
   };
 
   /**
@@ -168,18 +169,20 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    PorFileParsingException (const std::string& iWhat) : ParserException (iWhat) {}
+    PorFileParsingException (const std::string& iWhat)
+      : ParserException (iWhat) {}
   };
   
   /**
    * PR file parsing exception.
    */
-  class PrFileParsingException : public ParserException {  
+  class PRFileParsingException : public ParserException {  
   public:
     /**
      * Constructor.
      */
-    PrFileParsingException (const std::string& iWhat) : ParserException (iWhat) {}
+    PRFileParsingException (const std::string& iWhat)
+      : ParserException (iWhat) {}
   };
   
   /**
@@ -190,7 +193,8 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    CodeConversionException (const std::string& iWhat) : ParserException (iWhat) {}
+    CodeConversionException (const std::string& iWhat)
+      : ParserException (iWhat) {}
   };
   
   /**
@@ -201,7 +205,8 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    CodeDuplicationException (const std::string& iWhat) : ParserException (iWhat) {}
+    CodeDuplicationException (const std::string& iWhat)
+      : ParserException (iWhat) {}
   };
 
   /**
@@ -223,7 +228,8 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    DocumentNotFoundException (const std::string& iWhat) : XapianException (iWhat) {}
+    DocumentNotFoundException (const std::string& iWhat)
+      : XapianException (iWhat) {}
   };
 
   /**
@@ -234,7 +240,8 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    XapianDatabaseFailureException (const std::string& iWhat) : XapianException (iWhat) {}
+    XapianDatabaseFailureException (const std::string& iWhat)
+      : XapianException (iWhat) {}
   };
 
   /** 
@@ -258,18 +265,6 @@ namespace OPENTREP {
      * Constructor.
      */
     XapianTravelDatabaseWrongPathnameException (const std::string& iWhat)
-      : XapianException (iWhat) {}
-  };
-
-  /** 
-   * Xapian travel database not synchronised with the MySQL database.
-   */
-  class XapianTravelDatabaseNotInSyncWithSQLDatabaseException : public XapianException {
-  public:
-    /**
-     * Constructor.
-     */
-    XapianTravelDatabaseNotInSyncWithSQLDatabaseException (const std::string& iWhat)
       : XapianException (iWhat) {}
   };
 
@@ -327,7 +322,8 @@ namespace OPENTREP {
     /**
      * Constructor.
      */
-    InterpreterUseCaseException (const std::string& iWhat) : RootException (iWhat) {}
+    InterpreterUseCaseException (const std::string& iWhat)
+      : RootException (iWhat) {}
   };
 
   /**

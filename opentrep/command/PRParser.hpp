@@ -18,7 +18,8 @@ namespace OPENTREP {
      * Parses the CSV file describing the PR (PageRank), and generates
      * the PR BOM tree accordingly.
      *
-     * @param const PRFilePath_T& The file-name of the CSV-formatted PR input file.
+     * @param const PRFilePath_T& The file-name of the CSV-formatted PR
+     *                            input file.
      */
     static void PRGeneration (const PRFilePath_T&);
   };

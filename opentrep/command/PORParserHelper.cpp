@@ -934,7 +934,7 @@ namespace OPENTREP {
           ;
 
         feat_code =
-          bsq::repeat(3,5)[bsu::char_("A-Z1-5")][storeFeatureCode(_location)]
+          bsq::repeat(2,5)[bsu::char_("A-Z1-5")][storeFeatureCode(_location)]
           ;
 
         country_code =

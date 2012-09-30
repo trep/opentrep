@@ -41,6 +41,13 @@ namespace OPENTREP {
     World& getWorldHandler() const;
 
     /**
+     * Get the file-path of the file of PageRank values.
+     */
+    const PRFilePath_T& getPRFilePath() const {
+      return _prFilePath;
+    }
+
+    /**
      * Get the file-path of the file of POR (points of reference).
      */
     const PORFilePath_T& getPORFilePath() const {
@@ -71,17 +78,24 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the file-path of the file of PageRank values.
+     */
+    void setPRFilePath (const std::string& iPRFilePath) {
+      _prFilePath = PRFilePath_T (iPRFilePath);
+    }
+
+    /**
      * Set the file-path of the file of POR (points of reference).
      */
-    void setPORFilePath (const PORFilePath_T& iPORFilePath) {
-      _porFilePath = iPORFilePath;
+    void setPORFilePath (const std::string& iPORFilePath) {
+      _porFilePath = PORFilePath_T (iPORFilePath);
     }
 
     /**
      * Set the Xapian database name.
      */
-    void setTravelDatabaseName (const TravelDatabaseName_T& iTravelDBName) {
-      _travelDatabaseName = iTravelDBName;
+    void setTravelDatabaseName (const std::string& iTravelDBName) {
+      _travelDatabaseName = TravelDatabaseName_T (iTravelDBName);
     }
 
     /**
@@ -111,14 +125,18 @@ namespace OPENTREP {
      * Main constructor without database usage.
      */
     OPENTREP_ServiceContext (const TravelDatabaseName_T&);
+
     /**
-     * Main constructor with database usage.
+     * Main constructor.
      */
-    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDatabaseName_T&);
+    OPENTREP_ServiceContext (const PRFilePath_T&, const PORFilePath_T&,
+                             const TravelDatabaseName_T&);
+
     /**
      * Default constructor.
      */
     OPENTREP_ServiceContext();
+
     /**
      * Copy constructor.
      */
@@ -137,6 +155,11 @@ namespace OPENTREP {
      */
     World* _world;
     
+    /**
+     * File-path of the file of PageRank values.
+     */
+    PRFilePath_T _prFilePath;
+
     /**
      * File-path of the file of POR (points of reference).
      */

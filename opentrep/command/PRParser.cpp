@@ -26,11 +26,11 @@ namespace OPENTREP {
     }
 
     // Initialise the PR file parser.
-    PRFileParser lPrFileParser (iPRFilename);
+    PRFileParser lPRFileParser (iPRFilename);
 
     // Parse the CSV-formatted PR input file and generate the corresponding
     // PR structures.
-    lPrFileParser.generateLocations();
+    lPRFileParser.generateLocations();
   }
 
 }
