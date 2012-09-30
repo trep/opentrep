@@ -17,9 +17,9 @@
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
+#include <opentrep/bom/PRParserHelper.hpp>
+#include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/factory/FacPlace.hpp>
-#include <opentrep/command/PORParserHelper.hpp>
-#include <opentrep/command/PRParserHelper.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/service/Logger.hpp>
 // Xapian
@@ -27,58 +27,6 @@
 
 namespace OPENTREP {
 
-  // //////////////////////////////////////////////////////////////////////
-  void tokeniseAndAddToDocument (const std::string& iPhrase,
-                                 Xapian::Document& ioDocument,
-                                 Xapian::WritableDatabase& ioDatabase) {
-
-    // Boost Tokeniser
-    typedef boost::tokenizer<boost::char_separator<char> > Tokeniser_T;
-
-    // Define the separators
-    const boost::char_separator<char> lSepatorList(" .,;:|+-*/_=!@#$%`~^&(){}[]?'<>\"");
-
-    // Initialise the phrase to be tokenised
-    Tokeniser_T lTokens (iPhrase, lSepatorList);
-    for (Tokeniser_T::const_iterator tok_iter = lTokens.begin();
-         tok_iter != lTokens.end(); ++tok_iter) {
-      const std::string& lTerm = *tok_iter;
-      
-      ioDatabase.add_spelling (lTerm);
-      ioDocument.add_term (lTerm);
-
-      // OPENTREP_LOG_DEBUG ("Added term: " << lTerm);
-    }
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  void tokeniseAndAddToDocumentNew (const std::string& iPhrase,
-                                    Xapian::Document& ioDocument,
-                                    Xapian::WritableDatabase& ioDatabase) {
-
-    // Create a list made of all the word combinations of the initial phrase
-    WordCombinationHolder lWordCombinationHolder (iPhrase);
-
-    // Browse the list of unique strings (word combinations)
-    const WordCombinationHolder::StringList_T& lStringList =
-      lWordCombinationHolder._list;
-    for (WordCombinationHolder::StringList_T::const_iterator itString =
-           lStringList.begin();
-         itString != lStringList.end(); ++itString) {
-      const std::string& lWordCombination = *itString;
-
-      // Add that combination of words into the Xapian index
-      tokeniseAndAddToDocument (lWordCombination, ioDocument, ioDatabase);
-      //ioDocument.add_term (lWordCombination);
-      //ioDatabase.add_spelling (lWordCombination);
-    } 
-
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("Added terms for '" << iPhrase << "': "
-                        << lWordCombinationHolder << " into "
-                        << ioDocument.get_description());
-  }
-  
   // //////////////////////////////////////////////////////////////////////
   void addToXapian (const Place& iPlace, Xapian::Document& ioDocument,
                     Xapian::WritableDatabase& ioDatabase) {
@@ -116,12 +64,17 @@ namespace OPENTREP {
                                         Place& ioPlace,
                                         const OTransliterator& iTransliterator) {
 
-    // Build a Xapian document
+    // Create an empty Xapian document
     Xapian::Document lDocument;
     
-    // The document data is indeed meta-data, allowing a human being
-    // to read it
-    lDocument.set_data (ioPlace.toString());
+    // Retrieve the raw data string, to be stored as is within
+    // the Xapian document
+    const RawDataString_T& lRawDataString = ioPlace.getRawDataString();
+
+    // The Xapian document data is indeed the same as the one of the
+    // ORI-maintained list of POR (points of reference), allowing the search
+    // process to use exactly the same parser as the indexation process
+    lDocument.set_data (lRawDataString);
       
     // Build the (STL) sets of terms to be added to the Xapian index and
     // spelling dictionary

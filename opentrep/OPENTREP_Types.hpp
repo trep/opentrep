@@ -58,6 +58,16 @@ namespace OPENTREP {
   };
 
   /**
+   * Raw data string, before any parsing. It is used to be re-parsed once
+   * retrieved by Xapian as document data.
+   */
+  struct RawDataString_T : public std::string {
+  public:
+    explicit RawDataString_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
+  /**
    * IATA three-letter code (e.g., ORD for Chicago O'Hare, IL, USA).
    */
   struct IATACode_T : public std::string {

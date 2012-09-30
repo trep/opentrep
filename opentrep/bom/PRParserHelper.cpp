@@ -11,10 +11,8 @@
 #define BOOST_SPIRIT_UNICODE
 // OpenTREP
 #include <opentrep/basic/BasParserTypes.hpp>
-#include <opentrep/bom/Place.hpp>
-#include <opentrep/factory/FacPlace.hpp>
+#include <opentrep/bom/PRParserHelper.hpp>
 #include <opentrep/service/Logger.hpp>
-#include <opentrep/command/PRParserHelper.hpp>
 
 namespace OPENTREP {
 
@@ -93,12 +91,6 @@ namespace OPENTREP {
                               bsq::unused_type, bsq::unused_type) const {
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Do End. Location structure: " << _location);
-
-      // Generation of the Place object from the Location structure.
-      //Place& lPlace = FacPlace::instance().create (_location);
-
-      // DEBUG
-      // OPENTREP_LOG_DEBUG (lPlace);
     }  
 
     // ///////////////////////////////////////////////////////////////////

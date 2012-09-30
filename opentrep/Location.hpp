@@ -341,7 +341,14 @@ namespace OPENTREP {
       return _alternateLocationList;
     }
 
-    
+    /**
+     * Get the raw data string, as stored and retrieved by Xapian.
+     */
+    const RawDataString_T& getRawDataString() const {
+      return _rawDataString;
+    }
+
+
   public:
     // ///////// Setters //////////
     /**
@@ -651,6 +658,13 @@ namespace OPENTREP {
       _alternateLocationList.push_back (iAlternateLocation);
     }
     
+    /**
+     * Set the raw data string, as stored and retrieved by Xapian.
+     */
+    void setRawDataString (const std::string& iRawDataString) {
+      _rawDataString = RawDataString_T (iRawDataString);
+    }
+
 
   public:
     // ///////// Parsing support methods ////////
@@ -746,7 +760,8 @@ namespace OPENTREP {
               const std::string& iCorrectedKeywords,
               const MatchingPercentage_T& iPercentage,
               const NbOfErrors_T& iEditDistance,
-              const NbOfErrors_T& iAllowableEditDistance);
+              const NbOfErrors_T& iAllowableEditDistance,
+              const RawDataString_T&);
 
     /**
      * Default Constructor. 
@@ -967,6 +982,13 @@ namespace OPENTREP {
      * List of alternate matching (less similar) locations. 
      */
     LocationList_T _alternateLocationList;
+
+    /**
+     * Raw data string, before any parsing. It is used to be re-parsed once
+     * retrieved by Xapian as document data.
+     */
+    RawDataString_T _rawDataString;
+
 
   public:
     // ///////// Parsing support temporary attributes ////////

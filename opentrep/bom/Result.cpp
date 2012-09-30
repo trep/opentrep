@@ -16,6 +16,7 @@
 #include <opentrep/bom/Levenshtein.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/Result.hpp>
+#include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
@@ -24,7 +25,8 @@ namespace OPENTREP {
   Result::Result (const TravelQuery_T& iQueryString,
                   const Xapian::Database& iDatabase)
     : _resultHolder (NULL), _database (iDatabase),
-      _queryString (iQueryString), _hasFullTextMatched (false) {
+      _queryString (iQueryString), _hasFullTextMatched (false),
+      _bestDocData (RawDataString_T ("")) {
     init();
   }
   
@@ -225,73 +227,43 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  LocationKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
+  Location Result::retrieveLocation (const Xapian::Document& iDocument) {
     // Retrieve the Xapian document data
     const std::string& lDocumentData = iDocument.get_data();
 
-    // Tokenise the string into words
-    WordList_T lWordList;
-    WordHolder::tokeniseDocIntoWordList (lDocumentData, lWordList);
-    assert (lWordList.size() > 3);
+    // Initialise the POR (point of reference) parser
+    PORStringParser lStringParser (lDocumentData);
 
-    // By convention (within OpenTrep), the first three words of the Xapian
-    // document data string constitute the primary key of the place
-    WordList_T::const_iterator itWord = lWordList.begin();
-    const IATACode_T lIataCode = IATACode_T (*itWord);
-    ++itWord; const ICAOCode_T lIcaoCode = ICAOCode_T (*itWord);
-    ++itWord; const std::string& lGeonamesIDStr = *itWord;
+    // Parse the raw data
+    const Location& oLocation = lStringParser.generateLocation();
+    //const LocationKey& lLocationKey = lLocation.getKey();
 
-    GeonamesID_T lGeonamesID = 0;
+    // DEBUG
+    //OPENTREP_LOG_DEBUG ("Location: " << oLocation);
 
-    // Track the bad lexical cast exception
-    try {
+    return oLocation;
+  }
 
-      lGeonamesID = boost::lexical_cast<GeonamesID_T> (lGeonamesIDStr);
+  // //////////////////////////////////////////////////////////////////////
+  LocationKey Result::getPrimaryKey (const Xapian::Document& iDocument) {
+    // Parse the POR (point of reference) details held by the Xapian document
+    const Location& lLocation = retrieveLocation (iDocument);
 
-    } catch (const std::exception& stde) {
-      OPENTREP_LOG_ERROR ("Expected a Geonames ID, got '" << lGeonamesIDStr
-                          << "'. Full document data: '" << lDocumentData << "'");
-      return LocationKey (lIataCode, lIcaoCode, lGeonamesID);
-    }
+    // Get the key (IATA and ICAO codes, GeonamesID)
+    const LocationKey& oLocationKey = lLocation.getKey();
 
-    return LocationKey (lIataCode, lIcaoCode, lGeonamesID);
+    return oLocationKey;
   }
   
   // //////////////////////////////////////////////////////////////////////
-  Percentage_T Result::getPageRank (const Xapian::Document& iDocument) {
-    // Retrieve the Xapian document data
-    const std::string& lDocumentData = iDocument.get_data();
+  PageRank_T Result::getPageRank (const Xapian::Document& iDocument) {
+    // Parse the POR (point of reference) details held by the Xapian document
+    const Location& lLocation = retrieveLocation (iDocument);
 
-    // Tokenise the string into words
-    WordList_T lWordList;
-    WordHolder::tokeniseDocIntoWordList (lDocumentData, lWordList);
-    assert (lWordList.size() >= 4);
+    // Get the PageRank value
+    const PageRank_T& oPageRank = lLocation.getPageRank();
 
-    // By convention (within OpenTrep), the fourth word of the Xapian
-    // document data string constitutes the PageRank percentage of the place
-    WordList_T::const_iterator itWord = lWordList.begin();
-    ++itWord; ++itWord; ++itWord; const std::string& lPercentageStr = *itWord;
-
-    Percentage_T oPercentage = K_DEFAULT_PAGE_RANK;
-
-    // Track the bad lexical cast exception
-    try {
-
-      oPercentage = boost::lexical_cast<Percentage_T> (lPercentageStr);
-
-    } catch (const std::exception& stde) {
-      OPENTREP_LOG_ERROR ("Expected a percentage value, got '"
-                          << lPercentageStr << "'. Full document data: '"
-                          << lDocumentData << "'");
-      return oPercentage;
-    }
-
-    // Sanity check
-    if (oPercentage <= 0.0) {
-      oPercentage = K_DEFAULT_PAGE_RANK;
-    }
-
-    return oPercentage;
+    return oPageRank;
   }
   
   // //////////////////////////////////////////////////////////////////////

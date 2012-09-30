@@ -6,9 +6,9 @@
 #include <string>
 // OpenTREP
 #include <opentrep/basic/BasFileMgr.hpp>
-#include <opentrep/service/Logger.hpp>
-#include <opentrep/command/PORParserHelper.hpp>
+#include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/command/PORParser.hpp>
+#include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
 

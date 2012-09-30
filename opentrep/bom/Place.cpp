@@ -25,7 +25,8 @@ namespace OPENTREP {
                Admin3Code_T (""), Admin4Code_T (""),
                0, 0, 0, TimeZone_T (""), 0, 0, 0,
                Date_T (2000, 01, 01), false, false,
-               WikiLink_T (""),  K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0),
+               WikiLink_T (""),  K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0,
+               RawDataString_T ("")),
     _docID (0) {
   }
   
@@ -42,7 +43,8 @@ namespace OPENTREP {
                Admin3Code_T (""), Admin4Code_T (""),
                0, 0, 0, TimeZone_T (""), 0, 0, 0,
                Date_T (2000, 01, 01), false, false,
-               WikiLink_T (""), K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0),
+               WikiLink_T (""), K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0,
+               RawDataString_T ("")),
     _docID (0) {
   }
   

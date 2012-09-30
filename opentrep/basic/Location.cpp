@@ -35,6 +35,7 @@ namespace OPENTREP {
     _pageRank (K_DEFAULT_PAGE_RANK),
     _originalKeywords ("NA"), _correctedKeywords ("NA"),
     _percentage (0), _editDistance (0), _allowableEditDistance (0),
+    _rawDataString ("NA"),
     _itLanguageCodeNum (Language::LAST_VALUE),
     _itLanguageCode (LanguageCode_T ("")) {
   }
@@ -69,6 +70,7 @@ namespace OPENTREP {
     _allowableEditDistance (iLocation._allowableEditDistance),
     _extraLocationList (iLocation._extraLocationList),
     _alternateLocationList (iLocation._alternateLocationList),
+    _rawDataString (iLocation._rawDataString),
     _itLanguageCodeNum (iLocation._itLanguageCodeNum),
     _itLanguageCode (LanguageCode_T ("")) { 
   }
@@ -104,7 +106,8 @@ namespace OPENTREP {
                       const std::string& iCorrectedKeywords,
                       const MatchingPercentage_T& iPercentage,
                       const NbOfErrors_T& iEditDistance,
-                      const NbOfErrors_T& iAllowableEditDistance) :
+                      const NbOfErrors_T& iAllowableEditDistance,
+                      const RawDataString_T& iRawDataString) :
     _key (iIataCode, iIcaoCode, iGeonamesID),
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
@@ -125,6 +128,7 @@ namespace OPENTREP {
     _correctedKeywords (iCorrectedKeywords),
     _percentage (iPercentage), _editDistance (iEditDistance),
     _allowableEditDistance (iAllowableEditDistance),
+    _rawDataString (iRawDataString),
     _itLanguageCodeNum (Language::LAST_VALUE),
     _itLanguageCode (LanguageCode_T ("")) {
   }
@@ -141,40 +145,6 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void Location::fromStream (std::istream&) {
   }
-
-  /*
-    LocationKey <IATACode_T _iataCode, ICAOCode_T _icaoCode,
-                 GeonamesID_T _geonameID>;
-    CommonName_T _commonName;
-    ASCIIName_T _asciiName;
-    FAACode_T _faaCode;
-    CityCode_T _cityCode;
-    StateCode_T _stateCode;
-    CountryCode_T _countryCode;
-    AltCountryCode_T _altCountryCode;
-    RegionCode_T _regionCode;
-    Latitude_T _latitude;
-    Longitude_T _longitude;
-    FeatureClass_T _featClass;
-    FeatureCode_T _featCode;
-    IATAType_T _iataType;
-    Admin1Code_T _admin1Code;
-    Admin2Code_T _admin2Code;
-    Admin3Code_T _admin3Code;
-    Admin4Code_T _admin4Code;
-    Population_T _population;
-    Elevation_T _elevation;
-    GTopo30_T _gTopo30;
-    TimeZone_T _timeZone;
-    GMTOffset_T _gmtOffset;
-    DSTOffset_T _dstOffset;
-    RawOffset_T _rawOffset;
-    Date_T _modificationDate;
-    IsAirport_T _isAirport;
-    IsCommercial_T _isCommercial;
-    WikiLink_T _wikiLink;
-    NameMatrix _nameMatrix;
-  */
 
   // //////////////////////////////////////////////////////////////////////
   std::string Location::describeShortKey() const {

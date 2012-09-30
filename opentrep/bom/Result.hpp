@@ -19,6 +19,7 @@ namespace OPENTREP {
   // Forward declarations
   class ResultHolder;
   struct LocationKey;
+  struct Location;
   class Place;
 
 
@@ -122,7 +123,7 @@ namespace OPENTREP {
     /**
      * Get the details of the best matching document.
      */
-    const std::string& getBestDocData() const {
+    const RawDataString_T& getBestDocData() const {
       return _bestDocData;
     }
 
@@ -218,7 +219,7 @@ namespace OPENTREP {
      * Set the details of the best matching document.
      */
     void setBestDocData (const std::string& iDocData) {
-      _bestDocData = iDocData;
+      _bestDocData = RawDataString_T (iDocData);
     }
 
     /**
@@ -254,11 +255,21 @@ namespace OPENTREP {
     std::string fullTextMatch (const Xapian::Database&, const TravelQuery_T&);
 
     /**
+     * Parse the raw data, as stored by the given Xapian document, and
+     * holding all the details of a POR (point of reference).
+     *
+     * @param Xapian::Document& The Xapian document.
+     * @return Location The Location structure holding all the details
+     *                  of the place/POR (point of reference).
+     */
+    static Location retrieveLocation (const Xapian::Document&);
+
+    /**
      * Extract the primary key from the data of the given Xapian document.
      *
-     * The primary key is made of the first three words (IATA and ICAO
-     * codes, as well as the Geonames ID) of the Xapian document
-     * data/content.
+     * The primary key is made of the IATA and ICAO codes, as well as of
+     * the Geonames ID. The retrieveLocation() is used to parse the Xapian
+     * document raw data.
      *
      * @param Xapian::Document& The Xapian document.
      * @return LocationKey& The primary key of the place/POR (point of
@@ -269,12 +280,12 @@ namespace OPENTREP {
     /**
      * Extract the PageRank from the data of the given Xapian document.
      *
-     * The PageRank is the fourth word of the Xapian document data/content.
+     * The retrieveLocation() is used to parse the Xapian document raw data.
      *
      * @param Xapian::Document& The Xapian document.
-     * @return Percentage_T& The PageRank of the place/POR (point of reference).
+     * @return PageRank_T& The PageRank of the place/POR (point of reference).
      */
-    static Percentage_T getPageRank (const Xapian::Document&);
+    static PageRank_T getPageRank (const Xapian::Document&);
 
     /**
      * Calculate/set the PageRanks for all the matching documents
@@ -427,7 +438,7 @@ namespace OPENTREP {
     /**
      * Details of the best matching document.
      */
-    std::string _bestDocData;
+    RawDataString_T _bestDocData;
 
       /**
      * (STL) List of Xapian documents and their associated score board.

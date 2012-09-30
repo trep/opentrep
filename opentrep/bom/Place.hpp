@@ -353,7 +353,14 @@ namespace OPENTREP {
     const NbOfErrors_T& getAllowableEditDistance() const {
       return _location.getAllowableEditDistance();
     }
-    
+
+    /**
+     * Get the raw data string, as stored and retrieved by Xapian.
+     */
+    const RawDataString_T& getRawDataString() const {
+      return _location.getRawDataString();
+    }
+
     /**
      * Get the Xapian document ID.
      */
@@ -686,6 +693,13 @@ namespace OPENTREP {
      */
     void setAllowableEditDistance (const NbOfErrors_T& iAllowableEditDistance) {
       _location.setAllowableEditDistance (iAllowableEditDistance);
+    }
+
+    /**
+     * Set the raw data string, as stored and retrieved by Xapian.
+     */
+    void setRawDataString (const std::string& iRawDataString) {
+      _location.setRawDataString (iRawDataString);
     }
 
     /**
