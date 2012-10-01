@@ -6,6 +6,7 @@
 #include <sstream>
 // OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -25,10 +26,132 @@ namespace OPENTREP {
   Filter::~Filter() {
   }
 
+
+  /**
+   * Helper function to check whether the word should be kept.
+   *
+   * If the word has no more than 3 letters (e.g., 'de', 'san'), it should
+   * be filtered out. Indeed, when 'san' is part of 'san francisco',
+   * for instance, it should not be indexed/searched alone (in a search,
+   * the resulting match score will be zero).
+   */
+  // //////////////////////////////////////////////////////////////////////
+  bool hasGoodSize (const std::string& iWord) {
+    bool hasGoodSizeFlag = true;
+    // 
+    const size_t lWordLength = iWord.size();
+    if (lWordLength <= 2) {
+      hasGoodSizeFlag = false;
+    }
+    return hasGoodSizeFlag;
+  }
+
+  /**
+   * Helper function to check whether the given word is black-listed.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  bool isBlackListed (const std::string& iWord) {
+    bool isBlackListedFlag = false;
+
+    // When the word is part of the "black list", it should obviously be
+    // filtered out.
+    for (BlackList_T::const_iterator itWord = K_BLACK_LIST.begin();
+         itWord != K_BLACK_LIST.end(); ++itWord) {
+      const std::string& lWord = *itWord;
+
+      // DEBUG
+      // const std::string areEqualStr = (iWord == lWord)?"Yes":"No";
+      // OPENTREP_LOG_DEBUG ("Word: '" << iWord << "', black-list word: '"
+      //                     << lWord << "', Equals: " << areEqualStr);
+      
+      if (iWord == lWord) {
+        isBlackListedFlag = true;
+        break;
+      }
+    }
+
+    return isBlackListedFlag;
+  }
+
+  /**
+   * Helper function to trim the non-relevant right outer words.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void rtrim (WordList_T& ioWordList) {
+    // If the list is empty, obviously nothing can be done at that stage.
+    if (ioWordList.empty() == true) {
+      return;
+    }
+
+    // Take the first right outer word
+    WordList_T::reverse_iterator itWord = ioWordList.rbegin();
+    assert (itWord != ioWordList.rend());
+    const std::string& lWord = *itWord;
+
+    // Check whether that word has the good size (>= 3) and whether it is
+    // black-listed.
+    const bool hasGoodSizeFlag = hasGoodSize (lWord);
+    const bool isBlackListedFlag = isBlackListed (lWord);
+    if (hasGoodSizeFlag == false || isBlackListedFlag == true) {
+      ioWordList.erase (--itWord.base());
+      rtrim (ioWordList);
+    }
+  }
+
+  /**
+   * Helper function to trim the non-relevant left outer words.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void ltrim (WordList_T& ioWordList) {
+    // If the list is empty, obviously nothing can be done at that stage.
+    if (ioWordList.empty() == true) {
+      return;
+    }
+
+    // Take the first left outer word
+    WordList_T::iterator itWord = ioWordList.begin();
+    assert (itWord != ioWordList.end());
+    const std::string& lWord = *itWord;
+
+    // Check whether that word has the good size (>= 3) and whether it is
+    // black-listed.
+    const bool hasGoodSizeFlag = hasGoodSize (lWord);
+    const bool isBlackListedFlag = isBlackListed (lWord);
+    if (hasGoodSizeFlag == false || isBlackListedFlag == true) {
+      ioWordList.erase (itWord);
+      ltrim (ioWordList);
+    }
+  }
+
+  /**
+   * Helper function to trim the non-relevant left and right outer words.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  void trim (WordList_T& ioWordList) {
+    // Trim the non-relevant left outer words
+    ltrim (ioWordList);
+
+    // Trim the non-relevant right outer words
+    rtrim (ioWordList);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Filter::trim (std::string& ioPhrase) {
+    // Create a list of words from the given phrase
+    WordList_T lWordList;
+    tokeniseStringIntoWordList (ioPhrase, lWordList);
+
+    // Trim the non-relevant left and right outer words
+    OPENTREP::trim (lWordList);
+
+    // Re-create the phrase from the (potentially altered) list of words
+    ioPhrase = createStringFromWordList (lWordList);
+  }
+
   // //////////////////////////////////////////////////////////////////////
   bool Filter::shouldKeep (const std::string& iPhrase,
                            const std::string& iWord) {
-    bool isToBeKept  = true;
+    bool isToBeKept = true;
 
     // If the term to be added is equal to the whole phrase (e.g., 'san'),
     // it should be kept (not filtered out). Indeed, three-letter words
@@ -44,29 +167,13 @@ namespace OPENTREP {
     // it should be filtered out. Indeed, when 'san' is part of
     // 'san francisco', for instance, it should not be indexed/searched
     // alone (in a search, the resulting match score will be zero).
-    const size_t lWordLength = iWord.size();
-    if (lWordLength <= 2) {
-      isToBeKept = false;
+    isToBeKept = hasGoodSize (iWord);
+    if (isToBeKept == false) {
       return isToBeKept;
     }
 
-    // When the word is part of the "black list", it should obviously be
-    // filtered out.
-    for (BlackList_T::const_iterator itWord = K_BLACK_LIST.begin();
-         itWord != K_BLACK_LIST.end(); ++itWord) {
-      const std::string& lWord = *itWord;
-
-      // DEBUG
-      // const std::string areEqualStr = (iWord == lWord)?"Yes":"No";
-      // OPENTREP_LOG_DEBUG ("Phrase: '" << iPhrase << "', Word: '" << iWord
-      //                     << "', black-list word: '" << lWord
-      //                     << "', Equals: " << areEqualStr);
-      
-      if (iWord == lWord) {
-        isToBeKept = false;
-        break;
-      }
-    }    
+    // Check whether the word is black-listed
+    isToBeKept = !isBlackListed (iWord);
 
     //
     return isToBeKept;

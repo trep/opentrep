@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BOM_UTILITIES_HPP
-#define __OPENTREP_BOM_UTILITIES_HPP
+#ifndef __OPENTREP_BAS_UTILITIES_HPP
+#define __OPENTREP_BAS_UTILITIES_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -21,7 +21,7 @@ namespace OPENTREP {
    * Create a string from a list of words.
    *
    * The string is made of the words up until a given index. The default
-   * value of that index (-1) means that the string will be made by all
+   * value of that index (0) means that the string will be made by all
    * the words of the list.
    *
    * If the flag is set to false, the string is made of the words from
@@ -32,4 +32,4 @@ namespace OPENTREP {
                                         const bool iFromBeginningFlag = true);
 
 }
-#endif // __OPENTREP_BOM_UTILITIES_HPP
+#endif // __OPENTREP_BAS_UTILITIES_HPP

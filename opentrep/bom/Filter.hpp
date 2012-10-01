@@ -22,6 +22,26 @@ namespace OPENTREP {
   public:
     // /////////// Business support methods /////////
     /**
+     * Trim all the non-relevant words from the given phrase.
+     *
+     * The following rules are applied to the right and left outer words,
+     * iteratively until no more outer word can be stripped out:
+     * <ul>
+     *   <li>If the left or right outer word has no more than 3 letters
+     *       (e.g., 'de', 'san'), it should be stripped out</li>
+     *   <li>If the left or right outer word is part of the "black-list"
+     *       (e.g., 'airport', 'intl', 'international'), it should be
+     *       filtered out</li>
+     * </ul>
+     *
+     * @param std::string& The given phrase (e.g., 'de san francisco',
+     *                     part of the 'aeroport de san francisco' global
+     *                     phrase).
+     * @return Whether or not the word should be kept / filtered out
+     */
+    static void trim (std::string& ioPhrase);
+
+    /**
      * State whether or not to keep the given word, as opposed to filter out
      * a non-indexable/searchable word.
      *
@@ -36,9 +56,10 @@ namespace OPENTREP {
      *       'international'), it should be filtered out</li>
      * </ul>
      *
-     * @param std::string& The initial phrase (e.g., 'san francisco airport').
-     * @param std::string& The word on which a decision has to be made
-     * @return Whether or not the word should be kept / filtered out
+     * @param const std::string& The initial phrase (e.g.,
+     *                           'san francisco airport').
+     * @param const std::string& The word on which a decision has to be made
+     * @return bool Whether or not the word should be kept / filtered out
      */
     static bool shouldKeep (const std::string& iPhrase,
                             const std::string& iWord);

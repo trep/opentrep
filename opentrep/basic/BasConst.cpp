@@ -61,14 +61,27 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   BlackList_T ListGenerator::createBlackList() {
     BlackList_T oBL;
-    oBL.push_back ("airport"); oBL.push_back ("airfield");
-    oBL.push_back ("airbase"); oBL.push_back ("aerodrome");
-    oBL.push_back ("aerodromo"); oBL.push_back ("aeroporto");
-    oBL.push_back ("international"); oBL.push_back ("intl");
-    oBL.push_back ("saint"); oBL.push_back ("sankt");
-    oBL.push_back ("municipal"); oBL.push_back ("county");
-    oBL.push_back ("local");
-    oBL.push_back ("ferry");  oBL.push_back ("port");oBL.push_back ("harbour");
+    oBL.push_back ("Airport"); oBL.push_back ("airport");
+    oBL.push_back ("Airfield"); oBL.push_back ("airfield");
+    oBL.push_back ("Airbase"); oBL.push_back ("airbase");
+    oBL.push_back ("Aeroport"); oBL.push_back ("aeroport");
+    oBL.push_back ("Aéroport"); oBL.push_back ("aéroport");
+    oBL.push_back ("Aerodrome"); oBL.push_back ("aerodrome");
+    oBL.push_back ("Aerodromo"); oBL.push_back ("aerodromo");
+    oBL.push_back ("Aeroporto"); oBL.push_back ("aeroporto");
+    oBL.push_back ("Aeropuerto"); oBL.push_back ("aeropuerto");
+    oBL.push_back ("Аэропорт"); oBL.push_back ("аэропорт");
+    oBL.push_back ("International"); oBL.push_back ("international");
+    oBL.push_back ("Intl"); oBL.push_back ("intl");
+    oBL.push_back ("Saint"); oBL.push_back ("saint");
+    oBL.push_back ("Sankt"); oBL.push_back ("sankt");
+    oBL.push_back ("Municipal"); oBL.push_back ("municipal");
+    oBL.push_back ("County"); oBL.push_back ("county");
+    oBL.push_back ("Local"); oBL.push_back ("local");
+    oBL.push_back ("Ferry"); oBL.push_back ("ferry");
+    oBL.push_back ("Port"); oBL.push_back ("port");
+    oBL.push_back ("Harbour"); oBL.push_back ("harbour");
+    oBL.push_back ("Harbor"); oBL.push_back ("harbor");
     return oBL;
   }
 

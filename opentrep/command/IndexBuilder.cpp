@@ -12,7 +12,7 @@
 #include <boost/tokenizer.hpp>
 // OpenTrep
 #include <opentrep/basic/OTransliterator.hpp>
-#include <opentrep/bom/Utilities.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>

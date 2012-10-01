@@ -7,7 +7,7 @@
 // Boost (Extended STL)
 #include <boost/tokenizer.hpp>
 // OpenTrep
-#include <opentrep/bom/Utilities.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {

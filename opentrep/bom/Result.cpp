@@ -471,17 +471,25 @@ namespace OPENTREP {
 
     // Catch any Xapian::Error exceptions thrown
     try {
-      
+
+      // Copy the initial query string
+      std::string lTrimmedQueryString (iQueryString);
+
+      // Trim the left and right outer words from the query string
+      Filter::trim (lTrimmedQueryString);
+
       // DEBUG
-      OPENTREP_LOG_DEBUG("      ----------------");
-      OPENTREP_LOG_DEBUG("      Current query string: '"<< iQueryString << "'");
+      OPENTREP_LOG_DEBUG ("      ----------------");
+      OPENTREP_LOG_DEBUG ("      Current query string: '"<< iQueryString
+                          << "' (trimmed: '" << lTrimmedQueryString << "')");
 
       // Check whether the string should be filtered out
-      const bool isToBeAdded = Filter::shouldKeep ("", iQueryString);
+      const bool isToBeAdded = Filter::shouldKeep ("", lTrimmedQueryString);
 
       Xapian::MSet lMatchingSet;
       if (isToBeAdded == true) {
-        oMatchedString = fullTextMatch (iDatabase, iQueryString, lMatchingSet);
+        oMatchedString = fullTextMatch (iDatabase, lTrimmedQueryString,
+                                        lMatchingSet);
       }
 
       // Create the corresponding documents (from the Xapian MSet object)

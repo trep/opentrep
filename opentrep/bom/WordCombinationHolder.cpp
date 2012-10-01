@@ -6,9 +6,9 @@
 #include <sstream>
 #include <set>
 // OpenTrep
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/StringPartition.hpp>
-#include <opentrep/bom/Utilities.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -103,9 +103,12 @@ namespace OPENTREP {
       const StringList_T& lStringList = itStringList._set;
       for (StringList_T::const_iterator itWordCombination = lStringList.begin();
            itWordCombination != lStringList.end(); ++itWordCombination) {
-        const std::string& lWordCombination = *itWordCombination;
+        std::string lWordCombination = *itWordCombination;
 
-        // Check whether the word combination should be filtered out
+        // Trim the left and right outer words from the word combination
+        Filter::trim (lWordCombination);
+
+        // Check whether the (remaining) word combination should be filtered out
         const bool isToBeAdded = Filter::shouldKeep (iPhrase, lWordCombination);
         if (isToBeAdded == true) {
           lStringSet.insert (lWordCombination);
@@ -118,7 +121,9 @@ namespace OPENTREP {
          itWordCombination != lStringSet.end(); ++itWordCombination) {
       const std::string& lWordCombination = *itWordCombination;
 
-      // Check whether that word combination should be indexed in Xapian
+      // Add that word combination in the list for indexation by Xapian.
+      // Note that if that word combination is already present in the list,
+      // it will not be added a second time (thanks to the STL list design).
       _list.push_back (lWordCombination);
     }
 
@@ -157,9 +162,13 @@ namespace OPENTREP {
         // 3.2.3. Concatenate both sub-strings
         std::ostringstream lConcatenatedStr;
         lConcatenatedStr << lLeftHandString << " " << lRightHandString;
-        const std::string& lConcatenatedString = lConcatenatedStr.str();
+        std::string lConcatenatedString = lConcatenatedStr.str();
 
-        // 3.2.4. Add the concatenated string into the list, if not filtered out
+        // 3.2.4. Trim the left and right outer words from the concatenated
+        //        string
+        Filter::trim (lConcatenatedString);
+
+        // 3.2.5. Add the concatenated string into the list, if not filtered out
         const bool isToBeAdded =
           Filter::shouldKeep (iPhrase, lConcatenatedString);
         if (isToBeAdded == true) {

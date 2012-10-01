@@ -6,8 +6,8 @@
 #include <sstream>
 #include <set>
 // OpenTrep
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/Filter.hpp>
-#include <opentrep/bom/Utilities.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/service/Logger.hpp>
 
