@@ -63,6 +63,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed validity ID. */
+    struct storeValidityID : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeValidityID (Location&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the common name. */
     struct storeCommonName : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -137,6 +147,46 @@ namespace OPENTREP {
     struct storeFeatureCode : public ParserSemanticAction {
       /** Actor Constructor. */
       storeFeatureCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed PageRank value. */
+    struct storePageRank : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storePageRank (Location&);
+      /** Actor Function (functor). */
+      void operator() (double,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const; 
+    };
+    
+    /** Store the parsed date from. */
+    struct storeDateFrom : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeDateFrom (Location&);
+      /** Actor Function (functor). */
+      void operator() (boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed date until. */
+    struct storeDateUntil : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeDateUntil (Location&);
+      /** Actor Function (functor). */
+      void operator() (boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the comments. */
+    struct storeComments : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeComments (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,

@@ -50,12 +50,11 @@ namespace OPENTREP {
      *
      * This new object is added to the list of instantiated objects.
      *
-     * @param const PRFilePath_T& File-path of the file of PageRank.
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDatabaseName_T& File-path of the Xapian database.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
-    OPENTREP_ServiceContext& create (const PRFilePath_T&, const PORFilePath_T&,
+    OPENTREP_ServiceContext& create (const PORFilePath_T&,
                                      const TravelDatabaseName_T&);
 
 

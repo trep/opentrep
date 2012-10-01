@@ -50,7 +50,7 @@ namespace OPENTREP {
       //_location._itAltNameShortList.clear();
 
       // DEBUG
-       //OPENTREP_LOG_DEBUG ( "IATA code: " << _location.getIataCode());
+      //OPENTREP_LOG_DEBUG ("IATA code: " << _location.getIataCode());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -65,8 +65,9 @@ namespace OPENTREP {
       const std::string lIcaoCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::ICAOCode_T lIcaoCode (lIcaoCodeStr);
       _location.setIcaoCode (lIcaoCode);
-       // DEBUG
-       //OPENTREP_LOG_DEBUG ( "ICAO code: " << _location.getIcaoCode());
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("ICAO code: " << _location.getIcaoCode());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -80,7 +81,21 @@ namespace OPENTREP {
       _location.setGeonamesID (iPorId);
       
       // DEBUG
-      //OPENTREP_LOG_DEBUG ( "Por Id: " << _location.getPorID ());
+      //OPENTREP_LOG_DEBUG ("POR ID: " << _location.getPorID());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    storeValidityID::storeValidityID (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeValidityID::operator() (unsigned int iValidityId,
+                                      bsq::unused_type, bsq::unused_type) const {
+      //_location.setValidityID (iPorId);
+      
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Validity ID: " << _location.getValidityID());
     }
     
     // //////////////////////////////////////////////////////////////////
@@ -168,6 +183,7 @@ namespace OPENTREP {
     void storeLongitude::operator() (double iLongitude,
                                      bsq::unused_type, bsq::unused_type) const {
       _location.setLongitude (iLongitude);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Longitude: " << _location.getLongitude());
     }
@@ -184,6 +200,7 @@ namespace OPENTREP {
       const std::string lFeatClassStr (iChar.begin(), iChar.end());
       const FeatureClass_T lFeatClass (lFeatClassStr);
       _location.setFeatureClass (lFeatClass);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Feature class: " << _location.getFeatureClass());
     }
@@ -200,8 +217,75 @@ namespace OPENTREP {
       const std::string lFeatCodeStr (iChar.begin(), iChar.end());
       const FeatureClass_T lFeatCode (lFeatCodeStr);
       _location.setFeatureCode (lFeatCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Feature code: " << _location.getFeatureCode());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storePageRank::storePageRank (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storePageRank::operator() (double iPageRank,
+                                    bsq::unused_type, bsq::unused_type) const {
+      _location.setPageRank (100.0 * iPageRank);
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("PageRank: " << _location.getPageRank());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeDateFrom::storeDateFrom (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeDateFrom::operator() (bsq::unused_type,
+                                    bsq::unused_type, bsq::unused_type) const {
+      /*
+      const OPENTREP::Date_T& lDateFrom = _location.calculateDate();
+      _location.setDateFrom (lDateFrom);
+      */
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Date from: " << _location.getDateFrom());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeDateUntil::storeDateUntil (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeDateUntil::operator() (bsq::unused_type,
+                                     bsq::unused_type, bsq::unused_type) const {
+      /*
+      const OPENTREP::Date_T& lDateUntil = _location.calculateDate();
+      _location.setDateUntil (lDateUntil);
+      */
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Date until: " << _location.getDateUntil());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeComments::storeComments (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeComments::operator() (std::vector<uchar_t> iChar,
+                                    bsq::unused_type, bsq::unused_type) const {
+      /*
+      const std::string lCommentsStr (iChar.begin(), iChar.end());
+      const CountryCode_T lComments (lCommentsStr);
+      _location.setComments (lComments);
+      */
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Comments: " << _location.getComments());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -686,7 +770,7 @@ namespace OPENTREP {
        -- iata_code         : IATA code; varchar(3). See also:
        --                    http://www.iata.org/ps/publications/Pages/code-search.aspx
        -- icao_code         : ICAO code; varchar(4)
-       -- geonameid         : Integer ID of record in geonames database
+       -- geoname_id         : Integer ID of record in geonames database
        -- name              : Name of geographical point
        --                     (UTF8) varchar(200)
        -- asciiname         : Name of geographical point in plain ascii characters
@@ -762,14 +846,15 @@ namespace OPENTREP {
        --       / AN        : Antarctica (geonameId=6255152)
        --
        -- Samples:
-       -- CDG^LFPG^Y^6269554^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^CDG,LFPG,Paris - Charles de Gaulle,París - Charles de Gaulle,Roissy Charles de Gaulle^49.012779^2.55^S^AIRP^FR^^A8^95^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^Y^Y^PAR^^EUROP^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es^París - Charles de Gaulle^p^^Roissy Charles de Gaulle^
-       -- PAR^ZZZZ^Y^2988507^Paris^Paris^Baariis,Bahliz,Gorad Paryzh,Lungsod ng Paris,Lutece,Lutetia,Lutetia Parisorum,PAR,Pa-ri,Paarys,Palika,Paname,Pantruche,Paraeis,Paras,Pari,Paries,Parigge,Pariggi,Parighji,Parigi,Pariis,Pariisi,Parij,Parijs,Paris,Parisi,Parixe,Pariz,Parize,Parizh,Parizh osh,Parizh',Parizo,Parizs,Pariž,Parys,Paryz,Paryzius,Paryż,Paryžius,Paräis,París,Paríž,Parîs,Parĩ,Parī,Parīze,Paříž,Páras,Párizs,Ville-Lumiere,Ville-Lumière,ba li,barys,pairisa,pali,pari,paris,parys,paryzh,perisa,pryz,pyaris,pyarisa,pyrs,pʾrys,Παρίσι,Горад Парыж,Париж,Париж ош,Парижь,Париз,Парис,Паріж,Փարիզ,פאריז,פריז,باريس,پارىژ,پاريس,پاریس,پیرس,ܦܐܪܝܣ,पॅरिस,पेरिस,पैरिस,প্যারিস,ਪੈਰਿਸ,પૅરિસ,பாரிஸ்,పారిస్,ಪ್ಯಾರಿಸ್,പാരിസ്,ปารีส,ཕ་རི།,ပ<U+102B>ရီမ<U+103C>ို့,პარიზი,ፓሪስ,ប៉ារីស,パリ,巴黎,파리^49.02^2.533^P^PPLC^FR^^A8^75^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^N^N^PAR^^EUROP^C^http://en.wikipedia.org/wiki/Paris^la^Lutetia Parisorum^^fr^Lutece^h^fr^Ville-Lumière^c^eo^Parizo^^es^París^ps^de^Paris^^en^Paris^p^af^Parys^^als^Paris^^an^París^^ar^باريس^^ast^París^^be^Горад Парыж^^bg^Париж^^ca^París^^cs^Paříž^^cy^Paris^^da^Paris^^el^Παρίσι^^et^Pariis^^eu^Paris^^fa^پاریس^^fi^Pariisi^^fr^Paris^p^ga^Páras^^gl^París^^he^פריז^^hr^Pariz^^hu^Párizs^^id^Paris^^io^Paris^^it^Parigi^^ja^パリ^^ka^პარიზი^^kn^ಪ್ಯಾರಿಸ್^^ko^파리^^ku^Parîs^^kw^Paris^^lb^Paräis^^li^Paries^^lt^Paryžius^^lv^Parīze^^mk^Париз^^ms^Paris^^na^Paris^^nds^Paris^^nl^Parijs^^nn^Paris^^no^Paris^^oc^París^^pl^Paryż^^pt^Paris^^ro^Paris^^ru^Париж^^scn^Pariggi^^sco^Paris^^sl^Pariz^^sq^Paris^^sr^Париз^^sv^Paris^^ta^பாரிஸ்^^th^ปารีส^^tl^Paris^^tr^Paris^^uk^Париж^^vi^Paris^p^zh-CN^巴黎^^ia^Paris^^fy^Parys^^ln^Pari^^os^Париж^^pms^Paris^^sk^Paríž^^sq^Parisi^^sw^Paris^^tl^Lungsod ng Paris^^ug^پارىژ^^fr^Paname^c^fr^Pantruche^c^am^ፓሪስ^^arc^ܦܐܪܝܣ^^br^Pariz^^gd^Paris^^gv^Paarys^^hy^Փարիզ^^ksh^Paris^^lad^Paris^^lmo^Paris^^mg^Paris^^mr^पॅरिस^^tet^París^^tg^Париж^^ty^Paris^^ur^پیرس^^vls^Parys^^is^París^^vi^Pa-ri^^ml^പാരിസ്^^uz^Parij^^rue^Паріж^^ne^पेरिस^^jbo^paris^^mn^Парис^^lij^Pariggi^^vec^Parixe^^yo^Parisi^^yi^פאריז^^mrj^Париж^^hi^पैरिस^^fur^Parîs^^tt^Париж^^szl^Paryż^^mhr^Париж^^te^పారిస్^^tk^Pariž^^bn^প্যারিস^^ha^Pariis^^sah^Париж^^mzn^پاریس^^bo^ཕ་རི།^^haw^Palika^^mi^Parī^^ext^París^^ps^پاريس^^pa^ਪੈਰਿਸ^^ckb^پاریس^^cu^Парижь^^cv^Парис^^co^Parighji^^bs^Pariz^^so^Baariis^^sh^Pariz^^gu^પૅરિસ^^xmf^პარიზი^^ba^Париж^^pnb^پیرس^^arz^باريس^^la^Lutetia^^kk^Париж^^kv^Париж^^gn^Parĩ^^ky^Париж^^myv^Париж ош^^nap^Parigge^^km^ប៉ារីស^^krc^Париж^^udm^Париж^^wo^Pari^^gan^巴黎^^sc^Parigi^^za^Bahliz^^my^ပ<U+102B>ရီမ<U+103C>ို့^
+       -- CDG^LFPG^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^CDG,LFPG,Paris - Charles de Gaulle,París - Charles de Gaulle,Roissy Charles de Gaulle^49.012779^2.55^S^AIRP^0.647060165878^^^^FR^^A8^95^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^Y^Y^PAR^^EUROP^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es^París - Charles de Gaulle^p^^Roissy Charles de Gaulle^
+       -- PAR^ZZZZ^Y^2988507^^Paris^Paris^Baariis,Bahliz,Gorad Paryzh,Lungsod ng Paris,Lutece,Lutetia,Lutetia Parisorum,PAR,Pa-ri,Paarys,Palika,Paname,Pantruche,Paraeis,Paras,Pari,Paries,Parigge,Pariggi,Parighji,Parigi,Pariis,Pariisi,Parij,Parijs,Paris,Parisi,Parixe,Pariz,Parize,Parizh,Parizh osh,Parizh',Parizo,Parizs,Pariž,Parys,Paryz,Paryzius,Paryż,Paryžius,Paräis,París,Paríž,Parîs,Parĩ,Parī,Parīze,Paříž,Páras,Párizs,Ville-Lumiere,Ville-Lumière,ba li,barys,pairisa,pali,pari,paris,parys,paryzh,perisa,pryz,pyaris,pyarisa,pyrs,pʾrys,Παρίσι,Горад Парыж,Париж,Париж ош,Парижь,Париз,Парис,Паріж,Փարիզ,פאריז,פריז,باريس,پارىژ,پاريس,پاریس,پیرس,ܦܐܪܝܣ,पॅरिस,पेरिस,पैरिस,প্যারিস,ਪੈਰਿਸ,પૅરિસ,பாரிஸ்,పారిస్,ಪ್ಯಾರಿಸ್,പാരിസ്,ปารีส,ཕ་རི།,ပ<U+102B>ရီမ<U+103C>ို့,პარიზი,ፓሪስ,ប៉ារីស,パリ,巴黎,파리^49.02^2.533^P^PPLC^0.994632137197^^^^FR^^A8^75^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^N^N^PAR^^EUROP^C^http://en.wikipedia.org/wiki/Paris^la^Lutetia Parisorum^^fr^Lutece^h^fr^Ville-Lumière^c^eo^Parizo^^es^París^ps^de^Paris^^en^Paris^p^af^Parys^^als^Paris^^an^París^^ar^باريس^^ast^París^^be^Горад Парыж^^bg^Париж^^ca^París^^cs^Paříž^^cy^Paris^^da^Paris^^el^Παρίσι^^et^Pariis^^eu^Paris^^fa^پاریس^^fi^Pariisi^^fr^Paris^p^ga^Páras^^gl^París^^he^פריז^^hr^Pariz^^hu^Párizs^^id^Paris^^io^Paris^^it^Parigi^^ja^パリ^^ka^პარიზი^^kn^ಪ್ಯಾರಿಸ್^^ko^파리^^ku^Parîs^^kw^Paris^^lb^Paräis^^li^Paries^^lt^Paryžius^^lv^Parīze^^mk^Париз^^ms^Paris^^na^Paris^^nds^Paris^^nl^Parijs^^nn^Paris^^no^Paris^^oc^París^^pl^Paryż^^pt^Paris^^ro^Paris^^ru^Париж^^scn^Pariggi^^sco^Paris^^sl^Pariz^^sq^Paris^^sr^Париз^^sv^Paris^^ta^பாரிஸ்^^th^ปารีส^^tl^Paris^^tr^Paris^^uk^Париж^^vi^Paris^p^zh-CN^巴黎^^ia^Paris^^fy^Parys^^ln^Pari^^os^Париж^^pms^Paris^^sk^Paríž^^sq^Parisi^^sw^Paris^^tl^Lungsod ng Paris^^ug^پارىژ^^fr^Paname^c^fr^Pantruche^c^am^ፓሪስ^^arc^ܦܐܪܝܣ^^br^Pariz^^gd^Paris^^gv^Paarys^^hy^Փարիզ^^ksh^Paris^^lad^Paris^^lmo^Paris^^mg^Paris^^mr^पॅरिस^^tet^París^^tg^Париж^^ty^Paris^^ur^پیرس^^vls^Parys^^is^París^^vi^Pa-ri^^ml^പാരിസ്^^uz^Parij^^rue^Паріж^^ne^पेरिस^^jbo^paris^^mn^Парис^^lij^Pariggi^^vec^Parixe^^yo^Parisi^^yi^פאריז^^mrj^Париж^^hi^पैरिस^^fur^Parîs^^tt^Париж^^szl^Paryż^^mhr^Париж^^te^పారిస్^^tk^Pariž^^bn^প্যারিস^^ha^Pariis^^sah^Париж^^mzn^پاریس^^bo^ཕ་རི།^^haw^Palika^^mi^Parī^^ext^París^^ps^پاريس^^pa^ਪੈਰਿਸ^^ckb^پاریس^^cu^Парижь^^cv^Парис^^co^Parighji^^bs^Pariz^^so^Baariis^^sh^Pariz^^gu^પૅરિસ^^xmf^პარიზი^^ba^Париж^^pnb^پیرس^^arz^باريس^^la^Lutetia^^kk^Париж^^kv^Париж^^gn^Parĩ^^ky^Париж^^myv^Париж ош^^nap^Parigge^^km^ប៉ារីស^^krc^Париж^^udm^Париж^^wo^Pari^^gan^巴黎^^sc^Parigi^^za^Bahliz^^my^ပ<U+102B>ရီမ<U+103C>ို့^
        --
 
        iata_code          varchar(3)
        icao_code          varchar(4)
        is_geonames        varchar(1)
-       geonameid          int(11)
+       geoname_id         int(11)
+       validity_id        int(2)
        name               varchar(200)
        asciiname          varchar(200)
        alternatenames     varchar(4000)
@@ -777,6 +862,10 @@ namespace OPENTREP {
        longitude          decimal(10,7)
        fclass             varchar(1)
        fcode              varchar(10)
+       page_rank          decimal(15,12)
+       date_from          date
+       date_until         date
+       comments           varchar(4000)
        country_code       varchar(2)
        cc2                varchar(60)
        admin1             varchar(20)
@@ -819,8 +908,10 @@ namespace OPENTREP {
        lang_alt10         varchar(7)
        alt_name10         varchar(200)
 
-       iata_code^icao_code^is_geonames^geonameid^name^asciiname^alternatenames^
+       iata_code^icao_code^is_geonames^geoname_id^validity_id^
+       name^asciiname^alternatenames^
        latitude^longitude^fclass^fcode^
+       page_rank^date_from^date_until^comments^
        country_code^cc2^admin1^admin2^admin3^admin4^
        population^elevation^gtopo30^timezone^gmt_offset^dst_offset^raw_offset^
        moddate^is_airport^is_commercial^
@@ -857,7 +948,8 @@ namespace OPENTREP {
         por_key = iata_code
           >> '^' >> icao_code
           >> '^' >> is_geonames
-          >> '^' >> geonameid
+          >> '^' >> geoname_id
+          >> '^' >> -validity_id
           ;
 
         por_details = common_name
@@ -867,6 +959,10 @@ namespace OPENTREP {
           >> '^' >> -longitude
           >> '^' >> feat_class
           >> '^' >> feat_code
+          >> '^' >> -page_rank
+          >> '^' >> -date_from
+          >> '^' >> -date_until
+          >> '^' >> -comments
           >> '^' >> country_code
           >> '^' >> -country_code2
           >> '^' >> -adm1_code
@@ -896,7 +992,9 @@ namespace OPENTREP {
         icao_code =
           bsq::repeat(4)[bsu::char_("A-Z0-9")][storeIcaoCode(_location)];
 
-        geonameid = uint1_9_p[storeGeonamesID(_location)];
+        geoname_id = uint1_9_p[storeGeonamesID(_location)];
+
+        validity_id = uint1_4_p[storeValidityID(_location)];
 
         is_geonames = boolean_p;
 
@@ -927,6 +1025,17 @@ namespace OPENTREP {
 
         feat_code =
           bsq::repeat(2,5)[bsu::char_("A-Z1-5")][storeFeatureCode(_location)]
+          ;
+
+        page_rank = bsq::double_[storePageRank(_location)];
+
+        date_from = date[storeDateFrom(_location)];
+
+        date_until = date[storeDateUntil(_location)];
+
+        comments =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeComments(_location)]
           ;
 
         country_code =
@@ -1056,7 +1165,8 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (por_details);
         BOOST_SPIRIT_DEBUG_NODE (iata_code);
         BOOST_SPIRIT_DEBUG_NODE (icao_code);
-        BOOST_SPIRIT_DEBUG_NODE (geonameid);
+        BOOST_SPIRIT_DEBUG_NODE (geoname_id);
+        BOOST_SPIRIT_DEBUG_NODE (validity_id);
         BOOST_SPIRIT_DEBUG_NODE (is_geonames);
         BOOST_SPIRIT_DEBUG_NODE (common_name);
         BOOST_SPIRIT_DEBUG_NODE (ascii_name);      
@@ -1067,6 +1177,10 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (longitude);
         BOOST_SPIRIT_DEBUG_NODE (feat_class);
         BOOST_SPIRIT_DEBUG_NODE (feat_code);
+        BOOST_SPIRIT_DEBUG_NODE (page_rank);
+        BOOST_SPIRIT_DEBUG_NODE (date_from);
+        BOOST_SPIRIT_DEBUG_NODE (date_until);
+        BOOST_SPIRIT_DEBUG_NODE (comments);
         BOOST_SPIRIT_DEBUG_NODE (country_code);
         BOOST_SPIRIT_DEBUG_NODE (country_code2);
         BOOST_SPIRIT_DEBUG_NODE (adm1_code);
@@ -1104,11 +1218,12 @@ namespace OPENTREP {
       // Instantiation of rules
       bsq::rule<Iterator, bsu::blank_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
-        iata_code, icao_code, geonameid,
+        iata_code, icao_code, geoname_id, validity_id,
         is_geonames, is_airport, is_commercial,
         common_name, ascii_name,
         alt_name_short_list, alt_name_short, alt_name_sep,
         latitude, longitude, feat_class, feat_code,
+        page_rank, date_from, date_until, comments,
         country_code, country_code2,
         adm1_code, adm2_code, adm3_code, adm4_code,
         population, elevation, gtopo30,

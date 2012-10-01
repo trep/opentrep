@@ -41,13 +41,6 @@ namespace OPENTREP {
     World& getWorldHandler() const;
 
     /**
-     * Get the file-path of the file of PageRank values.
-     */
-    const PRFilePath_T& getPRFilePath() const {
-      return _prFilePath;
-    }
-
-    /**
      * Get the file-path of the file of POR (points of reference).
      */
     const PORFilePath_T& getPORFilePath() const {
@@ -75,13 +68,6 @@ namespace OPENTREP {
      */
     void setWorld (World& ioWorld) {
       _world = &ioWorld;
-    }
-
-    /**
-     * Set the file-path of the file of PageRank values.
-     */
-    void setPRFilePath (const std::string& iPRFilePath) {
-      _prFilePath = PRFilePath_T (iPRFilePath);
     }
 
     /**
@@ -129,8 +115,7 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    OPENTREP_ServiceContext (const PRFilePath_T&, const PORFilePath_T&,
-                             const TravelDatabaseName_T&);
+    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDatabaseName_T&);
 
     /**
      * Default constructor.
@@ -155,11 +140,6 @@ namespace OPENTREP {
      */
     World* _world;
     
-    /**
-     * File-path of the file of PageRank values.
-     */
-    PRFilePath_T _prFilePath;
-
     /**
      * File-path of the file of POR (points of reference).
      */

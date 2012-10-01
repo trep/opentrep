@@ -17,7 +17,6 @@
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
-#include <opentrep/bom/PRParserHelper.hpp>
 #include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
@@ -92,69 +91,11 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T IndexBuilder::retrievePR (const PRFilePath_T& iPRFilePath) {
-    NbOfDBEntries_T oNbOfEntries = 0;
-
-    // Check that the directory for the Xapian database (index) exists and,
-    // if not, create it.
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("The PageRank file ('" << iPRFilePath
-                        << "') will be parsed");
-
-    boost::filesystem::path lPRFilePath (iPRFilePath.begin(), iPRFilePath.end());
-    if (!(boost::filesystem::exists (lPRFilePath)
-          && boost::filesystem::is_regular_file (lPRFilePath))) {
-      OPENTREP_LOG_ERROR ("The PageRank file " << iPRFilePath
-                          << " does not exist or cannot be open." << std::endl);
-
-      throw FileNotFoundException ("The PageRank file " + iPRFilePath
-                                   + " does not exist or cannot be read");
-    }
-
-    // Open the file to be parsed
-    boost::filesystem::ifstream fileToBeParsed (lPRFilePath);
-    std::string itReadLine;
-    while (std::getline (fileToBeParsed, itReadLine)) {
-      // Initialise the parser
-      PRStringParser lStringParser (itReadLine);
-
-      // Parse the string
-      const Location& lLocation = lStringParser.generateLocation();
-      //const LocationKey& lLocationKey = lLocation.getKey();
-
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
-
-      // When the line/string was relevant, create a BOM instance from
-      // the Location structure.
-      if (!(lLocation.getCommonName() == "NotAvailable")) {
-        // DEBUG
-        /*
-        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
-                            << ", Place: " << lLocation);
-        */
-
-        // Iteration
-        ++oNbOfEntries;
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
-      }
-    }
-
-    return oNbOfEntries;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
-  buildSearchIndex (const PRFilePath_T& iPRFilePath,
-                    const PORFilePath_T& iPORFilePath,
+  buildSearchIndex (const PORFilePath_T& iPORFilePath,
                     const TravelDatabaseName_T& iTravelDatabaseName,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
-
-    // Parse the PageRank file
-    retrievePR (iPRFilePath);
 
     // Check that the directory for the Xapian database (index) exists and,
     // if not, create it.

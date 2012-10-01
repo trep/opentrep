@@ -45,11 +45,6 @@ struct UnitTestConfig {
 
 // //////////// Constants for the tests ///////////////
 /**
- * File-path of the PageRank value file.
- */
-const std::string K_PR_FILEPATH ("ref_airport_pageranked.csv");
-
-/**
  * File-path of the POR (points of reference) file.
  */
 const std::string K_POR_FILEPATH ("por_default.csv");
@@ -86,11 +81,10 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   logOutputFile.clear();
 
   // Initialise the context
-  const OPENTREP::PRFilePath_T lPRFilePath (K_PR_FILEPATH);
   const OPENTREP::PORFilePath_T lPORFilePath (K_POR_FILEPATH);
   const OPENTREP::TravelDatabaseName_T lXapianDBName (K_XAPIAN_DB_NAME);
-  OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lPRFilePath,
-                                               lPORFilePath, lXapianDBName);
+  OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lPORFilePath,
+                                               lXapianDBName);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;

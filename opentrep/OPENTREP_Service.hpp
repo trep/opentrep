@@ -58,14 +58,13 @@ namespace OPENTREP {
      *  Constructor.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const PRFilePath_T& File-path of the file of PageRank.
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDatabaseName_T& File-path of the Xapian
      *                                    index/database. 
      */
-    OPENTREP_Service (std::ostream& ioLogStream, const PRFilePath_T&,
-                      const PORFilePath_T&, const TravelDatabaseName_T&);
+    OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
+                      const TravelDatabaseName_T&);
 
     /** 
      * Destructor. 
@@ -97,14 +96,13 @@ namespace OPENTREP {
      * Initialise.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const PRFilePath_T& File-path of the file of PageRank.
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDatabaseName_T& File-path of the Xapian
      *                                    index/database. 
      */
-    void init (std::ostream& ioLogStream, const PRFilePath_T&,
-               const PORFilePath_T&, const TravelDatabaseName_T&);
+    void init (std::ostream& ioLogStream, const PORFilePath_T&,
+               const TravelDatabaseName_T&);
 
     /**
      *  Finalise. 

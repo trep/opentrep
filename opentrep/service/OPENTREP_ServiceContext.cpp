@@ -33,7 +33,6 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::OPENTREP_ServiceContext()
     : _world (NULL),
-      _prFilePath (DEFAULT_OPENTREP_SERVICE_PR_FILEPATH),
       _porFilePath (DEFAULT_OPENTREP_SERVICE_POR_FILEPATH),
       _travelDatabaseName (DEFAULT_OPENTREP_SERVICE_DB_NAME) {
     assert (false);
@@ -43,7 +42,6 @@ namespace OPENTREP {
   OPENTREP_ServiceContext::
   OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName)
     : _world (NULL),
-      _prFilePath (DEFAULT_OPENTREP_SERVICE_PR_FILEPATH),
       _porFilePath (DEFAULT_OPENTREP_SERVICE_POR_FILEPATH),
       _travelDatabaseName (iTravelDatabaseName) {
     OPENTREP::checkXapian (iTravelDatabaseName);
@@ -51,10 +49,9 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
-  OPENTREP_ServiceContext (const PRFilePath_T& iPRFilePath,
-                           const PORFilePath_T& iPORFilePath,
+  OPENTREP_ServiceContext (const PORFilePath_T& iPORFilePath,
                            const TravelDatabaseName_T& iTravelDatabaseName)
-    : _world (NULL), _prFilePath (iPRFilePath), _porFilePath (iPORFilePath),
+    : _world (NULL), _porFilePath (iPORFilePath),
       _travelDatabaseName (iTravelDatabaseName) {
     OPENTREP::checkXapian (iTravelDatabaseName);
   }
@@ -73,7 +70,6 @@ namespace OPENTREP {
   const std::string OPENTREP_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
     oStr << "OPENTREP_ServiceContext: "
-         << "file-path of the PR file: " << _prFilePath << ", "
          << "file-path of the POR file: " << _porFilePath << ", "
          << "Xapian Database (directory of the index): " << _travelDatabaseName
          << std::endl;

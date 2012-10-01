@@ -36,22 +36,13 @@ namespace OPENTREP {
                                     const OTransliterator&);
 
     /**
-     * Parse the file of PageRank values.
-     *
-     * @param const PRFilePath_T& File-path of the PageRank file.
-     */
-    static NbOfDBEntries_T retrievePR (const PRFilePath_T&);
-
-    /**
      * Build Xapian database.
      *
-     * @param const PRFilePath_T&  File-path of the PageRank file.
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDatabaseName_T& File-path of the Xapian database.
      * @param const OTransliterator& Unicode transliterator.
      */
-    static NbOfDBEntries_T buildSearchIndex (const PRFilePath_T&,
-                                             const PORFilePath_T&,
+    static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
                                              const TravelDatabaseName_T&,
                                              const OTransliterator&);
 

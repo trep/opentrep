@@ -59,25 +59,6 @@ namespace OPENTREP {
     }
   }
 
-  /**
-   * Helper function to retrieve, from the Xapian document data (string),
-   * the details of a given point of reference (POR). The corresponding
-   * Place BOM object is then filled with those details.
-   */
-  // //////////////////////////////////////////////////////////////////////
-  void retrieveAndFillPlaceFromDocData (const std::string& iDocData,
-                                        Place& ioPlace) {
-    // DEBUG
-    const LocationKey& lKey = ioPlace.getKey();
-    const Xapian::docid& lDocID = ioPlace.getDocID();
-    OPENTREP_LOG_DEBUG (lKey << " (doc ID = " << lDocID << "): " << iDocData);
-
-    /**
-     * \todo Parse the Xapian document data and fill the Place object
-     *       with those details
-     */
-  }
-
   // //////////////////////////////////////////////////////////////////////
   void createPlaces (const ResultCombination& iResultCombination,
                      PlaceHolder& ioPlaceHolder) {
@@ -104,24 +85,22 @@ namespace OPENTREP {
       }
       assert (hasFullTextMatched == true);
 
-      // Retrieve the primary key of the place
-      const LocationKey& lLocationKey = lResult_ptr->getBestDocPrimaryKey();
+      // Retrieve the Xapian document data (string)
+      const std::string& lDocDataStr = lResult_ptr->getBestDocData();
+      const RawDataString_T& lDocData = RawDataString_T (lDocDataStr);
+
+      // Parse the POR details and create the corresponding Location structure
+      const Location& lLocation = Result::retrieveLocation (lDocData);
 
       // Instanciate an empty place object, which will be filled from the
       // rows retrieved from the database.
-      Place& lPlace = FacPlace::instance().create (lLocationKey);
+      Place& lPlace = FacPlace::instance().create (lLocation);
       
       // Insert the Place object within the PlaceHolder object
       FacPlaceHolder::initLinkWithPlace (ioPlaceHolder, lPlace);
       
-      // Fill the place with the Xapian document details.
+      // Fill the place with the remaining of the Result details.
       lResult_ptr->fillPlace (lPlace);
-
-      // Retrieve the Xapian document data (string)
-      const std::string& lDocData = lResult_ptr->getBestDocData();
-
-      // Fill the Place object with those details
-      retrieveAndFillPlaceFromDocData (lDocData, lPlace);
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("Retrieved Document: " << lPlace.toString());

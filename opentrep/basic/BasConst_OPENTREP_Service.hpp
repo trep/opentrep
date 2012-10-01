@@ -9,11 +9,6 @@
 namespace OPENTREP {
 
   /**
-   * Default file-path for the PageRank value file for the OPENTREP_Service.
-   */
-  extern const std::string DEFAULT_OPENTREP_SERVICE_PR_FILEPATH;
-  
-  /**
    * Default file-path for the POR file for the OPENTREP_Service.
    */
   extern const std::string DEFAULT_OPENTREP_SERVICE_POR_FILEPATH;

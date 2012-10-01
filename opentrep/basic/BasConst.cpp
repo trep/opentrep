@@ -9,12 +9,6 @@ namespace OPENTREP {
 
   // ////////////// OPENTREP_Service ///////////////
   /**
-   * Default file-path for the PageRank value file for the OPENTREP_Service.
-   */
-  const std::string
-  DEFAULT_OPENTREP_SERVICE_PR_FILEPATH ("ref_airport_pageranked.csv");
-  
-  /**
    * Default file-path for the POR file for the OPENTREP_Service.
    */
   const std::string DEFAULT_OPENTREP_SERVICE_POR_FILEPATH ("por_default.csv");

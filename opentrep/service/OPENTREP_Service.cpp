@@ -23,11 +23,10 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_Service::
-  OPENTREP_Service (std::ostream& ioLogStream, const PRFilePath_T& iPRFilePath,
-                    const PORFilePath_T& iPORFilepath,
+  OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T& iPORFilepath,
                     const TravelDatabaseName_T& iXapianDatabaseFilepath)
     : _opentrepServiceContext (NULL) {
-    init (ioLogStream, iPRFilePath, iPORFilepath, iXapianDatabaseFilepath);
+    init (ioLogStream, iPORFilepath, iXapianDatabaseFilepath);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -78,7 +77,6 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   void OPENTREP_Service::init (std::ostream& ioLogStream,
-                               const PRFilePath_T& iPRFilePath,
                                const PORFilePath_T& iPORFilepath,
                                const TravelDatabaseName_T& iTravelDatabaseName) {
     // Set the log file
@@ -86,7 +84,7 @@ namespace OPENTREP {
 
     // Initialise the context
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
-      FacOpenTrepServiceContext::instance().create (iPRFilePath, iPORFilepath,
+      FacOpenTrepServiceContext::instance().create (iPORFilepath,
                                                     iTravelDatabaseName);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
@@ -110,9 +108,6 @@ namespace OPENTREP {
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
 
-    // Retrieve the file-path of the PageRank file
-    const PRFilePath_T& lPRFilePath = lOPENTREP_ServiceContext.getPRFilePath();
-      
     // Retrieve the file-path of the POR (points of reference) file
     const PORFilePath_T& lPORFilePath= lOPENTREP_ServiceContext.getPORFilePath();
       
@@ -127,7 +122,7 @@ namespace OPENTREP {
     // Delegate the index building to the dedicated command
     BasChronometer lBuildSearchIndexChronometer;
     lBuildSearchIndexChronometer.start();
-    oNbOfEntries = IndexBuilder::buildSearchIndex (lPRFilePath, lPORFilePath,
+    oNbOfEntries = IndexBuilder::buildSearchIndex (lPORFilePath,
                                                    lTravelDatabaseName,
                                                    lTransliterator);
     const double lBuildSearchIndexMeasure =

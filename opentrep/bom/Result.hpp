@@ -134,11 +134,6 @@ namespace OPENTREP {
       return getDocument (_bestDocID);
     }
 
-    /**
-     * Get the primary key of the best matching document.
-     */
-    const LocationKey getBestDocPrimaryKey() const;
-
 
   public:
     // ////////////////////// Setters /////////////////////
@@ -250,7 +245,7 @@ namespace OPENTREP {
      * lower percentage.
      *
      * @param const Xapian::Database& The Xapian index/database.
-     * @param TravelQuery_T& The query string.
+     * @param const TravelQuery_T& The query string.
      */
     std::string fullTextMatch (const Xapian::Database&, const TravelQuery_T&);
 
@@ -258,11 +253,21 @@ namespace OPENTREP {
      * Parse the raw data, as stored by the given Xapian document, and
      * holding all the details of a POR (point of reference).
      *
-     * @param Xapian::Document& The Xapian document.
+     * @param const Xapian::Document& The Xapian document.
      * @return Location The Location structure holding all the details
      *                  of the place/POR (point of reference).
      */
     static Location retrieveLocation (const Xapian::Document&);
+
+    /**
+     * Parse the raw data, as stored by a typical Xapian document, and
+     * holding all the details of a POR (point of reference).
+     *
+     * @param const RawDataString_T& The Xapian document data.
+     * @return Location The Location structure holding all the details
+     *                  of the place/POR (point of reference).
+     */
+    static Location retrieveLocation (const RawDataString_T&);
 
     /**
      * Extract the primary key from the data of the given Xapian document.

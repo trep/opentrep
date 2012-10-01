@@ -160,12 +160,6 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const LocationKey Result::getBestDocPrimaryKey() const {
-    const Xapian::Document& lBestDoc = getBestXapianDocument();
-    return getPrimaryKey (lBestDoc);
-  }
-
-  // //////////////////////////////////////////////////////////////////////
   void Result::fillResult (const Xapian::MSet& iMatchingSet) {
     /**
      * Retrieve the best matching documents, each with its own
@@ -196,11 +190,8 @@ namespace OPENTREP {
     // Set the matching percentage
     ioPlace.setPercentage (_bestCombinedWeight);
     
-    // Retrieve the best matching Xapian document
-    const Xapian::Document& lDocument = getBestXapianDocument();
-    
     // Retrieve the parameters of the best matching document
-    const LocationKey& lKey = getPrimaryKey (lDocument);
+    const LocationKey& lKey = ioPlace.getKey();
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("Place key: " << lKey << " - Xapian ID " << _bestDocID
@@ -227,19 +218,27 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  Location Result::retrieveLocation (const Xapian::Document& iDocument) {
-    // Retrieve the Xapian document data
-    const std::string& lDocumentData = iDocument.get_data();
-
+  Location Result::retrieveLocation (const RawDataString_T& iRawDataString) {
     // Initialise the POR (point of reference) parser
-    PORStringParser lStringParser (lDocumentData);
+    PORStringParser lStringParser (iRawDataString);
 
     // Parse the raw data
     const Location& oLocation = lStringParser.generateLocation();
-    //const LocationKey& lLocationKey = lLocation.getKey();
 
     // DEBUG
     //OPENTREP_LOG_DEBUG ("Location: " << oLocation);
+
+    return oLocation;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  Location Result::retrieveLocation (const Xapian::Document& iDocument) {
+    // Retrieve the Xapian document data
+    const std::string& lDocumentDataStr = iDocument.get_data();
+    const RawDataString_T& lDocumentData = RawDataString_T (lDocumentDataStr);
+
+    // Parse the POR details and create the corresponding Location structure
+    const Location& oLocation = retrieveLocation (lDocumentData);
 
     return oLocation;
   }

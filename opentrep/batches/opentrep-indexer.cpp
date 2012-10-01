@@ -25,11 +25,6 @@ typedef std::vector<std::string> WordList_T;
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-indexer.log");
 
 /**
- * Default name and location for the list of PageRank values.
- */
-const std::string K_OPENTREP_DEFAULT_PR_FILEPATH ("ref_airport_pageranked.csv");
-
-/**
  * Default name and location for the list of POR (points of reference).
  */
 const std::string K_OPENTREP_DEFAULT_POR_FILEPATH ("ori_por_public.csv");
@@ -46,7 +41,7 @@ const int K_OPENTREP_EARLY_RETURN_STATUS = 99;
 
 /** Read and parse the command line options. */
 int readConfiguration (int argc, char* argv[], 
-                       std::string& ioPRFilepath, std::string& ioPORFilepath, 
+                       std::string& ioPORFilepath, 
                        std::string& ioDatabaseFilepath,
                        std::string& ioLogFilename) {
 
@@ -61,9 +56,6 @@ int readConfiguration (int argc, char* argv[],
   // line and in config file
   boost::program_options::options_description config ("Configuration");
   config.add_options()
-    ("prfile,r",
-     boost::program_options::value< std::string >(&ioPRFilepath)->default_value(K_OPENTREP_DEFAULT_PR_FILEPATH),
-     "PageRank value file-path (e.g., ref_airport_pageranked.csv)")
     ("porfile,p",
      boost::program_options::value< std::string >(&ioPORFilepath)->default_value(K_OPENTREP_DEFAULT_POR_FILEPATH),
      "POR file-path (e.g., ori_por_public.csv)")
@@ -120,11 +112,6 @@ int readConfiguration (int argc, char* argv[],
     return K_OPENTREP_EARLY_RETURN_STATUS;
   }
 
-  if (vm.count ("prfile")) {
-    ioPRFilepath = vm["prfile"].as< std::string >();
-    std::cout << "PageRank value file-path is: " << ioPRFilepath << std::endl;
-  }
-
   if (vm.count ("porfile")) {
     ioPORFilepath = vm["porfile"].as< std::string >();
     std::cout << "POR file-path is: " << ioPORFilepath << std::endl;
@@ -151,9 +138,6 @@ int main (int argc, char* argv[]) {
   // Output log File
   std::string lLogFilename;
 
-  // File-path of PageRank values
-  std::string lPRFilepathStr;
-
   // File-path of POR (points of reference)
   std::string lPORFilepathStr;
 
@@ -162,8 +146,8 @@ int main (int argc, char* argv[]) {
 
   // Call the command-line option parser
   const int lOptionParserStatus =
-    readConfiguration (argc, argv, lPRFilepathStr, lPORFilepathStr,
-                       lXapianDBNameStr, lLogFilename);
+    readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
+                       lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -181,11 +165,10 @@ int main (int argc, char* argv[]) {
             << std::endl;
     
   // Initialise the context
-  const OPENTREP::PRFilePath_T lPRFilepath (lPRFilepathStr);
   const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
   const OPENTREP::TravelDatabaseName_T lXapianDBName (lXapianDBNameStr);
-  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPRFilepath,
-                                              lPORFilepath, lXapianDBName);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
+                                              lXapianDBName);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =
