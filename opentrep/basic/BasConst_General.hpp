@@ -16,6 +16,11 @@ namespace OPENTREP {
   extern const Percentage_T K_DEFAULT_PAGE_RANK;
 
   /**
+   * Default number of characters by allowable spelling error unit
+   */
+  extern const NbOfErrors_T K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT;
+
+  /**
    * Default "black list".
    */
   struct ListGenerator {

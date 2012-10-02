@@ -127,11 +127,23 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void Result::addDocument (const Xapian::Document& iDocument,
                             const Score_T& iScore) {
+    /**
+     * When the match has occurred with spelling correction, take that
+     * into account by decreasing the matching percentage in proportion
+     * to the Levenshtein edit distance.
+     */
+    Score_T lCorrectedScore = iScore;
+    if (_editDistance > 0) {
+      lCorrectedScore = iScore
+        / (K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT * _editDistance);
+    }
+
     // The document is created at the time of (Xapian-based) full-text matching
     const ScoreType lXapianScoreType (ScoreType::XAPIAN_PCT);
 
     // Create a ScoreBoard structure
-    const ScoreBoard lScoreBoard (_queryString, lXapianScoreType, iScore);
+    const ScoreBoard lScoreBoard (_queryString,
+                                  lXapianScoreType, lCorrectedScore);
 
     // Retrieve the ID of the Xapian document
     const Xapian::docid& lDocID = iDocument.get_docid();
@@ -141,7 +153,8 @@ namespace OPENTREP {
     const LocationKey& lLocationKey = getPrimaryKey (iDocument);
     OPENTREP_LOG_DEBUG ("        '" << describeShortKey()
                         << "', " << lLocationKey << " (doc ID = " << lDocID
-                        << ") has the following weight: " << iScore << "%");
+                        << ") has the following weight: " << iScore
+                        << "% (corrected into " << lCorrectedScore << "%)");
     */
 
     // Create a (Xapian document, score board) pair, so as to store
@@ -203,9 +216,12 @@ namespace OPENTREP {
    * @brief Helper function
    *
    * Given the size of the phrase, determine the allowed edit distance for
-   * spelling purpose. For instance, an edit distance of 1 will be allowed
-   * on a 4-letter word, while an edit distance of 3 will be allowed on an
-   * 11-letter word.
+   * spelling purpose. For instance, if K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT
+   * is equal to 4:
+   * <ul>
+   *   <li>An edit distance of 1 will be allowed on a 4-letter word</li>
+   *   <li>While an edit distance of 3 will be allowed on an 11-letter word.</li>
+   * </ul>
    */
   // //////////////////////////////////////////////////////////////////////
   static unsigned int calculateEditDistance (const TravelQuery_T& iPhrase) {
@@ -213,7 +229,7 @@ namespace OPENTREP {
 
     const NbOfErrors_T lQueryStringSize = iPhrase.size();
     
-    oEditDistance = lQueryStringSize / 4;
+    oEditDistance = lQueryStringSize / K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT;
     return oEditDistance;
   }
   
@@ -360,12 +376,11 @@ namespace OPENTREP {
       
       // Let Xapian find a spelling correction (if any)
       const std::string& lCorrectedString =
-        iDatabase.get_spelling_suggestion(iQueryString, lAllowableEditDistance);
+        iDatabase.get_spelling_suggestion (iQueryString, lAllowableEditDistance);
 
       // If the correction is no better than the original string, there is
       // no need to go further: there is no match.
-      if (lCorrectedString.empty() == true
-          || lCorrectedString == iQueryString) {
+      if (lCorrectedString.empty() == true || lCorrectedString == iQueryString) {
         // DEBUG
         OPENTREP_LOG_DEBUG ("        Query string: `"
                             << iQueryString << "' provides no match, "

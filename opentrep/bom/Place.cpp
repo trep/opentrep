@@ -247,6 +247,29 @@ namespace OPENTREP {
     const std::string& lRegionCode = _location.getRegionCode();
     _termSet.insert (lRegionCode);
 
+    // Add the common name (usually in American English, but not necessarily
+    // in ASCII).
+    const std::string& lCommonName = _location.getCommonName();
+    if (lCommonName.empty() == false) {
+      _termSet.insert (lCommonName);
+      _spellingSet.insert (lCommonName);
+      const std::string& lNormalisedCommonName =
+        iTransliterator.normalise (lCommonName);
+      _termSet.insert (lNormalisedCommonName);
+      _spellingSet.insert (lNormalisedCommonName);
+    }
+    
+    // Add the ASCII name (not necessarily in English).
+    const std::string& lASCIIName = _location.getAsciiName();
+    if (lASCIIName.empty() == false) {
+      _termSet.insert (lASCIIName);
+      _spellingSet.insert (lASCIIName);
+      const std::string& lNormalisedASCIIName =
+        iTransliterator.normalise (lASCIIName);
+      _termSet.insert (lNormalisedASCIIName);
+      _spellingSet.insert (lNormalisedASCIIName);
+    }
+
     // Retrieve the place names in all the available languages
     const NameMatrix& lNameMatrixFull = _location.getNameMatrix();
     const NameMatrix_T& lNameMatrix = lNameMatrixFull.getNameMatrix();
@@ -298,12 +321,14 @@ namespace OPENTREP {
 
     NameList_T lNameList;
     LanguageCode_T K_DEFAULT_LANGUAGE_CODE ("en_US");
-    const bool hasFoundNameList = getNameList (K_DEFAULT_LANGUAGE_CODE, lNameList);
+    const bool hasFoundNameList = getNameList (K_DEFAULT_LANGUAGE_CODE,
+                                               lNameList);
 
     if (hasFoundNameList == false) {
       //
       std::ostringstream errorStr;
-      errorStr << "No list of names in (American) English (" << K_DEFAULT_LANGUAGE_CODE
+      errorStr << "No list of names in (American) English ("
+               << K_DEFAULT_LANGUAGE_CODE
                << " locale) can be found for the following place: "
                << toShortString();
       OPENTREP_LOG_ERROR (errorStr.str());

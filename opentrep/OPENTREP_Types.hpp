@@ -366,7 +366,7 @@ namespace OPENTREP {
   /**
    * List of (black-listed) words.
    */
-  typedef std::list<std::string> BlackList_T;
+  typedef std::set<std::string> BlackList_T;
 
   /**
    * Number of letters in a word or phrase.
