@@ -40,7 +40,7 @@ namespace OPENTREP {
                                         const bool iFromBeginningFlag) {
     std::ostringstream oStr;
 
-    // Browse the lef-hand side of the string
+    // Browse the left-hand side of the string
     unsigned short idx = 0;
     WordList_T::const_iterator itWord = iWordList.begin();
     for ( ; itWord != iWordList.end(); ++itWord, ++idx) {

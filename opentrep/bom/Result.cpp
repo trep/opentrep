@@ -131,11 +131,13 @@ namespace OPENTREP {
      * When the match has occurred with spelling correction, take that
      * into account by decreasing the matching percentage in proportion
      * to the Levenshtein edit distance.
+     *
+     * Note: a unit of spelling error is allowable every
+     * K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT characters (usually, 4 characters)
      */
     Score_T lCorrectedScore = iScore;
     if (_editDistance > 0) {
-      lCorrectedScore = iScore
-        / (K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT * _editDistance);
+      lCorrectedScore = iScore / (_editDistance * _editDistance * _editDistance);
     }
 
     // The document is created at the time of (Xapian-based) full-text matching
@@ -499,7 +501,8 @@ namespace OPENTREP {
                           << "' (trimmed: '" << lTrimmedQueryString << "')");
 
       // Check whether the string should be filtered out
-      const bool isToBeAdded = Filter::shouldKeep ("", lTrimmedQueryString);
+      //const bool isToBeAdded = Filter::shouldKeep ("", lTrimmedQueryString);
+      const bool isToBeAdded = true;
 
       Xapian::MSet lMatchingSet;
       if (isToBeAdded == true) {
@@ -637,7 +640,7 @@ namespace OPENTREP {
          * percentage. The corresponding string set will therefore have
          * almost no chance to being selected/chosen.
          */
-        lMaxPercentage = 10 * std::exp (-3*nbOfWords);
+        lMaxPercentage = std::pow (10.0, -3*nbOfWords);
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeShortKey()

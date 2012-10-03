@@ -748,6 +748,20 @@ namespace OPENTREP {
     const Location& completeLocation();
 
     /**
+     * Add the given name to the Xapian index and spelling dictionary.
+     * Tokenise and re-assemble the given name, so as to replace all the
+     * punctuations and other separators by mere spaces.
+     * For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
+     *
+     * @param const LocationName_T& Name of the POR (point of reference)
+     * @param const StateCode_T& Code of the state of the POR
+     * @param const RegionCode_T& Code of the region of the POR
+     * @param const OTransliterator& Unicode transliterator
+     */
+    void addNameToXapianSets (const LocationName_T&, const StateCode_T&,
+                              const RegionCode_T&, const OTransliterator&);
+
+    /**
      * Build the (STL) sets of (Xapian-related) terms, spelling,
      * synonyms, etc.
      *

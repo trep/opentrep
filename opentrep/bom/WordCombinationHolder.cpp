@@ -109,7 +109,8 @@ namespace OPENTREP {
         Filter::trim (lWordCombination);
 
         // Check whether the (remaining) word combination should be filtered out
-        const bool isToBeAdded = Filter::shouldKeep (iPhrase, lWordCombination);
+        //const bool isToBeAdded= Filter::shouldKeep (iPhrase, lWordCombination);
+        const bool isToBeAdded = true;
         if (isToBeAdded == true) {
           lStringSet.insert (lWordCombination);
         }
@@ -169,8 +170,9 @@ namespace OPENTREP {
         Filter::trim (lConcatenatedString);
 
         // 3.2.5. Add the concatenated string into the list, if not filtered out
-        const bool isToBeAdded =
-          Filter::shouldKeep (iPhrase, lConcatenatedString);
+        // const bool isToBeAdded =
+        //   Filter::shouldKeep (iPhrase, lConcatenatedString);
+        const bool isToBeAdded = true;
         if (isToBeAdded == true) {
           _list.push_back (lConcatenatedString);
         }

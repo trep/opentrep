@@ -6,6 +6,7 @@
 // OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/basic/OTransliterator.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/service/Logger.hpp>
@@ -197,6 +198,51 @@ namespace OPENTREP {
     _stemmingSet.clear();
     _synonymSet.clear();
   }
+  
+  // //////////////////////////////////////////////////////////////////////
+  void Place::addNameToXapianSets (const LocationName_T& iLocationName,
+                                   const StateCode_T& iStateCode,
+                                   const RegionCode_T& iRegionCode,
+                                   const OTransliterator& iTransliterator) {
+    // Tokenise the name. Some of the names contain punctuation characters.
+    // For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
+    WordList_T lWordList;
+    tokeniseStringIntoWordList (iLocationName, lWordList);
+    const std::string lTokenisedName = createStringFromWordList (lWordList);
+
+    // Add the tokenised name to the Xapian index
+    _termSet.insert (lTokenisedName);
+
+    // Add the (tokenised name, state code) pair to the Xapian index
+    _termSet.insert (lTokenisedName + " " + iStateCode);
+
+    // Add the (tokenised name, region code) pair to the Xapian index
+    _termSet.insert (lTokenisedName + " " + iRegionCode);
+
+    // Add the tokenised name to the Xapian spelling dictionary
+    _spellingSet.insert (lTokenisedName);
+
+    // Normalise, according to the Unicode standard, the given name.
+    // Note that it is important to normalise after the tokenisation process,
+    // as the punctuation is eliminated (and not replaced by space)
+    // by that latter.
+    const std::string& lNormalisedCommonName =
+      iTransliterator.normalise (lTokenisedName);
+
+    // Add the tokenised and normalised name to the Xapian index
+    _termSet.insert (lNormalisedCommonName);
+
+    // Add the (tokenised and normalised name, state code) pair to the
+    // Xapian index
+    _termSet.insert (lNormalisedCommonName + " " + iStateCode);
+
+    // Add the (tokenised and normalised name, region code) pair to the
+    // Xapian index
+    _termSet.insert (lNormalisedCommonName + " " + iRegionCode);
+
+    // Add the tokenised and normalised name to the Xapian spelling dictionary
+    _spellingSet.insert (lNormalisedCommonName);
+  }
 
   // //////////////////////////////////////////////////////////////////////
   void Place::buildIndexSets (const OTransliterator& iTransliterator) {
@@ -251,23 +297,16 @@ namespace OPENTREP {
     // in ASCII).
     const std::string& lCommonName = _location.getCommonName();
     if (lCommonName.empty() == false) {
-      _termSet.insert (lCommonName);
-      _spellingSet.insert (lCommonName);
-      const std::string& lNormalisedCommonName =
-        iTransliterator.normalise (lCommonName);
-      _termSet.insert (lNormalisedCommonName);
-      _spellingSet.insert (lNormalisedCommonName);
+      addNameToXapianSets (LocationName_T (lCommonName),
+                           StateCode_T (lStateCode),
+                           RegionCode_T (lRegionCode), iTransliterator);
     }
     
     // Add the ASCII name (not necessarily in English).
     const std::string& lASCIIName = _location.getAsciiName();
     if (lASCIIName.empty() == false) {
-      _termSet.insert (lASCIIName);
-      _spellingSet.insert (lASCIIName);
-      const std::string& lNormalisedASCIIName =
-        iTransliterator.normalise (lASCIIName);
-      _termSet.insert (lNormalisedASCIIName);
-      _spellingSet.insert (lNormalisedASCIIName);
+      addNameToXapianSets (LocationName_T (lASCIIName), StateCode_T (lStateCode),
+                           RegionCode_T (lRegionCode), iTransliterator);
     }
 
     // Retrieve the place names in all the available languages
