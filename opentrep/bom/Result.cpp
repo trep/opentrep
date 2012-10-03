@@ -637,7 +637,7 @@ namespace OPENTREP {
          * percentage. The corresponding string set will therefore have
          * almost no chance to being selected/chosen.
          */
-        lMaxPercentage = 1e-6;
+        lMaxPercentage = 10 * std::exp (-3*nbOfWords);
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeShortKey()
