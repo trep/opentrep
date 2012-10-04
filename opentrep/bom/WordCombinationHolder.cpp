@@ -103,10 +103,7 @@ namespace OPENTREP {
       const StringList_T& lStringList = itStringList._set;
       for (StringList_T::const_iterator itWordCombination = lStringList.begin();
            itWordCombination != lStringList.end(); ++itWordCombination) {
-        std::string lWordCombination = *itWordCombination;
-
-        // Trim the left and right outer words from the word combination
-        Filter::trim (lWordCombination);
+        const std::string& lWordCombination = *itWordCombination;
 
         // Check whether the (remaining) word combination should be filtered out
         //const bool isToBeAdded= Filter::shouldKeep (iPhrase, lWordCombination);
@@ -163,13 +160,9 @@ namespace OPENTREP {
         // 3.2.3. Concatenate both sub-strings
         std::ostringstream lConcatenatedStr;
         lConcatenatedStr << lLeftHandString << " " << lRightHandString;
-        std::string lConcatenatedString = lConcatenatedStr.str();
+        const std::string& lConcatenatedString = lConcatenatedStr.str();
 
-        // 3.2.4. Trim the left and right outer words from the concatenated
-        //        string
-        Filter::trim (lConcatenatedString);
-
-        // 3.2.5. Add the concatenated string into the list, if not filtered out
+        // 3.2.4. Add the concatenated string into the list, if not filtered out
         // const bool isToBeAdded =
         //   Filter::shouldKeep (iPhrase, lConcatenatedString);
         const bool isToBeAdded = true;
