@@ -71,6 +71,23 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeFaaCode::storeFaaCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFaaCode::operator() (std::vector<uchar_t> iChar,
+                                   bsq::unused_type, bsq::unused_type) const {
+
+      const std::string lFaaCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::FAACode_T lFaaCode (lFaaCodeStr);
+      _location.setIcaoCode (lFaaCode);
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("FAA code: " << _location.getFaaCode());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeGeonamesID::storeGeonamesID (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -321,6 +338,22 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeCountryName::storeCountryName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeCountryName::operator() (std::vector<uchar_t> iChar,
+                                       bsq::unused_type,
+                                       bsq::unused_type) const {
+      const std::string lCountryNameStr (iChar.begin(), iChar.end());
+      const Admin1Code_T lCountryName (lCountryNameStr);
+      _location.setCountryName (lCountryName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Country name: " << _location.getCountryName());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeAdm1Code::storeAdm1Code (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -337,8 +370,72 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeAdm1UtfName::storeAdm1UtfName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeAdm1UtfName::operator() (std::vector<uchar_t> iChar,
+                                       bsq::unused_type,
+                                       bsq::unused_type) const {
+      const std::string lAdmNameStr (iChar.begin(), iChar.end());
+      const Admin1Code_T lAdmName (lAdmNameStr);
+      _location.setAdmin1UtfName (lAdmName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Adm1 UTF8 name: " << _location.getAdmin1UtfName());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeAdm1AsciiName::storeAdm1AsciiName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeAdm1AsciiName::operator() (std::vector<uchar_t> iChar,
+                                         bsq::unused_type,
+                                         bsq::unused_type) const {
+      const std::string lAdmNameStr (iChar.begin(), iChar.end());
+      const Admin1Code_T lAdmName (lAdmNameStr);
+      _location.setAdmin1AsciiName (lAdmName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG("Adm1 ASCII name: "<< _location.getAdmin1AsciiName());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeAdm2Code::storeAdm2Code (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeAdm2UtfName::storeAdm2UtfName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeAdm2UtfName::operator() (std::vector<uchar_t> iChar,
+                                       bsq::unused_type,
+                                       bsq::unused_type) const {
+      const std::string lAdmNameStr (iChar.begin(), iChar.end());
+      const Admin1Code_T lAdmName (lAdmNameStr);
+      _location.setAdmin1UtfName (lAdmName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Adm2 UTF8 name: " << _location.getAdmin1UtfName());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeAdm2AsciiName::storeAdm2AsciiName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeAdm2AsciiName::operator() (std::vector<uchar_t> iChar,
+                                         bsq::unused_type,
+                                         bsq::unused_type) const {
+      const std::string lAdmNameStr (iChar.begin(), iChar.end());
+      const Admin1Code_T lAdmName (lAdmNameStr);
+      _location.setAdmin1AsciiName (lAdmName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG("Adm2 ASCII name: "<< _location.getAdmin1AsciiName());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -768,32 +865,42 @@ namespace OPENTREP {
        -- Geonames-related part:
        -- ----------------------
        -- iata_code         : IATA code; varchar(3). See also:
-       --                    http://www.iata.org/ps/publications/Pages/code-search.aspx
+       --                     http://www.iata.org/ps/publications/Pages/code-search.aspx
        -- icao_code         : ICAO code; varchar(4)
-       -- geoname_id         : Integer ID of record in geonames database
-       -- name              : Name of geographical point
+       -- faa_code          : FAA code; varchar(4)
+       -- geoname_id        : Integer ID of record in geonames database
+       -- name              : Name of geographical point;
        --                     (UTF8) varchar(200)
-       -- asciiname         : Name of geographical point in plain ascii characters
+       -- asciiname         : Name of geographical point in plain ASCII
+       --                     characters;
        --                     (ASCII) varchar(200)
        -- alternatenames    : Alternate names, comma separated
        --                     varchar(5000)
-       -- latitude          : Latitude in decimal degrees (wgs84)
-       -- longitude         : Longitude in decimal degrees (wgs84)
+       -- latitude          : Latitude in decimal degrees (WGS84)
+       -- longitude         : Longitude in decimal degrees (WGS84)
        -- feature class     : See http://www.geonames.org/export/codes.html
        --                     char(1)
        -- feature code      : See http://www.geonames.org/export/codes.html
        --                     varchar(10)
        -- country code      : ISO-3166 2-letter country code, 2 characters
-       -- cc2               : Alternate country codes, comma separated, ISO-3166
-       --                     2-letter country code, 60 characters
-       -- admin1 code       : FIPS code (subject to change to ISO code), see exceptions
-       --                     below. See file admin1Codes.txt for display names of
-       --                     this code; varchar(20)
-       -- admin2 code       : Code for the second administrative division, a county
-       --                     in the US. See file admin2Codes.txt; varchar(80)
-       -- admin3 code       : Code for third level administrative division
+       -- cc2               : Alternate country codes, comma separated,
+       --                     ISO-3166 2-letter country code, 60 characters
+       -- country name      : Name of the country, as found in the Geonames
+       --                     countryInfo.txt data file
+       -- admin1 code       : FIPS code (subject to change to ISO code),
+       --                     see exceptions below. See file admin1Codes.txt
+       --                     for display names of this code;
        --                     varchar(20)
-       -- admin4 code       : Code for fourth level administrative division
+       -- admin1 UTF8 name  : UTF8 name for the first administrative division
+       -- admin1 ASCII name : ASCII name for the first administrative division
+       -- admin2 code       : Code for the second administrative division,
+       --                     a county in the US. See file admin2Codes.txt;
+       --                     varchar(80)
+       -- admin2 UTF8 name  : UTF8 name for the second administrative division
+       -- admin2 ASCII name : ASCII name for the second administrative division
+       -- admin3 code       : Code for third level administrative division;
+       --                     varchar(20)
+       -- admin4 code       : Code for fourth level administrative division;
        --                     varchar(20)
        -- population        : bigint (8 byte int) 
        -- elevation         : In meters, integer
@@ -803,7 +910,8 @@ namespace OPENTREP {
        --                     srtm processed by cgiar/ciat.
        -- timezone          : The time-zone ID (see file timeZone.txt)
        -- gmt offset        : GMT offset on 1st of January
-       -- dst offset        : DST offset to GMT on 1st of July (of the current year)
+       -- dst offset        : DST offset to GMT on 1st of July (of the
+       --                     current year)
        -- raw offset        : Raw Offset without DST
        -- modification date : Date of last modification in yyyy-MM-dd format
        --
@@ -815,15 +923,20 @@ namespace OPENTREP {
        -- is_airport        : Whether that POR is an airport; varchar(1)
        -- is commercial     : Whether or not that POR hosts commercial activities
        --                     varchar(1)
-       -- city_code         : The IATA code of the related city, when knwon; varchar(3)
+       -- city_code         : The IATA code of the related city, when knwon;
+       --                     varchar(3)
        -- state_code        : The ISO code of the related state; varchar(3)
-       -- region_code       : The code of the related region (see below); varchar(5)
-       -- location type     : A/APT airport; B/BUS bus/coach station; C/CITY City;
+       -- region_code       : The code of the related region (see below);
+       --                     varchar(5)
+       -- location type     : A/APT airport; B/BUS bus/coach station;
+       --                     C/CITY City;
        --                     G/GRD ground transport (this code is used for SK in
        --                     Sweden only); H/HELI Heliport;
-       --                     O/OFF-PT off-line point, i.e. a city without an airport;
-       --                     R/RAIL railway Station; S/ASSOC a location without its
-       --                     own IATA code, but attached to an IATA location.
+       --                     O/OFF-PT off-line point, i.e. a city without
+       --                     an airport;
+       --                     R/RAIL railway Station;
+       --                     S/ASSOC a location without its own IATA code,
+       --                     but attached to an IATA location.
        --
        -- Regions:
        -- --------
@@ -852,6 +965,7 @@ namespace OPENTREP {
 
        iata_code          varchar(3)
        icao_code          varchar(4)
+       faa_code           varchar(4)
        is_geonames        varchar(1)
        geoname_id         int(11)
        validity_id        int(2)
@@ -868,10 +982,15 @@ namespace OPENTREP {
        comments           varchar(4000)
        country_code       varchar(2)
        cc2                varchar(60)
-       admin1             varchar(20)
-       admin2             varchar(80)
-       admin3             varchar(20)
-       admin4             varchar(20)
+       country_name       varchar(200)
+       adm1_code          varchar(20)
+       adm1_name_utf      varchar(400)
+       adm1_name_ascii    varchar(400)
+       adm2_code          varchar(80)
+       adm2_name_utf      varchar(400)
+       adm2_name_ascii    varchar(400)
+       adm3_code          varchar(20)
+       adm4_code          varchar(20)
        population         int(11)
        elevation          int(11)
        gtopo30            int(11)
@@ -887,39 +1006,19 @@ namespace OPENTREP {
        region_code        varchar(5)
        location_type      varchar(4)
        wiki_link          varchar(200)
-       lang_alt1          varchar(7)
-       alt_name1          varchar(200)
-       lang_alt2          varchar(7)
-       alt_name2          varchar(200)
-       lang_alt3          varchar(7)
-       alt_name3          varchar(200)
-       lang_alt4          varchar(7)
-       alt_name4          varchar(200)
-       lang_alt5          varchar(7)
-       alt_name5          varchar(200)
-       lang_alt6          varchar(7)
-       alt_name6          varchar(200)
-       lang_alt7          varchar(7)
-       alt_name7          varchar(200)
-       lang_alt8          varchar(7)
-       alt_name8          varchar(200)
-       lang_alt9          varchar(7)
-       alt_name9          varchar(200)
-       lang_alt10         varchar(7)
-       alt_name10         varchar(200)
+       alt_name_section   text
 
-       iata_code^icao_code^is_geonames^geoname_id^validity_id^
+       iata_code^icao_code^faa_code^is_geonames^geoname_id^validity_id^
        name^asciiname^alternatenames^
        latitude^longitude^fclass^fcode^
        page_rank^date_from^date_until^comments^
-       country_code^cc2^admin1^admin2^admin3^admin4^
+       country_code^cc2^country_name^
+       adm1_code^adm1_name_utf^adm1_name_ascii^
+       adm2_code^adm2_name_utf^adm2_name_ascii^adm3_code^adm4_code^
        population^elevation^gtopo30^timezone^gmt_offset^dst_offset^raw_offset^
        moddate^is_airport^is_commercial^
        city_code^state_code^region_code^location_type^wiki_link^
-       lang_alt1^alt_name1^lang_alt2^alt_name2^lang_alt3^alt_name3^
-       lang_alt4^alt_name4^lang_alt5^alt_name5^lang_alt6^alt_name6^
-       lang_alt7^alt_name7^lang_alt8^alt_name8^lang_alt9^alt_name9^
-       lang_alt10^alt_name10
+       alt_name_section
     */ 
 
     /**
@@ -939,7 +1038,7 @@ namespace OPENTREP {
 
         por_rule = por_key
           >> '^' >> por_details
-          >> -alt_name_section
+          >> '^' >> -alt_name_section
           >> por_rule_end[doEndPor(_location)];
         // >> +( '^' >> segment )
 
@@ -947,6 +1046,7 @@ namespace OPENTREP {
 
         por_key = iata_code
           >> '^' >> icao_code
+          >> '^' >> -faa_code
           >> '^' >> is_geonames
           >> '^' >> geoname_id
           >> '^' >> -validity_id
@@ -965,8 +1065,13 @@ namespace OPENTREP {
           >> '^' >> -comments
           >> '^' >> country_code
           >> '^' >> -country_code2
+          >> '^' >> country_name
           >> '^' >> -adm1_code
+          >> '^' >> -adm1_name_utf
+          >> '^' >> -adm1_name_ascii
           >> '^' >> -adm2_code
+          >> '^' >> -adm2_name_utf
+          >> '^' >> -adm2_name_ascii
           >> '^' >> -adm3_code
           >> '^' >> -adm4_code
           >> '^' >> -population
@@ -991,6 +1096,9 @@ namespace OPENTREP {
 
         icao_code =
           bsq::repeat(4)[bsu::char_("A-Z0-9")][storeIcaoCode(_location)];
+
+        faa_code =
+          bsq::repeat(1,4)[bsu::char_("A-Z0-9")][storeFaaCode(_location)];
 
         geoname_id = uint1_9_p[storeGeonamesID(_location)];
 
@@ -1047,14 +1155,39 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeAltCountryCode(_location)]
           ;
 
+        country_name =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeCountryName(_location)]
+          ;
+
         adm1_code =
           (bsq::no_skip[+~bsu::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm1Code(_location)]
           ;
 
+        adm1_name_utf =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm1UtfName(_location)]
+          ;
+
+        adm1_name_ascii =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm1AsciiName(_location)]
+          ;
+
         adm2_code =
           (bsq::no_skip[+~bsu::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm2Code(_location)]
+          ;
+
+        adm2_name_utf =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm2UtfName(_location)]
+          ;
+
+        adm2_name_ascii =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeAdm2AsciiName(_location)]
           ;
 
         adm3_code =
@@ -1120,17 +1253,17 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeWikiLink(_location)]
           ;
 
-        alt_name_section = +('^' >>  alt_name_details);
+        alt_name_section = alt_name_details % '|';
 
         //alt_name_details = -alt_lang_code_ftd[storeAltLangCodeEnd(_location)]
         alt_name_details =
           -alt_lang_code
-          >> '^' >> alt_name
-          >> '^' >> -alt_name_qualifiers        
+          >> '|' >> alt_name
+          >> '|' >> -alt_name_qualifiers        
           ;
 
         alt_lang_code =
-          (+~bsu::char_('^') - (bsq::eoi|bsq::eol))[storeAltLangCodeFull(_location)]
+          (+~bsu::char_('|') - (bsq::eoi|bsq::eol))[storeAltLangCodeFull(_location)]
           ;
 
         alt_lang_code_ftd = lang_code_2char >> lang_code_opt;
@@ -1148,7 +1281,7 @@ namespace OPENTREP {
           '_' >> bsq::repeat(1,4)[bsu::char_("a-z0-9")][storeAltLangCodeHist(_location)];
 
         alt_name =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsu::char_('|')]
            - (bsq::eoi|bsq::eol))[storeAltName(_location)]
           ;
 
@@ -1165,6 +1298,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (por_details);
         BOOST_SPIRIT_DEBUG_NODE (iata_code);
         BOOST_SPIRIT_DEBUG_NODE (icao_code);
+        BOOST_SPIRIT_DEBUG_NODE (faa_code);
         BOOST_SPIRIT_DEBUG_NODE (geoname_id);
         BOOST_SPIRIT_DEBUG_NODE (validity_id);
         BOOST_SPIRIT_DEBUG_NODE (is_geonames);
@@ -1183,8 +1317,13 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (comments);
         BOOST_SPIRIT_DEBUG_NODE (country_code);
         BOOST_SPIRIT_DEBUG_NODE (country_code2);
+        BOOST_SPIRIT_DEBUG_NODE (country_name);
         BOOST_SPIRIT_DEBUG_NODE (adm1_code);
+        BOOST_SPIRIT_DEBUG_NODE (adm1_name_utf);
+        BOOST_SPIRIT_DEBUG_NODE (adm1_name_ascii);
         BOOST_SPIRIT_DEBUG_NODE (adm2_code);
+        BOOST_SPIRIT_DEBUG_NODE (adm2_name_utf);
+        BOOST_SPIRIT_DEBUG_NODE (adm2_name_ascii);
         BOOST_SPIRIT_DEBUG_NODE (adm3_code);
         BOOST_SPIRIT_DEBUG_NODE (adm4_code);
         BOOST_SPIRIT_DEBUG_NODE (population);
@@ -1218,14 +1357,15 @@ namespace OPENTREP {
       // Instantiation of rules
       bsq::rule<Iterator, bsu::blank_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
-        iata_code, icao_code, geoname_id, validity_id,
+        iata_code, icao_code, faa_code, geoname_id, validity_id,
         is_geonames, is_airport, is_commercial,
         common_name, ascii_name,
         alt_name_short_list, alt_name_short, alt_name_sep,
         latitude, longitude, feat_class, feat_code,
         page_rank, date_from, date_until, comments,
-        country_code, country_code2,
-        adm1_code, adm2_code, adm3_code, adm4_code,
+        country_code, country_code2, country_name,
+        adm1_code, adm1_name_utf, adm1_name_ascii,
+        adm2_code, adm2_name_utf, adm2_name_ascii, adm3_code, adm4_code,
         population, elevation, gtopo30,
         time_zone, gmt_offset, dst_offset, raw_offset,
         mod_date, date,

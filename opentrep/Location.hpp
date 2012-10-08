@@ -89,14 +89,14 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the City code. 
+     * Get the city code.
      */
     const CityCode_T& getCityCode() const {
       return _cityCode;
     }
     
     /**
-     * Get the State code. 
+     * Get the state code.
      */
     const StateCode_T& getStateCode() const {
       return _stateCode;
@@ -117,7 +117,14 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the Region code. 
+     * Get the country name.
+     */
+    const CountryName_T& getCountryName() const {
+      return _countryName;
+    }
+    
+    /**
+     * Get the region code. 
      */
     const RegionCode_T& getRegionCode() const {
       return _regionCode;
@@ -194,10 +201,38 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the administrative UTF8 name of rank 1 (e.g., Illinois).
+     */
+    const Admin1UTFName_T& getAdmin1UtfName() const {
+      return _admin1UtfName;
+    }
+
+    /**
+     * Get the administrative ASCII name of rank 1 (e.g., Illinois).
+     */
+    const Admin1ASCIIName_T& getAdmin1AsciiName() const {
+      return _admin1AsciiName;
+    }
+
+    /**
      * Get the administrative code of rank 2.
      */
     const Admin2Code_T& getAdmin2Code() const {
       return _admin2Code;
+    }
+
+    /**
+     * Get the administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    const Admin2UTFName_T& getAdmin2UtfName() const {
+      return _admin2UtfName;
+    }
+
+    /**
+     * Get the administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    const Admin2ASCIIName_T& getAdmin2AsciiName() const {
+      return _admin2AsciiName;
     }
 
     /**
@@ -416,13 +451,6 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the state code. 
-     */
-    void setStateCode (const std::string& iStateCode) {
-      _stateCode = StateCode_T (iStateCode);
-    }
-    
-    /**
      * Set the country code. 
      */
     void setCountryCode (const std::string& iCountryCode) {
@@ -434,6 +462,20 @@ namespace OPENTREP {
      */
     void setAltCountryCode (const std::string& iCountryCode) {
       _altCountryCode = AltCountryCode_T (iCountryCode);
+    }
+    
+    /**
+     * Set the country name.
+     */
+    void setCountryName (const std::string& iCountryName) {
+      _countryName = CountryName_T (iCountryName);
+    }
+    
+    /**
+     * Set the state code. 
+     */
+    void setStateCode (const std::string& iStateCode) {
+      _stateCode = StateCode_T (iStateCode);
     }
     
     /**
@@ -514,10 +556,38 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the administrative UTF8 name of rank 1 (e.g., Illinois).
+     */
+    void setAdmin1UtfName (const std::string& iAdminName) {
+      _admin1UtfName = Admin1UTFName_T (iAdminName);
+    }
+
+    /**
+     * Set the administrative ASCII name of rank 1 (e.g., Illinois).
+     */
+    void setAdmin1AsciiName (const std::string& iAdminName) {
+      _admin1AsciiName = Admin1ASCIIName_T (iAdminName);
+    }
+
+    /**
      * Set the administrative code of rank 2.
      */
     void setAdmin2Code (const std::string& iAdminCode) {
       _admin2Code = Admin2Code_T (iAdminCode);
+    }
+
+    /**
+     * Set the administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    void setAdmin2UtfName (const std::string& iAdminName) {
+      _admin2UtfName = Admin2UTFName_T (iAdminName);
+    }
+
+    /**
+     * Set the administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    void setAdmin2AsciiName (const std::string& iAdminName) {
+      _admin2AsciiName = Admin2ASCIIName_T (iAdminName);
     }
 
     /**
@@ -831,6 +901,11 @@ namespace OPENTREP {
     AltCountryCode_T _altCountryCode;
 
     /**
+     * Country name (e.g., Germany).
+     */
+    CountryName_T _countryName;
+
+    /**
      * Region code (e.g., NAMER).
      */
     RegionCode_T _regionCode;
@@ -866,9 +941,29 @@ namespace OPENTREP {
     Admin1Code_T _admin1Code;
 
     /**
+     * Administrative UTF8 name of rank 1 (e.g., Illinois).
+     */
+    Admin1UTFName_T _admin1UtfName;
+
+    /**
+     * Administrative ASCII name of rank 1 (e.g., Illinois).
+     */
+    Admin1ASCIIName_T _admin1AsciiName;
+
+    /**
      * Administrative code of rank 2.
      */
     Admin2Code_T _admin2Code;
+
+    /**
+     * Administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    Admin2UTFName_T _admin2UtfName;
+
+    /**
+     * Administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    Admin2ASCIIName_T _admin2AsciiName;
 
     /**
      * Administrative code of rank 3.

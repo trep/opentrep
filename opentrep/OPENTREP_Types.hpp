@@ -175,6 +175,14 @@ namespace OPENTREP {
   };
 
   /**
+   * Country name (e.g., Germany).
+   */
+  struct CountryName_T : public std::string {
+  public:
+    explicit CountryName_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
    * Region code (e.g., NAMER for North America).
    */
   struct RegionCode_T : public std::string {
@@ -191,11 +199,47 @@ namespace OPENTREP {
   };
 
   /**
+   * Administrative UTF8 name of rank 1 (e.g., Illinois).
+   */
+  struct Admin1UTFName_T : public std::string {
+  public:
+    explicit Admin1UTFName_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative ASCII name of rank 1 (e.g., Illinois).
+   */
+  struct Admin1ASCIIName_T : public std::string {
+  public:
+    explicit Admin1ASCIIName_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
+  /**
    * Administrative code of rank 2.
    */
   struct Admin2Code_T : public std::string {
   public:
     explicit Admin2Code_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+   */
+  struct Admin2UTFName_T : public std::string {
+  public:
+    explicit Admin2UTFName_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
+  /**
+   * Administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+   */
+  struct Admin2ASCIIName_T : public std::string {
+  public:
+    explicit Admin2ASCIIName_T (const std::string& iValue)
+      : std::string (iValue) { }
   };
 
   /**

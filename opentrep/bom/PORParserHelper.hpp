@@ -53,6 +53,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed FAA code. */
+    struct storeFaaCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeFaaCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed Geonames ID. */
     struct storeGeonamesID : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -213,6 +223,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the country name. */
+    struct storeCountryName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCountryName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the administrative 1 code. */
     struct storeAdm1Code : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -223,10 +243,50 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the administrative 1 UTF8 name. */
+    struct storeAdm1UtfName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAdm1UtfName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the administrative 1 ASCII name. */
+    struct storeAdm1AsciiName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAdm1AsciiName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the administrative 2 code. */
     struct storeAdm2Code : public ParserSemanticAction {
       /** Actor Constructor. */
       storeAdm2Code (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the administrative 1 ASCII name. */
+    struct storeAdm2UtfName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAdm2UtfName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the administrative 1 ASCII name. */
+    struct storeAdm2AsciiName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAdm2AsciiName (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,

@@ -19,12 +19,17 @@ namespace OPENTREP {
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _faaCode (FAACode_T ("")), _cityCode (CityCode_T ("ZZZ")),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
-    _altCountryCode (AltCountryCode_T ("")),
+    _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
     _regionCode (RegionCode_T ("NOTAVL")),
     _latitude (0), _longitude (0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
     _iataType (IATAType_T ("Z")),
-    _admin1Code (Admin1Code_T ("Z")), _admin2Code (Admin2Code_T ("Z")),
+    _admin1Code (Admin1Code_T ("Z")),
+    _admin1UtfName (Admin1UTFName_T ("Z")),
+    _admin1AsciiName (Admin1ASCIIName_T ("Z")),
+    _admin2Code (Admin2Code_T ("Z")),
+    _admin2UtfName (Admin2UTFName_T ("Z")),
+    _admin2AsciiName (Admin2ASCIIName_T ("Z")),
     _admin3Code (Admin3Code_T ("Z")), _admin4Code (Admin4Code_T ("Z")),
     _population (0), _elevation (0), _gTopo30 (0),
     _timeZone (TimeZone_T ("NA")),
@@ -48,11 +53,17 @@ namespace OPENTREP {
     _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
+    _countryName (iLocation._countryName),
     _regionCode (iLocation._regionCode),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
     _featClass (iLocation._featClass), _featCode (iLocation._featCode),
     _iataType (iLocation._iataType),
-    _admin1Code (iLocation._admin1Code), _admin2Code (iLocation._admin2Code),
+    _admin1Code (iLocation._admin1Code),
+    _admin1UtfName (iLocation._admin1UtfName),
+    _admin1AsciiName (iLocation._admin1AsciiName),
+    _admin2Code (iLocation._admin2Code),
+    _admin2UtfName (iLocation._admin2UtfName),
+    _admin2AsciiName (iLocation._admin2AsciiName),
     _admin3Code (iLocation._admin3Code), _admin4Code (iLocation._admin4Code),
     _population (iLocation._population), _elevation (iLocation._elevation),
     _gTopo30 (iLocation._gTopo30),
@@ -113,10 +124,16 @@ namespace OPENTREP {
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _faaCode (iFaaCode), _cityCode (iCityCode), _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
+    _countryName (CountryName_T ("Zzzz")),
     _regionCode (iRegionCode),
     _latitude (iLatitude), _longitude (iLongitude),
     _featClass (iFeatureClass), _featCode (iFeatureCode), _iataType (iIATAType),
-    _admin1Code (iAdmin1Code), _admin2Code (iAdmin2Code),
+    _admin1Code (iAdmin1Code),
+    _admin1UtfName (Admin1UTFName_T ("")),
+    _admin1AsciiName (Admin1ASCIIName_T ("")),
+    _admin2Code (iAdmin2Code),
+    _admin2UtfName (Admin2UTFName_T ("")),
+    _admin2AsciiName (Admin2ASCIIName_T ("")),
     _admin3Code (iAdmin3Code), _admin4Code (iAdmin4Code),
     _population (iPopulation), _elevation (iElevation), _gTopo30 (iGTopo30),
     _timeZone (iTimeZone),
@@ -170,10 +187,13 @@ namespace OPENTREP {
          << ", " << _commonName << ", " << _asciiName
          << ", " << _faaCode << ", " << _cityCode << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
-         << ", " << _regionCode
+         << ", " << _countryName << ", " << _regionCode
          << ", " << _latitude << ", " << _longitude
          << ", " << _featClass << ", " << _featCode << ", " << _iataType
-         << ", " << _admin1Code << ", " << _admin2Code
+         << ", " << _admin1Code
+         << ", " << _admin1UtfName << ", " << _admin1AsciiName
+         << ", " << _admin2Code
+         << ", " << _admin2UtfName << ", " << _admin2AsciiName
          << ", " << _admin3Code << ", " << _admin4Code
          << ", " << _population << ", " << _elevation << ", " << _gTopo30
          << ", " << _timeZone

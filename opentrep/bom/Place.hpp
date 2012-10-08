@@ -144,6 +144,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the country name.
+     */
+    const CountryName_T& getCountryName() const {
+      return _location.getCountryName();
+    }
+    
+    /**
      * Get the region code.
      */
     const RegionCode_T& getRegionCode() const {
@@ -221,10 +228,38 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the administrative UTF8 name of rank 1 (e.g., Illinois).
+     */
+    const Admin1UTFName_T& getAdmin1UtfName() const {
+      return _location.getAdmin1UtfName();
+    }
+
+    /**
+     * Get the administrative ASCII name of rank 1 (e.g., Illinois).
+     */
+    const Admin1ASCIIName_T& getAdmin1AsciiName() const {
+      return _location.getAdmin1AsciiName();
+    }
+
+    /**
      * Get the administrative code of rank 2.
      */
     const Admin2Code_T& getAdmin2Code() const {
       return _location.getAdmin2Code();
+    }
+
+    /**
+     * Get the administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    const Admin2UTFName_T& getAdmin2UtfName() const {
+      return _location.getAdmin2UtfName();
+    }
+
+    /**
+     * Get the administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    const Admin2ASCIIName_T& getAdmin2AsciiName() const {
+      return _location.getAdmin2AsciiName();
     }
 
     /**
@@ -755,10 +790,13 @@ namespace OPENTREP {
      *
      * @param const LocationName_T& Name of the POR (point of reference)
      * @param const StateCode_T& Code of the state of the POR
+     * @param const CountryCode_T& ISO code of the country of the POR
+     * @param const CountryName_T& Name of the country of the POR
      * @param const RegionCode_T& Code of the region of the POR
      * @param const OTransliterator& Unicode transliterator
      */
     void addNameToXapianSets (const LocationName_T&, const StateCode_T&,
+                              const CountryCode_T&, const CountryName_T&,
                               const RegionCode_T&, const OTransliterator&);
 
     /**
