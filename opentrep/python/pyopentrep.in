@@ -113,7 +113,7 @@ def compactResultParser (resultString):
 			alter_location_list = [x for x in alter_location_list.split('-')]
 			for extra_location_list in alter_location_list:
 				extra_location_list = [x for x in extra_location_list.split(':')]
-	    
+				
 				codes = [x[:3].upper() for x in alter_locations]
 				if len(codes) > 0:
 					form_value = ' '.join(codes)
@@ -191,8 +191,7 @@ if __name__ == '__main__':
 	# Initialise the OpenTrep C++ library
 	import libpyopentrep
 	openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-	openTrepLibrary.init (xapianDBPath, 'pyopentrep.log', 'geo', 'geo',
-			      'localhost', '3306', 'geo_trep')
+	openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
 
 	# If no search string was supplied as arguments of the command-line,
 	# ask the user for some
@@ -216,7 +215,7 @@ if __name__ == '__main__':
 	# works
 	opentrepOutputFormat = outputFormat
 	if (opentrepOutputFormat == 'I'): opentrepOutputFormat = 'J'
-		
+	
 	result = openTrepLibrary.search (opentrepOutputFormat, searchString)
 
 	# When the compact format is selected, the result string has to be

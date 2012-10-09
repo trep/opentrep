@@ -3,14 +3,6 @@ from os import environ
 from piston.handler import BaseHandler
 import simplejson
 
-# Retrieve the database connection parameters
-from django.db import connection
-db_name = connection.settings_dict['NAME']
-db_user = connection.settings_dict['USER']
-db_password = connection.settings_dict['PASSWORD']
-db_host = connection.settings_dict['HOST']
-db_port = connection.settings_dict['PORT']
-
 # Retrieve the OpenTrep parameters
 traveldb_path = environ.get ('TREP_TRAVELDB', failobj='/tmp/opentrep/traveldb')
 trep_log_path = environ.get ('TREP_LOG', failobj='django_trep.log')
@@ -22,8 +14,7 @@ path.append (trep_lib_dir)
 
 import libpyopentrep
 openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-openTrepLibrary.init (traveldb_path, trep_log_path,
-		      db_user, db_password, db_host, db_port, db_name)
+openTrepLibrary.init (traveldb_path, trep_log_path)
 
 #
 class TrepHandler (BaseHandler):	

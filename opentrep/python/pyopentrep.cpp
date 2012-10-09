@@ -7,6 +7,7 @@
 #include <list>
 #include <vector>
 // Boost Python
+#include <boost/filesystem.hpp>
 #include <boost/python.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
@@ -27,10 +28,10 @@ namespace OPENTREP {
      * Wrapper around the search use case. 
      */
     std::string search (const std::string& iOutputFormatString,
-			const std::string& iTravelQuery) {
+                        const std::string& iTravelQuery) {
       const OutputFormat lOutputFormat (iOutputFormatString);
       const OutputFormat::EN_OutputFormat& lOutputFormatEnum =
-	lOutputFormat.getFormat();
+        lOutputFormat.getFormat();
       return searchImpl (iTravelQuery, lOutputFormatEnum);
     }
 
@@ -39,7 +40,7 @@ namespace OPENTREP {
      * Wrapper around the search use case. 
      */
     std::string searchImpl(const std::string& iTravelQuery,
-			   const OutputFormat::EN_OutputFormat& iOutputFormat) {
+                           const OutputFormat::EN_OutputFormat& iOutputFormat) {
       std::ostringstream oNoDetailedStr;
       std::ostringstream oDetailedStr;
       std::ostringstream oJSONStr;
@@ -233,15 +234,22 @@ namespace OPENTREP {
     /** 
      * Wrapper around the search use case. 
      */
-    bool init (const std::string& iXapianDatabaseFilepath,
-               const std::string& iLogFilepath) {
+    bool init (const std::string& iXapianDBFilePath,
+               const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
       try {
         
-        // TODO: use Boost Filesystem to check the filepaths
-        if (iXapianDatabaseFilepath.empty() == true
-            || iLogFilepath.empty() == true) {
+        // Check that the file-path exist and are accessible
+        boost::filesystem::path lXapianFilePath (iXapianDBFilePath.begin(),
+                                                 iXapianDBFilePath.end());
+        boost::filesystem::path lLogFilePath (iLogFilePath.begin(),
+                                              iLogFilePath.end());
+        if (!(boost::filesystem::exists (lXapianFilePath)
+              && boost::filesystem::is_regular_file (lXapianFilePath))
+            ||
+            !(boost::filesystem::exists (lLogFilePath)
+              && boost::filesystem::is_regular_file (lLogFilePath))) {
           isEverythingOK = false;
           return isEverythingOK;
         }
@@ -251,15 +259,14 @@ namespace OPENTREP {
         assert (_logOutputStream != NULL);
 
         // Open and clean the log outputfile
-        _logOutputStream->open (iLogFilepath.c_str());
+        _logOutputStream->open (iLogFilePath.c_str());
         _logOutputStream->clear();
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialisation" << std::endl;
         
         // Initialise the context
-        const OPENTREP::TravelDatabaseName_T
-          lXapianDBName (iXapianDatabaseFilepath);
+        const OPENTREP::TravelDatabaseName_T lXapianDBName (iXapianDBFilePath);
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
                                                  lXapianDBName);
 
