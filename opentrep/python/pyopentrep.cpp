@@ -243,13 +243,8 @@ namespace OPENTREP {
         // Check that the file-path exist and are accessible
         boost::filesystem::path lXapianFilePath (iXapianDBFilePath.begin(),
                                                  iXapianDBFilePath.end());
-        boost::filesystem::path lLogFilePath (iLogFilePath.begin(),
-                                              iLogFilePath.end());
         if (!(boost::filesystem::exists (lXapianFilePath)
-              && boost::filesystem::is_regular_file (lXapianFilePath))
-            ||
-            !(boost::filesystem::exists (lLogFilePath)
-              && boost::filesystem::is_regular_file (lLogFilePath))) {
+              && boost::filesystem::is_directory (lXapianFilePath))) {
           isEverythingOK = false;
           return isEverythingOK;
         }

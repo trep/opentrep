@@ -191,7 +191,10 @@ if __name__ == '__main__':
 	# Initialise the OpenTrep C++ library
 	import libpyopentrep
 	openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-	openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
+	initOK = openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
+	if initOK == False:
+		errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+		raise Exception (errorMsg)
 
 	# If no search string was supplied as arguments of the command-line,
 	# ask the user for some
@@ -222,7 +225,7 @@ if __name__ == '__main__':
 	# parsed accordingly.
 	if (outputFormat == 'S'):
 		parsedStruct = compactResultParser (result)
-		print "Compact format => recognised place (city/airport) codes:"
+		print 'Compact format => recognised place (city/airport) codes:'
 		print parsedStruct
 
 	# When the full details have been requested, the result string is
@@ -242,7 +245,7 @@ if __name__ == '__main__':
 	# copied/pasted by clients to the OpenTREP library.
 	elif (outputFormat == 'I'):
 		interpretedString = interpretFromJSON (result)
-		print "JSON format => recognised place (city/airport) codes:"
+		print 'JSON format => recognised place (city/airport) codes:'
 		print interpretedString
 
 	# Free the OpenTREP library resource

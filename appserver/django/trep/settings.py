@@ -10,16 +10,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'geo_trep',  # Or path to database file if using sqlite3.
-        'USER': 'geo',       # Not used with sqlite3.
-        'PASSWORD': 'geo',   # Not used with sqlite3.
-        'HOST': 'localhost', # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',      # Set to empty string for default. Not used with sqlite3.
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': 'geo_trep',  # Or path to database file if using sqlite3.
+#        'USER': 'geo',       # Not used with sqlite3.
+#        'PASSWORD': 'geo',   # Not used with sqlite3.
+#        'HOST': 'localhost', # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '3306',      # Set to empty string for default. Not used with sqlite3.
+#    }
+#}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
