@@ -570,7 +570,7 @@ macro (get_boost)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
-    date_time iostreams serialization filesystem locale python)
+    date_time iostreams serialization filesystem system locale python)
   set (BOOST_REQUIRED_COMPONENTS_FOR_BIN regex program_options)
   set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
   set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
