@@ -93,23 +93,37 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
-                    const TravelDatabaseName_T& iTravelDatabaseName,
+                    const TravelDatabaseName_T& iTravelDBFilePath,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
     // Check that the directory for the Xapian database (index) exists and,
     // if not, create it.
     // DEBUG
-    OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDatabaseName
+    OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDBFilePath
                         << "') will be cleared");
-    boost::filesystem::path lTravelDatabasePath (iTravelDatabaseName.begin(),
-                                                 iTravelDatabaseName.end());
-    boost::filesystem::remove_all (lTravelDatabasePath);
-    boost::filesystem::create_directories (lTravelDatabasePath);
+    boost::filesystem::path lTravelDBFilePath (iTravelDBFilePath.begin(),
+                                               iTravelDBFilePath.end());
+    boost::filesystem::remove_all (lTravelDBFilePath);
+    boost::filesystem::create_directories (lTravelDBFilePath);
+
+    // Check whether the just created directory exists and is a directory.
+    if (!(boost::filesystem::exists (lTravelDBFilePath)
+          && boost::filesystem::is_directory (lTravelDBFilePath))) {
+      std::ostringstream oStr;
+      oStr << "The file-path to the Xapian database/index ('"
+           << iPORFilePath << "') does not exist or is not a directory.";
+      OPENTREP_LOG_ERROR (oStr.str());
+      throw FileNotFoundException (oStr.str());
+    }
 
     // Create the Xapian database (index). As the directory has been fully
     // cleaned, deleted and re-created, that Xapian database (index) is empty.
-    Xapian::WritableDatabase lDatabase (iTravelDatabaseName, Xapian::DB_CREATE);
+    Xapian::WritableDatabase lDatabase (iTravelDBFilePath, Xapian::DB_CREATE);
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDBFilePath
+                        << "') has been checked and open");
 
     /**
      * Begin a transation on the Xapian database (index).
@@ -120,6 +134,10 @@ namespace OPENTREP {
      * independant transaction, which would be very much inefficient.
      */
     lDatabase.begin_transaction();
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("A transaction has begun on the Xapian database ('"
+                        << iTravelDBFilePath << "')");
 
     /**
      * Parse the list of POR (points of reference).

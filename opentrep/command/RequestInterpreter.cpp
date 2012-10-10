@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <exception>
+// Boost
+#include <boost/filesystem.hpp>
 // OpenTrep
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
@@ -23,8 +25,6 @@
 #include <opentrep/factory/FacResult.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
 #include <opentrep/service/Logger.hpp>
-// Xapian
-#include <xapian.h>
 
 namespace OPENTREP {
 
@@ -253,21 +253,33 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
-  interpretTravelRequest (const TravelDatabaseName_T& iTravelDatabaseName,
+  interpretTravelRequest (const TravelDatabaseName_T& iTravelDBFilePath,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
                           WordList_T& ioWordList) {
     NbOfMatches_T oNbOfMatches = 0;
 
-    // Sanity checks
-    assert (iTravelDatabaseName.empty() == false);
+    // Sanity check
     assert (iTravelQuery.empty() == false);
 
     // Create a PlaceHolder object, to collect the matching Place objects
     PlaceHolder& lPlaceHolder = FacPlaceHolder::instance().create();
 
-    // Make the database
-    Xapian::Database lXapianDatabase (iTravelDatabaseName);
+    // Check whether the file-path to the Xapian database/index exists
+    // and is a directory.
+    boost::filesystem::path lTravelDBFilePath (iTravelDBFilePath.begin(),
+                                               iTravelDBFilePath.end());
+    if (!(boost::filesystem::exists (lTravelDBFilePath)
+          && boost::filesystem::is_directory (lTravelDBFilePath))) {
+      std::ostringstream oStr;
+      oStr << "The file-path to the Xapian database/index ('"
+           << iTravelDBFilePath << "') does not exist or is not a directory.";
+      OPENTREP_LOG_ERROR (oStr.str());
+      throw FileNotFoundException (oStr.str());
+    }
+
+    // Open the Xapian database
+    Xapian::Database lXapianDatabase (iTravelDBFilePath);
 
     // DEBUG
     OPENTREP_LOG_DEBUG (std::endl
