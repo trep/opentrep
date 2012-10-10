@@ -89,7 +89,7 @@ def getMain (locations):
 #    - 'aur:avf:bae:bou:chr:cmf:cqf:csf:cvf:dij/100'
 def compactResultParser (resultString):
 	# Defaults
-	msg, form_value, unrecognized = '', '', ''
+	msg, unrecognized = '', ''
 	codes, locations, alter_locations = [], [], []
 
 	# Initialise the string of matches with the raw result
@@ -98,30 +98,30 @@ def compactResultParser (resultString):
 	# Parsing begins
 	# 1. First, strip out the unrecognised keywords
 	if ';' in str_matches:
-		str_matches, unrecognized = str_matches.split(';')
+		str_matches, unrecognized = str_matches.split(';', 1)
 
 	msg = 'Unrecognised: %s. ' % unrecognized
 	str_value = unrecognized
 
 	# 2. Then, for each matching location, the alternate matches have to be
 	#    stored aside.
-	if str_matches != '':
-		alter_locations = [x for x in str_matches.split(',')]
+	if str_matches:
+		alter_locations = str_matches.split(',')
 		locations = [getMain(x) for x in alter_locations]
 
 		for alter_location_list in alter_locations:
-			alter_location_list = [x for x in alter_location_list.split('-')]
+			alter_location_list = alter_location_list.split('-')
 			for extra_location_list in alter_location_list:
-				extra_location_list = [x for x in extra_location_list.split(':')]
+				extra_location_list = extra_location_list.split(':')
 				
 				codes = [x[:3].upper() for x in alter_locations]
-				if len(codes) > 0:
-					form_value = ' '.join(codes)
-				if str_value != '':
-					form_value += ' ' + str_value
+				if codes:
+					form_value = [' '.join(codes)]
+				if str_value:
+					form_value.append (str_value)
 
 	#
-	return form_value
+	return ' '.join (form_value)
 
 ##
 # JSON interpreter. The JSON structure contains a list with the main matches,
