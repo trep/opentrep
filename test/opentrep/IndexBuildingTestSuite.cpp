@@ -47,12 +47,12 @@ struct UnitTestConfig {
 /**
  * File-path of the POR (points of reference) file.
  */
-const std::string K_POR_FILEPATH ("por_default.csv");
+const std::string K_POR_FILEPATH ("ori_por_public.csv");
 
 /**
- * Xapian database name (directory containing the index).
+ * Xapian database/index file-path (directory containing the index).
  */
-const std::string K_XAPIAN_DB_NAME ("traveldb");
+const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/traveldb");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -71,9 +71,6 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   // Output log File
   std::string lLogFilename ("IndexBuildingTestSuite.log");
 
-  // Travel query
-  std::string lTravelQuery ("cdg");
-    
   // Set the log parameters
   std::ofstream logOutputFile;
   // Open and clean the log outputfile
@@ -82,7 +79,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
 
   // Initialise the context
   const OPENTREP::PORFilePath_T lPORFilePath (K_POR_FILEPATH);
-  const OPENTREP::TravelDatabaseName_T lXapianDBName (K_XAPIAN_DB_NAME);
+  const OPENTREP::TravelDatabaseName_T lXapianDBName (X_XAPIAN_DB_FP);
   OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lPORFilePath,
                                                lXapianDBName);
   
@@ -93,13 +90,10 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   const OPENTREP::NbOfDBEntries_T nbOfEntries =
     opentrepService.buildSearchIndex();
 
-  BOOST_CHECK_MESSAGE (nbOfEntries == 11133,
+  BOOST_CHECK_MESSAGE (nbOfEntries == 11917,
                        "The Xapian index ('" << lXapianDBName
                        << "') contains " << nbOfEntries
-                       << " entries, where as 11133 are expected.");
-
-  // DEBUG
-  std::cout << nbOfEntries << " entries have been created" << std::endl;
+                       << " entries, where as 11917 are expected.");
 
   // Close the Log outputFile
   logOutputFile.close();

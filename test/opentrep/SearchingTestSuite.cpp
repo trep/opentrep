@@ -1,5 +1,5 @@
 /*!
- * \page SearchBuildingTestSuite_cpp Command-Line Test to Demonstrate How To Test the OpenTREP Project
+ * \page SearchingTestSuite_cpp Command-Line Test to Demonstrate How To Test the OpenTREP Project
  * \code
  */
 // //////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 // Boost Unit Test Framework (UTF)
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
-#define BOOST_TEST_MODULE SearchBuildingTestSuite
+#define BOOST_TEST_MODULE SearchingTestSuite
 #include <boost/test/unit_test.hpp>
 // OpenTrep
 #include <opentrep/OPENTREP_Service.hpp>
@@ -21,7 +21,7 @@
 namespace boost_utf = boost::unit_test;
 
 // (Boost) Unit Test XML Report
-std::ofstream utfReportStream ("SearchBuildingTestSuite_utfresults.xml");
+std::ofstream utfReportStream ("SearchingTestSuite_utfresults.xml");
 
 /**
  * Configuration for the Boost Unit Test Framework (UTF)
@@ -43,9 +43,9 @@ struct UnitTestConfig {
 
 // //////////// Constants for the tests ///////////////
 /**
- * Xapian database name (directory containing the index).
+ * Xapian database/index file-path (directory containing the index).
  */
-const std::string K_XAPIAN_DB_NAME ("traveldb");
+const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/traveldb");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_SUITE (master_test_suite)
 BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
     
   // Output log File
-  std::string lLogFilename ("SearchBuildingTestSuite.log");
+  std::string lLogFilename ("SearchingTestSuite.log");
 
   // Travel query
   std::string lTravelQuery ("cdg");
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
   logOutputFile.clear();
 
   // Initialise the context
-  const OPENTREP::TravelDatabaseName_T lXapianDatabaseName (K_XAPIAN_DB_NAME);
+  const OPENTREP::TravelDatabaseName_T lXapianDatabaseName (X_XAPIAN_DB_FP);
   OPENTREP::OPENTREP_Service opentrepService(logOutputFile, lXapianDatabaseName);
   
   // Query the Xapian database (index)
