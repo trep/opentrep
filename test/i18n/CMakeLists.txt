@@ -10,7 +10,7 @@
 
 # With standard libraries
 module_test_add_suite (i18n utf8string utf8/utf8string.cpp opentrep)
-module_test_add_suite (i18n utf8 utf8/utf8.cpp opentrep)
+module_test_add_suite (i18n utf8test utf8/utf8.cpp opentrep)
 
 # With ICU
 if (ICU_FOUND)
