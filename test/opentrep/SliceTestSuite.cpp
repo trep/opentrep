@@ -11,6 +11,8 @@
 #include <fstream>
 #include <string>
 #include <list>
+// Boost
+#include <boost/filesystem.hpp>
 // Boost Unit Test Framework (UTF)
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
@@ -18,6 +20,7 @@
 #include <boost/test/unit_test.hpp>
 // OpenTrep
 #include <opentrep/bom/QuerySlices.hpp>
+#include <opentrep/OPENTREP_Service.hpp>
 
 namespace boost_utf = boost::unit_test;
 
@@ -56,7 +59,11 @@ BOOST_AUTO_TEST_SUITE (master_test_suite)
 BOOST_AUTO_TEST_CASE (slice_small_string) {
 
   // Output log File
-  std::string lLogFilename ("SliceTestSuite.log");
+  const OPENTREP::TravelDatabaseName_T
+    lXapianDBFilePath ("/tmp/opentrep/traveldb");
+
+  // Output log File
+  const std::string lLogFilename ("SliceTestSuite.log");
 
   // Set the log parameters
   std::ofstream logOutputFile;
@@ -64,6 +71,10 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   logOutputFile.open (lLogFilename.c_str());
   logOutputFile.clear();
 
+  // Initialise the context
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBFilePath);
+  
+  // A few sample strings
   const std::string lLax1Str = "los angeles";
   const std::string lLax2Str = "lso angeles";
   const std::string lRio1Str = "rio de janeiro";
@@ -75,19 +86,32 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   const std::string lSfoRio3Str = "sna francicso rio de janero";
   const std::string lChelseaStr = "chelsea municipal airport";
 
-  //
-  OPENTREP::QuerySlices lQuerySlices (lSfoRio1Str);
-  logOutputFile << lQuerySlices << std::endl;
+  /**
+   * Direct access
+   */
 
-  BOOST_CHECK_MESSAGE (lQuerySlices.size() == 2,
+  // Open the Xapian database
+  Xapian::Database lXapianDatabase (lXapianDBFilePath);
+
+  // Create the query slices
+  OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lSfoRio1Str);
+
+  //
+  BOOST_CHECK_MESSAGE (lQuerySlices.size() == 1,
                        "The query ('" << lSfoRio1Str
-                       << "') should contain two slices."
+                       << "') should contain a single slice."
                        << " However, its size is " << lQuerySlices.size()
                        << ".");
 
+  // Create other query slices
+  OPENTREP::QuerySlices lAnotherQuerySlices (lXapianDatabase, lChelseaStr);
+
   //
-  OPENTREP::QuerySlices lAnotherQuerySlices (lChelseaStr);
-  logOutputFile << lAnotherQuerySlices << std::endl;
+  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 2,
+                       "The query ('" << lChelseaStr
+                       << "') should contain two slices."
+                       << " However, its size is " << lAnotherQuerySlices.size()
+                       << ".");
 
   // Close the Log outputFile
   logOutputFile.close();

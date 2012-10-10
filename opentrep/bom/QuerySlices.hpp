@@ -7,6 +7,8 @@
 // STL
 #include <string>
 #include <list>
+// Xapian
+#include <xapian.h>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/basic/StructAbstract.hpp>
@@ -77,9 +79,8 @@ namespace OPENTREP {
      *
      * That method is called by the main constructor. It should not be called
      * directly.
-     * @param const std::string& The string for which the partitions are sought
      */
-    void init (const std::string& iString);
+    void init();
 
 
   public:
@@ -113,9 +114,12 @@ namespace OPENTREP {
   public:
     // //////////////// Constructors and Destructors /////////////
     /**
-     * Constructor.
+     * Main constructor.
+     *
+     * @param const Xapian::Database& Xapian database (index)
+     * @param const TravelQuery_T& The string for which the partitions are sought
      */
-    QuerySlices (const std::string& iString);
+    QuerySlices (const Xapian::Database&, const TravelQuery_T&);
 
     /**
      * Default destructor.
@@ -125,6 +129,16 @@ namespace OPENTREP {
 
   public:
     // //////////////// Attributes ///////////////
+    /**
+     * Xapian database.
+     */
+    const Xapian::Database& _database;
+
+    /**
+     * Query string having generated the set of documents.
+     */
+    TravelQuery_T _queryString;
+
     /**
      * Partition, i.e., a list containing sub-lists of strings
      */
