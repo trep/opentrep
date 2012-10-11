@@ -18,6 +18,7 @@ namespace OPENTREP {
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _faaCode (FAACode_T ("")), _cityCode (CityCode_T ("ZZZ")),
+    _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
     _regionCode (RegionCode_T ("NOTAVL")),
@@ -51,6 +52,8 @@ namespace OPENTREP {
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
     _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
+    _cityUtfName (iLocation._cityUtfName),
+    _cityAsciiName (iLocation._cityAsciiName),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
     _countryName (iLocation._countryName),
@@ -122,7 +125,9 @@ namespace OPENTREP {
     _key (iIataCode, iIcaoCode, iGeonamesID),
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
-    _faaCode (iFaaCode), _cityCode (iCityCode), _stateCode (iStateCode),
+    _faaCode (iFaaCode), _cityCode (iCityCode),
+    _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
+    _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
     _countryName (CountryName_T ("Zzzz")),
     _regionCode (iRegionCode),
@@ -185,7 +190,9 @@ namespace OPENTREP {
     
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
-         << ", " << _faaCode << ", " << _cityCode << ", " << _stateCode
+         << ", " << _faaCode
+         << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
+         << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
          << ", " << _countryName << ", " << _regionCode
          << ", " << _latitude << ", " << _longitude

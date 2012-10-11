@@ -423,6 +423,26 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed city UTF8 name. */
+    struct storeCityUtfName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityUtfName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed city ASCII name. */
+    struct storeCityAsciiName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityAsciiName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed state code. */
     struct storeStateCode : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -500,16 +520,6 @@ namespace OPENTREP {
       storeAltLangCodeHist (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<boost::uint32_t>,
-                       boost::spirit::qi::unused_type,
-                       boost::spirit::qi::unused_type) const;
-    };
-
-    /** Store the re-aggregated language code of an alternate name. */
-    struct storeAltLangCodeEnd : public ParserSemanticAction {
-      /** Actor Constructor. */
-      storeAltLangCodeEnd (Location&);
-      /** Actor Function (functor). */
-      void operator() (boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };

@@ -96,6 +96,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the city name in UTF8.
+     */
+    const CityUTFName_T& getCityUtfName() const {
+      return _cityUtfName;
+    }
+    
+    /**
+     * Get the city name in ASCII (not necessarily in English).
+     */
+    const CityASCIIName_T& getCityAsciiName() const {
+      return _cityAsciiName;
+    }
+    
+    /**
      * Get the state code.
      */
     const StateCode_T& getStateCode() const {
@@ -448,6 +462,20 @@ namespace OPENTREP {
      */
     void setCityCode (const std::string& iCityCode) {
       _cityCode = CityCode_T (iCityCode);
+    }
+    
+    /**
+     * Set the city name in UTF8.
+     */
+    void setCityUtfName (const std::string& iCityUtfName) {
+      _cityUtfName = CityUTFName_T (iCityUtfName);
+    }
+    
+    /**
+     * Set the city name in ASCII (not necessarily in English).
+     */
+    void setCityAsciiName (const std::string& iCityAsciiName) {
+      _cityAsciiName = CityASCIIName_T (iCityAsciiName);
     }
     
     /**
@@ -884,6 +912,21 @@ namespace OPENTREP {
      *       is itself a city.
      */
     CityCode_T _cityCode;
+
+    /**
+     * Related city name in UTF8 (e.g., Nice Côte d'Azur).
+     * \note The related city UTF8 name is empty when the Location structure
+     *       is itself a city.
+     */
+    CityUTFName_T _cityUtfName;
+
+    /**
+     * Related city name in ASCII (not necessarily in English,
+     * e.g., Nice Cote d'Azur).
+     * \note The related city ASCII name is empty when the Location structure
+     *       is itself a city.
+     */
+    CityASCIIName_T _cityAsciiName;
 
     /**
      * State code (e.g., IL).

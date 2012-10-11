@@ -108,7 +108,7 @@ namespace OPENTREP {
   };
     
   /** 
-   * ASCII name (not necessarily in English, e.g., Nice Cote d'Azur).
+   * ASCII name (not necessarily in English, e.g., aéroport de Nice Cote d'Azur).
    */
   struct ASCIIName_T : public LocationName_T {
   public:
@@ -147,6 +147,24 @@ namespace OPENTREP {
     explicit CityCode_T (const std::string& iValue)
       : IATACode_T (std::string (iValue)) {
     }
+  };
+
+  /**
+   * City name in UTF8 (e.g., Nice Côte d'Azur).
+   */
+  struct CityUTFName_T : public std::string {
+  public:
+    explicit CityUTFName_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * City name in ASCII (but not necessarily in English,
+   * e.g., ville de Nice Cote d'Azur).
+   */
+  struct CityASCIIName_T : public std::string {
+  public:
+    explicit CityASCIIName_T (const std::string& iValue)
+      : std::string (iValue) { }
   };
 
   /**
