@@ -19,11 +19,11 @@ namespace OPENTREP {
    * \todo Check with Boost that the file-path is valid.
    */
   // //////////////////////////////////////////////////////////////////////
-  void checkXapian (const TravelDatabaseName_T& iTravelDatabaseName) {
+  void checkXapian (const TravelDBFilePath_T& iTravelDBFilePath) {
     // Check that the Xapian travel database is not empty
-    if (iTravelDatabaseName.empty() == true) {
+    if (iTravelDBFilePath.empty() == true) {
       std::ostringstream errorStr;
-      errorStr << "The file-path for the Xapian travel database is "
+      errorStr << "The file-path for the Xapian travel database/index is "
                << "not specified.";
       std::cerr << errorStr.str() << std::endl;
       throw XapianTravelDatabaseWrongPathnameException (errorStr.str());
@@ -33,27 +33,27 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::OPENTREP_ServiceContext()
     : _world (NULL),
-      _porFilePath (DEFAULT_OPENTREP_SERVICE_POR_FILEPATH),
-      _travelDatabaseName (DEFAULT_OPENTREP_SERVICE_DB_NAME) {
+      _porFilePath (DEFAULT_OPENTREP_POR_FILEPATH),
+      _travelDBFilePath (DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH) {
     assert (false);
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
-  OPENTREP_ServiceContext (const TravelDatabaseName_T& iTravelDatabaseName)
+  OPENTREP_ServiceContext (const TravelDBFilePath_T& iTravelDBFilePath)
     : _world (NULL),
-      _porFilePath (DEFAULT_OPENTREP_SERVICE_POR_FILEPATH),
-      _travelDatabaseName (iTravelDatabaseName) {
-    OPENTREP::checkXapian (iTravelDatabaseName);
+      _porFilePath (DEFAULT_OPENTREP_POR_FILEPATH),
+      _travelDBFilePath (iTravelDBFilePath) {
+    OPENTREP::checkXapian (iTravelDBFilePath);
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
   OPENTREP_ServiceContext (const PORFilePath_T& iPORFilePath,
-                           const TravelDatabaseName_T& iTravelDatabaseName)
+                           const TravelDBFilePath_T& iTravelDBFilePath)
     : _world (NULL), _porFilePath (iPORFilePath),
-      _travelDatabaseName (iTravelDatabaseName) {
-    OPENTREP::checkXapian (iTravelDatabaseName);
+      _travelDBFilePath (iTravelDBFilePath) {
+    OPENTREP::checkXapian (iTravelDBFilePath);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << "OPENTREP_ServiceContext: "
          << "file-path of the POR file: " << _porFilePath << ", "
-         << "Xapian Database (directory of the index): " << _travelDatabaseName
+         << "Xapian Database (directory of the index): " << _travelDBFilePath
          << std::endl;
     return oStr.str();
   }

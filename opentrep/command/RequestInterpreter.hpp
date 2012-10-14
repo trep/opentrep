@@ -20,7 +20,7 @@ namespace OPENTREP {
      * Match the given string, thanks to a full-text search on the
      * underlying Xapian index (named "database").
      *
-     * @param const TravelDatabaseName_T& Filepath to the Xapian database.
+     * @param const TravelDBFilePath_T& Filepath to the Xapian database.
      * @param const std::string& (Travel-related) query string (e.g.,
      *        "sna francicso rio de janero lso angles reykyavki nce iev mow").
      * @param LocationList_T& List of (geographical) locations, if any,
@@ -28,7 +28,7 @@ namespace OPENTREP {
      * @param WordList_T& List of non-matched words of the query string.
      * @return NbOfMatches_T Number of matches.
      */
-    static NbOfMatches_T interpretTravelRequest (const TravelDatabaseName_T&,
+    static NbOfMatches_T interpretTravelRequest (const TravelDBFilePath_T&,
                                                  const TravelQuery_T&,
                                                  LocationList_T&, WordList_T&);
 

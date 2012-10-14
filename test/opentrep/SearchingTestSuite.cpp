@@ -16,6 +16,7 @@
 #include <boost/test/unit_test.hpp>
 // OpenTrep
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
 
 namespace boost_utf = boost::unit_test;
@@ -39,13 +40,6 @@ struct UnitTestConfig {
   ~UnitTestConfig() {
   }
 };
-
-
-// //////////// Constants for the tests ///////////////
-/**
- * Xapian database/index file-path (directory containing the index).
- */
-const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/traveldb");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -74,8 +68,9 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
   logOutputFile.clear();
 
   // Initialise the context
-  const OPENTREP::TravelDatabaseName_T lXapianDatabaseName (X_XAPIAN_DB_FP);
-  OPENTREP::OPENTREP_Service opentrepService(logOutputFile, lXapianDatabaseName);
+  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath
+    (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;

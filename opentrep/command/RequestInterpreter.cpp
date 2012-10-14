@@ -253,7 +253,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
-  interpretTravelRequest (const TravelDatabaseName_T& iTravelDBFilePath,
+  interpretTravelRequest (const TravelDBFilePath_T& iTravelDBFilePath,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
                           WordList_T& ioWordList) {

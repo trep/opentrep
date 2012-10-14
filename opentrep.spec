@@ -110,13 +110,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/py%{name}.1.*
 %{_mandir}/man1/%{name}-indexer.1.*
 %{_mandir}/man1/%{name}-searcher.1.*
-%dir %{_libexecdir}/%{name}
-%{_libexecdir}/%{name}/*.sh
 %dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/db
-%dir %{_datadir}/%{name}/db/data
-%{_datadir}/%{name}/db/data/*.sql
-%{_datadir}/%{name}/db/data/*.csv
+%dir %{_datadir}/%{name}/data
+%dir %{_datadir}/%{name}/data/por
+%{_datadir}/%{name}/data/por/ori_por_public.csv
 
 %files devel
 %defattr(-,root,root,-)

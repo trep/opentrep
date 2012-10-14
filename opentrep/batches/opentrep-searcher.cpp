@@ -12,6 +12,7 @@
 #include <boost/program_options.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 
@@ -25,11 +26,6 @@ typedef std::vector<std::string> WordList_T;
  * Default name and location for the log file.
  */
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-searcher.log");
-
-/**
- * Default name and location for the Xapian database.
- */
-const std::string K_OPENTREP_DEFAULT_DATABSE_FILEPATH("/tmp/opentrep/traveldb");
 
 /**
  * Default travel query string, to be seached against the Xapian database.
@@ -134,7 +130,7 @@ int readConfiguration (int argc, char* argv[],
      boost::program_options::value< unsigned short >(&ioSpellingErrorDistance)->default_value(K_OPENTREP_DEFAULT_SPELLING_ERROR_DISTANCE), 
      "Spelling error distance (e.g., 3)")
     ("database,d",
-     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(K_OPENTREP_DEFAULT_DATABSE_FILEPATH),
+     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
      "Xapian database filepath (e.g., /tmp/opentrep/traveldb)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
@@ -313,7 +309,7 @@ int main (int argc, char* argv[]) {
 
   if (lSearchType == 0) {
     // Initialise the context
-    const OPENTREP::TravelDatabaseName_T lXapianDBName (lXapianDBNameStr);
+    const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
     OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBName);
 
     // Parse the query and retrieve the places from Xapian only

@@ -93,7 +93,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
-                    const TravelDatabaseName_T& iTravelDBFilePath,
+                    const TravelDBFilePath_T& iTravelDBFilePath,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 

@@ -25,6 +25,7 @@ def usage (script_name):
 	print
 	print "Options:"
 	print "  -h, --help      : outputs this help and exits"
+	print "  -i, --index     : performs the indexation with Xapian"
 	print "  -x, --xapiandb= : specifies the path to the Xapian DB (index)"
 	print "  -f, --format=   : format of the output: Short (S, default),"
 	print "                    Full (F), raw JSON (J) and"
@@ -38,14 +39,17 @@ def str2bool (v):
 # Handle command-line options
 def handle_opt():
 	try:
-		opts, args = getopt.getopt (sys.argv[1:], "hf:x:",
-					    ["help", "format=", "xapiandb="])
+		opts, args = getopt.getopt (sys.argv[1:], "hif:x:",
+					    ["help", "index", "format=", "xapiandb="])
 	except getopt.GetoptError, err:
 		# Print help information and exit. It will print something like
 		# "option -a not recognized"
 		print str(err)
 		usage()
 		sys.exit(2)
+
+	# Command, either 'search' or 'index'
+	command = 'search'
 
 	# Format of the output
 	outputFormat = 'S'
@@ -62,12 +66,14 @@ def handle_opt():
 			outputFormat = a
 		elif o in ("-x", "--xapiandb"):
 			xapianDBPath = a
+		elif o in ("-i", "--index"):
+			command = "index"
 		elif o in ("-h", "--help"):
 			usage (sys.argv[0])
 			sys.exit()
 		else:
 			assert False, "Unhandled option"
-	return (outputFormat, xapianDBPath, searchString)
+	return (command, outputFormat, xapianDBPath, searchString)
 
 # Parser helpers
 def getMain (locations):
@@ -181,21 +187,39 @@ def interpretFromJSON (jsonFormattedResult):
 	return interpretedString
 
 
+##
+# File-path details
+#
+def getPaths (openTrepLibrary):
+	# Calls the underlying OpenTrep library service
+	filePathListString = openTrepLibrary.getPaths()
+	filePathList = filePathListString.split(';')
 
-############################
-# Main
-############################
-if __name__ == '__main__':
-	outputFormat, xapianDBPath, searchString = handle_opt()
+	# Report the results
+	print "ORI-maintained list of POR (points of reference): '" + filePathList[0] + "'"
+	print "Xapian-based travel database/index: '" + filePathList[1] + "'"
 
-	# Initialise the OpenTrep C++ library
-	import libpyopentrep
-	openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-	initOK = openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
-	if initOK == False:
-		errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
-		raise Exception (errorMsg)
 
+##
+# Indexation
+#
+def index (openTrepLibrary, xapianDBPath):
+	# DEBUG
+	print "Perform the indexation of the (Xapian-based) travel database."
+	print "That operation may take several minutes on some slow machines."
+	print "It takes less than 20 seconds on fast ones..."
+
+	# Calls the underlying OpenTrep library service
+	result = openTrepLibrary.index()
+
+	# Report the results
+	print "Done. Indexed " + result + " POR (points of reference)"
+
+
+##
+# Search
+#
+def search (openTrepLibrary, searchString, outputFormat):
 	# If no search string was supplied as arguments of the command-line,
 	# ask the user for some
 	if searchString == '':
@@ -247,6 +271,32 @@ if __name__ == '__main__':
 		interpretedString = interpretFromJSON (result)
 		print 'JSON format => recognised place (city/airport) codes:'
 		print interpretedString
+
+
+
+############################
+# Main
+############################
+if __name__ == '__main__':
+	command, outputFormat, xapianDBPath, searchString = handle_opt()
+
+	# Initialise the OpenTrep C++ library
+	import libpyopentrep
+	openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+	initOK = openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
+	if initOK == False:
+		errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+		raise Exception (errorMsg)
+
+	# Print out the file-path details
+	getPaths (openTrepLibrary)
+
+	#
+	if command == 'index':
+		index (openTrepLibrary, xapianDBPath)
+	else:
+		search (openTrepLibrary, searchString, outputFormat)
+
 
 	# Free the OpenTREP library resource
 	openTrepLibrary.finalize()

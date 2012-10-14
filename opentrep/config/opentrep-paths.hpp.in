@@ -19,6 +19,7 @@
 #define INFODIR "@infodir@"
 #define HTMLDIR "@htmldir@"
 #define PDFDIR "@pdfdir@"
-#define STDAIR_SAMPLE_DIR "@sampledir@"
+#define OPENTREP_DATA_DIR "@datadir@/@PACKAGE@/data"
+#define OPENTREP_POR_DATA_DIR "@datadir@/@PACKAGE@/data/por"
 
 #endif // __OPENTREP_PATHS_HPP__

@@ -50,8 +50,8 @@ namespace OPENTREP {
     /**
      * Get the Xapian database name.
      */
-    const TravelDatabaseName_T& getTravelDatabaseName() const {
-      return _travelDatabaseName;
+    const TravelDBFilePath_T& getTravelDBFilePath() const {
+      return _travelDBFilePath;
     }
     
     /**
@@ -80,8 +80,8 @@ namespace OPENTREP {
     /**
      * Set the Xapian database name.
      */
-    void setTravelDatabaseName (const std::string& iTravelDBName) {
-      _travelDatabaseName = TravelDatabaseName_T (iTravelDBName);
+    void setTravelDBFilePath (const std::string& iTravelDBFilePath) {
+      _travelDBFilePath = TravelDBFilePath_T (iTravelDBFilePath);
     }
 
     /**
@@ -110,12 +110,12 @@ namespace OPENTREP {
     /**
      * Main constructor without database usage.
      */
-    OPENTREP_ServiceContext (const TravelDatabaseName_T&);
+    OPENTREP_ServiceContext (const TravelDBFilePath_T&);
 
     /**
      * Main constructor.
      */
-    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDatabaseName_T&);
+    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&);
 
     /**
      * Default constructor.
@@ -148,7 +148,7 @@ namespace OPENTREP {
     /**
      * Xapian Database (directory of the index).
      */
-    TravelDatabaseName_T _travelDatabaseName;
+    TravelDBFilePath_T _travelDBFilePath;
 
     /**
      * Unicode transliterator.

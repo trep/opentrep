@@ -18,6 +18,7 @@
 #include <boost/test/unit_test.hpp>
 // OpenTrep
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
 
 namespace boost_utf = boost::unit_test;
@@ -78,10 +79,12 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   logOutputFile.clear();
 
   // Initialise the context
-  const OPENTREP::PORFilePath_T lPORFilePath (K_POR_FILEPATH);
-  const OPENTREP::TravelDatabaseName_T lXapianDBName (X_XAPIAN_DB_FP);
+  const OPENTREP::PORFilePath_T
+    lPORFilePath (OPENTREP::DEFAULT_OPENTREP_POR_FILEPATH);
+  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath
+    (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
   OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lPORFilePath,
-                                               lXapianDBName);
+                                               lTravelDBFilePath);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;
@@ -91,7 +94,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
     opentrepService.buildSearchIndex();
 
   BOOST_CHECK_MESSAGE (nbOfEntries == 11917,
-                       "The Xapian index ('" << lXapianDBName
+                       "The Xapian index ('" << lTravelDBFilePath
                        << "') contains " << nbOfEntries
                        << " entries, where as 11917 are expected.");
 

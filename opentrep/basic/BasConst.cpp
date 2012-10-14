@@ -1,6 +1,7 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
+#include <opentrep/config/opentrep-paths.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/basic/BasConst_Unicode.hpp>
 #include <opentrep/basic/BasConst_General.hpp>
@@ -9,14 +10,16 @@ namespace OPENTREP {
 
   // ////////////// OPENTREP_Service ///////////////
   /**
-   * Default file-path for the POR file for the OPENTREP_Service.
+   * Default file-path for the ORI-maintained POR (points of reference) file.
    */
-  const std::string DEFAULT_OPENTREP_SERVICE_POR_FILEPATH ("por_default.csv");
+  const std::string DEFAULT_OPENTREP_POR_FILEPATH (OPENTREP_POR_DATA_DIR
+                                                   "/ori_por_public.csv");
   
   /**
-   * Default Xapian database name for the OPENTREP_Service.
+   * Default file-path for the Xapian database/index.
    */
-  const std::string DEFAULT_OPENTREP_SERVICE_DB_NAME ("traveldb");
+  const std::string
+  DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH ("/tmp/opentrep/traveldb");
 
 
   // //////////////// Unicode (ICU) ////////////////

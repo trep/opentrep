@@ -39,11 +39,11 @@ namespace OPENTREP {
      * Build Xapian database.
      *
      * @param const PORFilePath_T& File-path of the POR file.
-     * @param const TravelDatabaseName_T& File-path of the Xapian database.
+     * @param const TravelDBFilePath_T& File-path of the Xapian database.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
-                                             const TravelDatabaseName_T&,
+                                             const TravelDBFilePath_T&,
                                              const OTransliterator&);
 
   private:

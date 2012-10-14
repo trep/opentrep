@@ -11,6 +11,7 @@
 #include <boost/program_options.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 
 
@@ -23,16 +24,6 @@ typedef std::vector<std::string> WordList_T;
  * Default name and location for the log file.
  */
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-indexer.log");
-
-/**
- * Default name and location for the list of POR (points of reference).
- */
-const std::string K_OPENTREP_DEFAULT_POR_FILEPATH ("ori_por_public.csv");
-
-/**
- * Default name and location for the Xapian database.
- */
-const std::string K_OPENTREP_DEFAULT_DATABASE_FILEPATH("/tmp/opentrep/traveldb");
 
 
 // ///////// Parsing of Options & Configuration /////////
@@ -57,10 +48,10 @@ int readConfiguration (int argc, char* argv[],
   boost::program_options::options_description config ("Configuration");
   config.add_options()
     ("porfile,p",
-     boost::program_options::value< std::string >(&ioPORFilepath)->default_value(K_OPENTREP_DEFAULT_POR_FILEPATH),
+     boost::program_options::value< std::string >(&ioPORFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_POR_FILEPATH),
      "POR file-path (e.g., ori_por_public.csv)")
     ("database,d",
-     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(K_OPENTREP_DEFAULT_DATABASE_FILEPATH),
+     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
      "Xapian database file-path (e.g., /tmp/opentrep/traveldb)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
@@ -166,7 +157,7 @@ int main (int argc, char* argv[]) {
     
   // Initialise the context
   const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
-  const OPENTREP::TravelDatabaseName_T lXapianDBName (lXapianDBNameStr);
+  const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
                                               lXapianDBName);
 

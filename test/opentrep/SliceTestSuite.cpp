@@ -20,6 +20,7 @@
 #include <boost/test/unit_test.hpp>
 // OpenTrep
 #include <opentrep/bom/QuerySlices.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/OPENTREP_Service.hpp>
 
 namespace boost_utf = boost::unit_test;
@@ -59,8 +60,8 @@ BOOST_AUTO_TEST_SUITE (master_test_suite)
 BOOST_AUTO_TEST_CASE (slice_small_string) {
 
   // Output log File
-  const OPENTREP::TravelDatabaseName_T
-    lXapianDBFilePath ("/tmp/opentrep/traveldb");
+  const OPENTREP::TravelDBFilePath_T
+    lTravelDBFilePath (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
 
   // Output log File
   const std::string lLogFilename ("SliceTestSuite.log");
@@ -72,7 +73,7 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   logOutputFile.clear();
 
   // Initialise the context
-  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBFilePath);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath);
   
   // A few sample strings
   const std::string lLax1Str = "los angeles";
@@ -91,7 +92,7 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
    */
 
   // Open the Xapian database
-  Xapian::Database lXapianDatabase (lXapianDBFilePath);
+  Xapian::Database lXapianDatabase (lTravelDBFilePath);
 
   // Create the query slices
   OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lSfoRio1Str);

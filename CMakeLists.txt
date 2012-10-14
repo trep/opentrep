@@ -99,7 +99,7 @@ handle_html_doc ()
 
 ##
 # Subdirs
-add_subdirectory (db)
+add_subdirectory (data)
 add_subdirectory (man)
 
 

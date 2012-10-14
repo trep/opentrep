@@ -43,9 +43,9 @@ namespace OPENTREP {
    * Xapian database name, corresponding to the (potentially relative)
    * directory name (on the filesystem) where Xapian stores its index.
    */
-  struct TravelDatabaseName_T : public std::string {
+  struct TravelDBFilePath_T : public std::string {
   public:
-    explicit TravelDatabaseName_T (const std::string& iValue)
+    explicit TravelDBFilePath_T (const std::string& iValue)
       : std::string (iValue) { }
   };
 
