@@ -1,14 +1,31 @@
-	
-* Sat Nov 12 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.1
-- Added pragmas to have the code compatible with the new Soci-3.1.0 version.
-- Removed any reference to ExtraCC
 
-* Tue Nov 01 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.0
-- The build system is now based on CMake (instead of the GNU Autotools).
+	* Sun Oct 14 2012 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.0
+	- The search and indexation pieces of algorithm have been completely
+	revamped. Every multi-word string now gives birth to a new C++ structure,
+	namely StringPartition, made of all its partitions in an exhaustive
+	manner. All those string partitions are indexed by Xapian. And an
+	independant search is performed on every one of those string partitions;
+	a global match, made of the combination from several match-based
+	pieces of algorithm, is then assigned to every string partition;
+	the best matching string partition is then selected.
+	That new search algorithm allows, among other things, to combine several
+	independant matching methods, including heuristic ones.
+	- The MySQL database is no longer needed. The ORI-maintained list of POR
+	(points of reference) is now parsed, thanks to Boost.Spirit v2.
+	A copy of that file is kept under the data/por/ sub-directory.
 
-* Sun Mar 29 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.3.0
-- Now relies on the new SOCI RPM.
+	* Sat Nov 12 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.1
+	- Added pragmas to have the code compatible with the new
+	Soci-3.1.0 version.
+	- Removed any reference to ExtraCC
 
-* Sun Mar 22 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.2.0
-- RPM release for Fedora 10
+	* Tue Nov 01 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.0
+	- The build system is now based on CMake (instead of the GNU
+	Autotools).
+
+	* Sun Mar 29 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.3.0
+	- Now relies on the new SOCI RPM.
+
+	* Sun Mar 22 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.2.0
+	- RPM release for Fedora 10
 

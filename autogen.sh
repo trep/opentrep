@@ -50,7 +50,7 @@ then
 fi
 #
 VERSION_MAJOR=0
-VERSION_MINOR=4
+VERSION_MINOR=5
 VERSION_PATCH=0
 VERSION_TMP_STRING=`grep "set_project_versions" CMakeLists.txt | sed -e "s/set_project_versions.*\([0-9]\+.\+[0-9]\+.\+[0-9]\+\).\+/\1/"`
 VERSION_STRING=`echo "${VERSION_TMP_STRING}" | grep "^[0-9]\+.[0-9]\+.[0-9]\+$"`

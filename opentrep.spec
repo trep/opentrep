@@ -2,7 +2,7 @@
 %global mydocs __tmp_docdir
 #
 Name:           opentrep
-Version:        0.4.0
+Version:        0.5.0
 Release:        1%{?dist}
 
 Summary:        C++ library providing a clean API for parsing travel-focused requests
@@ -134,6 +134,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 14 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.5.0-1
+- Upstream update
+
 * Tue Nov 01 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.4.0-1
 - The build system is now based on CMake (instead of the GNU Autotools)
 
