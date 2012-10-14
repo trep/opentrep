@@ -38,14 +38,14 @@ yum -y install opentrep-devel opentrep-doc
 
 You can also get the RPM packages (which may work on Linux
 distributions like Novel Suse and Mandriva) from the Fedora repository
-(e.g., for Fedora 16, 
-http://fr2.rpmfind.net/linux/fedora/releases/16/Everything/)
+(e.g., for Fedora 17, 
+http://fr2.rpmfind.net/linux/fedora/releases/17/Everything/)
 
 
 Building the library and test binary from Git repository:
 ----------------------------------------------------------------
 The Sourceforge Git repository may be cloned as following:
-git clone ssh://opentrep.git.sourceforge.net/gitroot/opentrep/opentrep opentrepgit
+git clone https://github.com/trep/opentrep.git opentrepgit
 cd opentrepgit
 git checkout trunk
 
@@ -53,11 +53,9 @@ Then, you need the following packages (Fedora/RedHat/CentOS names here,
 but names may vary according to distributions):
   * cmake
   * gcc-c++
-  * boost-devel
-  * readline-devel
-  * soci-mysql-devel
-  * python-devel
-  * gettext-devel
+  * boost-devel / libboost-dev
+  * python-devel / python-dev
+  * gettext-devel / gettext-dev
   * doxygen
   * tetex-latex (optional)
   * rpm-build (optional)
@@ -111,5 +109,5 @@ midori http://localhost:8000/trep/api/"rio de janero reykyavik sna francicso"
 
 
 --
-Denis Arnaud (September 2012)
+Denis Arnaud (October 2012)
 
