@@ -111,7 +111,10 @@ def compactResultParser (resultString):
 
 	# 2. Then, for each matching location, the alternate matches have to be
 	#    stored aside.
-	if str_matches:
+	if not str_matches:
+		return ''
+
+	else:
 		alter_locations = str_matches.split(',')
 		locations = [getMain(x) for x in alter_locations]
 
@@ -126,8 +129,7 @@ def compactResultParser (resultString):
 				if str_value:
 					form_value.append (str_value)
 
-	#
-	return ' '.join (form_value)
+		return ' '.join (form_value)
 
 ##
 # JSON interpreter. The JSON structure contains a list with the main matches,
