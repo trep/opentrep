@@ -122,7 +122,7 @@ def compactResultParser (resultString):
             alter_location_list = alter_location_list.split('-')
             for extra_location_list in alter_location_list:
                 extra_location_list = extra_location_list.split(':')
-                
+
                 codes = [x[:3].upper() for x in alter_locations]
                 if codes:
                     form_value = [' '.join(codes)]
@@ -244,7 +244,7 @@ def search (openTrepLibrary, searchString, outputFormat):
     # works
     opentrepOutputFormat = outputFormat
     if (opentrepOutputFormat == 'I'): opentrepOutputFormat = 'J'
-    
+
     result = openTrepLibrary.search (opentrepOutputFormat, searchString)
 
     # When the compact format is selected, the result string has to be
