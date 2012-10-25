@@ -3,7 +3,7 @@
 #
 Name:           opentrep
 Version:        0.5.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        C++ library providing a clean API for parsing travel-focused requests
 
@@ -14,7 +14,7 @@ Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  cmake, python-devel, xapian-core-devel
-BuildRequires:  boost-devel, soci-mysql-devel
+BuildRequires:  boost-devel, libicu-devel
 
 %description
 %{name} aims at providing a clean API, and the corresponding C++
@@ -100,7 +100,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_bindir}/%{name}-indexer
 %{_bindir}/%{name}-searcher
@@ -116,7 +115,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/data/por/ori_por_public.csv
 
 %files devel
-%defattr(-,root,root,-)
 %{_includedir}/%{name}
 %{_bindir}/%{name}-config
 %{_libdir}/lib%{name}.so
@@ -128,12 +126,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/%{name}-library.3.*
 
 %files doc
-%defattr(-,root,root,-)
 %doc %{mydocs}/html
 %doc COPYING
 
 
 %changelog
+* Thu Oct 25 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.5.0-2
+- Took into account review request #866265 feedback
+
 * Sun Oct 14 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.5.0-1
 - Upstream update
 
