@@ -17,12 +17,15 @@ namespace OPENTREP {
   Place::Place() :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _location (IATACode_T (""), ICAOCode_T (""), 0,
-               CommonName_T (""), ASCIIName_T (""),
-               FAACode_T (""), CityCode_T (""), StateCode_T (""),
-               CountryCode_T (""), AltCountryCode_T (""), RegionCode_T (""), 
+               CommonName_T (""), ASCIIName_T (""), FAACode_T (""),
+               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""),
+               StateCode_T (""),
+               CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
+               RegionCode_T (""), 
                0.0, 0.0,
                FeatureClass_T (""), FeatureCode_T (""), IATAType_T (""),
-               Admin1Code_T (""), Admin2Code_T (""),
+               Admin1Code_T (""), Admin1UTFName_T (""), Admin1ASCIIName_T (""),
+               Admin2Code_T (""), Admin2UTFName_T (""), Admin2ASCIIName_T (""),
                Admin3Code_T (""), Admin4Code_T (""),
                0, 0, 0, TimeZone_T (""), 0, 0, 0,
                Date_T (2000, 01, 01), false, false,
@@ -35,12 +38,15 @@ namespace OPENTREP {
   Place::Place (const LocationKey& iKey) :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _location (iKey.getIataCode(), iKey.getIcaoCode(), iKey.getGeonamesID(),
-               CommonName_T (""), ASCIIName_T (""),
-               FAACode_T (""), CityCode_T (""), StateCode_T (""),
-               CountryCode_T (""), AltCountryCode_T (""), RegionCode_T (""), 
+               CommonName_T (""), ASCIIName_T (""), FAACode_T (""),
+               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""),
+               StateCode_T (""),
+               CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
+               RegionCode_T (""), 
                0.0, 0.0,
                FeatureClass_T (""), FeatureCode_T (""), IATAType_T (""),
-               Admin1Code_T (""), Admin2Code_T (""),
+               Admin1Code_T (""), Admin1UTFName_T (""), Admin1ASCIIName_T (""),
+               Admin2Code_T (""), Admin2UTFName_T (""), Admin2ASCIIName_T (""),
                Admin3Code_T (""), Admin4Code_T (""),
                0, 0, 0, TimeZone_T (""), 0, 0, 0,
                Date_T (2000, 01, 01), false, false,
@@ -201,6 +207,10 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   void Place::addNameToXapianSets (const LocationName_T& iLocationName,
+                                   const Admin1UTFName_T& iAdm1UtfName,
+                                   const Admin1ASCIIName_T& iAdm1AsciiName,
+                                   const Admin2UTFName_T& iAdm2UtfName,
+                                   const Admin2ASCIIName_T& iAdm2AsciiName,
                                    const StateCode_T& iStateCode,
                                    const CountryCode_T& iCountryCode,
                                    const CountryName_T& iCountryName,
@@ -214,6 +224,26 @@ namespace OPENTREP {
 
     // Add the tokenised name to the Xapian index
     _termSet.insert (lTokenisedName);
+
+    // Add the (tokenised name, UTF8 admin level 1 name) pair to the Xapian index
+    if (iAdm1UtfName.empty() == false) {
+      _termSet.insert (lTokenisedName + " " + iAdm1UtfName);
+    }
+
+    // Add the (tokenised name, ASCII adm level 1 name) pair to the Xapian index
+    if (iAdm1AsciiName.empty() == false) {
+      _termSet.insert (lTokenisedName + " " + iAdm1AsciiName);
+    }
+
+    // Add the (tokenised name, UTF8 admin level 2 name) pair to the Xapian index
+    if (iAdm2UtfName.empty() == false) {
+      _termSet.insert (lTokenisedName + " " + iAdm2UtfName);
+    }
+
+    // Add the (tokenised name, ASCII adm level 2 name) pair to the Xapian index
+    if (iAdm2AsciiName.empty() == false) {
+      _termSet.insert (lTokenisedName + " " + iAdm2AsciiName);
+    }
 
     // Add the (tokenised name, state code) pair to the Xapian index
     _termSet.insert (lTokenisedName + " " + iStateCode);
@@ -239,6 +269,30 @@ namespace OPENTREP {
 
     // Add the tokenised and normalised name to the Xapian index
     _termSet.insert (lNormalisedCommonName);
+
+    // Add the (tokenised and normalised name, UTF8 admin level 1 name) pair
+    // to the Xapian index
+    if (iAdm1UtfName.empty() == false) {
+      _termSet.insert (lNormalisedCommonName + " " + iAdm1UtfName);
+    }
+
+    // Add the (tokenised and normalised name, ASCII adm level 1 name) pair
+    // to the Xapian index
+    if (iAdm1AsciiName.empty() == false) {
+      _termSet.insert (lNormalisedCommonName + " " + iAdm1AsciiName);
+    }
+
+    // Add the (tokenised and normalised name, UTF8 admin level 2 name) pair
+    // to the Xapian index
+    if (iAdm2UtfName.empty() == false) {
+      _termSet.insert (lNormalisedCommonName + " " + iAdm2UtfName);
+    }
+
+    // Add the (tokenised and normalised name, ASCII adm level 2 name) pair
+    // to the Xapian index
+    if (iAdm2AsciiName.empty() == false) {
+      _termSet.insert (lNormalisedCommonName + " " + iAdm2AsciiName);
+    }
 
     // Add the (tokenised and normalised name, state code) pair to the
     // Xapian index
@@ -329,12 +383,14 @@ namespace OPENTREP {
     const std::string& lAdm1UtfName = _location.getAdmin1UtfName();
     if (lAdm1UtfName.empty() == false) {
       _termSet.insert (lAdm1UtfName);
+      _spellingSet.insert (lAdm1UtfName);
     }
 
     // Add the administrative level 1 ASCII name
     const std::string& lAdm1AsciiName = _location.getAdmin1AsciiName();
     if (lAdm1AsciiName.empty() == false) {
       _termSet.insert (lAdm1AsciiName);
+      _spellingSet.insert (lAdm1AsciiName);
     }
 
     // Add the administrative level 2 code
@@ -344,15 +400,17 @@ namespace OPENTREP {
     }
 
     // Add the administrative level 2 UTF8 name
-    const std::string& lAdm2UtfName = _location.getAdmin1UtfName();
+    const std::string& lAdm2UtfName = _location.getAdmin2UtfName();
     if (lAdm2UtfName.empty() == false) {
       _termSet.insert (lAdm2UtfName);
+      _spellingSet.insert (lAdm2UtfName);
     }
 
     // Add the administrative level 2 ASCII name
-    const std::string& lAdm2AsciiName = _location.getAdmin1AsciiName();
+    const std::string& lAdm2AsciiName = _location.getAdmin2AsciiName();
     if (lAdm2AsciiName.empty() == false) {
       _termSet.insert (lAdm2AsciiName);
+      _spellingSet.insert (lAdm2AsciiName);
     }
 
     // Add the region code
@@ -364,6 +422,10 @@ namespace OPENTREP {
     const std::string& lCommonName = _location.getCommonName();
     if (lCommonName.empty() == false) {
       addNameToXapianSets (LocationName_T (lCommonName),
+                           Admin1UTFName_T (lAdm1UtfName),
+                           Admin1ASCIIName_T (lAdm1AsciiName),
+                           Admin2UTFName_T (lAdm2UtfName),
+                           Admin2ASCIIName_T (lAdm2AsciiName),
                            StateCode_T (lStateCode),
                            CountryCode_T (lCountryCode),
                            CountryName_T (lCountryName),
@@ -373,7 +435,12 @@ namespace OPENTREP {
     // Add the ASCII name (not necessarily in English).
     const std::string& lASCIIName = _location.getAsciiName();
     if (lASCIIName.empty() == false) {
-      addNameToXapianSets (LocationName_T (lASCIIName), StateCode_T (lStateCode),
+      addNameToXapianSets (LocationName_T (lASCIIName),
+                           Admin1UTFName_T (lAdm1UtfName),
+                           Admin1ASCIIName_T (lAdm1AsciiName),
+                           Admin2UTFName_T (lAdm2UtfName),
+                           Admin2ASCIIName_T (lAdm2AsciiName),
+                           StateCode_T (lStateCode),
                            CountryCode_T (lCountryCode),
                            CountryName_T (lCountryName),
                            RegionCode_T (lRegionCode), iTransliterator);
