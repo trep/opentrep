@@ -817,13 +817,24 @@ namespace OPENTREP {
      * For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
      *
      * @param const LocationName_T& Name of the POR (point of reference)
+     * @param const Admin1UTFName_T& UTF8 Name of the administrative level 1
+     *                               of the POR
+     * @param const Admin1ASCIIName_T& ASCII Name of the administrative level 1
+     *                                 of the POR
+     * @param const Admin2UTFName_T& UTF8 Name of the administrative level 2
+     *                               of the POR
+     * @param const Admin2ASCIIName_T& ASCII Name of the administrative level 2
+     *                                 of the POR
      * @param const StateCode_T& Code of the state of the POR
      * @param const CountryCode_T& ISO code of the country of the POR
      * @param const CountryName_T& Name of the country of the POR
      * @param const RegionCode_T& Code of the region of the POR
      * @param const OTransliterator& Unicode transliterator
      */
-    void addNameToXapianSets (const LocationName_T&, const StateCode_T&,
+    void addNameToXapianSets (const LocationName_T&,
+                              const Admin1UTFName_T&, const Admin1ASCIIName_T&,
+                              const Admin2UTFName_T&, const Admin2ASCIIName_T&,
+                              const StateCode_T&,
                               const CountryCode_T&, const CountryName_T&,
                               const RegionCode_T&, const OTransliterator&);
 

@@ -347,7 +347,7 @@ namespace OPENTREP {
                                        bsq::unused_type,
                                        bsq::unused_type) const {
       const std::string lCountryNameStr (iChar.begin(), iChar.end());
-      const Admin1Code_T lCountryName (lCountryNameStr);
+      const CountryName_T lCountryName (lCountryNameStr);
       _location.setCountryName (lCountryName);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Country name: " << _location.getCountryName());
@@ -379,7 +379,7 @@ namespace OPENTREP {
                                        bsq::unused_type,
                                        bsq::unused_type) const {
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
-      const Admin1Code_T lAdmName (lAdmNameStr);
+      const Admin1UTFName_T lAdmName (lAdmNameStr);
       _location.setAdmin1UtfName (lAdmName);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm1 UTF8 name: " << _location.getAdmin1UtfName());
@@ -395,7 +395,7 @@ namespace OPENTREP {
                                          bsq::unused_type,
                                          bsq::unused_type) const {
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
-      const Admin1Code_T lAdmName (lAdmNameStr);
+      const Admin1ASCIIName_T lAdmName (lAdmNameStr);
       _location.setAdmin1AsciiName (lAdmName);
       // DEBUG
       //OPENTREP_LOG_DEBUG("Adm1 ASCII name: "<< _location.getAdmin1AsciiName());
@@ -404,6 +404,17 @@ namespace OPENTREP {
     // //////////////////////////////////////////////////////////////////
     storeAdm2Code::storeAdm2Code (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeAdm2Code::operator() (std::vector<uchar_t> iChar,
+                                    bsq::unused_type,
+                                    bsq::unused_type) const {
+      const std::string lAdmCodeStr (iChar.begin(), iChar.end());
+      const Admin2Code_T lAdmCode (lAdmCodeStr);
+      _location.setAdmin2Code (lAdmCode);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Adm2 code: " << _location.getAdmin2Code());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -416,10 +427,10 @@ namespace OPENTREP {
                                        bsq::unused_type,
                                        bsq::unused_type) const {
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
-      const Admin1Code_T lAdmName (lAdmNameStr);
-      _location.setAdmin1UtfName (lAdmName);
+      const Admin2UTFName_T lAdmName (lAdmNameStr);
+      _location.setAdmin2UtfName (lAdmName);
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("Adm2 UTF8 name: " << _location.getAdmin1UtfName());
+      //OPENTREP_LOG_DEBUG ("Adm2 UTF8 name: " << _location.getAdmin2UtfName());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -432,21 +443,10 @@ namespace OPENTREP {
                                          bsq::unused_type,
                                          bsq::unused_type) const {
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
-      const Admin1Code_T lAdmName (lAdmNameStr);
-      _location.setAdmin1AsciiName (lAdmName);
+      const Admin2ASCIIName_T lAdmName (lAdmNameStr);
+      _location.setAdmin2AsciiName (lAdmName);
       // DEBUG
-      //OPENTREP_LOG_DEBUG("Adm2 ASCII name: "<< _location.getAdmin1AsciiName());
-    }
-
-    // //////////////////////////////////////////////////////////////////
-    void storeAdm2Code::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type,
-                                    bsq::unused_type) const {
-      const std::string lAdmCodeStr (iChar.begin(), iChar.end());
-      const Admin2Code_T lAdmCode (lAdmCodeStr);
-      _location.setAdmin2Code (lAdmCode);
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("Adm2 code: " << _location.getAdmin2Code());
+      //OPENTREP_LOG_DEBUG("Adm2 ASCII name: "<< _location.getAdmin2AsciiName());
     }
 
     // //////////////////////////////////////////////////////////////////
