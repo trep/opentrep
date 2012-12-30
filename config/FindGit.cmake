@@ -8,17 +8,17 @@ if (Git_EXECUTABLE)
   set (Git_FOUND TRUE)
 
   macro (Git_WC_INFO dir prefix)
-    execute_process (COMMAND ${Git_EXECUTABLE} rev-list --quiet -n 1 HEAD
+    execute_process (COMMAND ${Git_EXECUTABLE} rev-list -n 1 HEAD
       WORKING_DIRECTORY ${dir}
       ERROR_VARIABLE Git_error
       OUTPUT_VARIABLE ${prefix}_WC_REVISION_HASH
       OUTPUT_STRIP_TRAILING_WHITESPACE)
     if (NOT ${Git_error} EQUAL 0)
       message (STATUS 
-		"Command \"${Git_EXECUTABLE} rev-list --quiet -n 1 HEAD\" in directory ${dir} failed with output:\n${Git_error}")
+	"Command \"${Git_EXECUTABLE} rev-list -n 1 HEAD\" in directory ${dir} failed with output:\n${Git_error}")
     else (NOT ${Git_error} EQUAL 0)
       execute_process (COMMAND ${Git_EXECUTABLE}
-		name-rev ${${prefix}_WC_REVISION_HASH}
+	name-rev ${${prefix}_WC_REVISION_HASH}
         WORKING_DIRECTORY ${dir}
         OUTPUT_VARIABLE ${prefix}_WC_REVISION_NAME
         OUTPUT_STRIP_TRAILING_WHITESPACE)
