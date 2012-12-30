@@ -623,6 +623,9 @@ macro (get_xapian)
   endif (${ARGC} GREATER 0)
 
   # The first check is to get Xapian installation details
+  if (${CMAKE_VERSION} VERSION_LESS 2.8.0)
+	set (Xapian_DIR /usr/${LIBDIR}/cmake/xapian)
+  endif (${CMAKE_VERSION} VERSION_LESS 2.8.0)
   find_package (Xapian)
 
   # The second check is for the required version (FindXapianWrapper.cmake is
