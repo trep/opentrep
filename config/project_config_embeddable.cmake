@@ -57,17 +57,23 @@ endmacro (set_project_versions)
 
 ##
 # Set a few options:
-#  * BUILD_SHARED_LIBS   - Whether or not to build shared libraries
-#  * CMAKE_BUILD_TYPE    - Debug or release
-#  * CMAKE_INSTALL_PREFIX
+#  * BUILD_SHARED_LIBS    - Whether or not to build shared libraries
+#  * CMAKE_BUILD_TYPE     - Debug or release
+#  * CMAKE_INSTALL_PREFIX - Where to install the deliverable parts
+#  * CMAKE_INSTALL_RPATH  - The list of paths to be used by the linker
+#  * CMAKE_INSTALL_RPATH_USE_LINK_PATH
+#                         - Whether or not to set the run-path/rpath within
+#                           the (executable and library) binaries
+#  * ENABLE_TEST         - Whether or not to build and check the unit tests
 #  * INSTALL_DOC         - Whether or not to build and install the documentation
 #  * INSTALL_LIB_DIR     - Installation directory for the libraries
 #  * INSTALL_BIN_DIR     - Installation directory for the binaries
 #  * INSTALL_INCLUDE_DIR - Installation directory for the header files
 #  * INSTALL_DATA_DIR    - Installation directory for the data files
 #  * INSTALL_SAMPLE_DIR  - Installation directory for the (CSV) sample files
+#  * RUN_GCOV            - Whether or not to perform code coverage
 #
-macro (set_project_options _build_doc)
+macro (set_project_options _build_doc _enable_tests _run_gcov)
   # Shared libraries
   option (BUILD_SHARED_LIBS "Set to OFF to build static libraries" ON)
 
@@ -82,9 +88,21 @@ macro (set_project_options _build_doc)
     set (CMAKE_INSTALL_PREFIX "/usr")
   endif()
 
+  # Unit tests (thanks to CMake/CTest)
+  option (ENABLE_TEST "Set to OFF to skip build/check unit tests"
+	${_enable_tests})
+
   # Documentation
   option (INSTALL_DOC "Set to OFF to skip build/install Documentation" 
     ${_build_doc})
+
+  # Initialise a few variables
+  set (DOXYGEN_OUTPUT_REL)
+  set (REFMAN_TEX)
+  set (REFMAN_PDF)
+  set (CSS_ALL_TARGETS)
+  set (IMG_ALL_TARGETS)
+  set (MAN_ALL_TARGETS)
 
   # Set the library installation directory (either 32 or 64 bits)
   set (LIBDIR "lib${LIB_SUFFIX}" CACHE PATH
@@ -92,14 +110,17 @@ macro (set_project_options _build_doc)
 
   # Offer the user the choice of overriding the installation directories
   set (INSTALL_LIB_DIR ${LIBDIR} CACHE PATH
-    "Installation directory for libraries")
+	"Installation directory for libraries")
   set (INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
   set (INSTALL_INCLUDE_DIR include CACHE PATH
     "Installation directory for header files")
-  set (INSTALL_DATA_DIR share CACHE PATH
-    "Installation directory for data files")
+  set (INSTALL_DATA_DIR share CACHE PATH "Installation directory for data files")
   set (INSTALL_SAMPLE_DIR share/${PROJECT_NAME}/samples CACHE PATH
     "Installation directory for (CSV) sample files")
+  set (INSTALL_ETC_DIR etc CACHE PATH "Installation directory for Config files")
+
+  # GCOV
+  option (RUN_GCOV "Set to OFF to skip code coverage" ${_run_gcov})
 
   # Make relative paths absolute (needed later on)
   foreach (_path_type LIB BIN INCLUDE DATA SAMPLE)
@@ -108,6 +129,19 @@ macro (set_project_options _build_doc)
       set (${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
     endif ()
   endforeach (_path_type)
+
+  # When the install directory is the canonical one (i.e., /usr), the
+  # run-path/rpath must be set in all the (executable and library)
+  # binaries, so that the dynamic loader can find the dependencies
+  # without the user having to set the LD_LIBRARY_PATH environment
+  # variable.
+  if (CMAKE_INSTALL_PREFIX STREQUAL "/usr")
+    set (CMAKE_INSTALL_RPATH "")
+    set (CMAKE_INSTALL_RPATH_USE_LINK_PATH OFF)
+  else()
+    set (CMAKE_INSTALL_RPATH ${INSTALL_LIB_DIR})
+    set (CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
+  endif()
 
   # Define STDAIR_SAMPLE_DIR if the project is STDAIR
   if ("${PROJECT_NAME}" STREQUAL "stdair")
@@ -139,20 +173,31 @@ endmacro (install_basic_documentation)
 macro (store_in_cache)
   # Force some variables that could be defined in the command line to be
   # written to cache
+  set (PACKAGE_VERSION "${PACKAGE_VERSION}" CACHE STRING
+    "Version of the project/package")
   set (BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS}" CACHE BOOL
-	"Set to OFF to build static libraries" FORCE)
+    "Set to OFF to build static libraries" FORCE)
   set (CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE PATH
-	"Where to install ${PROJECT_NAME}" FORCE)
+    "Where to install ${PROJECT_NAME}" FORCE)
+  set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}" CACHE PATH
+    "Run-path for the library/executable binaries" FORCE)
+  set (CMAKE_INSTALL_RPATH_USE_LINK_PATH "${CMAKE_INSTALL_RPATH_USE_LINK_PATH}"
+    CACHE BOOL
+    "Whether to set the run-path for the library/executable binaries" FORCE)
   set (CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
-	"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING
-	"C++ compilation flags" FORCE)
+    "C++ compilation flags" FORCE)
   set (COMPILE_FLAGS "${COMPILE_FLAGS}" CACHE STRING
-	"Supplementary C++ compilation flags" FORCE)
+    "Supplementary C++ compilation flags" FORCE)
   set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" CACHE PATH
-	"Path to custom CMake Modules" FORCE)
+    "Path to custom CMake Modules" FORCE)
+  set (ENABLE_TEST "${ENABLE_TEST}" CACHE BOOL
+    "Set to OFF to skip build/check unit tests" FORCE)
   set (INSTALL_DOC "${INSTALL_DOC}" CACHE BOOL
-	"Set to OFF to skip build/install Documentation" FORCE)
+    "Set to OFF to skip build/install Documentation" FORCE)
+  set (RUN_GCOV "${RUN_GCOV}" CACHE BOOL
+    "Set to OFF to skip coverage tests" FORCE)
 endmacro (store_in_cache)
 
 
@@ -218,12 +263,15 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
     "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}"
     CACHE INTERNAL "tarball basename")
   set (AUTOTOOLS_IGNRD "/tmp/;/tmp2/;/autom4te\\\\.cache/;autogen\\\\.sh$")
-  set (PACK_IGNRD "${CMAKE_CURRENT_BINARY_DIR};${CPACK_PACKAGE_NAME}\\\\.spec;\\\\.gz$;\\\\.bz2$")
+  set (PACK_IGNRD
+	"${CMAKE_CURRENT_BINARY_DIR};${CPACK_PACKAGE_NAME}\\\\.spec;\\\\.gz$;\\\\.bz2$")
   set (EDIT_IGNRD "\\\\.swp$;\\\\.#;/#;~$")
   set (SCM_IGNRD 
     "/CVS/;/\\\\.svn/;/\\\\.bzr/;/\\\\.hg/;/\\\\.git/;\\\\.gitignore$")
+  set (PYTHON_IGNRD "\\\\.pyc$;\\\\.pyo$")
+  set (JS_IGNRD "/browser/js/libs;/browser/js/mylibs;/browser/libs")
   set (CPACK_SOURCE_IGNORE_FILES
-    "${AUTOTOOLS_IGNRD};${SCM_IGNRD};${EDIT_IGNRD};${PACK_IGNRD}"
+    "${AUTOTOOLS_IGNRD};${SCM_IGNRD};${EDIT_IGNRD};${PACK_IGNRD};${PYTHON_IGNRD};${JS_IGNRD}"
     CACHE STRING "CPACK will ignore these files")
   #set (CPACK_SOURCE_IGNORE_DIRECTORY ${CPACK_SOURCE_IGNORE_FILES} .git)
 
@@ -267,9 +315,21 @@ macro (get_external_libs)
       get_git (${_arg_version})
     endif (${_arg_lower} STREQUAL "git")
 
+    if (${_arg_lower} STREQUAL "gcov")
+      get_gcov (${_arg_version})
+    endif (${_arg_lower} STREQUAL "gcov")
+
+    if (${_arg_lower} STREQUAL "lcov")
+      get_lcov (${_arg_version})
+    endif (${_arg_lower} STREQUAL "lcov")
+
     if (${_arg_lower} STREQUAL "python")
       get_python (${_arg_version})
     endif (${_arg_lower} STREQUAL "python")
+
+    if (${_arg_lower} STREQUAL "icu")
+      get_icu (${_arg_version})
+    endif (${_arg_lower} STREQUAL "icu")
 
     if (${_arg_lower} STREQUAL "zeromq")
       get_zeromq (${_arg_version})
@@ -286,6 +346,10 @@ macro (get_external_libs)
     if (${_arg_lower} STREQUAL "readline")
       get_readline (${_arg_version})
     endif (${_arg_lower} STREQUAL "readline")
+
+    if (${_arg_lower} STREQUAL "curses")
+      get_curses (${_arg_version})
+    endif (${_arg_lower} STREQUAL "curses")
 
     if (${_arg_lower} STREQUAL "mysql")
       get_mysql (${_arg_version})
@@ -343,6 +407,10 @@ macro (get_external_libs)
       get_simcrs (${_arg_version})
     endif (${_arg_lower} STREQUAL "simcrs")
 
+    if (${_arg_lower} STREQUAL "tvlsim")
+      get_tvlsim (${_arg_version})
+    endif (${_arg_lower} STREQUAL "tvlsim")
+
     if (${_arg_lower} STREQUAL "doxygen")
       get_doxygen (${_arg_version})
     endif (${_arg_lower} STREQUAL "doxygen")
@@ -361,6 +429,34 @@ macro (get_git)
     message (STATUS "Current Git revision name: ${PROJ_WC_REVISION_NAME}")
   endif (Git_FOUND)
 endmacro (get_git)
+
+# ~~~~~~~~~~ Gcov ~~~~~~~~~~
+macro (get_gcov)
+  if (${RUN_GCOV} STREQUAL "ON")	
+    message (STATUS "Requires gcov without specifying any version")
+
+    find_package (GCOV)
+    if (GCOV_FOUND)
+      GCOV_WC_INFO (${CMAKE_CURRENT_SOURCE_DIR} PROJ)
+      set (GCOV_REVISION ${PROJ_WC_REVISION_HASH})
+      message (STATUS "Current gcov revision name: ${PROJ_WC_REVISION_NAME}")
+    endif (GCOV_FOUND)
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (get_gcov)
+
+# ~~~~~~~~~~ Lcov ~~~~~~~~~~
+macro (get_lcov)
+  if (${RUN_GCOV} STREQUAL "ON")	
+    message (STATUS "Requires lcov without specifying any version")
+
+    find_package (LCOV)
+    if (LCOV_FOUND)
+      LCOV_WC_INFO (${CMAKE_CURRENT_SOURCE_DIR} PROJ)
+      set (LCOV_REVISION ${PROJ_WC_REVISION_HASH})
+      message (STATUS "Current lcov revision name: ${PROJ_WC_REVISION_NAME}")
+    endif (LCOV_FOUND)
+  endif (${RUN_GCOV} STREQUAL "ON")	
+endmacro (get_lcov)
 
 # ~~~~~~~~~~ Python ~~~~~~~~~
 macro (get_python)
@@ -400,6 +496,37 @@ macro (get_python)
 
 endmacro (get_python)
 
+# ~~~~~~~~~~ ICU ~~~~~~~~~
+macro (get_icu)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires ICU-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires ICU without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  # 
+  set (ICU_REQUIRED_COMPONENTS i18n uc data)
+  find_package (ICU ${_required_version}
+	COMPONENTS ${ICU_REQUIRED_COMPONENTS} REQUIRED)
+
+  icudebug (ICU_I18N_FOUND)
+  if (ICU_FOUND)
+	#
+	#if (ICU_I18N_FOUND)
+	#  icudebug (ICU_I18N_FOUND)
+	#endif (ICU_I18N_FOUND)
+
+    # Update the list of include directories for the project
+    include_directories (${ICU_INCLUDE_DIRS})
+
+    # Update the list of dependencies for the project
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${ICU_LIBRARIES})
+  endif (ICU_FOUND)
+
+endmacro (get_icu)
+
 # ~~~~~~~~~~ ZeroMQ ~~~~~~~~~
 macro (get_zeromq)
   unset (_required_version)
@@ -423,6 +550,23 @@ macro (get_zeromq)
 endmacro (get_zeromq)
 
 # ~~~~~~~~~~ BOOST ~~~~~~~~~~
+#
+macro (register_boost_lib _boost_lib_list_name _boost_lib_list)
+  # Update the list of library dependencies for the project
+  foreach (_lib_cpt ${_boost_lib_list})
+	string (TOUPPER ${_lib_cpt} _lib_cpt_up)
+
+	if (Boost_${_lib_cpt_up}_LIBRARY)
+	  # Update the list of dependencies for the project
+	  list (APPEND ${_boost_lib_list_name} ${Boost_${_lib_cpt_up}_LIBRARY})
+
+	  # Update the list of libraries to be displayed
+	  list (APPEND BOOST_REQUIRED_LIBS ${Boost_${_lib_cpt_up}_LIBRARY})
+	endif (Boost_${_lib_cpt_up}_LIBRARY)
+  endforeach (_lib_cpt ${_boost_lib_list})
+endmacro (register_boost_lib _boost_lib_list_name _boost_lib_list)
+
+#
 macro (get_boost)
   unset (_required_version)
   if (${ARGC} GREATER 0)
@@ -439,12 +583,20 @@ macro (get_boost)
   set (Boost_USE_STATIC_LIBS OFF)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
-  set (BOOST_REQUIRED_COMPONENTS
-    regex program_options date_time iostreams serialization filesystem 
-    unit_test_framework python)
+  set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
+    date_time iostreams serialization filesystem system locale python)
+  set (BOOST_REQUIRED_COMPONENTS_FOR_BIN regex program_options)
+  set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
+  set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
+	${BOOST_REQUIRED_COMPONENTS_FOR_BIN} ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
 
   # The first check is for the required components.
   find_package (Boost COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
+
+  # Fix a bug for some old CMake package finder scripts (e.g., on Fedora 15)
+  if (Boost_VERSION)
+    set (Boost_FOUND ON)
+  endif (Boost_VERSION)
 
   # The second check is for the required version (FindBoostWrapper.cmake is
   # provided by us). Indeed, the Fedora/RedHat FindBoost.cmake does not seem
@@ -455,21 +607,21 @@ macro (get_boost)
     # Update the list of include directories for the project
     include_directories (${Boost_INCLUDE_DIRS})
 
-    # Update the list of dependencies for the project
-    list (APPEND PROJ_DEP_LIBS_FOR_LIB
-      ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
-	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-	  ${Boost_DATE_TIME_LIBRARY} ${Boost_PYTHON_LIBRARY})
-    list (APPEND PROJ_DEP_LIBS_FOR_BIN
-	  ${Boost_REGEX_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY})
-    list (APPEND PROJ_DEP_LIBS_FOR_TST ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+	# For display purposes
+    set (BOOST_REQUIRED_LIBS "")
 
-    # For display purposes
-    set (BOOST_REQUIRED_LIBS
-      ${Boost_REGEX_LIBRARY} ${Boost_IOSTREAMS_LIBRARY} 
-	  ${Boost_SERIALIZATION_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-	  ${Boost_DATE_TIME_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY}
-	  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${Boost_PYTHON_LIBRARY})
+    # Update the list of library dependencies for the project
+	register_boost_lib ("PROJ_DEP_LIBS_FOR_LIB"
+	  "${BOOST_REQUIRED_COMPONENTS_FOR_LIB}")
+
+    # Update the list of binary dependencies for the project
+	register_boost_lib ("PROJ_DEP_LIBS_FOR_BIN"
+	  "${BOOST_REQUIRED_COMPONENTS_FOR_BIN}")
+
+    # Update the list of test dependencies for the project
+	register_boost_lib ("PROJ_DEP_LIBS_FOR_TST"
+	  "${BOOST_REQUIRED_COMPONENTS_FOR_TST}")
+
   endif (Boost_FOUND)
 
 endmacro (get_boost)
@@ -484,7 +636,16 @@ macro (get_xapian)
     message (STATUS "Requires Xapian without specifying any version")
   endif (${ARGC} GREATER 0)
 
-  find_package (Xapian ${_required_version} REQUIRED)
+  # The first check is to get Xapian installation details
+  if (${CMAKE_VERSION} VERSION_LESS 2.8.0)
+	set (Xapian_DIR /usr/${LIBDIR}/cmake/xapian)
+  endif (${CMAKE_VERSION} VERSION_LESS 2.8.0)
+  find_package (Xapian)
+
+  # The second check is for the required version (FindXapianWrapper.cmake is
+  # provided by us). Indeed, the Fedora/RedHat xapian-config.cmake does not seem
+  # to provide version enforcement.
+  find_package (XapianWrapper ${_required_version} REQUIRED)
 
   if (XAPIAN_FOUND)
     # Update the list of include directories for the project
@@ -522,6 +683,34 @@ macro (get_readline)
   endif (READLINE_FOUND)
 
 endmacro (get_readline)
+
+# ~~~~~~~~~~ (N)Curses ~~~~~~~~~
+macro (get_curses)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires (N)Curses-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires (N)Curses without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  set (CURSES_FOUND False)
+
+  set (CURSES_NEED_NCURSES True)
+  find_package (Curses ${_required_version} REQUIRED)
+  if (CURSES_LIBRARY)
+    set (CURSES_FOUND True)
+  endif (CURSES_LIBRARY)
+
+  if (CURSES_FOUND)
+    # Update the list of include directories for the project
+    include_directories (${CURSES_INCLUDE_DIR})
+
+    # Update the list of dependencies for the project
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${CURSES_LIBRARY})
+  endif (CURSES_FOUND)
+
+endmacro (get_curses)
 
 # ~~~~~~~~~~ MySQL ~~~~~~~~~
 macro (get_mysql)
@@ -975,6 +1164,38 @@ macro (get_simcrs)
 
 endmacro (get_simcrs)
 
+# ~~~~~~~~~~ TvlSim ~~~~~~~~~
+macro (get_tvlsim)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires TvlSim-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires TvlSim without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  find_package (TvlSim ${_required_version} REQUIRED
+	HINTS ${WITH_TVLSIM_PREFIX})
+  if (TvlSim_FOUND)
+    #
+    message (STATUS "Found TvlSim version: ${TVLSIM_VERSION}")
+
+    # Update the list of include directories for the project
+    include_directories (${TVLSIM_INCLUDE_DIRS})
+
+    # Update the list of dependencies for the project
+    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${TVLSIM_LIBRARIES})
+
+  else (TvlSim_FOUND)
+    set (ERROR_MSG "The TvlSim library cannot be found. If it is installed in")
+    set (ERROR_MSG "${ERROR_MSG} a in a non standard directory, just invoke")
+    set (ERROR_MSG "${ERROR_MSG} 'cmake' specifying the -DWITH_TVLSIM_PREFIX=")
+    set (ERROR_MSG "${ERROR_MSG}<TvlSim install path> variable.")
+    message (FATAL_ERROR "${ERROR_MSG}")
+  endif (TvlSim_FOUND)
+
+endmacro (get_tvlsim)
+
 
 ##############################################
 ##           Build, Install, Export         ##
@@ -992,10 +1213,16 @@ macro (init_build)
   #    will set CMAKE_CXX_FLAGS as being equal to -O2.
   if (NOT CMAKE_CXX_FLAGS)
 	#set (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror")
-	set (CMAKE_CXX_FLAGS "-Wall -Werror")
+    if (${RUN_GCOV} STREQUAL "ON")
+	  set (CMAKE_CXX_FLAGS "-Wall -Werror -fprofile-arcs -ftest-coverage")
+    else (${RUN_GCOV} STREQUAL "ON")
+      set (CMAKE_CXX_FLAGS "-Wall -Werror")
+	endif (${RUN_GCOV} STREQUAL "ON")
   endif (NOT CMAKE_CXX_FLAGS)
-  # Tell the source code the version of Boost
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_VERSION=${Boost_VERSION}")
+  # Tell the source code the version of Boost (only once)
+  if (NOT "${CMAKE_CXX_FLAGS}" MATCHES "-DBOOST_VERSION=")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_VERSION=${Boost_VERSION}")
+  endif (NOT "${CMAKE_CXX_FLAGS}" MATCHES "-DBOOST_VERSION=")
 
   #
   include_directories (BEFORE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
@@ -1009,9 +1236,9 @@ macro (init_build)
   set_install_directories ()
 
   ##
-  # Initialise the list of modules to build and those to test
+  # Initialise the list of modules to build and test suites to check
   set (PROJ_ALL_MOD_FOR_BLD "")
-  set (PROJ_ALL_MOD_FOR_TST "")
+  set (PROJ_ALL_SUITES_FOR_TST "")
 
   ##
   # Initialise the list of targets to build: libraries, binaries and tests
@@ -1044,9 +1271,9 @@ macro (set_install_directories)
   set (pdfdir        ${htmldir})
   set (mandir        ${datarootdir}/man)
   set (infodir       ${datarootdir}/info)
-  set (pkgincludedir ${includedir}/stdair)
-  set (pkglibdir     ${libdir}/stdair)
-  set (pkglibexecdir ${libexecdir}/stdair)
+  set (pkgincludedir ${includedir}/${PACKAGE})
+  set (pkglibdir     ${libdir}/${PACKAGE})
+  set (pkglibexecdir ${libexecdir}/${PACKAGE})
 endmacro (set_install_directories)
 
 
@@ -1211,9 +1438,9 @@ macro (module_library_add_standard _layer_list)
   endif (_publish_all_headers_flag)
 
   # Convenient message to the user/developer
-  if (NOT "${INSTALL_LIB_DIR}" MATCHES "^/usr/${LIBDIR}$")
-    install (CODE "message (\"On Unix-based platforms, run export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${INSTALL_LIB_DIR} once per session\")")
-  endif ()
+  if (NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
+    install (CODE "message (\"On Unix-based platforms, run export LD_LIBRARY_PATH=${INSTALL_LIB_DIR}:\$LD_LIBRARY_PATH once per session\")")
+  endif (NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
 
 endmacro (module_library_add_standard)
 
@@ -1415,8 +1642,39 @@ macro (module_binary_add _exec_source_dir)
 endmacro (module_binary_add)
 
 ##
-# Add a Python script to be installed
-macro (module_python_add _script_file)
+# Installation of the configuration INI file (format cfg).
+# The two parameters (among which only the first one is mandatory) are:
+#  * The path/directory where the configuration file can be found.
+#  * If specified, the name to be given to the file. If no such name
+#    is given as parameter, the configuration file is given the name of 
+#    the current module.
+macro (module_config_add _config_source_dir)
+  # First, derive the name to be given to the config file, defaulting
+  # to the name of the module
+  set (_config_name ${MODULE_NAME})
+  if (${ARGC} GREATER 1})
+    set (_config_name ${ARGV1})
+  endif (${ARGC} GREATER 1})
+
+  # Define the macro path of the configuration file
+  set (PROJ_PATH_CFG_SRC ${_config_source_dir}/${_config_name}.cfg)
+
+  # Installation of the cfg file
+  install (FILES ${PROJ_PATH_CFG_SRC} 
+    DESTINATION "${INSTALL_ETC_DIR}" COMPONENT runtime)
+
+endmacro (module_config_add)
+
+##
+# Add a (Shell, Python, Perl, Ruby, etc) script to be installed.
+#
+# The parameter is the relative file path of the (template) script to
+# be installed. That template file must end with the '.in' suffix.
+# Indeed, the project variables (wrapped by @@ signs) of the template file
+# are evaluated and expanded thanks to the configure command.
+# The '.in' extension of the script is dropped once installed.
+#
+macro (module_script_add _script_file)
   #
   set (_full_script_src_path ${CMAKE_CURRENT_SOURCE_DIR}/${_script_file}.in)
   set (_full_script_path ${CMAKE_CURRENT_BINARY_DIR}/${_script_file})
@@ -1424,11 +1682,14 @@ macro (module_python_add _script_file)
 	#
     configure_file (${_full_script_src_path} ${_full_script_path} @ONLY)
 
-    # Add the 'scripts_${MODULE_NAME}' target, depending on the
-    # converted (Python) scripts
-    add_custom_target (scripts_${MODULE_NAME} ALL DEPENDS ${_full_script_path})
+	# Extract the file name (only) from the full file path
+	get_filename_component (_script_alone ${_script_file} NAME)
+    
+	# Add the 'scripts_${MODULE_NAME}' target, depending on the
+    # converted (Shell, Python, Perl, Ruby, etc) scripts
+    add_custom_target (${_script_alone}_script ALL DEPENDS ${_full_script_path})
 
-    # Install the (Python) script file
+    # Install the (Shell, Python, Perl, Ruby, etc) script file
     install (PROGRAMS ${_full_script_path} DESTINATION bin COMPONENT devel)
 
   else (EXISTS ${_full_script_src_path})
@@ -1437,7 +1698,6 @@ macro (module_python_add _script_file)
   endif (EXISTS ${_full_script_src_path})
 
   # Register the binary target in the project (for reporting purpose)
-  get_filename_component (_script_alone ${_script_file} NAME)
   list (APPEND PROJ_ALL_BIN_TARGETS ${_script_alone})
   set (PROJ_ALL_BIN_TARGETS ${PROJ_ALL_BIN_TARGETS} PARENT_SCOPE)
 
@@ -1446,7 +1706,7 @@ macro (module_python_add _script_file)
   list (APPEND ${MODULE_NAME}_ALL_EXECS ${_script_alone})
   set (${MODULE_NAME}_ALL_EXECS ${${MODULE_NAME}_ALL_EXECS} PARENT_SCOPE)
 
-endmacro (module_python_add)
+endmacro (module_script_add)
 
 ##
 # Installation of the CMake import helper, so that third party projects
@@ -1460,39 +1720,54 @@ endmacro (module_export_install)
 ###################################################################
 ##                            Tests                              ##
 ###################################################################
-#
-macro (add_test_suites)
-  #
-  set (_test_suite_dir_list ${ARGV})
+##
+# Initialise the CTest framework with CMake, if so enabled
+macro (init_test)
+  # Register the main test target. Every specific test will then be added
+  # as a dependency on that target. When the unit tests are disabled
+  # (i.e., the ENABLE_TEST variable is set to OFF), that target remains empty.
+  add_custom_target (check)
+  
+  if (Boost_FOUND AND ENABLE_TEST)
+	# Tell CMake/CTest that tests will be performed
+	enable_testing() 
 
-  if (Boost_FOUND)
-    # Tell CMake/CTest that tests will be performed
-    enable_testing() 
+  endif (Boost_FOUND AND ENABLE_TEST)
+endmacro (init_test)
 
+##
+# Register a specific test sub-directory/suite to be checked by CMake/CTest.
+# That macro must be called once for each test sub-directory/suite.
+# The parameter is:
+#  * The test directory path, ommitting the 'test/' prefix. Most often, it is
+#    the same as the module name. And when there is a single module (which is
+#    the most common case), it corresponds to the project name.
+macro (add_test_suite _test_suite_dir)
+  if (Boost_FOUND AND ENABLE_TEST)
     # Browse all the modules, and register test suites for each of them
-    set (_check_target_list "")
-    foreach (_module_name ${_test_suite_dir_list})
-      set (${_module_name}_ALL_TST_TARGETS "")
-      # Each individual test suite is specified within the dedicated
-      # sub-directory. The CMake file within each of those test sub-directories
-      # specifies a target named check_${_module_name}tst.
-      add_subdirectory (test/${_module_name})
+    set (_check_target check_${_test_suite_dir}tst)
 
-      # Register, for book-keeping purpose (a few lines below), 
-      # the (CMake/CTest) test target of the current module 
-      list (APPEND _check_target_list check_${_module_name}tst)
-    endforeach (_module_name)
+    # Each individual test suite is specified within the dedicated
+    # sub-directory. The CMake file within each of those test sub-directories
+    # specifies a target named check_${_module_name}tst.
+    add_subdirectory (test/${_test_suite_dir})
 
-    # Register all the module (CMake/CTest) test targets at once
-    add_custom_target (check)
-    add_dependencies (check ${_check_target_list})
+    # Register the test suite (i.e., add the test target as a dependency of
+	# the 'check' target).
+    add_dependencies (check ${_check_target})
 
-    # Register, for reporting purpose, the list of modules to be tested
-    set (PROJ_ALL_MOD_FOR_TST ${_test_suite_dir_list})
+	# Register, for book-keeping purpose (a few lines below), 
+	# the (CMake/CTest) test target of the current test suite. When the
+	# test directory corresponds to any given module, the test targets will
+	# be added to that module dependencies.
+	set (${_test_suite_dir}_ALL_TST_TARGETS "")
 
-  endif (Boost_FOUND)
+    # Register, for reporting purpose, the list of test suites to be checked
+    list (APPEND PROJ_ALL_SUITES_FOR_TST ${_test_suite_dir})
 
-endmacro (add_test_suites)
+  endif (Boost_FOUND AND ENABLE_TEST)
+
+endmacro (add_test_suite)
 
 ##
 # Register a test with CMake/CTest.
@@ -1502,8 +1777,19 @@ endmacro (add_test_suites)
 #    semi-colon (';') seperated.
 #  * A list of intermodule dependencies. That list is separated by
 #    either white space or semi-colons (';').
-macro (module_test_add_suite _test_name _test_sources)
-  if (Boost_FOUND)
+macro (module_test_add_suite _module_name _test_name _test_sources)
+  if (Boost_FOUND AND ENABLE_TEST)
+
+	# If the module is already known, the corresponding library is added to
+	# the list of dependencies.
+	set (MODULE_NAME ${_module_name})
+	set (MODULE_LIB_TARGET "")
+	foreach (_module_item ${PROJ_ALL_MOD_FOR_BLD})
+	  if ("${_module_name}" STREQUAL "${_module_item}")
+		set (MODULE_LIB_TARGET ${MODULE_NAME}lib)
+	  endif ("${_module_name}" STREQUAL "${_module_item}")
+	endforeach (_module_item ${PROJ_ALL_MOD_FOR_BLD})
+
     # Register the test binary target
     add_executable (${_test_name}tst ${_test_sources})
     set_target_properties (${_test_name}tst PROPERTIES
@@ -1514,8 +1800,9 @@ macro (module_test_add_suite _test_name _test_sources)
     # Build the list of library targets on which that test depends upon
     set (_library_list "")
     foreach (_arg_lib ${ARGV})
-      if (NOT "${_test_name};${_test_sources}" MATCHES "${_arg_lib}")
-	list (APPEND _library_list ${_arg_lib}lib)
+      if (NOT "${_module_name};${_test_name};${_test_sources}"
+		  MATCHES "${_arg_lib}")
+		list (APPEND _library_list ${_arg_lib}lib)
       endif ()
     endforeach (_arg_lib)
 
@@ -1532,7 +1819,7 @@ macro (module_test_add_suite _test_name _test_sources)
     else (WIN32)
       add_test (${_test_name}tst ${_test_name})
     endif (WIN32)
-  endif (Boost_FOUND)
+  endif (Boost_FOUND AND ENABLE_TEST)
 
   # Register the binary target in the project (for reporting purpose)
   list (APPEND PROJ_ALL_TST_TARGETS ${${MODULE_NAME}_ALL_TST_TARGETS})
@@ -1617,16 +1904,25 @@ macro (doc_add_web_pages)
   set (REFMAN refman)
   set (TEX_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/latex)
   set (REFMAN_TEX ${REFMAN}.tex)
+  set (REFMAN_TEX ${REFMAN_TEX} PARENT_SCOPE)
   set (REFMAN_TEX_FULL ${TEX_GEN_DIR}/${REFMAN_TEX})
+  set (REFMAN_TEX_OTHERS ${TEX_GEN_DIR}/index.tex ${TEX_GEN_DIR}/namespaces.tex
+	${TEX_GEN_DIR}/annotated.tex ${TEX_GEN_DIR}/hierarchy.tex
+	${TEX_GEN_DIR}/files.tex)
 
   # Add the build rule for Doxygen
-  set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/html/index.html)
-  add_custom_command (OUTPUT ${DOXYGEN_OUTPUT} ${REFMAN_TEX_FULL}
+  set (DOXYGEN_OUTPUT_REL html/index.html)
+  set (DOXYGEN_OUTPUT_REL ${DOXYGEN_OUTPUT_REL} PARENT_SCOPE)
+  set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_OUTPUT_REL})
+  set (DOXYGEN_OUTPUT ${DOXYGEN_OUTPUT} PARENT_SCOPE)
+  add_custom_command (
+	OUTPUT ${DOXYGEN_OUTPUT} ${REFMAN_TEX_FULL} ${REFMAN_TEX_OTHERS}
 	COMMAND ${DOXYGEN_EXECUTABLE} ARGS ${DOXYGEN_CFG}
 	DEPENDS ${DOXYGEN_CFG} ${doc_SOURCES}
 	COMMENT "Generating documentation with Doxygen, from '${DOXYGEN_CFG}'...")
   # Add the 'doc' target, depending on the generated HTML documentation
-  add_custom_target (doc ALL DEPENDS ${DOXYGEN_OUTPUT})
+  add_custom_target (doc ALL DEPENDS
+	${DOXYGEN_OUTPUT} ${REFMAN_TEX_FULL} ${REFMAN_TEX_OTHERS})
 
   ##
   # Copy the needed files into the generated HTML directory
@@ -1640,10 +1936,17 @@ macro (doc_add_web_pages)
 	add_custom_command (OUTPUT ${CSS_GEN_FULL_DIR}
 	  COMMAND ${CMAKE_COMMAND}
 	  ARGS -E copy ${CSS_SRC_FULL_DIR} ${CSS_GEN_FULL_DIR}
-	  DEPENDS ${DOXYGEN_OUTPUT} ${CSS_SRC_FULL_DIR}
+	  DEPENDS doc ${CSS_SRC_FULL_DIR}
 	  COMMENT "Copying style '${CSS_SRC_FULL_DIR}' into '${htmldoc_DIR}'...")
+
+	# Transpose the CSS-related operation into a target, so that CMake
+	# can handle it properly
 	add_custom_target (css_${style_SRC} ALL DEPENDS ${CSS_GEN_FULL_DIR})
+	list (APPEND CSS_ALL_TARGETS css_${style_SRC})
   endforeach (style_SRC)
+  set (CSS_ALL_TARGETS ${CSS_ALL_TARGETS} PARENT_SCOPE)
+  add_custom_target (css_style)
+  add_dependencies (css_style ${CSS_ALL_TARGETS})
 
   # Images
   foreach (image_SRC ${image_SOURCES})
@@ -1652,10 +1955,17 @@ macro (doc_add_web_pages)
 	add_custom_command (OUTPUT ${IMG_GEN_FULL_DIR}
 	  COMMAND ${CMAKE_COMMAND} 
 	  ARGS -E copy ${IMG_SRC_FULL_DIR} ${IMG_GEN_FULL_DIR}
-	  DEPENDS ${DOXYGEN_OUTPUT} ${IMG_SRC_FULL_DIR}
+	  DEPENDS doc ${IMG_SRC_FULL_DIR}
 	  COMMENT "Copying image '${IMG_SRC_FULL_DIR}' into '${htmldoc_DIR}'...")
+
+	# Transpose the image-related operation into a target, so that CMake
+	# can handle it properly
 	add_custom_target (img_${image_SRC} ALL DEPENDS ${IMG_GEN_FULL_DIR})
+	list (APPEND IMG_ALL_TARGETS img_${image_SRC})
   endforeach (image_SRC)
+  set (IMG_ALL_TARGETS ${IMG_ALL_TARGETS} PARENT_SCOPE)
+  add_custom_target (img_style)
+  add_dependencies (img_style ${IMG_ALL_TARGETS})
 
   ##
   # PDF, generated by (Pdf)Latex from the Latex source file, itself generated
@@ -1663,27 +1973,28 @@ macro (doc_add_web_pages)
   set (REFMAN_IDX ${REFMAN}.idx)
   set (REFMAN_IDX_FULL ${TEX_GEN_DIR}/${REFMAN_IDX})
   set (REFMAN_PDF ${REFMAN}.pdf)
+  set (REFMAN_PDF ${REFMAN_PDF} PARENT_SCOPE)
   set (REFMAN_PDF_FULL ${TEX_GEN_DIR}/${REFMAN_PDF})
+  set (WARNING_PDF_MSG "Warning: the PDF reference manual ('${REFMAN_PDF_FULL}') has failed to build. You can perform a simple re-build ('make' in the 'doc/latex' sub-directory).")
   # Note the "|| echo" addition to the pdflatex command, as that latter returns
   # as if there were an error.
   add_custom_command (OUTPUT ${REFMAN_IDX_FULL} ${REFMAN_PDF_FULL}
-	DEPENDS ${DOXYGEN_OUTPUT} ${REFMAN_TEX_FULL}
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "First PDF generation done."
+	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} && echo 'First PDF generation done.' || echo 'First PDF generation done.'
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} makeindex -q ${REFMAN_IDX}
+	ARGS -E chdir ${TEX_GEN_DIR} egrep -s -e 'Fatal error occurred' -e 'Rerun to get cross-references right' refman.log && (cd ${TEX_GEN_DIR} && pdflatex -interaction batchmode ${REFMAN_TEX} && echo 'Second PDF generation done.') || echo 'Second PDF generation was not necessary'
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "Second PDF generation done."
+	ARGS -E chdir ${TEX_GEN_DIR} egrep -s -e 'Fatal error occurred' -e 'Rerun to get cross-references right' refman.log && (cd ${TEX_GEN_DIR} && pdflatex -interaction batchmode ${REFMAN_TEX} && echo 'Third PDF generation done.') || echo 'Third PDF generation was not necessary'
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} makeindex -q ${REFMAN_IDX}
+	ARGS -E chdir ${TEX_GEN_DIR} test ! -f ${REFMAN_PDF} && (cd ${TEX_GEN_DIR} && echo '${WARNING_PDF_MSG}' > ${REFMAN_PDF} && echo '${WARNING_PDF_MSG}') || echo 'The PDF reference manual has been successfully built'
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} pdflatex -interaction batchmode ${REFMAN_TEX} || echo "Third PDF generation done."
-	COMMENT "Generating PDF Reference Manual ('${REFMAN_PDF}')..."
-	COMMAND ${CMAKE_COMMAND}
-	ARGS -E chdir ${TEX_GEN_DIR} test -f ${REFMAN_PDF} || (touch ${REFMAN_PDF} && echo "Warning: the PDF reference manual \\\('${REFMAN_PDF_FULL}'\\\) has failed to build. You can perform a simple re-build \\\('make' in the 'doc/latex' sub-directory\\\).")
-	COMMENT "Checking whether the PDF Reference Manual ('${REFMAN_PDF}') has been built...")
+	ARGS -E chdir ${TEX_GEN_DIR} echo 'The file size of the PDF reference manual is: ' && (cd ${TEX_GEN_DIR} && du -sh ${REFMAN_PDF} | cut -f1)
+	DEPENDS doc
+	COMMENT "Generating PDF Reference Manual ('${REFMAN_TEX}' => '${REFMAN_PDF}')...")
+
   # Add the 'pdf' target, depending on the generated PDF manual
-  add_custom_target (pdf ALL DEPENDS ${REFMAN_PDF_FULL})
+  add_custom_target (pdf ALL DEPENDS ${REFMAN_IDX_FULL} ${REFMAN_PDF_FULL})
+  add_dependencies (pdf css_style img_style)
 
   # Clean-up $build/html and $build/latex on 'make clean'
   set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES 
@@ -1721,12 +2032,11 @@ macro (doc_add_man_pages)
   endforeach (_idx RANGE 1 9)
 
   # Initialise the lists gathering information for each valid manual section
-  set (man_doxy_output_list "")
-  set (man_dir_list "")
+  set (man_dir_list)
 
   # Parse the arguments
-  set (options "")
-  set (oneValueArgs "")
+  set (options)
+  set (oneValueArgs)
 
   # Added one argument option for every manual section
   foreach (man_sect ${man_section_list})
@@ -1789,9 +2099,11 @@ macro (doc_add_man_pages)
 		DEPENDS ${DOXYGEN_CFG${man_sect}} ${man${man_sect}_SOURCES}
 		COMMENT "Generating section ${man_sect} manual pages with Doxygen, from '${DOXYGEN_CFG${man_sect}}'...")
 
-	  # Add the current manual section output to the dedicated list,
-	  # so that it can then be added to the corresponding target (see below).
-	  list (APPEND man_doxy_output_list ${DOXYGEN_OUTPUT${man_sect}})
+	  # Transpose the man-page-related operation into a target, so that CMake
+	  # can handle it properly
+	  add_custom_target (man_${man_sect}
+		ALL DEPENDS ${DOXYGEN_OUTPUT${man_sect}})
+	  list (APPEND MAN_ALL_TARGETS man_${man_sect})
 
 	  # Specifiy what to do for the installation of the manual pages
 	  install (DIRECTORY "${man${man_sect}_DIR}" DESTINATION ${MAN_PATH})
@@ -1800,13 +2112,61 @@ macro (doc_add_man_pages)
   endforeach (man_sect ${man_section_list})
 
   # Add the 'man' target, depending on the generated manual page documentation
-  add_custom_target (man ALL DEPENDS ${man_doxy_output_list})
+  set (MAN_ALL_TARGETS ${MAN_ALL_TARGETS} PARENT_SCOPE)
+  add_custom_target (man)
+  add_dependencies (${MAN_ALL_TARGETS})
 
   # Clean-up $build/man1 and $build/man3 on 'make clean'
   set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES 
 	${man_dir_list})
 
 endmacro (doc_add_man_pages)
+
+
+###################################################################
+##                            GCOV                               ##
+###################################################################
+
+macro (gcov_task)
+  if (${RUN_GCOV} STREQUAL "ON")
+    set (GCDA_GCNO_PATH
+	  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/CMakeFiles/${PROJECT_NAME}lib.dir")
+    set (GCDA_FILE "${GCDA_GCNO_PATH}/command/CmdBomSerialiser.cpp.gcda")
+    set (GCNO_FILE "${GCDA_GCNO_PATH}/command/CmdBomSerialiser.cpp.gcno")
+	# Removed generated gcda and gcno files relative to the CmdBomSerialiser
+	# object: gcov failed processing the CmdBomSerialiser.cpp.gcda file
+	# without displaying a clear message
+    add_custom_command (TARGET check
+	  # This task is post-build and post-check
+      POST_BUILD  
+      # Because the "-f" option is given, the commands do not fail
+	  # when the files are missing
+	  COMMAND "rm" "-f" "${GCDA_FILE}"
+      COMMAND "rm" "-f" "${GCNO_FILE}"
+      ) 
+	# Build a coverage report info and html pages using gcda and gcno files
+    add_custom_command (TARGET check
+      # This task is post-build and post-check
+      POST_BUILD 
+      # Create a directory for the gcov reports
+      COMMAND "mkdir" "-p" "${CMAKE_BINARY_DIR}/gcov" 
+      # Generate a global gcov report using the directory containing
+	  # the gcda/gcno files
+      COMMAND "geninfo" "${GCDA_GCNO_PATH}" "-o"
+	  "${CMAKE_BINARY_DIR}/gcov/gcov_tmp_report.info"	
+      # Extract from the global report the data relative to the module files
+	  # (i, e remove external libraries) and copy them in a second report
+	  COMMAND "lcov" "-e" "${CMAKE_BINARY_DIR}/gcov/gcov_tmp_report.info"
+	  "'${CMAKE_CURRENT_SOURCE_DIR}/*'" ">>"
+	  "${CMAKE_BINARY_DIR}/gcov/gcov_report.info"
+      # Generate html documentation about the module files coverage
+      COMMAND "genhtml" "-o" "${CMAKE_BINARY_DIR}/gcov" "-p"
+	  "${CMAKE_CURRENT_SOURCE_DIR}*" "${CMAKE_BINARY_DIR}/gcov/gcov_report.info"
+      # Delete heavy .info files
+      COMMAND "rm" "${CMAKE_BINARY_DIR}/gcov/*.info"
+	  )
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (gcov_task)
 
 
 ###################################################################
@@ -1865,34 +2225,69 @@ endmacro (install_dev_helper_files)
 macro (display_doxygen)
   message (STATUS)
   message (STATUS "* Doxygen:")
-  message (STATUS "  - DOXYGEN_VERSION .............. : ${DOXYGEN_VERSION}")
-  message (STATUS "  - DOXYGEN_EXECUTABLE ........... : ${DOXYGEN_EXECUTABLE}")
-  message (STATUS "  - DOXYGEN_DOT_EXECUTABLE ....... : ${DOXYGEN_DOT_EXECUTABLE}")
-  message (STATUS "  - DOXYGEN_DOT_PATH ............. : ${DOXYGEN_DOT_PATH}")
+  message (STATUS "  - DOXYGEN_VERSION ............... : ${DOXYGEN_VERSION}")
+  message (STATUS "  - DOXYGEN_EXECUTABLE ............ : ${DOXYGEN_EXECUTABLE}")
+  message (STATUS "  - DOXYGEN_DOT_EXECUTABLE ........ : ${DOXYGEN_DOT_EXECUTABLE}")
+  message (STATUS "  - DOXYGEN_DOT_PATH .............. : ${DOXYGEN_DOT_PATH}")
 endmacro (display_doxygen)
+
+# Gcov
+macro (display_gcov)
+  if (${RUN_GCOV} STREQUAL "ON")
+    message (STATUS)
+    message (STATUS "* gcov:")
+    message (STATUS "  - GCOV_VERSION .................. : ${GCOV_VERSION}")
+    message (STATUS "  - GCOV_EXECUTABLE ............... : ${GCOV_EXECUTABLE}")
+    message (STATUS "  - GCOV_DOT_EXECUTABLE ........... : ${GCOV_DOT_EXECUTABLE}")
+    message (STATUS "  - GCOV_DOT_PATH ................. : ${GCOV_DOT_PATH}")
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (display_gcov)
+
+# Lcov
+macro (display_lcov)
+  if (${RUN_GCOV} STREQUAL "ON")
+    message (STATUS)
+    message (STATUS "* lcov:")
+    message (STATUS "  - LCOV_VERSION .................. : ${LCOV_VERSION}")
+    message (STATUS "  - LCOV_EXECUTABLE ............... : ${LCOV_EXECUTABLE}")
+    message (STATUS "  - LCOV_DOT_EXECUTABLE ........... : ${LCOV_DOT_EXECUTABLE}")
+    message (STATUS "  - LCOV_DOT_PATH ................. : ${LCOV_DOT_PATH}")
+  endif (${RUN_GCOV} STREQUAL "ON")
+endmacro (display_lcov)
 
 # Python
 macro (display_python)
   if (PYTHONLIBS_FOUND)
     message (STATUS)
 	message (STATUS "* Python:")
-	message (STATUS "  - PYTHONLIBS_VERSION ......... : ${PYTHONLIBS_VERSION}")
-	message (STATUS "  - PYTHON_LIBRARIES ........... : ${PYTHON_LIBRARIES}")
-	message (STATUS "  - PYTHON_INCLUDE_PATH ........ : ${PYTHON_INCLUDE_PATH}")
-	message (STATUS "  - PYTHON_INCLUDE_DIRS ........ : ${PYTHON_INCLUDE_DIRS}")
-	message (STATUS "  - PYTHON_DEBUG_LIBRARIES ..... : ${PYTHON_DEBUG_LIBRARIES}")
-	message (STATUS "  - Python_ADDITIONAL_VERSIONS . : ${Python_ADDITIONAL_VERSIONS}")
+	message (STATUS "  - PYTHONLIBS_VERSION ............ : ${PYTHONLIBS_VERSION}")
+	message (STATUS "  - PYTHON_LIBRARIES .............. : ${PYTHON_LIBRARIES}")
+	message (STATUS "  - PYTHON_INCLUDE_PATH ........... : ${PYTHON_INCLUDE_PATH}")
+	message (STATUS "  - PYTHON_INCLUDE_DIRS ........... : ${PYTHON_INCLUDE_DIRS}")
+	message (STATUS "  - PYTHON_DEBUG_LIBRARIES ........ : ${PYTHON_DEBUG_LIBRARIES}")
+	message (STATUS "  - Python_ADDITIONAL_VERSIONS .... : ${Python_ADDITIONAL_VERSIONS}")
   endif (PYTHONLIBS_FOUND)
 endmacro (display_python)
+
+# ICU
+macro (display_icu)
+  if (ICU_FOUND)
+    message (STATUS)
+	message (STATUS "* ICU:")
+	message (STATUS "  - ICU_VERSION ................... : ${ICU_VERSION}")
+	message (STATUS "  - ICU_LIBRARIES ................. : ${ICU_LIBRARIES}")
+	message (STATUS "  - ICU_INCLUDE_DIRS .............. : ${ICU_INCLUDE_DIR}")
+  endif (ICU_FOUND)
+endmacro (display_icu)
 
 # ZeroMQ
 macro (display_zeromq)
   if (ZEROMQ_FOUND)
     message (STATUS)
 	message (STATUS "* ZeroMQ:")
-	message (STATUS "  - ZeroMQ_VERSION ............. : ${ZeroMQ_VERSION}")
-	message (STATUS "  - ZeroMQ_LIBRARIES ........... : ${ZeroMQ_LIBRARIES}")
-	message (STATUS "  - ZeroMQ_INCLUDE_DIR ......... : ${ZeroMQ_INCLUDE_DIR}")
+	message (STATUS "  - ZeroMQ_VERSION ................ : ${ZeroMQ_VERSION}")
+	message (STATUS "  - ZeroMQ_LIBRARIES .............. : ${ZeroMQ_LIBRARIES}")
+	message (STATUS "  - ZeroMQ_INCLUDE_DIR ............ : ${ZeroMQ_INCLUDE_DIR}")
   endif (ZEROMQ_FOUND)
 endmacro (display_zeromq)
 
@@ -1901,12 +2296,15 @@ macro (display_boost)
   if (Boost_FOUND)
     message (STATUS)
     message (STATUS "* Boost:")
-    message (STATUS "  - Boost_VERSION .............. : ${Boost_VERSION}")
-    message (STATUS "  - Boost_LIB_VERSION .......... : ${Boost_LIB_VERSION}")
-    message (STATUS "  - Boost_HUMAN_VERSION ........ : ${Boost_HUMAN_VERSION}")
-    message (STATUS "  - Boost_INCLUDE_DIRS ......... : ${Boost_INCLUDE_DIRS}")
-    message (STATUS "  - Boost required components .. : ${BOOST_REQUIRED_COMPONENTS}")
-    message (STATUS "  - Boost required libraries ... : ${BOOST_REQUIRED_LIBS}")
+    message (STATUS "  - Boost_VERSION ................. : ${Boost_VERSION}")
+    message (STATUS "  - Boost_LIB_VERSION ............. : ${Boost_LIB_VERSION}")
+    message (STATUS "  - Boost_HUMAN_VERSION ........... : ${Boost_HUMAN_VERSION}")
+    message (STATUS "  - Boost_INCLUDE_DIRS ............ : ${Boost_INCLUDE_DIRS}")
+    message (STATUS "  - Boost required components ..... : ${BOOST_REQUIRED_COMPONENTS}")
+    message (STATUS "  - Boost required libraries ...... : ${BOOST_REQUIRED_LIBS}")
+    message (STATUS "  - Boost required libs for lib ... : ${PROJ_DEP_LIBS_FOR_LIB}")
+    message (STATUS "  - Boost required libs for bin ... : ${PROJ_DEP_LIBS_FOR_BIN}")
+    message (STATUS "  - Boost required libs for test .. : ${PROJ_DEP_LIBS_FOR_TST}")
   endif (Boost_FOUND)
 endmacro (display_boost)
 
@@ -1914,10 +2312,10 @@ endmacro (display_boost)
 macro (display_xapian)
   if (XAPIAN_FOUND)
     message (STATUS)
-	message (STATUS "* Xapian:")
-	message (STATUS "  - XAPIAN_VERSION ............. : ${XAPIAN_VERSION}")
-	message (STATUS "  - XAPIAN_LIBRARIES ........... : ${XAPIAN_LIBRARIES}")
-	message (STATUS "  - XAPIAN_INCLUDE_DIR ......... : ${XAPIAN_INCLUDE_DIR}")
+    message (STATUS "* Xapian:")
+    message (STATUS "  - XAPIAN_VERSION ................ : ${XAPIAN_VERSION}")
+    message (STATUS "  - XAPIAN_LIBRARIES .............. : ${XAPIAN_LIBRARIES}")
+    message (STATUS "  - XAPIAN_INCLUDE_DIR ............ : ${XAPIAN_INCLUDE_DIR}")
   endif (XAPIAN_FOUND)
 endmacro (display_xapian)
 
@@ -1926,20 +2324,31 @@ macro (display_readline)
   if (READLINE_FOUND)
     message (STATUS)
     message (STATUS "* Readline:")
-    message (STATUS "  - READLINE_VERSION ........... : ${READLINE_VERSION}")
-    message (STATUS "  - READLINE_INCLUDE_DIR ....... : ${READLINE_INCLUDE_DIR}")
-    message (STATUS "  - READLINE_LIBRARY ........... : ${READLINE_LIBRARY}")
+    message (STATUS "  - READLINE_VERSION .............. : ${READLINE_VERSION}")
+    message (STATUS "  - READLINE_INCLUDE_DIR .......... : ${READLINE_INCLUDE_DIR}")
+    message (STATUS "  - READLINE_LIBRARY .............. : ${READLINE_LIBRARY}")
   endif (READLINE_FOUND)
 endmacro (display_readline)
+
+# (N)Curses
+macro (display_curses)
+  if (CURSES_FOUND)
+    message (STATUS)
+    message (STATUS "* (N)Curses:")
+    message (STATUS "  - CURSES_VERSION .............. : ${CURSES_VERSION}")
+    message (STATUS "  - CURSES_INCLUDE_DIR .......... : ${CURSES_INCLUDE_DIR}")
+    message (STATUS "  - CURSES_LIBRARY .............. : ${CURSES_LIBRARY}")
+  endif (CURSES_FOUND)
+endmacro (display_curses)
 
 # MySQL
 macro (display_mysql)
   if (MYSQL_FOUND)
     message (STATUS)
     message (STATUS "* MySQL:")
-    message (STATUS "  - MYSQL_VERSION .............. : ${MYSQL_VERSION}")
-    message (STATUS "  - MYSQL_INCLUDE_DIR .......... : ${MYSQL_INCLUDE_DIR}")
-    message (STATUS "  - MYSQL_LIBRARIES ............ : ${MYSQL_LIBRARIES}")
+    message (STATUS "  - MYSQL_VERSION ................. : ${MYSQL_VERSION}")
+    message (STATUS "  - MYSQL_INCLUDE_DIR ............. : ${MYSQL_INCLUDE_DIR}")
+    message (STATUS "  - MYSQL_LIBRARIES ............... : ${MYSQL_LIBRARIES}")
   endif (MYSQL_FOUND)
 endmacro (display_mysql)
 
@@ -1948,13 +2357,13 @@ macro (display_soci)
   if (SOCI_FOUND)
     message (STATUS)
     message (STATUS "* SOCI:")
-    message (STATUS "  - SOCI_VERSION ............... : ${SOCI_VERSION}")
-    message (STATUS "  - SOCI_LIB_VERSION ........... : ${SOCI_LIB_VERSION}")
-    message (STATUS "  - SOCI_HUMAN_VERSION ......... : ${SOCI_HUMAN_VERSION}")
-    message (STATUS "  - SOCI_INCLUDE_DIR ........... : ${SOCI_INCLUDE_DIR}")
-    message (STATUS "  - SOCIMYSQL_INCLUDE_DIR ...... : ${SOCIMYSQL_INCLUDE_DIR}")
-    message (STATUS "  - SOCI_LIBRARIES ............. : ${SOCI_LIBRARIES}")
-    message (STATUS "  - SOCIMYSQL_LIBRARIES ........ : ${SOCIMYSQL_LIBRARIES}")
+    message (STATUS "  - SOCI_VERSION .................. : ${SOCI_VERSION}")
+    message (STATUS "  - SOCI_LIB_VERSION .............. : ${SOCI_LIB_VERSION}")
+    message (STATUS "  - SOCI_HUMAN_VERSION ............ : ${SOCI_HUMAN_VERSION}")
+    message (STATUS "  - SOCI_INCLUDE_DIR .............. : ${SOCI_INCLUDE_DIR}")
+    message (STATUS "  - SOCIMYSQL_INCLUDE_DIR ......... : ${SOCIMYSQL_INCLUDE_DIR}")
+    message (STATUS "  - SOCI_LIBRARIES ................ : ${SOCI_LIBRARIES}")
+    message (STATUS "  - SOCIMYSQL_LIBRARIES ........... : ${SOCIMYSQL_LIBRARIES}")
   endif (SOCI_FOUND)
 endmacro (display_soci)
 
@@ -1963,13 +2372,13 @@ macro (display_stdair)
   if (StdAir_FOUND)
     message (STATUS)
     message (STATUS "* StdAir:")
-    message (STATUS "  - STDAIR_VERSION ............. : ${STDAIR_VERSION}")
-    message (STATUS "  - STDAIR_BINARY_DIRS ......... : ${STDAIR_BINARY_DIRS}")
-    message (STATUS "  - STDAIR_EXECUTABLES ......... : ${STDAIR_EXECUTABLES}")
-    message (STATUS "  - STDAIR_LIBRARY_DIRS ........ : ${STDAIR_LIBRARY_DIRS}")
-    message (STATUS "  - STDAIR_LIBRARIES ........... : ${STDAIR_LIBRARIES}")
-    message (STATUS "  - STDAIR_INCLUDE_DIRS ........ : ${STDAIR_INCLUDE_DIRS}")
-    message (STATUS "  - STDAIR_SAMPLE_DIR .......... : ${STDAIR_SAMPLE_DIR}")
+    message (STATUS "  - STDAIR_VERSION ................ : ${STDAIR_VERSION}")
+    message (STATUS "  - STDAIR_BINARY_DIRS ............ : ${STDAIR_BINARY_DIRS}")
+    message (STATUS "  - STDAIR_EXECUTABLES ............ : ${STDAIR_EXECUTABLES}")
+    message (STATUS "  - STDAIR_LIBRARY_DIRS ........... : ${STDAIR_LIBRARY_DIRS}")
+    message (STATUS "  - STDAIR_LIBRARIES .............. : ${STDAIR_LIBRARIES}")
+    message (STATUS "  - STDAIR_INCLUDE_DIRS ........... : ${STDAIR_INCLUDE_DIRS}")
+    message (STATUS "  - STDAIR_SAMPLE_DIR ............. : ${STDAIR_SAMPLE_DIR}")
   endif (StdAir_FOUND)
 endmacro (display_stdair)
 
@@ -1978,12 +2387,12 @@ macro (display_sevmgr)
   if (SEvMgr_FOUND)
     message (STATUS)
     message (STATUS "* SEvMgr:")
-    message (STATUS "  - SEVMGR_VERSION ............. : ${SEVMGR_VERSION}")
-    message (STATUS "  - SEVMGR_BINARY_DIRS ......... : ${SEVMGR_BINARY_DIRS}")
-    message (STATUS "  - SEVMGR_EXECUTABLES ......... : ${SEVMGR_EXECUTABLES}")
-    message (STATUS "  - SEVMGR_LIBRARY_DIRS ........ : ${SEVMGR_LIBRARY_DIRS}")
-    message (STATUS "  - SEVMGR_LIBRARIES ........... : ${SEVMGR_LIBRARIES}")
-    message (STATUS "  - SEVMGR_INCLUDE_DIRS ........ : ${SEVMGR_INCLUDE_DIRS}")
+    message (STATUS "  - SEVMGR_VERSION ................ : ${SEVMGR_VERSION}")
+    message (STATUS "  - SEVMGR_BINARY_DIRS ............ : ${SEVMGR_BINARY_DIRS}")
+    message (STATUS "  - SEVMGR_EXECUTABLES ............ : ${SEVMGR_EXECUTABLES}")
+    message (STATUS "  - SEVMGR_LIBRARY_DIRS ........... : ${SEVMGR_LIBRARY_DIRS}")
+    message (STATUS "  - SEVMGR_LIBRARIES .............. : ${SEVMGR_LIBRARIES}")
+    message (STATUS "  - SEVMGR_INCLUDE_DIRS ........... : ${SEVMGR_INCLUDE_DIRS}")
   endif (SEvMgr_FOUND)
 endmacro (display_sevmgr)
 
@@ -1992,12 +2401,12 @@ macro (display_trademgen)
   if (TraDemGen_FOUND)
     message (STATUS)
     message (STATUS "* TraDemGen:")
-    message (STATUS "  - TRADEMGEN_VERSION .......... : ${TRADEMGEN_VERSION}")
-    message (STATUS "  - TRADEMGEN_BINARY_DIRS ...... : ${TRADEMGEN_BINARY_DIRS}")
-    message (STATUS "  - TRADEMGEN_EXECUTABLES ...... : ${TRADEMGEN_EXECUTABLES}")
-    message (STATUS "  - TRADEMGEN_LIBRARY_DIRS ..... : ${TRADEMGEN_LIBRARY_DIRS}")
-    message (STATUS "  - TRADEMGEN_LIBRARIES ........ : ${TRADEMGEN_LIBRARIES}")
-    message (STATUS "  - TRADEMGEN_INCLUDE_DIRS ..... : ${TRADEMGEN_INCLUDE_DIRS}")
+    message (STATUS "  - TRADEMGEN_VERSION ............. : ${TRADEMGEN_VERSION}")
+    message (STATUS "  - TRADEMGEN_BINARY_DIRS ......... : ${TRADEMGEN_BINARY_DIRS}")
+    message (STATUS "  - TRADEMGEN_EXECUTABLES ......... : ${TRADEMGEN_EXECUTABLES}")
+    message (STATUS "  - TRADEMGEN_LIBRARY_DIRS ........ : ${TRADEMGEN_LIBRARY_DIRS}")
+    message (STATUS "  - TRADEMGEN_LIBRARIES ........... : ${TRADEMGEN_LIBRARIES}")
+    message (STATUS "  - TRADEMGEN_INCLUDE_DIRS ........ : ${TRADEMGEN_INCLUDE_DIRS}")
   endif (TraDemGen_FOUND)
 endmacro (display_trademgen)
 
@@ -2006,12 +2415,12 @@ macro (display_travelccm)
   if (TravelCCM_FOUND)
     message (STATUS)
     message (STATUS "* TravelCCM:")
-    message (STATUS "  - TRAVELCCM_VERSION .......... : ${TRAVELCCM_VERSION}")
-    message (STATUS "  - TRAVELCCM_BINARY_DIRS ...... : ${TRAVELCCM_BINARY_DIRS}")
-    message (STATUS "  - TRAVELCCM_EXECUTABLES ...... : ${TRAVELCCM_EXECUTABLES}")
-    message (STATUS "  - TRAVELCCM_LIBRARY_DIRS ..... : ${TRAVELCCM_LIBRARY_DIRS}")
-    message (STATUS "  - TRAVELCCM_LIBRARIES ........ : ${TRAVELCCM_LIBRARIES}")
-    message (STATUS "  - TRAVELCCM_INCLUDE_DIRS ..... : ${TRAVELCCM_INCLUDE_DIRS}")
+    message (STATUS "  - TRAVELCCM_VERSION ............. : ${TRAVELCCM_VERSION}")
+    message (STATUS "  - TRAVELCCM_BINARY_DIRS ......... : ${TRAVELCCM_BINARY_DIRS}")
+    message (STATUS "  - TRAVELCCM_EXECUTABLES ......... : ${TRAVELCCM_EXECUTABLES}")
+    message (STATUS "  - TRAVELCCM_LIBRARY_DIRS ........ : ${TRAVELCCM_LIBRARY_DIRS}")
+    message (STATUS "  - TRAVELCCM_LIBRARIES ........... : ${TRAVELCCM_LIBRARIES}")
+    message (STATUS "  - TRAVELCCM_INCLUDE_DIRS ........ : ${TRAVELCCM_INCLUDE_DIRS}")
   endif (TravelCCM_FOUND)
 endmacro (display_travelccm)
 
@@ -2020,12 +2429,12 @@ macro (display_airsched)
   if (AirSched_FOUND)
     message (STATUS)
     message (STATUS "* AirSched:")
-    message (STATUS "  - AIRSCHED_VERSION ........... : ${AIRSCHED_VERSION}")
-    message (STATUS "  - AIRSCHED_BINARY_DIRS ....... : ${AIRSCHED_BINARY_DIRS}")
-    message (STATUS "  - AIRSCHED_EXECUTABLES ....... : ${AIRSCHED_EXECUTABLES}")
-    message (STATUS "  - AIRSCHED_LIBRARY_DIRS ...... : ${AIRSCHED_LIBRARY_DIRS}")
-    message (STATUS "  - AIRSCHED_LIBRARIES ......... : ${AIRSCHED_LIBRARIES}")
-    message (STATUS "  - AIRSCHED_INCLUDE_DIRS ...... : ${AIRSCHED_INCLUDE_DIRS}")
+    message (STATUS "  - AIRSCHED_VERSION .............. : ${AIRSCHED_VERSION}")
+    message (STATUS "  - AIRSCHED_BINARY_DIRS .......... : ${AIRSCHED_BINARY_DIRS}")
+    message (STATUS "  - AIRSCHED_EXECUTABLES .......... : ${AIRSCHED_EXECUTABLES}")
+    message (STATUS "  - AIRSCHED_LIBRARY_DIRS ......... : ${AIRSCHED_LIBRARY_DIRS}")
+    message (STATUS "  - AIRSCHED_LIBRARIES ............ : ${AIRSCHED_LIBRARIES}")
+    message (STATUS "  - AIRSCHED_INCLUDE_DIRS ......... : ${AIRSCHED_INCLUDE_DIRS}")
   endif (AirSched_FOUND)
 endmacro (display_airsched)
 
@@ -2034,12 +2443,12 @@ macro (display_airrac)
   if (AirRAC_FOUND)
     message (STATUS)
     message (STATUS "* AirRAC:")
-    message (STATUS "  - AIRRAC_VERSION ............. : ${AIRRAC_VERSION}")
-    message (STATUS "  - AIRRAC_BINARY_DIRS ......... : ${AIRRAC_BINARY_DIRS}")
-    message (STATUS "  - AIRRAC_EXECUTABLES ......... : ${AIRRAC_EXECUTABLES}")
-    message (STATUS "  - AIRRAC_LIBRARY_DIRS ........ : ${AIRRAC_LIBRARY_DIRS}")
-    message (STATUS "  - AIRRAC_LIBRARIES ........... : ${AIRRAC_LIBRARIES}")
-    message (STATUS "  - AIRRAC_INCLUDE_DIRS ........ : ${AIRRAC_INCLUDE_DIRS}")
+    message (STATUS "  - AIRRAC_VERSION ................ : ${AIRRAC_VERSION}")
+    message (STATUS "  - AIRRAC_BINARY_DIRS ............ : ${AIRRAC_BINARY_DIRS}")
+    message (STATUS "  - AIRRAC_EXECUTABLES ............ : ${AIRRAC_EXECUTABLES}")
+    message (STATUS "  - AIRRAC_LIBRARY_DIRS ........... : ${AIRRAC_LIBRARY_DIRS}")
+    message (STATUS "  - AIRRAC_LIBRARIES .............. : ${AIRRAC_LIBRARIES}")
+    message (STATUS "  - AIRRAC_INCLUDE_DIRS ........... : ${AIRRAC_INCLUDE_DIRS}")
   endif (AirRAC_FOUND)
 endmacro (display_airrac)
 
@@ -2048,12 +2457,12 @@ macro (display_rmol)
   if (RMOL_FOUND)
     message (STATUS)
     message (STATUS "* RMOL:")
-    message (STATUS "  - RMOL_VERSION ............... : ${RMOL_VERSION}")
-    message (STATUS "  - RMOL_BINARY_DIRS ........... : ${RMOL_BINARY_DIRS}")
-    message (STATUS "  - RMOL_EXECUTABLES ........... : ${RMOL_EXECUTABLES}")
-    message (STATUS "  - RMOL_LIBRARY_DIRS .......... : ${RMOL_LIBRARY_DIRS}")
-    message (STATUS "  - RMOL_LIBRARIES ............. : ${RMOL_LIBRARIES}")
-    message (STATUS "  - RMOL_INCLUDE_DIRS .......... : ${RMOL_INCLUDE_DIRS}")
+    message (STATUS "  - RMOL_VERSION .................. : ${RMOL_VERSION}")
+    message (STATUS "  - RMOL_BINARY_DIRS .............. : ${RMOL_BINARY_DIRS}")
+    message (STATUS "  - RMOL_EXECUTABLES .............. : ${RMOL_EXECUTABLES}")
+    message (STATUS "  - RMOL_LIBRARY_DIRS ............. : ${RMOL_LIBRARY_DIRS}")
+    message (STATUS "  - RMOL_LIBRARIES ................ : ${RMOL_LIBRARIES}")
+    message (STATUS "  - RMOL_INCLUDE_DIRS ............. : ${RMOL_INCLUDE_DIRS}")
   endif (RMOL_FOUND)
 endmacro (display_rmol)
 
@@ -2062,12 +2471,12 @@ macro (display_airinv)
   if (AirInv_FOUND)
     message (STATUS)
     message (STATUS "* AirInv:")
-    message (STATUS "  - AIRINV_VERSION ............. : ${AIRINV_VERSION}")
-    message (STATUS "  - AIRINV_BINARY_DIRS ......... : ${AIRINV_BINARY_DIRS}")
-    message (STATUS "  - AIRINV_EXECUTABLES ......... : ${AIRINV_EXECUTABLES}")
-    message (STATUS "  - AIRINV_LIBRARY_DIRS ........ : ${AIRINV_LIBRARY_DIRS}")
-    message (STATUS "  - AIRINV_LIBRARIES ........... : ${AIRINV_LIBRARIES}")
-    message (STATUS "  - AIRINV_INCLUDE_DIRS ........ : ${AIRINV_INCLUDE_DIRS}")
+    message (STATUS "  - AIRINV_VERSION ................ : ${AIRINV_VERSION}")
+    message (STATUS "  - AIRINV_BINARY_DIRS ............ : ${AIRINV_BINARY_DIRS}")
+    message (STATUS "  - AIRINV_EXECUTABLES ............ : ${AIRINV_EXECUTABLES}")
+    message (STATUS "  - AIRINV_LIBRARY_DIRS ........... : ${AIRINV_LIBRARY_DIRS}")
+    message (STATUS "  - AIRINV_LIBRARIES .............. : ${AIRINV_LIBRARIES}")
+    message (STATUS "  - AIRINV_INCLUDE_DIRS ........... : ${AIRINV_INCLUDE_DIRS}")
   endif (AirInv_FOUND)
 endmacro (display_airinv)
 
@@ -2076,12 +2485,12 @@ macro (display_avlcal)
   if (AvlCal_FOUND)
     message (STATUS)
     message (STATUS "* AvlCal:")
-    message (STATUS "  - AVLCAL_VERSION ............. : ${AVLCAL_VERSION}")
-    message (STATUS "  - AVLCAL_BINARY_DIRS ......... : ${AVLCAL_BINARY_DIRS}")
-    message (STATUS "  - AVLCAL_EXECUTABLES ......... : ${AVLCAL_EXECUTABLES}")
-    message (STATUS "  - AVLCAL_LIBRARY_DIRS ........ : ${AVLCAL_LIBRARY_DIRS}")
-    message (STATUS "  - AVLCAL_LIBRARIES ........... : ${AVLCAL_LIBRARIES}")
-    message (STATUS "  - AVLCAL_INCLUDE_DIRS ........ : ${AVLCAL_INCLUDE_DIRS}")
+    message (STATUS "  - AVLCAL_VERSION ................ : ${AVLCAL_VERSION}")
+    message (STATUS "  - AVLCAL_BINARY_DIRS ............ : ${AVLCAL_BINARY_DIRS}")
+    message (STATUS "  - AVLCAL_EXECUTABLES ............ : ${AVLCAL_EXECUTABLES}")
+    message (STATUS "  - AVLCAL_LIBRARY_DIRS ........... : ${AVLCAL_LIBRARY_DIRS}")
+    message (STATUS "  - AVLCAL_LIBRARIES .............. : ${AVLCAL_LIBRARIES}")
+    message (STATUS "  - AVLCAL_INCLUDE_DIRS ........... : ${AVLCAL_INCLUDE_DIRS}")
   endif (AvlCal_FOUND)
 endmacro (display_avlcal)
 
@@ -2090,12 +2499,12 @@ macro (display_simfqt)
   if (SimFQT_FOUND)
     message (STATUS)
     message (STATUS "* SimFQT:")
-    message (STATUS "  - SIMFQT_VERSION ............. : ${SIMFQT_VERSION}")
-    message (STATUS "  - SIMFQT_BINARY_DIRS ......... : ${SIMFQT_BINARY_DIRS}")
-    message (STATUS "  - SIMFQT_EXECUTABLES ......... : ${SIMFQT_EXECUTABLES}")
-    message (STATUS "  - SIMFQT_LIBRARY_DIRS ........ : ${SIMFQT_LIBRARY_DIRS}")
-    message (STATUS "  - SIMFQT_LIBRARIES ........... : ${SIMFQT_LIBRARIES}")
-    message (STATUS "  - SIMFQT_INCLUDE_DIRS ........ : ${SIMFQT_INCLUDE_DIRS}")
+    message (STATUS "  - SIMFQT_VERSION ................ : ${SIMFQT_VERSION}")
+    message (STATUS "  - SIMFQT_BINARY_DIRS ............ : ${SIMFQT_BINARY_DIRS}")
+    message (STATUS "  - SIMFQT_EXECUTABLES ............ : ${SIMFQT_EXECUTABLES}")
+    message (STATUS "  - SIMFQT_LIBRARY_DIRS ........... : ${SIMFQT_LIBRARY_DIRS}")
+    message (STATUS "  - SIMFQT_LIBRARIES .............. : ${SIMFQT_LIBRARIES}")
+    message (STATUS "  - SIMFQT_INCLUDE_DIRS ........... : ${SIMFQT_INCLUDE_DIRS}")
   endif (SimFQT_FOUND)
 endmacro (display_simfqt)
 
@@ -2104,12 +2513,12 @@ macro (display_simlfs)
   if (SimLFS_FOUND)
     message (STATUS)
     message (STATUS "* SimLFS:")
-    message (STATUS "  - SIMLFS_VERSION ............. : ${SIMLFS_VERSION}")
-    message (STATUS "  - SIMLFS_BINARY_DIRS ......... : ${SIMLFS_BINARY_DIRS}")
-    message (STATUS "  - SIMLFS_EXECUTABLES ......... : ${SIMLFS_EXECUTABLES}")
-    message (STATUS "  - SIMLFS_LIBRARY_DIRS ........ : ${SIMLFS_LIBRARY_DIRS}")
-    message (STATUS "  - SIMLFS_LIBRARIES ........... : ${SIMLFS_LIBRARIES}")
-    message (STATUS "  - SIMLFS_INCLUDE_DIRS ........ : ${SIMLFS_INCLUDE_DIRS}")
+    message (STATUS "  - SIMLFS_VERSION ................ : ${SIMLFS_VERSION}")
+    message (STATUS "  - SIMLFS_BINARY_DIRS ............ : ${SIMLFS_BINARY_DIRS}")
+    message (STATUS "  - SIMLFS_EXECUTABLES ............ : ${SIMLFS_EXECUTABLES}")
+    message (STATUS "  - SIMLFS_LIBRARY_DIRS ........... : ${SIMLFS_LIBRARY_DIRS}")
+    message (STATUS "  - SIMLFS_LIBRARIES .............. : ${SIMLFS_LIBRARIES}")
+    message (STATUS "  - SIMLFS_INCLUDE_DIRS ........... : ${SIMLFS_INCLUDE_DIRS}")
   endif (SimLFS_FOUND)
 endmacro (display_simlfs)
 
@@ -2118,97 +2527,145 @@ macro (display_simcrs)
   if (SimCRS_FOUND)
     message (STATUS)
     message (STATUS "* SimCRS:")
-    message (STATUS "  - SIMCRS_VERSION ............. : ${SIMCRS_VERSION}")
-    message (STATUS "  - SIMCRS_BINARY_DIRS ......... : ${SIMCRS_BINARY_DIRS}")
-    message (STATUS "  - SIMCRS_EXECUTABLES ......... : ${SIMCRS_EXECUTABLES}")
-    message (STATUS "  - SIMCRS_LIBRARY_DIRS ........ : ${SIMCRS_LIBRARY_DIRS}")
-    message (STATUS "  - SIMCRS_LIBRARIES ........... : ${SIMCRS_LIBRARIES}")
-    message (STATUS "  - SIMCRS_INCLUDE_DIRS ........ : ${SIMCRS_INCLUDE_DIRS}")
+    message (STATUS "  - SIMCRS_VERSION ................ : ${SIMCRS_VERSION}")
+    message (STATUS "  - SIMCRS_BINARY_DIRS ............ : ${SIMCRS_BINARY_DIRS}")
+    message (STATUS "  - SIMCRS_EXECUTABLES ............ : ${SIMCRS_EXECUTABLES}")
+    message (STATUS "  - SIMCRS_LIBRARY_DIRS ........... : ${SIMCRS_LIBRARY_DIRS}")
+    message (STATUS "  - SIMCRS_LIBRARIES .............. : ${SIMCRS_LIBRARIES}")
+    message (STATUS "  - SIMCRS_INCLUDE_DIRS ........... : ${SIMCRS_INCLUDE_DIRS}")
   endif (SimCRS_FOUND)
 endmacro (display_simcrs)
+
+# TvlSim
+macro (display_tvlsim)
+  if (TvlSim_FOUND)
+    message (STATUS)
+    message (STATUS "* TvlSim:")
+    message (STATUS "  - TVLSIM_VERSION .................. : ${TVLSIM_VERSION}")
+    message (STATUS "  - TVLSIM_BINARY_DIRS .............. : ${TVLSIM_BINARY_DIRS}")
+    message (STATUS "  - TVLSIM_EXECUTABLES .............. : ${TVLSIM_EXECUTABLES}")
+    message (STATUS "  - TVLSIM_LIBRARY_DIRS ............. : ${TVLSIM_LIBRARY_DIRS}")
+    message (STATUS "  - TVLSIM_LIBRARIES ................ : ${TVLSIM_LIBRARIES}")
+    message (STATUS "  - TVLSIM_INCLUDE_DIRS ............. : ${TVLSIM_INCLUDE_DIRS}")
+  endif (TvlSim_FOUND)
+endmacro (display_tvlsim)
 
 ##
 macro (display_status_all_modules)
   message (STATUS)
   foreach (_module_name ${PROJ_ALL_MOD_FOR_BLD})
-    message (STATUS "* Module ....................... : ${_module_name}")
-    message (STATUS "  + Layers to build ............ : ${${_module_name}_ALL_LAYERS}")
-    message (STATUS "  + Dependencies on other layers : ${${_module_name}_INTER_TARGETS}")
-    message (STATUS "  + Libraries to build/install . : ${${_module_name}_ALL_LIBS}")
-    message (STATUS "  + Executables to build/install : ${${_module_name}_ALL_EXECS}")
-    message (STATUS "  + Tests to perform ........... : ${${_module_name}_ALL_TESTS}")
+    message (STATUS "* Module .......................... : ${_module_name}")
+    message (STATUS "  + Layers to build ............... : ${${_module_name}_ALL_LAYERS}")
+    message (STATUS "  + Dependencies on other layers .. : ${${_module_name}_INTER_TARGETS}")
+    message (STATUS "  + Libraries to build/install .... : ${${_module_name}_ALL_LIBS}")
+    message (STATUS "  + Executables to build/install .. : ${${_module_name}_ALL_EXECS}")
+    message (STATUS "  + Tests to perform .............. : ${${_module_name}_ALL_TESTS}")
   endforeach (_module_name)
 endmacro (display_status_all_modules)
+
+##
+macro (display_status_all_test_suites)
+  message (STATUS)
+  foreach (_test_suite ${PROJ_ALL_SUITES_FOR_TST})
+    message (STATUS "* Test Suite ...................... : ${_test_suite}")
+    message (STATUS "  + Dependencies on other layers .. : ${${_test_suite}_INTER_TARGETS}")
+    message (STATUS "  + Library dependencies .......... : ${${_test_suite}_ALL_LIBS}")
+    message (STATUS "  + Tests to perform .............. : ${${_test_suite}_ALL_TESTS}")
+  endforeach (_test_suite)
+endmacro (display_status_all_test_suites)
+
+##
+macro (display_doc_generation)
+  message (STATUS)
+    message (STATUS "* Documentation to be generated ... :")
+	if (INSTALL_DOC)
+      message (STATUS "  + HTML main page ................ : ${DOXYGEN_OUTPUT_REL}")
+      message (STATUS "  + CSS-related files ............. : ${CSS_ALL_TARGETS}")
+      message (STATUS "  + Image-related files ........... : ${IMG_ALL_TARGETS}")
+      message (STATUS "  + PDF reference manual .......... : ${REFMAN_TEX} => ${REFMAN_PDF}")
+	endif (INSTALL_DOC)
+    message (STATUS "  + Man page sections ............. : ${MAN_ALL_TARGETS}")
+endmacro (display_doc_generation)
 
 ##
 macro (display_status)
   message (STATUS)
   message (STATUS "=============================================================")
-  message (STATUS "----------------------------------")
-  message (STATUS "---     Project Information    ---")
-  message (STATUS "----------------------------------")
-  message (STATUS "PROJECT_NAME ................... : ${PROJECT_NAME}")
-  message (STATUS "PACKAGE_PRETTY_NAME ............ : ${PACKAGE_PRETTY_NAME}")
-  message (STATUS "PACKAGE ........................ : ${PACKAGE}")
-  message (STATUS "PACKAGE_NAME ................... : ${PACKAGE_NAME}")
-  message (STATUS "PACKAGE_BRIEF .................. : ${PACKAGE_BRIEF}")
-  message (STATUS "PACKAGE_VERSION ................ : ${PACKAGE_VERSION}")
-  message (STATUS "GENERIC_LIB_VERSION ............ : ${GENERIC_LIB_VERSION}")
-  message (STATUS "GENERIC_LIB_SOVERSION .......... : ${GENERIC_LIB_SOVERSION}")
+  message (STATUS "-------------------------------------")
+  message (STATUS "---      Project Information      ---")
+  message (STATUS "-------------------------------------")
+  message (STATUS "PROJECT_NAME ...................... : ${PROJECT_NAME}")
+  message (STATUS "PACKAGE_PRETTY_NAME ............... : ${PACKAGE_PRETTY_NAME}")
+  message (STATUS "PACKAGE ........................... : ${PACKAGE}")
+  message (STATUS "PACKAGE_NAME ...................... : ${PACKAGE_NAME}")
+  message (STATUS "PACKAGE_BRIEF ..................... : ${PACKAGE_BRIEF}")
+  message (STATUS "PACKAGE_VERSION ................... : ${PACKAGE_VERSION}")
+  message (STATUS "GENERIC_LIB_VERSION ............... : ${GENERIC_LIB_VERSION}")
+  message (STATUS "GENERIC_LIB_SOVERSION ............. : ${GENERIC_LIB_SOVERSION}")
   message (STATUS)
-  message (STATUS "----------------------------------")
-  message (STATUS "---     Build Configuration    ---")
-  message (STATUS "----------------------------------")
-  message (STATUS "Modules to build ............... : ${PROJ_ALL_MOD_FOR_BLD}")
-  message (STATUS "Libraries to build/install ..... : ${PROJ_ALL_LIB_TARGETS}")
-  message (STATUS "Binaries to build/install ...... : ${PROJ_ALL_BIN_TARGETS}")
-  message (STATUS "Modules to test ................ : ${PROJ_ALL_MOD_FOR_TST}")
-  message (STATUS "Binaries to test ............... : ${PROJ_ALL_TST_TARGETS}")
+  message (STATUS "-------------------------------------")
+  message (STATUS "---       Build Configuration     ---")
+  message (STATUS "-------------------------------------")
+  message (STATUS "Modules to build .................. : ${PROJ_ALL_MOD_FOR_BLD}")
+  message (STATUS "Libraries to build/install ........ : ${PROJ_ALL_LIB_TARGETS}")
+  message (STATUS "Binaries to build/install ......... : ${PROJ_ALL_BIN_TARGETS}")
+  message (STATUS "Test suites to check .............. : ${PROJ_ALL_SUITES_FOR_TST}")
+  message (STATUS "Binaries to test .................. : ${PROJ_ALL_TST_TARGETS}")
   display_status_all_modules ()
+  display_status_all_test_suites ()
+  display_doc_generation ()
   message (STATUS)
-  message (STATUS "BUILD_SHARED_LIBS .............. : ${BUILD_SHARED_LIBS}")
-  message (STATUS "CMAKE_BUILD_TYPE ............... : ${CMAKE_BUILD_TYPE}")
-  message (STATUS " * CMAKE_C_FLAGS ............... : ${CMAKE_C_FLAGS}")
-  message (STATUS " * CMAKE_CXX_FLAGS ............. : ${CMAKE_CXX_FLAGS}")
-  message (STATUS " * BUILD_FLAGS ................. : ${BUILD_FLAGS}")
-  message (STATUS " * COMPILE_FLAGS ............... : ${COMPILE_FLAGS}")
-  message (STATUS "CMAKE_MODULE_PATH .............. : ${CMAKE_MODULE_PATH}")
-  message (STATUS "CMAKE_INSTALL_PREFIX ........... : ${CMAKE_INSTALL_PREFIX}")
+  message (STATUS "BUILD_SHARED_LIBS ................. : ${BUILD_SHARED_LIBS}")
+  message (STATUS "CMAKE_BUILD_TYPE .................. : ${CMAKE_BUILD_TYPE}")
+  message (STATUS " * CMAKE_C_FLAGS .................. : ${CMAKE_C_FLAGS}")
+  message (STATUS " * CMAKE_CXX_FLAGS ................ : ${CMAKE_CXX_FLAGS}")
+  message (STATUS " * BUILD_FLAGS .................... : ${BUILD_FLAGS}")
+  message (STATUS " * COMPILE_FLAGS .................. : ${COMPILE_FLAGS}")
+  message (STATUS "ENABLE_TEST ....................... : ${ENABLE_TEST}" )
+  message (STATUS "RUN_GCOV .......................... : ${RUN_GCOV}" )
+  message (STATUS "CMAKE_MODULE_PATH ................. : ${CMAKE_MODULE_PATH}")
+  message (STATUS "CMAKE_INSTALL_PREFIX .............. : ${CMAKE_INSTALL_PREFIX}")
   display_doxygen ()
+  display_gcov ()
+  display_lcov ()
   message (STATUS)
-  message (STATUS "----------------------------------")
-  message (STATUS "--- Installation Configuration ---")
-  message (STATUS "----------------------------------")
-  message (STATUS "INSTALL_LIB_DIR ................ : ${INSTALL_LIB_DIR}")
-  message (STATUS "INSTALL_BIN_DIR ................ : ${INSTALL_BIN_DIR}")
-  message (STATUS "INSTALL_INCLUDE_DIR ............ : ${INSTALL_INCLUDE_DIR}")
-  message (STATUS "INSTALL_DATA_DIR ............... : ${INSTALL_DATA_DIR}")
-  message (STATUS "INSTALL_SAMPLE_DIR ............. : ${INSTALL_SAMPLE_DIR}")
-  message (STATUS "INSTALL_DOC .................... : ${INSTALL_DOC}" )
+  message (STATUS "-------------------------------------")
+  message (STATUS "---  Installation Configuration   ---")
+  message (STATUS "-------------------------------------")
+  message (STATUS "INSTALL_LIB_DIR ................... : ${INSTALL_LIB_DIR}")
+  message (STATUS "INSTALL_BIN_DIR ................... : ${INSTALL_BIN_DIR}")
+  message (STATUS "CMAKE_INSTALL_RPATH ............... : ${CMAKE_INSTALL_RPATH}")
+  message (STATUS "CMAKE_INSTALL_RPATH_USE_LINK_PATH . : ${CMAKE_INSTALL_RPATH_USE_LINK_PATH}")
+  message (STATUS "INSTALL_INCLUDE_DIR ............... : ${INSTALL_INCLUDE_DIR}")
+  message (STATUS "INSTALL_DATA_DIR .................. : ${INSTALL_DATA_DIR}")
+  message (STATUS "INSTALL_SAMPLE_DIR ................ : ${INSTALL_SAMPLE_DIR}")
+  message (STATUS "INSTALL_DOC ....................... : ${INSTALL_DOC}" )
   message (STATUS)
-  message (STATUS "----------------------------------")
-  message (STATUS "---   Packaging Configuration  ---")
-  message (STATUS "----------------------------------")
-  message (STATUS "CPACK_PACKAGE_CONTACT .......... : ${CPACK_PACKAGE_CONTACT}")
-  message (STATUS "CPACK_PACKAGE_VENDOR ........... : ${CPACK_PACKAGE_VENDOR}")
-  message (STATUS "CPACK_PACKAGE_VERSION .......... : ${CPACK_PACKAGE_VERSION}")
-  message (STATUS "CPACK_PACKAGE_DESCRIPTION_FILE . : ${CPACK_PACKAGE_DESCRIPTION_FILE}")
-  message (STATUS "CPACK_RESOURCE_FILE_LICENSE .... : ${CPACK_RESOURCE_FILE_LICENSE}")
-  message (STATUS "CPACK_GENERATOR ................ : ${CPACK_GENERATOR}")
-  message (STATUS "CPACK_DEBIAN_PACKAGE_DEPENDS ... : ${CPACK_DEBIAN_PACKAGE_DEPENDS}")
-  message (STATUS "CPACK_SOURCE_GENERATOR ......... : ${CPACK_SOURCE_GENERATOR}")
-  message (STATUS "CPACK_SOURCE_PACKAGE_FILE_NAME . : ${CPACK_SOURCE_PACKAGE_FILE_NAME}")
+  message (STATUS "-------------------------------------")
+  message (STATUS "---    Packaging Configuration    ---")
+  message (STATUS "-------------------------------------")
+  message (STATUS "CPACK_PACKAGE_CONTACT ............. : ${CPACK_PACKAGE_CONTACT}")
+  message (STATUS "CPACK_PACKAGE_VENDOR .............. : ${CPACK_PACKAGE_VENDOR}")
+  message (STATUS "CPACK_PACKAGE_VERSION ............. : ${CPACK_PACKAGE_VERSION}")
+  message (STATUS "CPACK_PACKAGE_DESCRIPTION_FILE .... : ${CPACK_PACKAGE_DESCRIPTION_FILE}")
+  message (STATUS "CPACK_RESOURCE_FILE_LICENSE ....... : ${CPACK_RESOURCE_FILE_LICENSE}")
+  message (STATUS "CPACK_GENERATOR ................... : ${CPACK_GENERATOR}")
+  message (STATUS "CPACK_DEBIAN_PACKAGE_DEPENDS ...... : ${CPACK_DEBIAN_PACKAGE_DEPENDS}")
+  message (STATUS "CPACK_SOURCE_GENERATOR ............ : ${CPACK_SOURCE_GENERATOR}")
+  message (STATUS "CPACK_SOURCE_PACKAGE_FILE_NAME .... : ${CPACK_SOURCE_PACKAGE_FILE_NAME}")
   #
   message (STATUS)
-  message (STATUS "---------------------------------")
-  message (STATUS "---     External libraries    ---")
-  message (STATUS "---------------------------------")
+  message (STATUS "------------------------------------")
+  message (STATUS "---      External libraries      ---")
+  message (STATUS "------------------------------------")
   #
   display_python ()
+  display_icu ()
   display_zeromq ()
   display_boost ()
   display_xapian ()
   display_readline ()
+  display_curses ()
   display_mysql ()
   display_soci ()
   display_stdair ()
@@ -2223,6 +2680,7 @@ macro (display_status)
   display_simfqt ()
   display_simlfs ()
   display_simcrs ()
+  display_tvlsim ()
   #
   message (STATUS)
   message (STATUS "Change a value with: cmake -D<Variable>=<Value>" )

@@ -1,3 +1,8 @@
+
+	* Sun Dec 30 2012 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.2
+	- Fixed a few compilation issues on CentOS 6.3 by upgrading some
+	CMake-related helpers and DB-related C++ source code files.
+
 	* Sat Nov 12 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.1
 	- Added pragmas to have the code compatible with the new Soci-3.1.0
 	version

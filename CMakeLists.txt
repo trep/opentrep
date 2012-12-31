@@ -9,13 +9,14 @@ include (config/project_config_embeddable.cmake)
 # Project info
 set_project_names (opentrep OpenTREP)
 set_project_brief ("C++ Open Travel Request Parsing Library")
-set_project_versions (0 4 1)
+set_project_versions (0 4 2)
 
 ##
 # Project options
 # The parameters are:
+#  * Whether or not to build and check the unit tests
 #  * whether or not the documentation must be built and installed
-set_project_options (on)
+set_project_options (on on off)
 
 
 #####################################
@@ -65,8 +66,8 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ##            Dependencies            ##
 ########################################
 #
-get_external_libs (git "python 2.6" "boost 1.41" mysql
-  "soci 3.0" "xapian 1.2" doxygen)
+get_external_libs (git "python 2.6" "boost 1.41" "icu 4.2" "xapian 1.0"
+	"mysql 5.0" "soci 3.0" doxygen)
 
 
 ##############################################
@@ -94,13 +95,12 @@ install_basic_documentation ()
 ##########################################
 ##            Documentation             ##
 ##########################################
-if (${INSTALL_DOC} STREQUAL "ON")
-  add_subdirectory (doc)
-endif (${INSTALL_DOC} STREQUAL "ON")
+#
+handle_html_doc ()
 
 ##
 # Subdirs
-add_subdirectory (db)
+add_subdirectory (data)
 add_subdirectory (man)
 
 
@@ -108,8 +108,13 @@ add_subdirectory (man)
 ##              Tests              ##
 #####################################
 ##
+# Initialise the unit test process
+init_test ()
+
+##
 # Test suites
-add_test_suites (${PROJECT_NAME})
+add_test_suite (${PROJECT_NAME})
+add_test_suite (i18n)
 
 
 #######################################

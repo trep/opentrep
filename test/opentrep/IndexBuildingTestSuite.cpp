@@ -17,6 +17,7 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/service/Logger.hpp>
 
 namespace boost_utf = boost::unit_test;
 
@@ -103,7 +104,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
                        << " entries, whereas 11133 are expected.");
 
   // DEBUG
-  std::cout << nbOfEntries << " entries have been created" << std::endl;
+  OPENTREP_LOG_DEBUG (nbOfEntries << " entries have been created");
 
   // Close the Log outputFile
   logOutputFile.close();
