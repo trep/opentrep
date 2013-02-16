@@ -165,10 +165,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the region code.
+     * Get the continent name.
      */
-    const RegionCode_T& getRegionCode() const {
-      return _location.getRegionCode();
+    const ContinentName_T& getContinentName() const {
+      return _location.getContinentName();
     }
     
     /**
@@ -325,20 +325,6 @@ namespace OPENTREP {
       return _location.getModificationDate();
     }
     
-    /**
-     * State whether that POR is an airport.
-     */
-    const IsAirport_T& isAirport() const {
-      return _location.isAirport();
-    }
-
-    /**
-     * State whether that POR is commercial.
-     */ 
-    const IsCommercial_T& isCommercial() const {
-      return _location.isCommercial();
-    }
-
     /**
      * Get the Wikipedia link.
      */
@@ -569,10 +555,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the region code.
+     * Set the continent name.
      */
-    void setRegionCode (const std::string& iRegionCode) {
-      _location.setRegionCode (iRegionCode);
+    void setContinentName (const std::string& iContinentName) {
+      _location.setContinentName (iContinentName);
     }
     
     /**
@@ -702,20 +688,6 @@ namespace OPENTREP {
     }
 
     /**
-     * State whether that POR is an airport.
-     */
-    void setIsAirport (const IsAirport_T& isAirport) {
-      _location.setIsAirport (isAirport);
-    }
-
-    /**
-     * State whether that POR is commercial.
-     */ 
-    void setIsCommercial (const IsCommercial_T& isCommercial) {
-      _location.setIsCommercial (isCommercial);
-    }
-
-    /**
      * Set the Wikipedia link.
      */
     void setWikiLink (const std::string& iWikiLink) {
@@ -817,6 +789,9 @@ namespace OPENTREP {
      * For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
      *
      * @param const LocationName_T& Name of the POR (point of reference)
+     * @param const FeatureCode_T& Geonames feature code
+     * @param const CityUTFName_T& UTF8 name of the served city
+     * @param const CityASCIIName_T& ASCII name of the served city
      * @param const Admin1UTFName_T& UTF8 Name of the administrative level 1
      *                               of the POR
      * @param const Admin1ASCIIName_T& ASCII Name of the administrative level 1
@@ -828,15 +803,16 @@ namespace OPENTREP {
      * @param const StateCode_T& Code of the state of the POR
      * @param const CountryCode_T& ISO code of the country of the POR
      * @param const CountryName_T& Name of the country of the POR
-     * @param const RegionCode_T& Code of the region of the POR
+     * @param const ContinentName_T& Name of the continent of the POR
      * @param const OTransliterator& Unicode transliterator
      */
-    void addNameToXapianSets (const LocationName_T&,
+    void addNameToXapianSets (const LocationName_T&, const FeatureCode_T&,
+                              const CityUTFName_T&, const CityASCIIName_T&,
                               const Admin1UTFName_T&, const Admin1ASCIIName_T&,
                               const Admin2UTFName_T&, const Admin2ASCIIName_T&,
                               const StateCode_T&,
                               const CountryCode_T&, const CountryName_T&,
-                              const RegionCode_T&, const OTransliterator&);
+                              const ContinentName_T&, const OTransliterator&);
 
     /**
      * Build the (STL) sets of (Xapian-related) terms, spelling,
@@ -845,6 +821,16 @@ namespace OPENTREP {
      * @param const OTransliterator& Unicode transliterator
      */
     void buildIndexSets (const OTransliterator&);
+
+    /**
+     * Add the given name to the Xapian index. Derive a list of feature names
+     * from the feature code. See the Location::getFeatureList() method
+     * for more information.
+     *
+     * @param const std::string& Name of the POR (point of reference)
+     * @param const FeatureCode_T& Geonames feature code
+     */
+    void addNameToXapianSets(const std::string& iBaseName, const FeatureCode_T&);
 
 
   public:

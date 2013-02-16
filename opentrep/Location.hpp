@@ -82,6 +82,13 @@ namespace OPENTREP {
     }
 
     /** 
+     * Get the list of IATA codes of the travel-related POR.
+     */
+    const TvlPORListString_T& getTvlPORListString() const {
+      return _tvlPORListString;
+    }
+
+    /** 
      * Get the FAA code. 
      */
     const FAACode_T& getFaaCode() const {
@@ -138,10 +145,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the region code. 
+     * Get the continent name. 
      */
-    const RegionCode_T& getRegionCode() const {
-      return _regionCode;
+    const ContinentName_T& getContinentName() const {
+      return _continentName;
     }
     
     /**
@@ -299,20 +306,6 @@ namespace OPENTREP {
     }
     
     /**
-     * State whether that POR is an airport.
-     */
-    const IsAirport_T& isAirport() const {
-      return _isAirport;
-    }
-
-    /**
-     * State whether that POR is commercial.
-     */ 
-    const IsCommercial_T& isCommercial() const {
-      return _isCommercial;
-    }
-
-    /**
      * Get the Wikipedia link.
      */
     const WikiLink_T& getWikiLink() const {
@@ -399,7 +392,7 @@ namespace OPENTREP {
 
 
   public:
-    // ///////// Setters //////////
+    // ///////////////////// Setters //////////////////////
     /**
      * Set the primary key (IATA and ICAO codes, Geonames ID) of that location.
      */
@@ -448,6 +441,13 @@ namespace OPENTREP {
      */
     void setAltNameShortListString (const std::string& iNameListString) {
       _altNameShortListString = AltNameShortListString_T (iNameListString);
+    }
+
+    /** 
+     * Set the list of IATA codes of the travel-related POR.
+     */
+    void setTvlPORListString (const std::string& iPORListString) {
+      _tvlPORListString = TvlPORListString_T (iPORListString);
     }
 
     /**
@@ -507,10 +507,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the region code. 
+     * Set the continent name. 
      */
-    void setRegionCode (const std::string& iRegionCode) {
-      _regionCode = RegionCode_T (iRegionCode);
+    void setContinentName (const std::string& iContinentName) {
+      _continentName = ContinentName_T (iContinentName);
     }
     
     /**
@@ -668,20 +668,6 @@ namespace OPENTREP {
     }
 
     /**
-     * State whether that POR is an airport.
-     */
-    void setIsAirport (const IsAirport_T& isAirport) {
-      _isAirport = isAirport;
-    }
-
-    /**
-     * State whether that POR is commercial.
-     */ 
-    void setIsCommercial (const IsCommercial_T& isCommercial) {
-      _isCommercial = isCommercial;
-    }
-
-    /**
      * Set the Wikipedia link.
      */
     void setWikiLink (const std::string& iWikiLink) {
@@ -777,6 +763,28 @@ namespace OPENTREP {
      */
     void consolidateAltNameShortListString();
 
+    /**
+     * Aggregate the temporary IATA codes into the list of travel-related POR.
+     */
+    void consolidateTvlPORListString();
+
+    /**
+     * Derive a list from a (Geonames) feature code. For instance, the 'AIRP'
+     * feature code provides:
+     * <ul>
+     *   <li>airport</li>
+     *   <li>airdrome</li>
+     *   <li>aerodrome</li>
+     *   <li>airfield</li>
+     *   <li>airstrip</li>
+     *   <li>airbase</li>
+     * </ul>
+     *
+     * @param const FeatureCode_T& The feature code.
+     * @return const FeatureNameList_T The list of feature names.
+     */
+    static FeatureNameList_T getFeatureList (const FeatureCode_T&);
+
 
   public:
     // ///////// Display methods ////////
@@ -844,7 +852,7 @@ namespace OPENTREP {
               const CommonName_T&, const ASCIIName_T&, const FAACode_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
-              const CountryName_T&, const RegionCode_T&,
+              const CountryName_T&, const ContinentName_T&,
               const Latitude_T&, const Longitude_T&,
               const FeatureClass_T&, const FeatureCode_T&, const IATAType_T&,
               const Admin1Code_T&, const Admin1UTFName_T&,
@@ -855,8 +863,7 @@ namespace OPENTREP {
               const Population_T&, const Elevation_T&, const GTopo30_T&,
               const TimeZone_T&,
               const GMTOffset_T&, const DSTOffset_T&, const RawOffset_T&,
-              const Date_T& iModDate,
-              const bool isAirport, const bool isCommercial,
+              const Date_T& iModDate, const TvlPORListString_T&,
               const WikiLink_T&, const PageRank_T&,
               const std::string& iOriginalKeywords,
               const std::string& iCorrectedKeywords,
@@ -904,6 +911,12 @@ namespace OPENTREP {
      * aggregated within a single string.
      */
     AltNameShortListString_T _altNameShortListString;
+
+    /** 
+     * List of the IATA codes of the travel-related POR, aggregated within
+     * a single string (e.g., "EMB,JCC,SFO" for San Francisco, California, USA).
+     */
+    TvlPORListString_T _tvlPORListString;
 
     /**
      * FAA code (e.g., ORD).
@@ -953,9 +966,9 @@ namespace OPENTREP {
     CountryName_T _countryName;
 
     /**
-     * Region code (e.g., NAMER).
+     * Continent name (e.g., North America).
      */
-    RegionCode_T _regionCode;
+    ContinentName_T _continentName;
 
     /**
      * Geographical latitude (e.g., 41.978603).
@@ -1063,16 +1076,6 @@ namespace OPENTREP {
     Date_T _modificationDate;
 
     /**
-     * Whether or not that POR is an airport
-     */
-    IsAirport_T _isAirport;
-
-    /**
-     * Whether or not that POR is for commercial use
-     */
-    IsCommercial_T _isCommercial;
-
-    /**
      * Link on the Wikipedia entry
      */
     WikiLink_T _wikiLink;
@@ -1150,6 +1153,7 @@ namespace OPENTREP {
     std::string _itLangCodeExt;
     std::string _itLangCodeHist;
     AltNameShortList_T _itAltNameShortList;
+    TvlPORList_T _itTvlPORList;
   };
 
 }

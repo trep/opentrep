@@ -17,11 +17,12 @@ namespace OPENTREP {
     _commonName (CommonName_T ("NotAvailable")),
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
+    _tvlPORListString (TvlPORListString_T ("")),
     _faaCode (FAACode_T ("")), _cityCode (CityCode_T ("ZZZ")),
     _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
-    _regionCode (RegionCode_T ("NOTAVL")),
+    _continentName (ContinentName_T ("NotAvailable")),
     _latitude (0), _longitude (0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
     _iataType (IATAType_T ("Z")),
@@ -36,7 +37,6 @@ namespace OPENTREP {
     _timeZone (TimeZone_T ("NA")),
     _gmtOffset (0), _dstOffset (0), _rawOffset (0),
     _modificationDate (2000, 01, 01),
-    _isAirport (false), _isCommercial (false),
     _wikiLink (WikiLink_T ("http://en.wikipedia.org")),
     _pageRank (K_DEFAULT_PAGE_RANK),
     _originalKeywords ("NA"), _correctedKeywords ("NA"),
@@ -51,13 +51,14 @@ namespace OPENTREP {
     _key (iLocation._key),
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
+    _tvlPORListString (iLocation._tvlPORListString),
     _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
     _cityUtfName (iLocation._cityUtfName),
     _cityAsciiName (iLocation._cityAsciiName),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
     _countryName (iLocation._countryName),
-    _regionCode (iLocation._regionCode),
+    _continentName (iLocation._continentName),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
     _featClass (iLocation._featClass), _featCode (iLocation._featCode),
     _iataType (iLocation._iataType),
@@ -73,8 +74,6 @@ namespace OPENTREP {
     _timeZone (iLocation._timeZone), _gmtOffset (iLocation._gmtOffset),
     _dstOffset (iLocation._dstOffset), _rawOffset (iLocation._rawOffset),
     _modificationDate (iLocation._modificationDate),
-    _isAirport (iLocation._isAirport),
-    _isCommercial (iLocation._isCommercial),
     _wikiLink (iLocation._wikiLink), _pageRank (iLocation._pageRank),
     _nameMatrix (iLocation._nameMatrix),
     _originalKeywords (iLocation._originalKeywords),
@@ -102,7 +101,7 @@ namespace OPENTREP {
                       const CountryCode_T& iCountryCode,
                       const AltCountryCode_T& iAltCountryCode,
                       const CountryName_T& iCountryName,
-                      const RegionCode_T& iRegionCode,
+                      const ContinentName_T& iContinentName,
                       const Latitude_T& iLatitude, const Longitude_T& iLongitude,
                       const FeatureClass_T& iFeatureClass,
                       const FeatureCode_T& iFeatureCode,
@@ -122,7 +121,7 @@ namespace OPENTREP {
                       const DSTOffset_T& iDSTOffset,
                       const RawOffset_T& iRawOffset,
                       const Date_T& iModDate,
-                      const bool isAirport, const bool isCommercial,
+                      const TvlPORListString_T& iTvlPORListString,
                       const WikiLink_T& iWikiLink, const PageRank_T& iPageRank,
                       const std::string& iOriginalKeywords,
                       const std::string& iCorrectedKeywords,
@@ -133,13 +132,14 @@ namespace OPENTREP {
     _key (iIataCode, iIcaoCode, iGeonamesID),
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
+    _tvlPORListString (iTvlPORListString),
     _faaCode (iFaaCode), _cityCode (iCityCode),
     _cityUtfName (CityUTFName_T (iCityUtfName)),
     _cityAsciiName (CityASCIIName_T (iCityAsciiName)),
     _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
     _countryName (CountryName_T (iCountryName)),
-    _regionCode (iRegionCode),
+    _continentName (iContinentName),
     _latitude (iLatitude), _longitude (iLongitude),
     _featClass (iFeatureClass), _featCode (iFeatureCode), _iataType (iIATAType),
     _admin1Code (iAdmin1Code),
@@ -153,7 +153,6 @@ namespace OPENTREP {
     _timeZone (iTimeZone),
     _gmtOffset (iGMTOffset), _dstOffset (iDSTOffset), _rawOffset (iRawOffset),
     _modificationDate (iModDate),
-    _isAirport (isAirport), _isCommercial (isCommercial),
     _wikiLink (iWikiLink), _pageRank (iPageRank),
     _originalKeywords (iOriginalKeywords),
     _correctedKeywords (iCorrectedKeywords),
@@ -194,16 +193,13 @@ namespace OPENTREP {
     std::ostringstream oStr;
     oStr << describeShortKey();
 
-    const std::string isAirportString = (_isAirport)?"Y":"N";
-    const std::string isCommercialString = (_isCommercial)?"Y":"N";
-    
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
          << ", " << _faaCode
          << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
          << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
-         << ", " << _countryName << ", " << _regionCode
+         << ", " << _countryName << ", " << _continentName
          << ", " << _latitude << ", " << _longitude
          << ", " << _featClass << ", " << _featCode << ", " << _iataType
          << ", " << _admin1Code
@@ -215,7 +211,7 @@ namespace OPENTREP {
          << ", " << _timeZone
          << ", " << _gmtOffset << ", " << _dstOffset << ", " << _rawOffset
          << ", " << _modificationDate
-         << ", " << isAirportString << ", " << isCommercialString
+         << ", " << _tvlPORListString
          << ", " << _wikiLink
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage << "%"
@@ -304,6 +300,111 @@ namespace OPENTREP {
       const AltNameShortListString_T& lAlternateLocation = *itName;
       oStr << lAlternateLocation;
     }
+
+    // Store the short list of alternative names
+    const std::string lAltNameShortListString (oStr.str());
+    setAltNameShortListString (lAltNameShortListString);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void Location::consolidateTvlPORListString() {
+    std::ostringstream oStr;
+    unsigned short idx = 0;
+    for (TvlPORList_T::const_iterator itCode = _itTvlPORList.begin();
+         itCode != _itTvlPORList.end(); ++itCode, ++idx) {
+      if (idx != 0) {
+        oStr << ",";
+      }
+      const TvlPORListString_T& lTvlPORCode = *itCode;
+      oStr << lTvlPORCode;
+    }
+
+    // Store the list of IATA codes of the travel-related POR
+    const std::string lTvlPORCodeList (oStr.str());
+    setTvlPORListString (lTvlPORCodeList);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  FeatureNameList_T Location::getFeatureList(const FeatureCode_T& iFeatureCode) {
+    FeatureNameList_T oList;
+
+    // Extract the first three characters of the feature code (e.g., 'PPL'
+    // for 'PPLA'/'PPLC' or 'ADM' for 'ADM1'/'ADM2')
+    const std::string l3CharFeatCode = iFeatureCode.substr (0, 3);
+    
+    if (iFeatureCode == "AIRP" || iFeatureCode == "AIRF"
+        || iFeatureCode == "AIRQ") {
+      oList.push_back (FeatureName_T ("airport"));
+      oList.push_back (FeatureName_T ("airdrome"));
+      oList.push_back (FeatureName_T ("aerodrome"));
+      oList.push_back (FeatureName_T ("airfield"));
+      oList.push_back (FeatureName_T ("air field"));
+      oList.push_back (FeatureName_T ("field"));
+      oList.push_back (FeatureName_T ("airstrip"));
+      oList.push_back (FeatureName_T ("air strip"));
+      oList.push_back (FeatureName_T ("strip"));
+
+    } else if (iFeatureCode == "AIRB") {
+      oList.push_back (FeatureName_T ("airbase"));
+      oList.push_back (FeatureName_T ("air base"));
+      oList.push_back (FeatureName_T ("ab"));
+      oList.push_back (FeatureName_T ("base"));
+
+    } else if (iFeatureCode == "AIRS") {
+      oList.push_back (FeatureName_T ("spb"));
+      oList.push_back (FeatureName_T ("sea plane base"));
+      oList.push_back (FeatureName_T ("sea plane"));
+
+    } else if (iFeatureCode == "AIRH") {
+      oList.push_back (FeatureName_T ("heliport"));
+
+    } else if (iFeatureCode == "RSTN") {
+      oList.push_back (FeatureName_T ("railway"));
+      oList.push_back (FeatureName_T ("station"));
+      oList.push_back (FeatureName_T ("railway station"));
+      oList.push_back (FeatureName_T ("railroad station"));
+      oList.push_back (FeatureName_T ("railroad"));
+
+    } else if (l3CharFeatCode == "BUS") {
+      oList.push_back (FeatureName_T ("bus"));
+      oList.push_back (FeatureName_T ("station"));
+      oList.push_back (FeatureName_T ("bus station"));
+      oList.push_back (FeatureName_T ("bus stop"));
+      oList.push_back (FeatureName_T ("stop"));
+      oList.push_back (FeatureName_T ("autobus"));
+      oList.push_back (FeatureName_T ("autobus station"));
+      oList.push_back (FeatureName_T ("autobus stop"));
+
+    } else if (iFeatureCode == "FY" || iFeatureCode == "PRT") {
+      oList.push_back (FeatureName_T ("ferry"));
+      oList.push_back (FeatureName_T ("port"));
+      oList.push_back (FeatureName_T ("ferry port"));
+
+    } else if (l3CharFeatCode == "PPL" || l3CharFeatCode == "ADM"
+               || iFeatureCode == "LCTY") {
+      oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("town"));
+      oList.push_back (FeatureName_T ("downtown"));
+      oList.push_back (FeatureName_T ("down town"));
+      oList.push_back (FeatureName_T ("center"));
+      oList.push_back (FeatureName_T ("centre"));
+
+    } else if (iFeatureCode == "PCLI") {
+      oList.push_back (FeatureName_T ("country"));
+      oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("town"));
+      oList.push_back (FeatureName_T ("downtown"));
+      oList.push_back (FeatureName_T ("down town"));
+      oList.push_back (FeatureName_T ("center"));
+      oList.push_back (FeatureName_T ("centre"));
+
+    } else if (l3CharFeatCode == "ISL") {
+      oList.push_back (FeatureName_T ("island"));
+      oList.push_back (FeatureName_T ("country"));
+    }
+
+    //
+    return oList;
   }
 
 }
