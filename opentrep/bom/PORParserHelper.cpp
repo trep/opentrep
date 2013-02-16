@@ -175,7 +175,37 @@ namespace OPENTREP {
     operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type)const {
       _location.consolidateAltNameShortListString();
        // DEBUG
-       //OPENTREP_LOG_DEBUG ("Common name: " << _location.getAltNameShortListString());
+       //OPENTREP_LOG_DEBUG ("Alternative name short list: " << _location.getAltNameShortListString());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeTvlPORCode::storeTvlPORCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeTvlPORCode::operator() (std::vector<uchar_t> iChar,
+                                      bsq::unused_type,
+                                      bsq::unused_type)const {
+
+      const std::string lTvlPORCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::TvlPORListString_T lTvlPORCode (lTvlPORCodeStr);
+      _location._itTvlPORList.push_back (lTvlPORCode);
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("Travel-related IATA code: " << lTvlPORCodeStr);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeTvlPORListString::storeTvlPORListString (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeTvlPORListString::operator() (bsq::unused_type, bsq::unused_type,
+                                            bsq::unused_type)const {
+      _location.consolidateTvlPORListString();
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("Travel-related POR list: " << _location.getTvlPORListString());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -351,6 +381,22 @@ namespace OPENTREP {
       _location.setCountryName (lCountryName);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Country name: " << _location.getCountryName());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeContinentName::storeContinentName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeContinentName::operator() (std::vector<uchar_t> iChar,
+                                         bsq::unused_type,
+                                         bsq::unused_type) const {
+      const std::string lContinentNameStr (iChar.begin(), iChar.end());
+      const ContinentName_T lContinentName (lContinentNameStr);
+      _location.setContinentName (lContinentName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Continent name: " << _location.getContinentName());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -590,32 +636,6 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeIsAirport::storeIsAirport (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeIsAirport::operator() (bool iBool,
-                                     bsq::unused_type, bsq::unused_type) const {
-      _location.setIsAirport (iBool);
-       // DEBUG
-       //OPENTREP_LOG_DEBUG ("Is airport? " << _location.isAirport());
-    }
-
-    // //////////////////////////////////////////////////////////////////
-    storeIsCommercial::storeIsCommercial (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeIsCommercial::operator() (bool iBool, bsq::unused_type,
-                                        bsq::unused_type) const {
-      _location.setIsCommercial (iBool);
-       // DEBUG
-       //OPENTREP_LOG_DEBUG ("Is commercial? " << _location.isAirport());
-    }
-
-    // //////////////////////////////////////////////////////////////////
     storeCityCode::storeCityCode (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -679,22 +699,6 @@ namespace OPENTREP {
       _location.setStateCode (lStateCode);
        // DEBUG
        //OPENTREP_LOG_DEBUG ("State code: " << _location.getStateCode());
-    }
-
-    // //////////////////////////////////////////////////////////////////
-    storeRegionCode::storeRegionCode (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeRegionCode::operator() (std::vector<uchar_t> iChar,
-                                      bsq::unused_type, bsq::unused_type) const {
-
-      const std::string lRegionCodeStr (iChar.begin(), iChar.end());
-      const OPENTREP::RegionCode_T lRegionCode (lRegionCodeStr);
-      _location.setRegionCode (lRegionCode);
-       // DEBUG
-       //OPENTREP_LOG_DEBUG ("Region code: " << _location.getRegionCode());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -902,6 +906,11 @@ namespace OPENTREP {
        --                     ISO-3166 2-letter country code, 60 characters
        -- country name      : Name of the country, as found in the Geonames
        --                     countryInfo.txt data file
+       --                     varchar(80)
+       -- continent name    : The name of the related continent, as found in
+       --                     the Geonames continentCodes.txt data file;
+       --                     see also below the 'Continents' section
+       --                     varchar(80)
        -- admin1 code       : FIPS code (subject to change to ISO code),
        --                     see exceptions below. See file admin1Codes.txt
        --                     for display names of this code;
@@ -935,8 +944,6 @@ namespace OPENTREP {
        -- -----------------
        --
        -- is_geonames       : Whether that POR is known by Geonames; varchar(1)
-       -- is_airport        : Whether that POR is an airport; varchar(1)
-       -- is commercial     : Whether or not that POR hosts commercial activities
        --                     varchar(1)
        -- city code         : The IATA code of the related city, when known;
        --                     varchar(3)
@@ -945,8 +952,6 @@ namespace OPENTREP {
        -- city ASCII name   : ASCII name for the related city, when known;
        --                     varchar(200)
        -- state code        : The ISO code of the related state; varchar(3)
-       -- region code       : The code of the related region (see below);
-       --                     varchar(5)
        -- location type     : A/APT airport; B/BUS bus/coach station;
        --                     C/CITY City;
        --                     G/GRD ground transport (this code is used for SK in
@@ -957,29 +962,19 @@ namespace OPENTREP {
        --                     S/ASSOC a location without its own IATA code,
        --                     but attached to an IATA location.
        --
-       -- Regions:
-       -- --------
-       -- AFRIC / AF        : Africa (geonameId=6255146)
-       -- ASIA  / AS        : Asia (geonameId=6255147)
-       -- ATLAN             : Atlantic
-       -- AUSTL             : Australia
-       -- CAMER             : Central America
-       -- CARIB             : Carribean
-       -- EEURO             : Eastern Europe
-       -- EURAS             : Euras
-       -- EUROP / EU        : Europe (geonameId=6255148)
-       -- IOCEA / OC        : Oceania (geonameId=6255151)
-       -- MEAST             : Middle-East
-       -- NAMER / NA        : North America (geonameId=6255149)
-       -- NONE              : Non real POR
-       -- PACIF             : Pacific
-       -- SAMER / SA        : South America (geonameId=6255150)
-       -- SEASI             : South East
-       --       / AN        : Antarctica (geonameId=6255152)
+       -- Continents:
+       -- -----------
+       -- AF Africa  6255146
+       -- AS Asia    6255147
+       -- EU Europe  6255148
+       -- NA North America   6255149
+       -- OC Oceania 6255151
+       -- SA South America   6255150
+       -- AN Antarctica      6255152
        --
        -- Samples:
-       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.647060165878^^^^FR^^France^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^Y^Y^PAR^^^^EUROP^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
-       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^0.994632137197^^^^FR^^France^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^N^N^PAR^^^^EUROP^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=an|París|=ar|باريس|=ast|París|=be|Горад Парыж|=bg|Париж|=ca|París|=cs|Paříž|=cy|Paris|=da|Paris|=el|Παρίσι|=et|Pariis|=eu|Paris|=fa|پاریس|=fi|Pariisi|=fr|Paris|p=ga|Páras|=gl|París|=he|פריז|=hr|Pariz|=hu|Párizs|=id|Paris|=io|Paris|=it|Parigi|=ja|パリ|=ka|პარიზი|=kn|ಪ್ಯಾರಿಸ್|=ko|파리|=ku|Parîs|=kw|Paris|=lb|Paräis|=li|Paries|=lt|Paryžius|=lv|Parīze|=mk|Париз|=ms|Paris|=na|Paris|=nds|Paris|=nl|Parijs|=nn|Paris|=no|Paris|=oc|París|=pl|Paryż|=pt|Paris|=ro|Paris|=ru|Париж|=scn|Pariggi|=sco|Paris|=sl|Pariz|=sq|Paris|=sr|Париз|=sv|Paris|=ta|பாரிஸ்|=th|ปารีส|=tl|Paris|=tr|Paris|=uk|Париж|=vi|Paris|p=zh|巴黎|=ia|Paris|=fy|Parys|=ln|Pari|=os|Париж|=pms|Paris|=sk|Paríž|=sq|Parisi|=sw|Paris|=tl|Lungsod ng Paris|=ug|پارىژ|=fr|Paname|c=fr|Pantruche|c=am|ፓሪስ|=arc|ܦܐܪܝܣ|=br|Pariz|=gd|Paris|=gv|Paarys|=hy|Փարիզ|=ksh|Paris|=lad|Paris|=lmo|Paris|=mg|Paris|=mr|पॅरिस|=tet|París|=tg|Париж|=ty|Paris|=ur|پیرس|=vls|Parys|=is|París|=vi|Pa-ri|=ml|പാരിസ്|=uz|Parij|=rue|Паріж|=ne|पेरिस|=jbo|paris|=mn|Парис|=lij|Pariggi|=vec|Parixe|=yo|Parisi|=yi|פאריז|=mrj|Париж|=hi|पैरिस|=fur|Parîs|=tt|Париж|=szl|Paryż|=mhr|Париж|=te|పారిస్|=tk|Pariž|=bn|প্যারিস|=ha|Pariis|=sah|Париж|=mzn|پاریس|=bo|ཕ་རི།|=haw|Palika|=mi|Parī|=ext|París|=ps|پاريس|=pa|ਪੈਰਿਸ|=ckb|پاریس|=cu|Парижь|=cv|Парис|=co|Parighji|=bs|Pariz|=so|Baariis|=sh|Pariz|=gu|પૅરિસ|=xmf|პარიზი|=ba|Париж|=pnb|پیرس|=arz|باريس|=la|Lutetia|=kk|Париж|=kv|Париж|=gn|Parĩ|=ky|Париж|=myv|Париж ош|=nap|Parigge|=km|ប៉ារីស|=krc|Париж|=udm|Париж|=wo|Pari|=gan|巴黎|=sc|Parigi|=za|Bahliz|=my|ပါရီမြို့|
+       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.650357283214^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
+       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=an|París|=ar|باريس|=ast|París|=be|Горад Парыж|=bg|Париж|=ca|París|=cs|Paříž|=cy|Paris|=da|Paris|=el|Παρίσι|=et|Pariis|=eu|Paris|=fa|پاریس|=fi|Pariisi|=fr|Paris|p=ga|Páras|=gl|París|=he|פריז|=hr|Pariz|=hu|Párizs|=id|Paris|=io|Paris|=it|Parigi|=ja|パリ|=ka|პარიზი|=kn|ಪ್ಯಾರಿಸ್|=ko|파리|=ku|Parîs|=kw|Paris|=lb|Paräis|=li|Paries|=lt|Paryžius|=lv|Parīze|=mk|Париз|=ms|Paris|=na|Paris|=nds|Paris|=nl|Parijs|=nn|Paris|=no|Paris|=oc|París|=pl|Paryż|=pt|Paris|=ro|Paris|=ru|Париж|=scn|Pariggi|=sco|Paris|=sl|Pariz|=sq|Paris|=sr|Париз|=sv|Paris|=ta|பாரிஸ்|=th|ปารีส|=tl|Paris|=tr|Paris|=uk|Париж|=vi|Paris|p=zh|巴黎|=ia|Paris|=fy|Parys|=ln|Pari|=os|Париж|=pms|Paris|=sk|Paríž|=sq|Parisi|=sw|Paris|=tl|Lungsod ng Paris|=ug|پارىژ|=fr|Paname|c=fr|Pantruche|c=am|ፓሪስ|=arc|ܦܐܪܝܣ|=br|Pariz|=gd|Paris|=gv|Paarys|=hy|Փարիզ|=ksh|Paris|=lad|Paris|=lmo|Paris|=mg|Paris|=mr|पॅरिस|=tet|París|=tg|Париж|=ty|Paris|=ur|پیرس|=vls|Parys|=is|París|=vi|Pa-ri|=ml|പാരിസ്|=uz|Parij|=rue|Паріж|=ne|पेरिस|=jbo|paris|=mn|Парис|=lij|Pariggi|=vec|Parixe|=yo|Parisi|=yi|פאריז|=mrj|Париж|=hi|पैरिस|=fur|Parîs|=tt|Париж|=szl|Paryż|=mhr|Париж|=te|పారిస్|=tk|Pariž|=bn|প্যারিস|=ha|Pariis|=sah|Париж|=mzn|پاریس|=bo|ཕ་རི།|=haw|Palika|=mi|Parī|=ext|París|=ps|پاريس|=pa|ਪੈਰਿਸ|=ckb|پاریس|=cu|Парижь|=cv|Парис|=co|Parighji|=bs|Pariz|=so|Baariis|=sh|Pariz|=gu|પૅરિસ|=xmf|პარიზი|=ba|Париж|=pnb|پیرس|=arz|باريس|=la|Lutetia|=kk|Париж|=kv|Париж|=gn|Parĩ|=ky|Париж|=myv|Париж ош|=nap|Parigge|=km|ប៉ារីស|=krc|Париж|=udm|Париж|=wo|Pari|=gan|巴黎|=sc|Parigi|=za|Bahliz|=my|ပါရီမြို့|
        --
 
        iata_code          varchar(3)
@@ -987,10 +982,9 @@ namespace OPENTREP {
        faa_code           varchar(4)
        is_geonames        varchar(1)
        geoname_id         int(11)
-       validity_id        int(2)
+       valid_id           int(2)
        name               varchar(200)
        asciiname          varchar(200)
-       alternatenames     varchar(4000)
        latitude           decimal(10,7)
        longitude          decimal(10,7)
        fclass             varchar(1)
@@ -1002,6 +996,7 @@ namespace OPENTREP {
        country_code       varchar(2)
        cc2                varchar(60)
        country_name       varchar(200)
+       continent_name     varchar(80)
        adm1_code          varchar(20)
        adm1_name_utf      varchar(400)
        adm1_name_ascii    varchar(400)
@@ -1018,29 +1013,27 @@ namespace OPENTREP {
        dst_offset         decimal(3,1)
        raw_offset         decimal(3,1)
        moddate            date
-       is_airport         varchar(1)
-       is_commercial      varchar(1)
        city_code          varchar(3)
+       city_name_utf      varchar(200)
+       city_name_ascii    varchar(200)
+       tvl_por_list       varchar(200)
        state_code         varchar(3)
-       region_code        varchar(5)
        location_type      varchar(4)
        wiki_link          varchar(200)
        alt_name_section   text
 
-       iata_code^icao_code^faa_code^is_geonames^geoname_id^validity_id^
-       name^asciiname^alternatenames^
+       iata_code^icao_code^faa_code^is_geonames^geoname_id^valid_id^
+       name^asciiname^
        latitude^longitude^fclass^fcode^
-       page_rank^date_from^date_until^comments^
-       country_code^cc2^country_name^
+       page_rank^date_from^date_until^comment^
+       country_code^cc2^country_name^continent_name^
        adm1_code^adm1_name_utf^adm1_name_ascii^
        adm2_code^adm2_name_utf^adm2_name_ascii^
        adm3_code^adm4_code^
        population^elevation^gtopo30^
-       timezone^gmt_offset^dst_offset^raw_offset^
-       moddate^is_airport^is_commercial^
-       city_code^city_name_utf^city_name_ascii^
-       state_code^region_code^
-       location_type^wiki_link^
+       timezone^gmt_offset^dst_offset^raw_offset^moddate^
+       city_code^city_name_utf^city_name_ascii^tvl_por_list^
+       state_code^location_type^wiki_link^
        alt_name_section
     */ 
 
@@ -1088,6 +1081,7 @@ namespace OPENTREP {
           >> '^' >> country_code
           >> '^' >> -country_code2
           >> '^' >> country_name
+          >> '^' >> -continent_name
           >> '^' >> -adm1_code
           >> '^' >> -adm1_name_utf
           >> '^' >> -adm1_name_ascii
@@ -1104,13 +1098,11 @@ namespace OPENTREP {
           >> '^' >> -dst_offset
           >> '^' >> -raw_offset
           >> '^' >> (mod_date | bsq::lit("-1"))
-          >> '^' >> is_airport
-          >> '^' >> is_commercial
           >> '^' >> city_code
           >> '^' >> -city_name_utf
           >> '^' >> -city_name_ascii
+          >> '^' >> -tvl_por_code_list[storeTvlPORListString(_location)]
           >> '^' >> -state_code
-          >> '^' >> -region_code
           >> '^' >> por_type
           >> '^' >> -wiki_link
           ;
@@ -1148,6 +1140,13 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeAltNameShort(_location)]
           ;
 
+        tvl_por_code_list = tvl_por_code % ',';
+
+        tvl_por_code =
+          (bsq::no_skip[+~bsu::char_("^,")]
+           - (bsq::eoi|bsq::eol))[storeTvlPORCode(_location)]
+          ;
+
         latitude = bsq::double_[storeLatitude(_location)];
 
         longitude = bsq::double_[storeLongitude(_location)];
@@ -1183,6 +1182,11 @@ namespace OPENTREP {
         country_name =
           (bsq::no_skip[+~bsu::char_('^')]
            - (bsq::eoi|bsq::eol))[storeCountryName(_location)]
+          ;
+
+        continent_name =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeContinentName(_location)]
           ;
 
         adm1_code =
@@ -1251,10 +1255,6 @@ namespace OPENTREP {
            >> '-'
            >> day_p[boost::phoenix::ref(_location._itDay) = bsq::labels::_1] ];
 
-        is_airport = boolean_p[storeIsAirport(_location)];
-
-        is_commercial = boolean_p[storeIsCommercial(_location)];
-      
         city_code =
           bsq::repeat(3)[bsu::char_('A', 'Z')][storeCityCode(_location)]
           ;
@@ -1272,11 +1272,6 @@ namespace OPENTREP {
         state_code =
           (bsq::no_skip[+~bsu::char_('^')]
            - (bsq::eoi|bsq::eol))[storeStateCode(_location)]
-          ;
-
-        region_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeRegionCode(_location)]
           ;
 
         por_type =
@@ -1342,6 +1337,9 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (alt_name_short_list);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_short);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_sep);
+        BOOST_SPIRIT_DEBUG_NODE (tvl_por_code_list);
+        BOOST_SPIRIT_DEBUG_NODE (tvl_por_code);
+        BOOST_SPIRIT_DEBUG_NODE (tvl_por_sep);
         BOOST_SPIRIT_DEBUG_NODE (latitude);
         BOOST_SPIRIT_DEBUG_NODE (longitude);
         BOOST_SPIRIT_DEBUG_NODE (feat_class);
@@ -1353,6 +1351,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (country_code);
         BOOST_SPIRIT_DEBUG_NODE (country_code2);
         BOOST_SPIRIT_DEBUG_NODE (country_name);
+        BOOST_SPIRIT_DEBUG_NODE (continent_name);
         BOOST_SPIRIT_DEBUG_NODE (adm1_code);
         BOOST_SPIRIT_DEBUG_NODE (adm1_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (adm1_name_ascii);
@@ -1374,9 +1373,6 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
         BOOST_SPIRIT_DEBUG_NODE (state_code);
-        BOOST_SPIRIT_DEBUG_NODE (region_code);
-        BOOST_SPIRIT_DEBUG_NODE (is_airport);
-        BOOST_SPIRIT_DEBUG_NODE (is_commercial);
         BOOST_SPIRIT_DEBUG_NODE (por_type);
         BOOST_SPIRIT_DEBUG_NODE (wiki_link);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
@@ -1394,19 +1390,19 @@ namespace OPENTREP {
       // Instantiation of rules
       bsq::rule<Iterator, bsu::blank_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
-        iata_code, icao_code, faa_code, geoname_id, validity_id,
-        is_geonames, is_airport, is_commercial,
+        iata_code, icao_code, faa_code, geoname_id, validity_id, is_geonames,
         common_name, ascii_name,
         alt_name_short_list, alt_name_short, alt_name_sep,
+        tvl_por_code_list, tvl_por_code, tvl_por_sep,
         latitude, longitude, feat_class, feat_code,
         page_rank, date_from, date_until, comments,
-        country_code, country_code2, country_name,
+        country_code, country_code2, country_name, continent_name,
         adm1_code, adm1_name_utf, adm1_name_ascii,
         adm2_code, adm2_name_utf, adm2_name_ascii, adm3_code, adm4_code,
         population, elevation, gtopo30,
         time_zone, gmt_offset, dst_offset, raw_offset,
         mod_date, date,
-        city_code, city_name_utf, city_name_ascii, state_code, region_code,
+        city_code, city_name_utf, city_name_ascii, state_code,
         por_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,

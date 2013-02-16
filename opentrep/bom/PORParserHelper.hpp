@@ -123,6 +123,26 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the list of IATA codes of the travel-related POR. */
+    struct storeTvlPORCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeTvlPORCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the list of IATA codes of the travel-related POR. */
+    struct storeTvlPORListString : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeTvlPORListString (Location&);
+      /** Actor Function (functor). */
+      void operator() (boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed latitude value. */
     struct storeLatitude : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -227,6 +247,16 @@ namespace OPENTREP {
     struct storeCountryName : public ParserSemanticAction {
       /** Actor Constructor. */
       storeCountryName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed continent name. */
+    struct storeContinentName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeContinentName (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
@@ -393,26 +423,6 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed airport flag. */
-    struct storeIsAirport : public ParserSemanticAction {
-      /** Actor Constructor. */
-      storeIsAirport (Location&);
-      /** Actor Function (functor). */
-      void operator() (bool,
-                       boost::spirit::qi::unused_type,
-                       boost::spirit::qi::unused_type) const;
-    };
-
-    /** Store the parsed commercial flag. */
-    struct storeIsCommercial : public ParserSemanticAction {
-      /** Actor Constructor. */
-      storeIsCommercial (Location&);
-      /** Actor Function (functor). */
-      void operator() (bool,
-                       boost::spirit::qi::unused_type,
-                       boost::spirit::qi::unused_type) const;
-    };
-
     /** Store the parsed city IATA code. */
     struct storeCityCode : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -447,16 +457,6 @@ namespace OPENTREP {
     struct storeStateCode : public ParserSemanticAction {
       /** Actor Constructor. */
       storeStateCode (Location&);
-      /** Actor Function (functor). */
-      void operator() (std::vector<uchar_t>,
-                       boost::spirit::qi::unused_type,
-                       boost::spirit::qi::unused_type) const;
-    };
-
-    /** Store the parsed region code. */
-    struct storeRegionCode : public ParserSemanticAction {
-      /** Actor Constructor. */
-      storeRegionCode (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,

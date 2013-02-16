@@ -129,6 +129,18 @@ namespace OPENTREP {
   };
   typedef std::list<AltNameShortListString_T> AltNameShortList_T;
 
+  /** 
+   * List of the IATA codes of the travel-related POR, aggregated within
+   * a single string (e.g., "EMB,JCC,SFO" for San Francisco, California, USA).
+   */
+  struct TvlPORListString_T : public IATACode_T {
+  public:
+    explicit TvlPORListString_T (const std::string& iValue)
+      : IATACode_T (iValue) {
+    }
+  };
+  typedef std::list<TvlPORListString_T> TvlPORList_T;
+
   /**
    * Language code (e.g., en). Note that some language codes may contain
    * numerics; for instance, fr_1793.
@@ -193,7 +205,7 @@ namespace OPENTREP {
   };
 
   /**
-   * Country name (e.g., Germany).
+   * Country name (e.g., Germany, Switzerland, France).
    */
   struct CountryName_T : public std::string {
   public:
@@ -201,11 +213,12 @@ namespace OPENTREP {
   };
 
   /**
-   * Region code (e.g., NAMER for North America).
+   * Continent name (e.g., North America, Europe, Pacific, Asia, Australia).
    */
-  struct RegionCode_T : public std::string {
+  struct ContinentName_T : public std::string {
   public:
-    explicit RegionCode_T (const std::string& iValue) : std::string (iValue) { }
+    explicit ContinentName_T (const std::string& iValue) : std::string (iValue) {
+    }
   };
 
   /**
@@ -292,6 +305,15 @@ namespace OPENTREP {
   public:
     explicit FeatureCode_T (const std::string& iValue) : std::string (iValue) { }
   };
+
+  /**
+   * Feature name (e.g., airport, airfield, airstrip, airbase, heliport).
+   */
+  struct FeatureName_T : public std::string {
+  public:
+    explicit FeatureName_T (const std::string& iValue) : std::string (iValue) { }
+  };
+  typedef std::list<FeatureName_T> FeatureNameList_T;
 
   /**
    * IATA location type (e.g., A for airport).

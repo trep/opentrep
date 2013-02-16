@@ -21,14 +21,14 @@ namespace OPENTREP {
                CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""),
                StateCode_T (""),
                CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
-               RegionCode_T (""), 
+               ContinentName_T (""), 
                0.0, 0.0,
                FeatureClass_T (""), FeatureCode_T (""), IATAType_T (""),
                Admin1Code_T (""), Admin1UTFName_T (""), Admin1ASCIIName_T (""),
                Admin2Code_T (""), Admin2UTFName_T (""), Admin2ASCIIName_T (""),
                Admin3Code_T (""), Admin4Code_T (""),
                0, 0, 0, TimeZone_T (""), 0, 0, 0,
-               Date_T (2000, 01, 01), false, false,
+               Date_T (2000, 01, 01), TvlPORListString_T (""),
                WikiLink_T (""),  K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0,
                RawDataString_T ("")),
     _docID (0) {
@@ -42,14 +42,14 @@ namespace OPENTREP {
                CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""),
                StateCode_T (""),
                CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
-               RegionCode_T (""), 
+               ContinentName_T (""), 
                0.0, 0.0,
                FeatureClass_T (""), FeatureCode_T (""), IATAType_T (""),
                Admin1Code_T (""), Admin1UTFName_T (""), Admin1ASCIIName_T (""),
                Admin2Code_T (""), Admin2UTFName_T (""), Admin2ASCIIName_T (""),
                Admin3Code_T (""), Admin4Code_T (""),
                0, 0, 0, TimeZone_T (""), 0, 0, 0,
-               Date_T (2000, 01, 01), false, false,
+               Date_T (2000, 01, 01), TvlPORListString_T (""),
                WikiLink_T (""), K_DEFAULT_PAGE_RANK, "", "", 0, 0, 0,
                RawDataString_T ("")),
     _docID (0) {
@@ -206,7 +206,26 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  void Place::addNameToXapianSets (const std::string& iBaseName,
+                                   const FeatureCode_T& iFeatureCode) {
+    // Derive the list of feature names from the feature code. For instance,
+    // the 'AIRP' feature code provides the ('airport', 'airdrome', 'aerodrome',
+    // 'airfield', 'air field', 'airstrip', 'air strip', 'airbase', 'air base')
+    // list.
+    const FeatureNameList_T& lFeatureNameList =
+      Location::getFeatureList (iFeatureCode);
+    for (FeatureNameList_T::const_iterator itFeatName = lFeatureNameList.begin();
+         itFeatName != lFeatureNameList.end(); ++itFeatName) {
+      const FeatureName_T& lFeatureName = *itFeatName;
+      _termSet.insert (iBaseName + " " + lFeatureName);
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Place::addNameToXapianSets (const LocationName_T& iLocationName,
+                                   const FeatureCode_T& iFeatureCode,
+                                   const CityUTFName_T& iCityUtfName,
+                                   const CityASCIIName_T& iCityAsciiName,
                                    const Admin1UTFName_T& iAdm1UtfName,
                                    const Admin1ASCIIName_T& iAdm1AsciiName,
                                    const Admin2UTFName_T& iAdm2UtfName,
@@ -214,7 +233,7 @@ namespace OPENTREP {
                                    const StateCode_T& iStateCode,
                                    const CountryCode_T& iCountryCode,
                                    const CountryName_T& iCountryName,
-                                   const RegionCode_T& iRegionCode,
+                                   const ContinentName_T& iContinentName,
                                    const OTransliterator& iTransliterator) {
     // Tokenise the name. Some of the names contain punctuation characters.
     // For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
@@ -224,6 +243,19 @@ namespace OPENTREP {
 
     // Add the tokenised name to the Xapian index
     _termSet.insert (lTokenisedName);
+
+    // Add the (tokenised name, feature name) pair to the Xapian index
+    addNameToXapianSets (lTokenisedName, iFeatureCode);
+
+    // Add the (tokenised name, UTF8 city name) pair to the Xapian index
+    if (iCityUtfName.empty() == false) {
+      _termSet.insert (lTokenisedName + " " + iCityUtfName);
+    }
+
+    // Add the (tokenised name, ASCII city name) pair to the Xapian index
+    if (iCityAsciiName.empty() == false) {
+      _termSet.insert (lTokenisedName + " " + iCityAsciiName);
+    }
 
     // Add the (tokenised name, UTF8 admin level 1 name) pair to the Xapian index
     if (iAdm1UtfName.empty() == false) {
@@ -254,8 +286,8 @@ namespace OPENTREP {
     // Add the (tokenised name, country name) pair to the Xapian index
     _termSet.insert (lTokenisedName + " " + iCountryName);
 
-    // Add the (tokenised name, region code) pair to the Xapian index
-    _termSet.insert (lTokenisedName + " " + iRegionCode);
+    // Add the (tokenised name, continent name) pair to the Xapian index
+    _termSet.insert (lTokenisedName + " " + iContinentName);
 
     // Add the tokenised name to the Xapian spelling dictionary
     _spellingSet.insert (lTokenisedName);
@@ -269,6 +301,22 @@ namespace OPENTREP {
 
     // Add the tokenised and normalised name to the Xapian index
     _termSet.insert (lNormalisedCommonName);
+
+    // Add the (tokenised and normalised name, feature name) pair
+    // to the Xapian index
+    addNameToXapianSets (lNormalisedCommonName, iFeatureCode);
+
+    // Add the (tokenised and normalised name, UTF8 city name) pair
+    // to the Xapian index
+    if (iCityUtfName.empty() == false) {
+      _termSet.insert (lNormalisedCommonName + " " + iCityUtfName);
+    }
+
+    // Add the (tokenised and normalised name, ASCII city name) pair
+    // to the Xapian index
+    if (iCityAsciiName.empty() == false) {
+      _termSet.insert (lNormalisedCommonName + " " + iCityAsciiName);
+    }
 
     // Add the (tokenised and normalised name, UTF8 admin level 1 name) pair
     // to the Xapian index
@@ -306,9 +354,9 @@ namespace OPENTREP {
     // Xapian index
     _termSet.insert (lNormalisedCommonName + " " + iCountryName);
 
-    // Add the (tokenised and normalised name, region code) pair to the
+    // Add the (tokenised and normalised name, continent name) pair to the
     // Xapian index
-    _termSet.insert (lNormalisedCommonName + " " + iRegionCode);
+    _termSet.insert (lNormalisedCommonName + " " + iContinentName);
 
     // Add the tokenised and normalised name to the Xapian spelling dictionary
     _spellingSet.insert (lNormalisedCommonName);
@@ -327,11 +375,18 @@ namespace OPENTREP {
      * </ul>
      */
 
+    // Retrieve the feature code
+    const FeatureCode_T& lFeatureCode = _location.getFeatureCode();
+
     // Add the IATA code
     const std::string& lIataCode = _location.getIataCode();
     if (lIataCode.empty() == false) {
       _termSet.insert (lIataCode);
       _spellingSet.insert (lIataCode);
+
+      // Add the (IATA code, feature name) to the Xapian index, where the
+      // feature name is derived from the feature code.
+      addNameToXapianSets (lIataCode, lFeatureCode);
     }
 
     // Add the ICAO code
@@ -339,6 +394,10 @@ namespace OPENTREP {
     if (lIcaoCode.empty() == false) {
       _termSet.insert (lIcaoCode);
       _spellingSet.insert (lIcaoCode);
+
+      // Add the (ICAO code, feature name) to the Xapian index, where the
+      // feature name is derived from the feature code.
+      addNameToXapianSets (lIcaoCode, lFeatureCode);
     }
 
     // Add the FAA code
@@ -346,6 +405,16 @@ namespace OPENTREP {
     if (lFaaCode.empty() == false) {
       _termSet.insert (lFaaCode);
       _spellingSet.insert (lFaaCode);
+
+      // Add the (FAA code, feature name) to the Xapian index, where the
+      // feature name is derived from the feature code.
+      addNameToXapianSets (lFaaCode, lFeatureCode);
+    }
+
+    // Add the feature code
+    if (lFeatureCode.empty() == false) {
+      _termSet.insert (lFeatureCode);
+      _spellingSet.insert (lFeatureCode);
     }
 
     // Add the city IATA code
@@ -353,6 +422,20 @@ namespace OPENTREP {
     if (lCityCode.empty() == false && lCityCode != lIataCode) {
       _termSet.insert (lCityCode);
       _spellingSet.insert (lCityCode);
+    }
+
+    // Add the city UTF8 name
+    const std::string& lCityUtfName = _location.getCityUtfName();
+    if (lCityUtfName.empty() == false) {
+      _termSet.insert (lCityUtfName);
+      _spellingSet.insert (lCityUtfName);
+    }
+
+    // Add the city ASCII name
+    const std::string& lCityAsciiName = _location.getCityAsciiName();
+    if (lCityAsciiName.empty() == false) {
+      _termSet.insert (lCityAsciiName);
+      _spellingSet.insert (lCityAsciiName);
     }
 
     // Add the state code
@@ -413,15 +496,18 @@ namespace OPENTREP {
       _spellingSet.insert (lAdm2AsciiName);
     }
 
-    // Add the region code
-    const std::string& lRegionCode = _location.getRegionCode();
-    _termSet.insert (lRegionCode);
+    // Add the continent name
+    const std::string& lContinentName = _location.getContinentName();
+    _termSet.insert (lContinentName);
 
     // Add the common name (usually in American English, but not necessarily
     // in ASCII).
     const std::string& lCommonName = _location.getCommonName();
     if (lCommonName.empty() == false) {
       addNameToXapianSets (LocationName_T (lCommonName),
+                           FeatureCode_T (lFeatureCode),
+                           CityUTFName_T (lCityUtfName),
+                           CityASCIIName_T (lCityAsciiName),
                            Admin1UTFName_T (lAdm1UtfName),
                            Admin1ASCIIName_T (lAdm1AsciiName),
                            Admin2UTFName_T (lAdm2UtfName),
@@ -429,13 +515,16 @@ namespace OPENTREP {
                            StateCode_T (lStateCode),
                            CountryCode_T (lCountryCode),
                            CountryName_T (lCountryName),
-                           RegionCode_T (lRegionCode), iTransliterator);
+                           ContinentName_T (lContinentName), iTransliterator);
     }
     
     // Add the ASCII name (not necessarily in English).
     const std::string& lASCIIName = _location.getAsciiName();
     if (lASCIIName.empty() == false) {
       addNameToXapianSets (LocationName_T (lASCIIName),
+                           FeatureCode_T (lFeatureCode),
+                           CityUTFName_T (lCityUtfName),
+                           CityASCIIName_T (lCityAsciiName),
                            Admin1UTFName_T (lAdm1UtfName),
                            Admin1ASCIIName_T (lAdm1AsciiName),
                            Admin2UTFName_T (lAdm2UtfName),
@@ -443,7 +532,7 @@ namespace OPENTREP {
                            StateCode_T (lStateCode),
                            CountryCode_T (lCountryCode),
                            CountryName_T (lCountryName),
-                           RegionCode_T (lRegionCode), iTransliterator);
+                           ContinentName_T (lContinentName), iTransliterator);
     }
 
     // Retrieve the place names in all the available languages
