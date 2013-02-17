@@ -1,7 +1,10 @@
 
-* 2012-10-21:
+* 2013-02-16:
 - Version 0.5.1
-- Something
+- Updated the source code to the newest format of the ORI-maintained list
+  of POR.
+- Added the Geonames-derived feature names (e.g., "nce city" now returns
+  the POR for the city of Nice, France).
 
 * 2012-10-14:
 - Version 0.5.0
