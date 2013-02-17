@@ -64,6 +64,14 @@ namespace OPENTREP {
     void clear();
 
     /**
+     * Get the initial string, that is, the string having been given
+     * to be partitioned.
+     */
+    const std::string& getInitialString() const {
+      return _initialString;
+    }
+
+    /**
      * Return the list of all the unique word combinations, which can be made
      * from the partitions.
      *
@@ -88,9 +96,10 @@ namespace OPENTREP {
      *
      * That method is called by the main constructor. It should not be called
      * directly.
+     *
      * @param const std::string& The string for which the partitions are sought
      */
-    void init (const std::string& iString);
+    void init (const std::string& iStringToBePartitioned);
 
 
   public:
@@ -125,8 +134,10 @@ namespace OPENTREP {
     // //////////////// Constructors and Destructors /////////////
     /**
      * Constructor.
+     *
+     * @param const std::string& The string for which the partitions are sought
      */
-    StringPartition (const std::string& iString);
+    StringPartition (const std::string& iStringToBePartitioned);
 
     /**
      * Default destructor.
@@ -137,10 +148,22 @@ namespace OPENTREP {
   public:
     // //////////////// Attributes ///////////////
     /**
+     * String to be partitioned.
+     */
+    std::string _initialString;
+
+    /**
      * Partition, i.e., a list containing sub-lists of strings
      */
     StringPartition_T _partition;
   };
 
+
+  // //////////////// Type definitions //////////////////
+  /**
+   * Type gathering all the partitions of a string.
+   */
+  typedef std::list<StringPartition> StringPartitionList_T;
+  
 }
 #endif // __OPENTREP_BOM_STRINGPARTITION_HPP

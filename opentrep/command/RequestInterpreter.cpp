@@ -17,6 +17,7 @@
 #include <opentrep/bom/ResultHolder.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/bom/PlaceHolder.hpp>
+#include <opentrep/bom/QuerySlices.hpp>
 #include <opentrep/bom/StringPartition.hpp>
 #include <opentrep/factory/FacPlaceHolder.hpp>
 #include <opentrep/factory/FacPlace.hpp>
@@ -121,7 +122,7 @@ namespace OPENTREP {
    * @param WordList_T& List of non-matched words of the query string.
    */
   // //////////////////////////////////////////////////////////////////////
-  void searchString (const TravelQuery_T& iTravelQuery,
+  void searchString (const StringPartition& iStringPartition,
                      const Xapian::Database& iDatabase,
                      ResultCombination& ioResultCombination,
                      WordList_T& ioWordList) {
@@ -132,18 +133,10 @@ namespace OPENTREP {
       // Set of unknown words (just to eliminate the duplicates)
       WordSet_T lWordSet;
 
-      // First, calculate all the partitions of the initial travel query
-      StringPartition lStringPartition (iTravelQuery);
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("+++++++++++++++++++++");
-      OPENTREP_LOG_DEBUG ("Travel query: `" << iTravelQuery << "'");
-      OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
-
       // Browse the partitions
       for (StringPartition::StringPartition_T::const_iterator itSet =
-             lStringPartition._partition.begin();
-           itSet != lStringPartition._partition.end(); ++itSet) {
+             iStringPartition._partition.begin();
+           itSet != iStringPartition._partition.end(); ++itSet) {
         const StringSet& lStringSet = *itSet;
 
         // DEBUG
@@ -201,6 +194,7 @@ namespace OPENTREP {
       OPENTREP_LOG_DEBUG ("*********************");
 
     } catch (const Xapian::Error& error) {
+      // Error
       OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
       throw XapianException (error.get_msg());
     }
@@ -293,47 +287,72 @@ namespace OPENTREP {
     ResultCombination& lResultCombination =
       FacResultCombination::instance().create (iTravelQuery);
 
-    /**
-     * 1.1. Perform all the full-text matches, and fill accordingly the
-     *      list of Result instances.
-     */
-    OPENTREP::searchString (iTravelQuery, lXapianDatabase, lResultCombination,
-                            ioWordList);
+    // First, cut the travel query in slices and calculate all the partitions
+    // for each of those query slices
+    QuerySlices lQuerySlices (lXapianDatabase, iTravelQuery);
 
-    /**
-     * 1.2. Calculate/set the PageRanks for all the matching documents
-     */
-    lResultCombination.calculatePageRanks();
-
-    /**
-     * 1.3. Calculate/set the heuristic weights for all the matching documents
-     */
-    lResultCombination.calculateHeuristicWeights();
-
-    /**
-     * 1.4. Calculate/set the combined weights for all the matching documents
-     */
-    lResultCombination.calculateCombinedWeights();
-
-    /**
-     * 2. Calculate the best matching scores / weighting percentages.
-     */
-    OPENTREP::chooseBestMatchingResultHolder (lResultCombination);
-
-    /**
-     * 3. Create the list of Place objects, for each of which a
-     *    look-up is made in the SQL database (e.g., MySQL or Oracle)
-     *    to retrieve complementary data.
-     */
-    createPlaces (lResultCombination, lPlaceHolder);
-      
     // DEBUG
-    OPENTREP_LOG_DEBUG (std::endl
-                        << "========================================="
-                        << std::endl << "Summary:" << std::endl
-                        << lPlaceHolder.toShortString() << std::endl
-                        << "========================================="
-                        << std::endl);
+    OPENTREP_LOG_DEBUG ("+=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
+    OPENTREP_LOG_DEBUG ("Travel query: `" << iTravelQuery << "'");
+    OPENTREP_LOG_DEBUG ("Query slices: `" << lQuerySlices << "'");
+
+    // Browse the travel query slices
+    const StringPartitionList_T& lStringPartitionList =
+      lQuerySlices.getStringPartitionList();
+    for (StringPartitionList_T::const_iterator itSlice =
+           lStringPartitionList.begin();
+         itSlice != lStringPartitionList.end(); ++itSlice) {
+      StringPartition lStringPartition = *itSlice;
+      const std::string& lTravelQuerySlice = lStringPartition.getInitialString();
+
+      // DEBUG
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("+++++++++++++++++++++");
+      OPENTREP_LOG_DEBUG ("Travel query slice: `" << lTravelQuerySlice << "'");
+      OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
+
+      /**
+       * 1.1. Perform all the full-text matches, and fill accordingly the
+       *      list of Result instances.
+       */
+      OPENTREP::searchString (lTravelQuerySlice, lXapianDatabase,
+                              lResultCombination, ioWordList);
+
+      /**
+       * 1.2. Calculate/set the PageRanks for all the matching documents
+       */
+      lResultCombination.calculatePageRanks();
+
+      /**
+       * 1.3. Calculate/set the heuristic weights for all the matching documents
+       */
+      lResultCombination.calculateHeuristicWeights();
+
+      /**
+       * 1.4. Calculate/set the combined weights for all the matching documents
+       */
+      lResultCombination.calculateCombinedWeights();
+
+      /**
+       * 2. Calculate the best matching scores / weighting percentages.
+       */
+      OPENTREP::chooseBestMatchingResultHolder (lResultCombination);
+
+      /**
+       * 3. Create the list of Place objects, for each of which a
+       *    look-up is made in the SQL database (e.g., MySQL or Oracle)
+       *    to retrieve complementary data.
+       */
+      createPlaces (lResultCombination, lPlaceHolder);
+      
+      // DEBUG
+      OPENTREP_LOG_DEBUG (std::endl
+                          << "========================================="
+                          << std::endl << "Summary:" << std::endl
+                          << lPlaceHolder.toShortString() << std::endl
+                          << "========================================="
+                          << std::endl);
+    }
 
     /**
      * 4. Create the list of Location structures, which are light copies

@@ -61,6 +61,23 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  std::string StringSet::getFirstString() const {
+    std::string oString ("");
+
+    // When the underlying set is empty, then the first string is empty
+    if (_set.empty() == true) {
+      return oString;
+    }
+
+    // Extract the first string of the underlying set
+    StringSet_T::const_iterator itString = _set.begin();    
+    oString = *itString;
+
+    //
+    return oString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   std::string StringSet::describeKey() const {
     std::ostringstream oStr;
     oStr << "";

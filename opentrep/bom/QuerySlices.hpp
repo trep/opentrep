@@ -42,13 +42,14 @@ namespace OPENTREP {
    * query may be split into two sub-queries: "nce" and "rio de janeiro".
    */
   struct QuerySlices : public StructAbstract {
-    // //////////////// Type definitions //////////////////
-    /**
-     * Type gathering all the partitions of a string.
-     */
-    typedef std::list<StringPartition> QuerySlices_T;
-  
   public:
+    /**
+     * Get the underlying list of string partitions.
+     */
+    const StringPartitionList_T& getStringPartitionList() const {
+      return _slices;
+    }
+
     /**
      * Add an item (StringPartition) into the list.
      *
@@ -142,7 +143,7 @@ namespace OPENTREP {
     /**
      * Partition, i.e., a list containing sub-lists of strings
      */
-    QuerySlices_T _slices;
+    StringPartitionList_T _slices;
 
     /**
      * Staging string holding the left part of the query

@@ -64,7 +64,7 @@ namespace OPENTREP {
     oStr << "[ ";
 
     short idx_sublist = 0;
-    for (QuerySlices_T::const_iterator itSlice = _slices.begin();
+    for (StringPartitionList_T::const_iterator itSlice = _slices.begin();
          itSlice != _slices.end(); ++itSlice, ++idx_sublist) {
       //
       if (idx_sublist != 0) {
@@ -150,7 +150,7 @@ namespace OPENTREP {
       */
 
       // DEBUG
-      OPENTREP_LOG_DEBUG ("        --------");
+      // OPENTREP_LOG_DEBUG ("        --------");
         
       // Start an enquire session
       Xapian::Enquire enquire (iDatabase);
@@ -177,17 +177,21 @@ namespace OPENTREP {
       int nbMatches = lMatchingSet.size();
 
       // DEBUG
+      /*
       OPENTREP_LOG_DEBUG ("      Query string: `" << lQueryString
                           << "', i.e.: `" << lXapianQuery.get_description()
                           << "' => " << nbMatches << " result(s) found");
+      */
 
       if (nbMatches != 0) {
         // There has been a matching
         oDoesMatch = true;
 
         // DEBUG
+        /*
         OPENTREP_LOG_DEBUG ("        Query string: `" << lQueryString
                             << "' provides " << nbMatches << " exact matches.");
+        */
 
         return oDoesMatch;
       }  
@@ -209,11 +213,13 @@ namespace OPENTREP {
       // no need to go further: there is no match.
       if (lCorrectedString.empty() == true || lCorrectedString == lQueryString) {
         // DEBUG
+        /*
         OPENTREP_LOG_DEBUG ("        Query string: `"
                             << lQueryString << "' provides no match, "
                             << "and there is no spelling suggestion, "
                             << "even with an edit distance of "
                             << lAllowableEditDistance);
+        */
 
         // No match
         return oDoesMatch;
@@ -245,13 +251,16 @@ namespace OPENTREP {
       nbMatches = lMatchingSet.size();
 
       // DEBUG
+      /*
       OPENTREP_LOG_DEBUG ("      Corrected query string: `" << lCorrectedString
                           << "', i.e.: `"
                           << lCorrectedXapianQuery.get_description()
                           << "' => " << nbMatches << " result(s) found");
+      */
 
       if (nbMatches != 0) {
         // DEBUG
+        /*
         OPENTREP_LOG_DEBUG ("        Query string: `"
                             << lQueryString << "', spelling suggestion: `"
                             << lCorrectedString
@@ -260,6 +269,7 @@ namespace OPENTREP {
                             << " over an allowable edit distance of "
                             << lAllowableEditDistance << ", provides "
                             << nbMatches << " matches.");
+        */
 
         //
         oDoesMatch = true;
@@ -279,6 +289,7 @@ namespace OPENTREP {
       assert (false);
       
     } catch (const Xapian::Error& error) {
+      // Error
       OPENTREP_LOG_ERROR ("Exception: "  << error.get_msg());
       throw XapianException (error.get_msg());
     }
@@ -307,13 +318,16 @@ namespace OPENTREP {
     //    matches with the Xapian index
     WordList_T::const_iterator itWord = lWordList.begin();
     WordList_T::const_iterator itNextWord = lWordList.begin(); ++itNextWord;
-    for (unsigned short idx = 1;
-         itNextWord != lWordList.end(); ++itWord, ++itNextWord, ++idx) {
+    for (unsigned short idx = 1, idx_rel = 1; itNextWord != lWordList.end();
+         ++itWord, ++itNextWord, ++idx, ++idx_rel) {
       const std::string& leftWord = *itWord;
       const std::string& rightWord = *itNextWord;
 
       // Store the left word in the staging string
-      _itLeftWords += " " + leftWord;
+      if (idx_rel >= 2) {
+        _itLeftWords += " ";
+      }
+      _itLeftWords += leftWord;
 
       // Check whether the juxtaposition of the two contiguous words matches
       const bool lDoesMatch =
@@ -325,18 +339,25 @@ namespace OPENTREP {
         // staging string
 
         // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << idx << "] Match - staging string: "
-                            << _itLeftWords);
+        /*
+        OPENTREP_LOG_DEBUG ("[" << idx << "][" << idx_rel
+                            << "] Match - staging string: '"
+                            << _itLeftWords << "'");
+        */
 
       } else {
+        // DEBUG
+        /*
+        OPENTREP_LOG_DEBUG ("[" << idx << "][" << idx_rel
+                            << "] No match - staging string: '"
+                            << _itLeftWords << "'");
+        */
+
         // When the two words give no match, add the content of the staging
         // list to the list of slices. Then, empty the staging string.
         _slices.push_back (_itLeftWords);
         _itLeftWords = "";
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << idx << "] No match - staging string: "
-                            << _itLeftWords);
+        idx_rel = 0;
       }
     }
     
@@ -346,7 +367,8 @@ namespace OPENTREP {
     _slices.push_back (_itLeftWords);
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Slices: " << *this);
+    // OPENTREP_LOG_DEBUG ("Last staging string: '" << _itLeftWords << "'");
+    // OPENTREP_LOG_DEBUG ("Slices: " << *this);
   }
 
 }

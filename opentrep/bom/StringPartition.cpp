@@ -14,12 +14,13 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  StringPartition::StringPartition (const std::string& iString) {
+  StringPartition::StringPartition (const std::string& iString)
+    : _initialString (iString) {
     init (iString);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  StringPartition::~StringPartition () {
+  StringPartition::~StringPartition() {
   }
 
   // //////////////////////////////////////////////////////////////////////
