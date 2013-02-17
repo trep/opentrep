@@ -1,7 +1,12 @@
 
+* 2013-02-24:
+- Version 0.5.3
+- Something
+
 * 2013-02-16:
 - Version 0.5.2
-- Something
+- The new slice and dice algorithm seems to work now. More thorough tests
+  are needed.
 
 * 2013-02-16:
 - Version 0.5.1

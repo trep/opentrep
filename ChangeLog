@@ -1,6 +1,10 @@
 
-	* Sat Feb 23 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.2
+	* Sun Feb 24 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.3
 	- Something
+
+	* Sat Feb 16 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.2
+	- The new slice and dice algorithm seems to work now. More thorough tests
+	are needed.
 
 	* Sat Feb 16 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.1
 	- Updated the source code to the newest format of the ORI-maintained list
