@@ -53,6 +53,12 @@ namespace OPENTREP {
      */
     void clear();
     
+    /**
+     * Get the first string of the underlying list/set.
+     */
+    std::string getFirstString() const;
+
+
   public:
     // /////////// Display support methods /////////
     /**
