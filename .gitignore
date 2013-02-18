@@ -1,3 +1,4 @@
 tmp
 /build/
+/build2/
 *.pyc
