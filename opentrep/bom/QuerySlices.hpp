@@ -26,13 +26,13 @@ namespace OPENTREP {
    *
    * For instance, "san francisco nce rio de janeiro" will give:
    * <ul>
-   *   <li>{</li>
+   *   <li>[</li>
    *   <li><ul>
-   *     <li>{"san francisco"}</li>
-   *     <li>{"nce"}</li>
-   *     <li>{"rio de janeiro"}</li>
+   *     <li>0. { {"san francisco"} }</li>
+   *     <li>1. { {"nce"} }</li>
+   *     <li>2. { {"rio de janeiro"} }</li>
    *   </ul></li>
-   *   <li>}</li>
+   *   <li>]</li>
    * </ul>
    *
    * Indeed, "francisco nce" does not yield any match; hence, the query may
