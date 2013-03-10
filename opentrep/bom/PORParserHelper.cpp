@@ -1061,7 +1061,7 @@ namespace OPENTREP {
         por_rule_end = bsq::eps;
 
         por_key = iata_code
-          >> '^' >> icao_code
+          >> '^' >> -icao_code
           >> '^' >> -faa_code
           >> '^' >> is_geonames
           >> '^' >> geoname_id
