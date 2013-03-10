@@ -363,7 +363,10 @@ namespace OPENTREP {
     
     // 2.
     const std::string& leftWord = *itWord;
-    _itLeftWords += " " + leftWord;
+    if (_itLeftWords.empty() == false) {
+      _itLeftWords += " ";
+    }
+    _itLeftWords += leftWord;
     _slices.push_back (_itLeftWords);
 
     // DEBUG
