@@ -1,4 +1,7 @@
 
+	* Sun Apr 28 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.4
+	- Something
+
 	* Sun Feb 24 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.3
 	- Fixed a bug hindering the new slice and dice algorithm to fully work.
 	  That latter now seems to fully work.
