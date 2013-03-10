@@ -131,7 +131,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Feb 24 2013 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.5.3-1
+* Sun Mar 10 2013 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.5.3-1
 - Upstream update
 
 * Sun Feb 17 2013 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.5.2-1

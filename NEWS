@@ -1,7 +1,8 @@
 
-* 2013-02-24:
+* 2013-03-10:
 - Version 0.5.3
-- Something
+- Fixed a bug hindering the new slice and dice algorithm to fully work.
+  That latter now seems to fully work.
 
 * 2013-02-16:
 - Version 0.5.2
