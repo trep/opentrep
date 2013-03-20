@@ -4,7 +4,7 @@
 import os
 from mod_python import apache
 
-local_path = '/var/www/opentrep'
+local_path = '/var/www/webapps/opentrep'
 localize = apache.import_module('localize', path=[local_path])
 log_service = apache.import_module('log_service', path=[local_path])
 
@@ -35,11 +35,12 @@ if queryStringForm.has_key('data'):
 		libpyopentrep_proxy = apache.import_module('libpyopentrep_proxy', path=[local_path])
 		libpyopentrep = libpyopentrep_proxy.import_libpyopentrep(localize.libpyopentrep_path)
 		mySearch = libpyopentrep.OpenTrepSearcher()
-		mySearch.init(localize.traveldb_path, localize.tmp_trep_log_filename, localize.opentrep_dbparams['user'], localize.opentrep_dbparams['password'], localize.opentrep_dbparams['host'], localize.opentrep_dbparams['port'], localize.opentrep_dbparams['db'])
+		mySearch.init(localize.traveldb_path, localize.tmp_trep_log_filename)
 
 		# Delegate the interpretation to the underlying
 		# OpenTrep library
-		str_matches = mySearch.search(form_value)
+		output_format = 'S'
+		str_matches = mySearch.search(output_format, form_value)
 
 		# Parsing begins
 		# 1. First, strip out the unrecongised keywords
