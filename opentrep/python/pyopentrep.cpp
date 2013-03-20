@@ -1,3 +1,5 @@
+// Python
+#include <boost/python.hpp>
 // STL
 #include <cassert>
 #include <stdexcept>
@@ -8,7 +10,6 @@
 #include <vector>
 // Boost Python
 #include <boost/filesystem.hpp>
-#include <boost/python.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/OutputFormat.hpp>
