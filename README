@@ -73,7 +73,7 @@ export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=64"
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-0.5.3 \
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-0.5.4 \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 * To build the project, type:
@@ -83,7 +83,7 @@ Then, as usual:
 * To install the library (libopentrep*.so*) and the binary (opentrep), just type:
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f opentrep-stable && ln -s opentrep-0.5.3 opentrep-stable
+  rm -f opentrep-stable && ln -s opentrep-0.5.4 opentrep-stable
   cd -
 * To package the source files, type:
   make dist
@@ -112,5 +112,5 @@ midori http://localhost:8000/trep/api/"rio de janero reykyavik sna francicso"
 
 
 ----
-Denis Arnaud (February 2013)
+Denis Arnaud (March 2013)
 

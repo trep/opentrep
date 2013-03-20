@@ -279,14 +279,6 @@ namespace OPENTREP {
     OPENTREP_LOG_DEBUG (std::endl
                         << "=========================================");
       
-    /**
-     * 0. Initialisation
-     *
-     * Create a ResultCombination BOM instance.
-     */
-    ResultCombination& lResultCombination =
-      FacResultCombination::instance().create (iTravelQuery);
-
     // First, cut the travel query in slices and calculate all the partitions
     // for each of those query slices
     QuerySlices lQuerySlices (lXapianDatabase, iTravelQuery);
@@ -304,6 +296,14 @@ namespace OPENTREP {
          itSlice != lStringPartitionList.end(); ++itSlice) {
       StringPartition lStringPartition = *itSlice;
       const std::string& lTravelQuerySlice = lStringPartition.getInitialString();
+
+      /**
+       * 0. Initialisation
+       *
+       * Create a ResultCombination BOM instance.
+       */
+      ResultCombination& lResultCombination =
+        FacResultCombination::instance().create (lTravelQuerySlice);
 
       // DEBUG
       // DEBUG
