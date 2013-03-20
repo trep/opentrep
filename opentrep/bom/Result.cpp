@@ -491,8 +491,7 @@ namespace OPENTREP {
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("      ----------------");
-      OPENTREP_LOG_DEBUG ("      Current query string: '"<< iQueryString
-                          << "')");
+      OPENTREP_LOG_DEBUG ("      Current query string: '"<< iQueryString << "'");
 
       // Check whether the string should be filtered out
       //const bool isToBeAdded = Filter::shouldKeep ("", iQueryString);
