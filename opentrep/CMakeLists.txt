@@ -16,21 +16,6 @@ module_set_name (opentrep)
 module_library_add_standard (".;basic;bom;factory;dbadaptor;command;service")
 
 ##
-# Building and installation of Protobuf stubs/skeletons.
-# The first three parameters are mandatory and correspond to:
-#  * The short name of the library to be built.
-#    Note that the library (CMake) target is derived directly from the library
-#    short name: a 'lib' suffix is just appended to the short name.
-#  * The directory where to find the Protobuf-related source files.
-#  * The basename of the source files to build the library.
-#    Note that there is a naming convention here:
-#      - The Protobuf interface file is made from the basename and the 'proto'
-#        suffix.
-#      - The source files are made from the basename and the '.hpp' and '.cpp'
-#        suffices.
-build_protobuf (pbopentrep protobuf Travel opentrep)
-
-##
 # Building and installation of a specific library.
 # The first four parameters are mandatory and correspond to:
 #  * The short name of the library to be built.

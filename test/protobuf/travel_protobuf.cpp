@@ -2,8 +2,8 @@
 #include <iostream>
 // OpenTREP
 #include <opentrep/Location.hpp>
+#include <opentrep/bom/Travel.hpp>
 #include <opentrep/service/Logger.hpp>
-#include <opentrep/protobuf/Travel.hpp>
 
 // ////////////// M A I N //////////////
 int main (int argc, char* argv[]) {

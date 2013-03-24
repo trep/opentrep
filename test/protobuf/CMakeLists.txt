@@ -1,5 +1,5 @@
 #
-# OpenTREP Tests
+# OpenTREP tests related to Protobuf
 #
 
 ##
@@ -10,8 +10,7 @@
 
 # With Protobuf
 if (PROTOBUF_FOUND)
-  module_test_add_suite (protobuf travel_protobuf "travel_protobuf.cpp"
-	pbopentrep)
+  module_test_add_suite (protobuf travel_protobuf "travel_protobuf.cpp" opentrep)
 endif (PROTOBUF_FOUND)
 
 
