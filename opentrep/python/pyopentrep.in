@@ -3,6 +3,8 @@
 import sys, getopt, os
 import simplejson as json
 sys.path.append ('@INSTALL_LIB_DIR@')
+sys.path.append ('@INSTALL_PY_LIB_DIR@')
+import Travel_pb2
 
 # Usage
 def usage (script_name):
@@ -275,12 +277,27 @@ def search (openTrepLibrary, searchString, outputFormat):
         print interpretedString
 
 
+##
+#
+def _protobuf_helper():
+    # Protobuf
+    place = Travel_pb2.Place()
+    airport_code = place.iata_code
+    airport_code.iata_code = "KBP"
+
+    # DEBUG
+    print 'Airport IATA code: ' + str(airport_code)
+    print 'Place: ' + str(place)
+
 
 ############################
 # Main
 ############################
 if __name__ == '__main__':
     command, outputFormat, xapianDBPath, searchString = handle_opt()
+
+    # Play with Protobuf
+    _protobuf_helper()
 
     # Initialise the OpenTrep C++ library
     import libpyopentrep
