@@ -11,6 +11,7 @@
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/OPENTREP_ParserHelperTypes.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
+#include <opentrep/IATAType.hpp>
 #include <opentrep/Language.hpp>
 #include <opentrep/LocationKey.hpp>
 #include <opentrep/NameMatrix.hpp>
@@ -210,7 +211,7 @@ namespace OPENTREP {
     /**
      * Get the IATA location type (e.g., A for airport).
      */
-    const IATAType_T& getIATAType() const {
+    const IATAType& getIATAType() const {
       return _iataType;
     }
 
@@ -572,8 +573,8 @@ namespace OPENTREP {
     /**
      * Set the IATA location type (e.g., A for airport).
      */
-    void setIATAType (const std::string& iIATAType) {
-      _iataType = IATAType_T (iIATAType);
+    void setIATAType (const IATAType& iIATAType) {
+      _iataType = iIATAType;
     }
 
     /**
@@ -854,7 +855,7 @@ namespace OPENTREP {
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const ContinentName_T&,
               const Latitude_T&, const Longitude_T&,
-              const FeatureClass_T&, const FeatureCode_T&, const IATAType_T&,
+              const FeatureClass_T&, const FeatureCode_T&, const IATAType&,
               const Admin1Code_T&, const Admin1UTFName_T&,
               const Admin1ASCIIName_T&,
               const Admin2Code_T&, const Admin2UTFName_T&,
@@ -993,7 +994,7 @@ namespace OPENTREP {
     /**
      * IATA location type (e.g., A for airport).
      */
-    IATAType_T _iataType;
+    IATAType _iataType;
 
     /**
      * Administrative code of rank 1 (e.g., IL for Illinois).

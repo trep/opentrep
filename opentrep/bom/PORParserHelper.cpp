@@ -710,7 +710,7 @@ namespace OPENTREP {
     void storePORType::operator() (std::vector<uchar_t> iChar,
                                    bsq::unused_type, bsq::unused_type) const {
       const std::string lIATATypeStr (iChar.begin(), iChar.end());
-      const IATAType_T lIATAType (lIATATypeStr);
+      const IATAType lIATAType (lIATATypeStr);
       _location.setIATAType (lIATAType);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("IATA type: " << _location.getIATAType());

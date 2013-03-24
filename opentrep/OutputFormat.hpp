@@ -1,5 +1,5 @@
-#ifndef __OPENTREP_BAS_OUTPUTFORMAT_HPP
-#define __OPENTREP_BAS_OUTPUTFORMAT_HPP
+#ifndef __OPENTREP_OUTPUTFORMAT_HPP
+#define __OPENTREP_OUTPUTFORMAT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -20,26 +20,28 @@ namespace OPENTREP {
       SHORT = 0,
       FULL,
       JSON,
+      PROTOBUF,
       LAST_VALUE
     } EN_OutputFormat;
 
     /**
-     * Get the label as a string (e.g., "Short", "Full" or "JSON").
+     * Get the label as a string (e.g., "Short", "Full", "JSON" or "PROTOBUF").
      */
     static const std::string& getLabel (const EN_OutputFormat&);
 
     /**
-     * Get the format value from parsing a single char (e.g., 'S', 'F' or 'J').
+     * Get the format value from parsing a single char (e.g., 'S', 'F', 'J'
+     * or 'P').
      */
     static EN_OutputFormat getFormat (const char);
 
     /**
-     * Get the label as a single char (e.g., 'S', 'F' or 'J').
+     * Get the label as a single char (e.g., 'S', 'F', 'J' or 'P').
      */
     static char getFormatLabel (const EN_OutputFormat&);
 
     /**
-     * Get the label as a string of a single char (e.g., "S", "F" or "J").
+     * Get the label as a string of a single char (e.g., "S", "F", "J" or "P").
      */
     static std::string getFormatLabelAsString (const EN_OutputFormat&);
 
@@ -54,17 +56,18 @@ namespace OPENTREP {
     EN_OutputFormat getFormat() const;
 
     /**
-     * Get the enumerated value as a short string (e.g., 'S', 'F' or 'J').
+     * Get the enumerated value as a short string (e.g., 'S', 'F', 'J' or 'P').
      */
     char getFormatAsChar() const;
     
     /**
-     * Get the enumerated value as a short string (e.g., "S", "F" or "J").
+     * Get the enumerated value as a short string (e.g., "S", "F", "J" or "P").
      */
     std::string getFormatAsString() const;
     
     /**
-     * Give a description of the structure (e.g., "Short", "Full" or "JSON").
+     * Give a description of the structure (e.g., "Short", "Full", "JSON"
+     * or "PROTOBUF").
      */
     const std::string describe() const;
 
@@ -112,10 +115,10 @@ namespace OPENTREP {
   private:
     // //////// Attributes /////////
     /**
-     * DemandGeneration format.
+     * Output format.
      */
     EN_OutputFormat _format;
   };
 
 }
-#endif // __OPENTREP_BAS_OUTPUTFORMAT_HPP
+#endif // __OPENTREP_OUTPUTFORMAT_HPP

@@ -230,7 +230,7 @@ namespace OPENTREP {
     /**
      * Get the IATA location type (e.g., A for airport).
      */
-    const IATAType_T& getIATAType() const {
+    const IATAType& getIATAType() const {
       return _location.getIATAType();
     }
 

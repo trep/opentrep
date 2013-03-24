@@ -7,6 +7,7 @@
 // Boost ForEach
 //#include <boost/foreach.hpp>
 // OpenTREP
+#include <opentrep/Location.hpp>
 #include <opentrep/bom/BomJSONExport.hpp>
 
 namespace OPENTREP { 
@@ -14,14 +15,14 @@ namespace OPENTREP {
   // ////////////////////////////////////////////////////////////////////
   void BomJSONExport::
   jsonExportLocationList (std::ostream& oStream,
-			  const LocationList_T& iLocationList) {
+                          const LocationList_T& iLocationList) {
 
     // Create empty Boost.Property_Tree objects
     bpt::ptree lPT;
     bpt::ptree lPTLocationList;
 
     for (LocationList_T::const_iterator itLocation = iLocationList.begin();
-	 itLocation != iLocationList.end(); ++itLocation) {
+         itLocation != iLocationList.end(); ++itLocation) {
       const Location& lLocation = *itLocation;
       //
       bpt::ptree lPTLocation;
@@ -29,52 +30,51 @@ namespace OPENTREP {
 
       // List of extra matching locations (those with the same matching
       // weight/percentage)
-      const LocationList_T& lExtraLocationList =
-	lLocation.getExtraLocationList();
+      const LocationList_T& lExtraLocationList= lLocation.getExtraLocationList();
       if (lExtraLocationList.empty() == false) {
-	//
-	bpt::ptree lPTExtraLocationList;
+        //
+        bpt::ptree lPTExtraLocationList;
 
-	NbOfMatches_T idxExtra = 0;
-	for (LocationList_T::const_iterator itLoc = lExtraLocationList.begin();
-	     itLoc != lExtraLocationList.end(); ++itLoc, ++idxExtra) {
-	  const Location& lExtraLocation = *itLoc;
-	  //
-	  bpt::ptree lPTExtraLocation;
-	  jsonExportLocation (lPTExtraLocation, lExtraLocation);
+        NbOfMatches_T idxExtra = 0;
+        for (LocationList_T::const_iterator itLoc = lExtraLocationList.begin();
+             itLoc != lExtraLocationList.end(); ++itLoc, ++idxExtra) {
+          const Location& lExtraLocation = *itLoc;
+          //
+          bpt::ptree lPTExtraLocation;
+          jsonExportLocation (lPTExtraLocation, lExtraLocation);
 
-	  // Put the current location tree in the location list
-	  lPTExtraLocationList.push_back (std::make_pair("", lPTExtraLocation));
-	}
+          // Put the current location tree in the location list
+          lPTExtraLocationList.push_back (std::make_pair("", lPTExtraLocation));
+        }
 
-	// Add the extra location list to the Boost.Property_Tree representing
-	// the current Location instance.
-	lPTLocation.add_child ("extras", lPTExtraLocationList);
+        // Add the extra location list to the Boost.Property_Tree representing
+        // the current Location instance.
+        lPTLocation.add_child ("extras", lPTExtraLocationList);
       }
 
       // List of alternate matching locations (those with a lower matching
       // weight/percentage)
       const LocationList_T& lAltLocationList =
-	lLocation.getAlternateLocationList();
+        lLocation.getAlternateLocationList();
       if (lAltLocationList.empty() == false) {
-	//
-	bpt::ptree lPTAltLocationList;
+        //
+        bpt::ptree lPTAltLocationList;
 
-	NbOfMatches_T idxAlter = 0;
-	for (LocationList_T::const_iterator itLoc = lAltLocationList.begin();
-	     itLoc != lAltLocationList.end(); ++itLoc, ++idxAlter) {
-	  const Location& lAltLocation = *itLoc;
-	  //
-	  bpt::ptree lPTAltLocation;
-	  jsonExportLocation (lPTAltLocation, lAltLocation);
+        NbOfMatches_T idxAlter = 0;
+        for (LocationList_T::const_iterator itLoc = lAltLocationList.begin();
+             itLoc != lAltLocationList.end(); ++itLoc, ++idxAlter) {
+          const Location& lAltLocation = *itLoc;
+          //
+          bpt::ptree lPTAltLocation;
+          jsonExportLocation (lPTAltLocation, lAltLocation);
 
-	  // Put the current location tree in the location list
-	  lPTAltLocationList.push_back (std::make_pair("", lPTAltLocation));
-	}
+          // Put the current location tree in the location list
+          lPTAltLocationList.push_back (std::make_pair ("", lPTAltLocation));
+        }
 
-	// Add the extra location list to the Boost.Property_Tree representing
-	// the current Location instance.
-	lPTLocation.add_child ("alternates", lPTAltLocationList);
+        // Add the extra location list to the Boost.Property_Tree representing
+        // the current Location instance.
+        lPTLocation.add_child ("alternates", lPTAltLocationList);
       }
 
       // Add the current location property tree to the location list
