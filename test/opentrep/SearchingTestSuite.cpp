@@ -42,6 +42,13 @@ struct UnitTestConfig {
 };
 
 
+// //////////// Constants for the tests ///////////////
+/**
+ * Xapian database/index file-path (directory containing the index).
+ */
+const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
+
+
 // /////////////// Main: Unit Test Suite //////////////
 
 // Set the UTF configuration (re-direct the output to a specific file)
@@ -59,7 +66,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
   std::string lLogFilename ("SearchingTestSuite.log");
 
   // Travel query
-  std::string lTravelQuery ("cdg");
+  std::string lTravelQuery ("nce");
     
   // Set the log parameters
   std::ofstream logOutputFile;
@@ -68,8 +75,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
   logOutputFile.clear();
 
   // Initialise the context
-  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath
-    (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
+  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath);
   
   // Query the Xapian database (index)

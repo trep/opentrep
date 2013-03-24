@@ -339,6 +339,10 @@ macro (get_external_libs)
       get_boost (${_arg_version})
     endif (${_arg_lower} STREQUAL "boost")
 
+    if (${_arg_lower} STREQUAL "protobuf")
+      get_protobuf (${_arg_version})
+    endif (${_arg_lower} STREQUAL "protobuf")
+
     if (${_arg_lower} STREQUAL "xapian")
       get_xapian (${_arg_version})
     endif (${_arg_lower} STREQUAL "xapian")
@@ -625,6 +629,33 @@ macro (get_boost)
   endif (Boost_FOUND)
 
 endmacro (get_boost)
+
+# ~~~~~~~~~~ Protobuf ~~~~~~~~~
+macro (get_protobuf)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires Protobuf-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires Protobuf without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  set (PROTOBUF_FOUND False)
+
+  find_package (Protobuf ${_required_version} REQUIRED)
+  if (PROTOBUF_LIBRARY)
+    set (PROTOBUF_FOUND True)
+  endif (PROTOBUF_LIBRARY)
+
+  if (PROTOBUF_FOUND)
+    # Update the list of include directories for the project
+    include_directories (${PROTOBUF_INCLUDE_DIR})
+
+    # Update the list of dependencies for the project
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${PROTOBUF_LIBRARIES})
+  endif (PROTOBUF_FOUND)
+
+endmacro (get_protobuf)
 
 # ~~~~~~~~~~ Xapian ~~~~~~~~~
 macro (get_xapian)
@@ -1558,6 +1589,110 @@ macro (module_library_add_specific
 endmacro (module_library_add_specific)
 
 ##
+# Building and installation of Protobuf stubs/skeletons.
+# The first three parameters are mandatory and correspond to:
+#  * The short name of the library to be built.
+#    Note that the library (CMake) target is derived directly from the library
+#    short name: a 'lib' suffix is just appended to the short name.
+#  * The directory where to find the Protobuf-related source files.
+#  * The basename of the source files to build the library.
+#    Note that there is a naming convention here:
+#      - The Protobuf interface file is made from the basename and the 'proto'
+#        suffix.
+#      - The source files are made from the basename and the '.hpp' and '.cpp'
+#        suffices.
+macro (build_protobuf _lib_short_name _lib_dir _proto_name)
+  # Specify the source file, which is by convention (here) made of the name
+  # of the Protobuf interface file suffixed by .hpp/.cpp
+  set (_lib_headers ${_lib_dir}/${_proto_name}.hpp)
+  set (_lib_sources ${_lib_headers} ${_lib_dir}/${_proto_name}.cpp)
+
+  # Specify the Protobuf specification file, which is by convention (here)
+  # made of the name of the Protobuf interface file suffixed by .proto
+  set (_proto_file ${_lib_dir}/${_proto_name}.proto)
+
+  # Build the stubs/skeletons
+  PROTOBUF_GENERATE_CPP (PROTO_SRCS PROTO_HDRS ${_proto_file})
+
+  # Derive the library (CMake) target from its name
+  set (_lib_target ${_lib_short_name}lib)
+
+  # Register the (CMake) target for the library
+  add_library (${_lib_target} SHARED ${_lib_sources} ${PROTO_SRCS} ${PROTO_HDRS})
+
+  # For each module, given as parameter of that macro, add the corresponding
+  # library target to a dedicated list
+  set (_intermodule_dependencies "")
+  foreach (_arg_module ${ARGV})
+
+    if (NOT "${_lib_dir};${_lib_short_name};${_lib_headers};${_lib_sources}" 
+		MATCHES "${_arg_module}")
+      list (APPEND _intermodule_dependencies ${_arg_module}lib)
+    endif ()
+  endforeach (_arg_module)
+
+  # Add the dependencies:
+  #  * on external libraries (Boost, MySQL, SOCI, StdAir), as calculated by 
+  #    the get_external_libs() macro above;
+  #  * on the other module libraries, as provided as paramaters to this macro
+  #  * on the main/standard library of the module (when, of course, the
+  #    current library is not the main/standard library).
+  if (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
+	set (_intramodule_dependencies ${MODULE_NAME}lib)
+  endif (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
+  target_link_libraries (${_lib_target} ${PROJ_DEP_LIBS_FOR_LIB} 
+	${_intermodule_dependencies} ${_intramodule_dependencies})
+
+  # Register the library target in the project (for reporting purpose).
+  # Note, the list() commands creates a new variable value in the current scope:
+  # the set() must therefore be used to propagate the value upwards. And for
+  # those wondering whether we could do that operation with a single set()
+  # command, I have already tried... unsucessfully(!)
+  list (APPEND PROJ_ALL_LIB_TARGETS ${_lib_target})
+  set (PROJ_ALL_LIB_TARGETS ${PROJ_ALL_LIB_TARGETS} PARENT_SCOPE)
+
+  # Register the intermodule dependency targets in the project (for
+  # reporting purpose).
+  set (${MODULE_NAME}_INTER_TARGETS ${_intermodule_dependencies})
+  set (${MODULE_NAME}_INTER_TARGETS ${_intermodule_dependencies} PARENT_SCOPE)
+
+  ##
+  # Library name (and soname)
+  if (WIN32)
+    set_target_properties (${_lib_target} PROPERTIES 
+      OUTPUT_NAME ${_lib_short_name} 
+      VERSION ${GENERIC_LIB_VERSION})
+  else (WIN32)
+    set_target_properties (${_lib_target} PROPERTIES 
+      OUTPUT_NAME ${_lib_short_name}
+      VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION})
+  endif (WIN32)
+
+  # If everything else is not enough for CMake to derive the language to
+  # be used by the linker, it must be told to fall-back on C++
+  get_target_property (_linker_lang ${_lib_target} LINKER_LANGUAGE)
+  if ("${_linker_lang}" STREQUAL "_linker_lang-NOTFOUND")
+    set_target_properties (${_lib_target} PROPERTIES LINKER_LANGUAGE CXX)
+    message(STATUS "Had to set the linker language for '${_lib_target}' to CXX")
+  endif ("${_linker_lang}" STREQUAL "_linker_lang-NOTFOUND")
+
+  ##
+  # Installation of the library
+  install (TARGETS ${_lib_target}
+    EXPORT ${LIB_DEPENDENCY_EXPORT}
+    LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT runtime)
+
+  # Register, for reporting purpose, the list of libraries to be built
+  # and installed for that module
+  list (APPEND ${MODULE_NAME}_ALL_LIBS ${_lib_target})
+  set (${MODULE_NAME}_ALL_LIBS ${${MODULE_NAME}_ALL_LIBS} PARENT_SCOPE)
+
+  # If given/existing, install the header files for the library
+  module_header_install_specific (${_lib_dir} "${_lib_headers};${PROTO_HDRS}")
+
+endmacro (build_protobuf)
+
+##
 # Installation of specific header files
 macro (module_header_install_specific _lib_dir _lib_headers)
   #
@@ -1772,6 +1907,7 @@ endmacro (add_test_suite)
 ##
 # Register a test with CMake/CTest.
 # The parameters are:
+#  * The name of the test module
 #  * The name of the test, which will serve as the name for the test binary.
 #  * The list of sources for the test binary. The list must be
 #    semi-colon (';') seperated.
@@ -1808,7 +1944,8 @@ macro (module_test_add_suite _module_name _test_name _test_sources)
 
     # Tell the test binary that it depends on all those libraries
     target_link_libraries (${_test_name}tst ${_library_list} 
-      ${MODULE_LIB_TARGET} ${PROJ_DEP_LIBS_FOR_TST})
+      ${MODULE_LIB_TARGET} ${${MODULE_NAME}_INTER_TARGETS}
+	  ${PROJ_DEP_LIBS_FOR_TST})
 
     # Register the binary target in the module
     list (APPEND ${MODULE_NAME}_ALL_TST_TARGETS ${_test_name}tst)
@@ -2308,6 +2445,19 @@ macro (display_boost)
   endif (Boost_FOUND)
 endmacro (display_boost)
 
+# Protobuf
+macro (display_protobuf)
+  if (PROTOBUF_FOUND)
+    message (STATUS)
+    message (STATUS "* Protobuf:")
+    message (STATUS "  - PROTOBUF_VERSION .............. : ${PROTOBUF_VERSION}")
+    message (STATUS "  - PROTOBUF_INCLUDE_DIR .......... : ${PROTOBUF_INCLUDE_DIR}")
+    message (STATUS "  - PROTOBUF_LIBRARY .............. : ${PROTOBUF_LIBRARY}")
+    message (STATUS "  - PROTOBUF_PROTOC_EXECUTABLE .... : ${PROTOBUF_PROTOC_EXECUTABLE}")
+    message (STATUS "  - PROTOBUF_PROTOC_LIBRARY ....... : ${PROTOBUF_PROTOC_LIBRARY}")
+  endif (PROTOBUF_FOUND)
+endmacro (display_protobuf)
+
 # Xapian
 macro (display_xapian)
   if (XAPIAN_FOUND)
@@ -2663,6 +2813,7 @@ macro (display_status)
   display_icu ()
   display_zeromq ()
   display_boost ()
+  display_protobuf ()
   display_xapian ()
   display_readline ()
   display_curses ()

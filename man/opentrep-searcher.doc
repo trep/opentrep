@@ -4,7 +4,7 @@
 
 \section sec_synopsis SYNOPSIS
 
-<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error <spelling error>] [-d|--database <Xapian-travel-database-path>] [-l|--log <path-to-output-log-file>] [-n|--nodb] [-u|--user <db-user>] [-p|--passwd <db-password>] [-H|--host <db-server-hostname>] [-P|--port <db-server-port>] [-m|--dbname <db-name>] [-t|--type <search-type>] [-q|--query <search-query>]</tt>
+<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error < spelling error>] [-d|--database <Xapian-travel-database-path>] [-l|--log <path-to-output-log-file>] [-n|--nodb] [-u|--user <db-user>] [-p|--passwd <db-password>] [-H|--host <db-server-hostname>] [-P|--port <db-server-port>] [-m|--dbname <db-name>] [-t|--type <search-type>] [-q|--query <search-query>]</tt>
 
 \section sec_description DESCRIPTION
 
