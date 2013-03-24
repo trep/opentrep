@@ -8,6 +8,7 @@
 #define EXEC_PREFIX "@exec_prefix@"
 #define BINDIR "@bindir@"
 #define LIBDIR "@libdir@"
+#define PYLIBDIR "@pylibdir@"
 #define LIBEXECDIR "@libexecdir@"
 #define SBINDIR "@sbindir@"
 #define SYSCONFDIR "@sysconfdir@"

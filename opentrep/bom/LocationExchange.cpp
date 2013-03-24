@@ -47,11 +47,14 @@ namespace OPENTREP {
     lPointPtr->set_longitude (30.894722);
 
     // City code
-    treppb::IATAPOR* lIataCityPtr = ioPlace.mutable_iata_code();
+    treppb::IATAPOR* lIataCityPtr = ioPlace.mutable_city_code();
     lIataCityPtr->set_iata_code ("IEV");
 
     // Beginning date of the validity period
     ioPlace.set_from_date ("1970-01-01");
+
+    // Serialise the Protobuf
+    ioPlace.SerializeToOstream (&oStr);
 
     //
     return oStr.str();

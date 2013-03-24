@@ -1,22 +1,23 @@
 #
-# Config file for the AirRAC package. It defines the following variables:
-#  AIRRAC_VERSION      - version of AirRAC
-#  AIRRAC_BINARY_DIRS  - binary directories for AirRAC
-#  AIRRAC_INCLUDE_DIRS - include directories for AirRAC
-#  AIRRAC_LIBRARY_DIRS - library directories for AirRAC (normally not used!)
-#  AIRRAC_LIBRARIES    - libraries to link against
-#  AIRRAC_EXECUTABLES  - the AirRAC binaries/executables
+# Config file for the OpenTrep package. It defines the following variables:
+#  OPENTREP_VERSION      - version of OpenTrep
+#  OPENTREP_BINARY_DIRS  - binary directories for OpenTrep
+#  OPENTREP_INCLUDE_DIRS - include directories for OpenTrep
+#  OPENTREP_LIBRARY_DIRS - library directories for OpenTrep (normally not used!)
+#  OPENTREP_LIBRARIES    - libraries to link against
+#  OPENTREP_EXECUTABLES  - the OpenTrep binaries/executables
 
-# Tell the user project where to find AirRAC headers and libraries
-set (AIRRAC_VERSION "@PACKAGE_VERSION@")
-set (AIRRAC_BINARY_DIRS "@AIRRAC_BIN_DIR@")
-set (AIRRAC_INCLUDE_DIRS "@AIRRAC_INCLUDE_DIRS@")
-set (AIRRAC_LIBRARY_DIRS "@AIRRAC_LIB_DIR@")
+# Tell the user project where to find OpenTrep headers and libraries
+set (OPENTREP_VERSION "@PACKAGE_VERSION@")
+set (OPENTREP_BINARY_DIRS "@OPENTREP_BIN_DIR@")
+set (OPENTREP_INCLUDE_DIRS "@OPENTREP_INCLUDE_DIRS@")
+set (OPENTREP_LIBRARY_DIRS "@OPENTREP_LIB_DIR@:@OPENTREP_PY_LIB_DIR@")
 
-# Library dependencies for AirRAC (contains definitions for the AirRAC IMPORTED
-# targets)
-include ("@AIRRAC_CMAKE_DIR@/airrac-library-depends.cmake")
+# Library dependencies for OpenTrep (contains definitions for the OpenTrep
+# IMPORTED targets)
+include ("@OPENTREP_CMAKE_DIR@/opentrep-library-depends.cmake")
 
-# These are the AirRAC IMPORTED targets, created by airrac-library-depends.cmake
-set (AIRRAC_LIBRARIES airraclib)
-set (AIRRAC_EXECUTABLES airrac)
+# These are the OpenTrep IMPORTED targets, created by
+# opentrep-library-depends.cmake
+set (OPENTREP_LIBRARIES opentreplib pyopentreplib)
+set (OPENTREP_EXECUTABLES opentrep pyopentrep)
