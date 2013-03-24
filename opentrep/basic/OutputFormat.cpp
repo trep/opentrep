@@ -11,10 +11,10 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   const std::string OutputFormat::_labels[LAST_VALUE] =
-    { "Short", "Full", "JSON" };
+    { "Short", "Full", "JSON", "PROTOBUF" };
 
   // //////////////////////////////////////////////////////////////////////
-  const char OutputFormat::_formatLabels[LAST_VALUE] = { 'S', 'F', 'J' };
+  const char OutputFormat::_formatLabels[LAST_VALUE] = { 'S', 'F', 'J', 'P' };
 
   
   // //////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ namespace OPENTREP {
     case 'S': oFormat = SHORT; break;
     case 'F': oFormat = FULL; break;
     case 'J': oFormat = JSON; break;
+    case 'P': oFormat = PROTOBUF; break;
     default: oFormat = LAST_VALUE; break;
     }
 

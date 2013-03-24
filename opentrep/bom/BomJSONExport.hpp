@@ -6,18 +6,18 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <iosfwd>
-// Boost Property Tree
+// Boost Property Tree (PT)
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-// Opentrep
-#include <opentrep/Location.hpp>
+// OpenTrep
+#include <opentrep/LocationList.hpp>
 
 namespace bpt = boost::property_tree;
 
 namespace OPENTREP {
 
-  /// Forward declarations  
-  struct Location; 
+  // Forward declarations
+  struct Location;
 
   /**
    * @brief Utility class to export Opentrep structures in a JSON format.
@@ -41,7 +41,7 @@ namespace OPENTREP {
      * a Location object.
      *
      * @param bpt::ptree& Property tree in which the Location structure 
-     *        should be logged/dumped.
+     *                    should be logged/dumped.
      * @param const Location& Location object to be exported.
      */
     static void jsonExportLocation (bpt::ptree&, const Location&);

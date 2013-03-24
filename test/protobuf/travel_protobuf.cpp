@@ -22,10 +22,13 @@ int main (int argc, char* argv[]) {
   // Build a Location structure to hold the POR details
   OPENTREP::Location lLocation;
   lLocation.setKey (lLocationKey);
+  OPENTREP::LocationList_T lLocationList;
+  lLocationList.push_back (lLocation);
 
   // Serialise the Location structure with Protobuf
-  const std::string& lSerialisedLocation =
-    OPENTREP::LocationExchange::exportLocation (lLocation);
+  std::ostringstream oStr;
+  OPENTREP::LocationExchange::exportLocationList (oStr, lLocationList);
+  const std::string& lSerialisedLocation = oStr.str();
 
   // DEBUG
   OPENTREP_LOG_DEBUG ("Serialised location: " << lSerialisedLocation);

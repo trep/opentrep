@@ -316,14 +316,6 @@ namespace OPENTREP {
   typedef std::list<FeatureName_T> FeatureNameList_T;
 
   /**
-   * IATA location type (e.g., A for airport).
-   */
-  struct IATAType_T : public std::string {
-  public:
-    explicit IATAType_T (const std::string& iValue) : std::string (iValue) { }
-  };
-
-  /**
    * Geographical coordinate (e.g., -10.45 or 56.7).
    */
   typedef double GeoCoord_T;

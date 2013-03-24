@@ -5,31 +5,42 @@ message IATAPOR {
 } 
 
 message Point {
-  required float latitude = 1;
-  required float longitude = 2;
+  required double latitude = 1;
+  required double longitude = 2;
+}
+
+message PlaceType {
+  enum LocationType {
+    CTY_AIRP = 0;
+    CTY_HPT = 1;
+    CTY_RSTN = 2;
+    CTY_BSTN = 3;
+    CTY_FERRY = 4;
+    CITY = 5;
+    AIRP = 6;
+    HPT = 7;
+    RSTN = 8;
+    BSTN = 9;
+    FERRY = 10;
+    OFF = 11;
+	UNKNOWN = 12;
+  }
+
+  required LocationType type = 1;
 }
 
 message Place {
-  enum LocationType {
-    CA = 0;
-    CH = 1;
-    CR = 2;
-    CB = 3;
-    CP = 4;
-    A = 5;
-    H = 6;
-    R = 7;
-    B = 8;
-    P = 9;
-    O = 10;
-  }
 
-  required IATAPOR iata_code = 1;
-  required LocationType loc_type = 2;
-  required int32 geoname_id = 3;
-  optional Point coord = 4;
-  required IATAPOR city_code = 5;
-  optional string from_date = 6;
+  required IATAPOR tvl_code = 1;
+  optional string icao_code = 2;
+  optional string faac_code = 3;
+  required PlaceType loc_type = 4;
+  required int32 geoname_id = 5;
+  optional Point coord = 6;
+  required IATAPOR city_code = 7;
+  optional string from_date = 8;
+  optional double page_rank = 9;
+  optional double matching_percentage = 10;
 }
 
 message PlaceList {

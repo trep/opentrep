@@ -30,8 +30,8 @@ def usage (script_name):
     print "  -i, --index     : performs the indexation with Xapian"
     print "  -x, --xapiandb= : specifies the path to the Xapian DB (index)"
     print "  -f, --format=   : format of the output: Short (S, default),"
-    print "                    Full (F), raw JSON (J) and"
-    print "                    Interpretation from JSON (I)"
+    print "                    Full (F), raw JSON (J), "
+    print "                    Interpretation from JSON (I) or from Protobuf (P)"
     print
 
 # Conversion of a string into a boolean
@@ -190,6 +190,31 @@ def interpretFromJSON (jsonFormattedResult):
     #
     return interpretedString
 
+##
+# Protobuf interpreter. The Protobuf structure contains a list with the
+# main matches, along with their associated fields (weights, coordinates, etc).
+def interpretFromProtobuf (protobufFormattedResult):
+    interpretedString = ''
+
+    # Protobuf
+    placeList = Travel_pb2.PlaceList()
+    placeList.ParseFromString (protobufFormattedResult)
+
+    for place in placeList.place:
+        airport_code = place.tvl_code
+        interpretedString += airport_code.iata_code + '-' 
+        interpretedString += place.icao_code + '-' 
+        interpretedString += str(place.geoname_id) + ' ' 
+        interpretedString += '(' + str(place.page_rank) + '%) / '
+        city_code = place.tvl_code
+        interpretedString += city_code.iata_code + ": "
+        geo_point = place.coord
+        interpretedString += str(geo_point.latitude) + ' ' 
+        interpretedString += str(geo_point.longitude) + '; '
+
+    #
+    return interpretedString
+
 
 ##
 # File-path details
@@ -276,18 +301,13 @@ def search (openTrepLibrary, searchString, outputFormat):
         print 'JSON format => recognised place (city/airport) codes:'
         print interpretedString
 
-
-##
-#
-def _protobuf_helper():
-    # Protobuf
-    place = Travel_pb2.Place()
-    airport_code = place.iata_code
-    airport_code.iata_code = "KBP"
-
-    # DEBUG
-    print 'Airport IATA code: ' + str(airport_code)
-    print 'Place: ' + str(place)
+    # The interpreted Protobuf format is an example of how to extract relevant
+    # information from the corresponding Python structure. That code can be
+    # copied/pasted by clients to the OpenTREP library.
+    elif (outputFormat == 'P'):
+        interpretedString = interpretFromProtobuf (result)
+        print 'Protobuf format => recognised place (city/airport) codes:'
+        print interpretedString
 
 
 ############################
@@ -295,9 +315,6 @@ def _protobuf_helper():
 ############################
 if __name__ == '__main__':
     command, outputFormat, xapianDBPath, searchString = handle_opt()
-
-    # Play with Protobuf
-    _protobuf_helper()
 
     # Initialise the OpenTrep C++ library
     import libpyopentrep

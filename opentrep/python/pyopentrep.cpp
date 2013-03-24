@@ -15,6 +15,7 @@
 #include <opentrep/OutputFormat.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/bom/BomJSONExport.hpp>
+#include <opentrep/bom/LocationExchange.hpp>
 
 namespace OPENTREP {
 
@@ -188,6 +189,7 @@ namespace OPENTREP {
       std::ostringstream oNoDetailedStr;
       std::ostringstream oDetailedStr;
       std::ostringstream oJSONStr;
+      std::ostringstream oProtobufStr;
 
       // Sanity check
       if (_logOutputStream == NULL) {
@@ -318,8 +320,11 @@ namespace OPENTREP {
         *_logOutputStream << "Python search for '" << iTravelQuery
                           << "' yielded:" << std::endl;
 
-	// Export the list of Location objects into a JSON-formatted string
-	BomJSONExport::jsonExportLocationList (oJSONStr, lLocationList);
+        // Export the list of Location objects into a JSON-formatted string
+        BomJSONExport::jsonExportLocationList (oJSONStr, lLocationList);
+
+        // Export the list of Location objects into a Protobuf-formatted string
+        LocationExchange::exportLocationList (oProtobufStr, lLocationList);
 
         // DEBUG
         *_logOutputStream << "Short version: "
@@ -328,6 +333,8 @@ namespace OPENTREP {
                           << oDetailedStr.str() << std::endl;
         *_logOutputStream << "JSON version: "
                           << oJSONStr.str() << std::endl;
+        *_logOutputStream << "Protobuf version: "
+                          << oProtobufStr.str() << std::endl;
 
       } catch (const RootException& eOpenTrepError) {
         *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()
@@ -355,10 +362,14 @@ namespace OPENTREP {
         return oJSONStr.str();
       }
 
+      case OutputFormat::PROTOBUF: {
+        return oProtobufStr.str();
+      }
+
       default: {
-	// If the output format is not known, an exception is thrown by
-	// the call to the OutputFormat() constructor above.
-	assert (false);
+        // If the output format is not known, an exception is thrown by
+        // the call to the OutputFormat() constructor above.
+        assert (false);
       }
       }
     }

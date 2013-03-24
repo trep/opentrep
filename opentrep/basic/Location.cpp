@@ -7,6 +7,7 @@
 #include <list>
 // OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
+#include <opentrep/IATAType.hpp>
 #include <opentrep/Location.hpp>
 
 namespace OPENTREP {
@@ -25,7 +26,7 @@ namespace OPENTREP {
     _continentName (ContinentName_T ("NotAvailable")),
     _latitude (0), _longitude (0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
-    _iataType (IATAType_T ("Z")),
+    _iataType (IATAType::LAST_VALUE),
     _admin1Code (Admin1Code_T ("Z")),
     _admin1UtfName (Admin1UTFName_T ("Z")),
     _admin1AsciiName (Admin1ASCIIName_T ("Z")),
@@ -105,7 +106,7 @@ namespace OPENTREP {
                       const Latitude_T& iLatitude, const Longitude_T& iLongitude,
                       const FeatureClass_T& iFeatureClass,
                       const FeatureCode_T& iFeatureCode,
-                      const IATAType_T& iIATAType,
+                      const IATAType& iIATAType,
                       const Admin1Code_T& iAdmin1Code,
                       const Admin1UTFName_T& iAdmin1UtfName,
                       const Admin1ASCIIName_T& iAdmin1AsciiName,
@@ -201,7 +202,8 @@ namespace OPENTREP {
          << ", " << _countryCode << ", " << _altCountryCode
          << ", " << _countryName << ", " << _continentName
          << ", " << _latitude << ", " << _longitude
-         << ", " << _featClass << ", " << _featCode << ", " << _iataType
+         << ", " << _featClass << ", " << _featCode
+         << ", " << _iataType.getTypeAsString()
          << ", " << _admin1Code
          << ", " << _admin1UtfName << ", " << _admin1AsciiName
          << ", " << _admin2Code
