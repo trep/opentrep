@@ -10,7 +10,7 @@
 // OpenTrep Protobuf
 #include <opentrep/Travel.pb.h>
 // OpenTrep
-#include <opentrep/protobuf/Travel.hpp>
+#include <opentrep/bom/Travel.hpp>
 
 namespace OPENTREP {
   

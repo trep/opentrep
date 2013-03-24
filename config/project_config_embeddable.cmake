@@ -1374,6 +1374,29 @@ macro (module_generate_config_helpers)
 endmacro (module_generate_config_helpers)
 
 ##
+# Detect and generate Protobuf-related stubs
+macro (layer_generate_protobuf _protobuf_dir)
+
+  # Detect the presence of Protobuf specification files
+  file (GLOB _pb_interface_list
+	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${_protobuf_dir}*.proto)
+
+  # Generate the Protobuf stubs/skeletons for every Protobuf specification
+  # file detected
+  foreach (_proto_file ${_pb_interface_list})
+	# Build the stubs/skeletons
+	PROTOBUF_GENERATE_CPP (PROTO_SRCS PROTO_HDRS ${_proto_file})
+
+	# Specify the source file, which is by convention (here) made of the name
+	# of the Protobuf interface file suffixed by .hpp/.cpp
+	list (APPEND ${MODULE_LIB_TARGET}_HEADERS ${PROTO_HDRS})
+	list (APPEND ${MODULE_LIB_TARGET}_SOURCES ${PROTO_SRCS})
+
+  endforeach (_proto_file ${_pb_interface_list})
+
+endmacro (layer_generate_protobuf)
+
+##
 # Building and installation of the "standard library".
 # All the sources within each of the layers/sub-directories are used and
 # assembled, in order to form a single library, named here the
@@ -1435,6 +1458,10 @@ macro (module_library_add_standard _layer_list)
       set (_layer_dir_name "")
     endif ("${_layer_dir_name}" STREQUAL "./")
 
+	# Generate the Protobuf stubs/skeletons for that layer
+	layer_generate_protobuf ("${_layer_dir_name}")
+
+	#
     file (GLOB ${MODULE_LIB_TARGET}_${_layer_name}_HEADERS 
       RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${_layer_dir_name}*.hpp)
     list (APPEND ${MODULE_LIB_TARGET}_HEADERS
