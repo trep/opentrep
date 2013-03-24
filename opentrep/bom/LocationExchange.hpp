@@ -15,9 +15,15 @@
 namespace OPENTREP {
 
   /**
-   * Fill the Protobuf Place structure.
+   * Place holder for Protobuf-related import/export helper functions.
    */
-  void fillLocation (Location&);
+  class LocationExchange {
+  public:
+    /**
+     * Fill the Protobuf Place structure.
+     */
+    static std::string exportLocation (const Location&);
+  };
   
 }
 #endif // __OPENTREP_PROTOBUF_TRAVEL_HPP
