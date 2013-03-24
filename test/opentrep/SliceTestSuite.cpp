@@ -98,9 +98,9 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lSfoRio1Str);
 
   //
-  BOOST_CHECK_MESSAGE (lQuerySlices.size() == 1,
+  BOOST_CHECK_MESSAGE (lQuerySlices.size() == 5,
                        "The query ('" << lSfoRio1Str
-                       << "') should contain a single slice."
+                       << "') should contain 5 slices."
                        << " However, its size is " << lQuerySlices.size()
                        << ".");
 
@@ -108,9 +108,9 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   OPENTREP::QuerySlices lAnotherQuerySlices (lXapianDatabase, lChelseaStr);
 
   //
-  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 2,
+  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 3,
                        "The query ('" << lChelseaStr
-                       << "') should contain two slices."
+                       << "') should contain 3 slices."
                        << " However, its size is " << lAnotherQuerySlices.size()
                        << ".");
 

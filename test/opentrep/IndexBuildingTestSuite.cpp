@@ -20,6 +20,7 @@
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/config/opentrep-paths.hpp>
 
 namespace boost_utf = boost::unit_test;
 
@@ -48,12 +49,13 @@ struct UnitTestConfig {
 /**
  * File-path of the POR (points of reference) file.
  */
-const std::string K_POR_FILEPATH ("ori_por_public.csv");
+const std::string K_POR_FILEPATH (OPENTREP_POR_DATA_DIR
+                                  "/test_ori_por_public.csv");
 
 /**
  * Xapian database/index file-path (directory containing the index).
  */
-const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/traveldb");
+const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -79,10 +81,8 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   logOutputFile.clear();
 
   // Initialise the context
-  const OPENTREP::PORFilePath_T
-    lPORFilePath (OPENTREP::DEFAULT_OPENTREP_POR_FILEPATH);
-  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath
-    (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
+  const OPENTREP::PORFilePath_T lPORFilePath (K_POR_FILEPATH);
+  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
   OPENTREP::OPENTREP_Service opentrepService  (logOutputFile, lPORFilePath,
                                                lTravelDBFilePath);
   
@@ -93,10 +93,10 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   const OPENTREP::NbOfDBEntries_T nbOfEntries =
     opentrepService.buildSearchIndex();
 
-  BOOST_CHECK_MESSAGE (nbOfEntries == 11917,
+  BOOST_CHECK_MESSAGE (nbOfEntries == 9,
                        "The Xapian index ('" << lTravelDBFilePath
                        << "') contains " << nbOfEntries
-                       << " entries, where as 11917 are expected.");
+                       << " entries, where as 9 are expected.");
 
   // Close the Log outputFile
   logOutputFile.close();

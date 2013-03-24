@@ -1,0 +1,37 @@
+package treppb;
+
+message IATAPOR {
+  required string iata_code = 1;
+} 
+
+message Point {
+  required float latitude = 1;
+  required float longitude = 2;
+}
+
+message Place {
+  enum LocationType {
+    CA = 0;
+    CH = 1;
+    CR = 2;
+    CB = 3;
+    CP = 4;
+    A = 5;
+    H = 6;
+    R = 7;
+    B = 8;
+    P = 9;
+    O = 10;
+  }
+
+  required IATAPOR iata_code = 1;
+  required LocationType loc_type = 2;
+  required int32 geoname_id = 3;
+  optional Point coord = 4;
+  required IATAPOR city_code = 5;
+  optional string from_date = 6;
+}
+
+message PlaceList {
+  repeated Place place = 1;
+}

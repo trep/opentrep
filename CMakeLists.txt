@@ -66,7 +66,8 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ##            Dependencies            ##
 ########################################
 #
-get_external_libs (git "python 2.6" "boost 1.48" "icu 4.2" "xapian 1.0" doxygen)
+get_external_libs (git "python 2.6" "boost 1.48" "icu 4.2" protobuf
+  "xapian 1.0" doxygen)
 
 
 ##############################################
@@ -113,6 +114,7 @@ init_test ()
 ##
 # Test suites
 add_test_suite (${PROJECT_NAME})
+add_test_suite (protobuf)
 add_test_suite (i18n)
 
 
