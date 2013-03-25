@@ -1,12 +1,143 @@
 package treppb;
 
-message IATAPOR {
-  required string iata_code = 1;
+message IATACode {
+  required string code = 1;
 } 
 
-message Point {
+message ICAOCode {
+  required string code = 1;
+} 
+
+message FAACode {
+  required string code = 1;
+} 
+
+message GeonameID {
+  required int32 id = 1;
+}
+
+message EnvelopeID {
+  required int32 id = 1;
+}
+
+message StateCode {
+  required string code = 1;
+}
+
+message CountryCode {
+  required string code = 1;
+}
+
+message AltCountryCode {
+  required string code = 1;
+}
+
+message ContinentCode {
+  required string code = 1;
+}
+
+message FeatureClass {
+  required string code = 1;
+}
+
+message FeatureCode {
+  required string code = 1;
+}
+
+message FeatureType {
+  required FeatureClass fclass = 1;
+  required FeatureCode fcode = 2;
+}
+
+message Comment {
+  required string text = 1;
+}
+
+message Date {
+  required string date = 1;
+} 
+
+message Admin1Code {
+  required string code = 1;
+} 
+
+message Admin2Code {
+  required string code = 1;
+} 
+
+message Admin3Code {
+  required string code = 1;
+} 
+
+message Admin4Code {
+  required string code = 1;
+} 
+
+message Population {
+  required int32 value = 1;
+}
+
+message Elevation {
+  required int32 value = 1;
+}
+
+message GTopo30 {
+  required int32 value = 1;
+}
+
+message TravelRelatedList {
+  repeated string tvl_code = 1;
+} 
+
+message TimeZone {
+  required string tz = 1;
+} 
+
+message TZOffSet {
+  required sint32 offset = 1;
+} 
+
+message LanguageCode {
+  required string code = 1;
+} 
+
+message AltName {
+  required LanguageCode lang = 1;
+  required string name = 2;
+} 
+
+message AltNameList {
+  repeated AltName name = 1;
+} 
+
+message WikiLink {
+  required LanguageCode lang = 1;
+  required string link = 2;
+} 
+
+message WikiLinkList {
+  repeated WikiLink link = 1;
+} 
+
+message GeoPoint {
   required double latitude = 1;
   required double longitude = 2;
+}
+
+message PageRank {
+  required double rank = 1;
+}
+
+message MatchingPercentage {
+  required double percentage = 1;
+}
+
+message KeywordList {
+  repeated string word = 1;
+} 
+
+message EditDistance {
+  required int32 dist = 1;
 }
 
 message PlaceType {
@@ -26,23 +157,62 @@ message PlaceType {
 	UNKNOWN = 12;
   }
 
-  required LocationType type = 1;
-}
-
-message Place {
-
-  required IATAPOR tvl_code = 1;
-  optional string icao_code = 2;
-  optional string faac_code = 3;
-  required PlaceType loc_type = 4;
-  required int32 geoname_id = 5;
-  optional Point coord = 6;
-  required IATAPOR city_code = 7;
-  optional string from_date = 8;
-  optional double page_rank = 9;
-  optional double matching_percentage = 10;
+  required LocationType type = 1 [default = UNKNOWN];
 }
 
 message PlaceList {
   repeated Place place = 1;
+}
+
+message Place {
+  optional IATACode tvl_code = 1;
+  optional ICAOCode icao_code = 2;
+  optional FAACode faa_code = 3;
+  optional bool is_geoname = 4;
+  optional GeonameID geoname_id = 5;
+  optional EnvelopeID env_id = 6;
+  required string name_utf = 7;
+  required string name_ascii = 8;
+  optional GeoPoint coord = 9;
+  optional FeatureType feat_type = 10;
+  optional PageRank page_rank = 11;
+  optional Date date_from = 12;
+  optional Date date_end = 13;
+  optional Comment comment = 14;
+  optional CountryCode country_code = 15;
+  optional AltCountryCode alt_country_code = 16;
+  optional string country_name = 17;
+  optional ContinentCode continent_code = 18;
+  optional string continent_name = 19;
+  optional Admin1Code adm1_code = 20;
+  optional string adm1_name_utf = 21;
+  optional string adm1_name_ascii = 22;
+  optional Admin2Code adm2_code = 23;
+  optional string adm2_name_utf = 24;
+  optional string adm2_name_ascii = 25;
+  optional Admin3Code adm3_code = 26;
+  optional Admin4Code adm4_code = 27;
+  optional Population population = 28;
+  optional Elevation elevation = 29;
+  optional GTopo30 gtopo30 = 30;
+  optional TimeZone tz = 31;
+  optional TZOffSet gmt_offset = 32;
+  optional TZOffSet dst_offset = 33;
+  optional TZOffSet raw_offset = 34;
+  optional Date mod_date = 35;
+  optional IATACode city_code = 36;
+  optional string city_name_utf = 37;
+  optional string city_name_ascii = 38;
+  optional TravelRelatedList tvl_por_list = 39;
+  optional StateCode state_code = 40;
+  optional PlaceType loc_type = 41;
+  optional WikiLinkList link_list = 42;
+  optional AltNameList alt_name_list = 43;
+  optional KeywordList original_keywords = 44;
+  optional KeywordList corrected_keywords = 45;
+  optional EditDistance edit_distance_actual = 46;
+  optional EditDistance edit_distance_allowable = 47;
+  optional MatchingPercentage matching_percentage = 48;
+  optional PlaceList extra_place_list = 49;
+  optional PlaceList alt_place_list = 50;
 }
