@@ -116,6 +116,27 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the beginning date of the validity period
+     */
+    const Date_T& getDateFrom() const {
+      return _location.getDateFrom();
+    }
+
+    /**
+     * Get the end date of the validity period
+     */
+    const Date_T& getDateEnd() const {
+      return _location.getDateEnd();
+    }
+
+    /**
+     * Get the commentaries.
+     */
+    const Comment_T& getComment() const {
+      return _location.getComment();
+    }
+
+    /**
      * Get the related/served IATA city code.
      */
     const CityCode_T& getCityCode() const {
@@ -162,6 +183,13 @@ namespace OPENTREP {
      */
     const CountryName_T& getCountryName() const {
       return _location.getCountryName();
+    }
+    
+    /**
+     * Get the continent code.
+     */
+    const ContinentCode_T& getContinentCode() const {
+      return _location.getContinentCode();
     }
     
     /**
@@ -513,6 +541,27 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the beginning date of the validity period
+     */
+    void setDateFrom (const Date_T& iDate) {
+      _location.setDateFrom (iDate);
+    }
+
+    /**
+     * Set the end date of the validity period
+     */
+    void setDateEnd (const Date_T& iDate) {
+      _location.setDateEnd (iDate);
+    }
+
+    /**
+     * Set the commentaries.
+     */
+    void setComment (const std::string& iComment) {
+      _location.setComment (iComment);
+    }
+
+    /**
      * Set the related/served IATA city code.
      */
     void setCityCode (const std::string& iCityCode) {
@@ -552,6 +601,13 @@ namespace OPENTREP {
      */
     void setAltCountryCode (const std::string& iCountryCode) {
       _location.setAltCountryCode (iCountryCode);
+    }
+    
+    /**
+     * Set the continent code.
+     */
+    void setContinentCode (const std::string& iContinentCode) {
+      _location.setContinentCode (iContinentCode);
     }
     
     /**

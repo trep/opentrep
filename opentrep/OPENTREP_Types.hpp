@@ -152,6 +152,14 @@ namespace OPENTREP {
   };
 
   /**
+   * Comment (e.g., "Code claimed back by IATA in November 2012").
+   */
+  struct Comment_T : public std::string {
+  public:
+    explicit Comment_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
    * IATA city code (e.g., CHI for Chicago, IL, USA).
    */
   struct CityCode_T : public IATACode_T {
@@ -210,6 +218,16 @@ namespace OPENTREP {
   struct CountryName_T : public std::string {
   public:
     explicit CountryName_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+
+  /**
+   * Continent code (e.g., SA for South America).
+   */
+  struct ContinentCode_T : public std::string {
+  public:
+    explicit ContinentCode_T (const std::string& iValue) : std::string (iValue) {
+    }
   };
 
   /**

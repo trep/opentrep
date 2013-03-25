@@ -97,6 +97,27 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the beginning date of the validity period
+     */
+    const Date_T& getDateFrom() const {
+      return _dateFrom;
+    }
+
+    /**
+     * Get the end date of the validity period
+     */
+    const Date_T& getDateEnd() const {
+      return _dateEnd;
+    }
+
+    /**
+     * Get the commentaries.
+     */
+    const Comment_T& getComment() const {
+      return _comment;
+    }
+
+    /**
      * Get the city code.
      */
     const CityCode_T& getCityCode() const {
@@ -146,7 +167,14 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the continent name. 
+     * Get the continent code.
+     */
+    const ContinentCode_T& getContinentCode() const {
+      return _continentCode;
+    }
+    
+    /**
+     * Get the continent name.
      */
     const ContinentName_T& getContinentName() const {
       return _continentName;
@@ -459,6 +487,27 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the beginning date of the validity period
+     */
+    void setDateFrom (const Date_T& iDate) {
+      _dateFrom = iDate;
+    }
+
+    /**
+     * Set the end date of the validity period
+     */
+    void setDateEnd (const Date_T& iDate) {
+      _dateEnd = iDate;
+    }
+
+    /**
+     * Set the commentaries.
+     */
+    void setComment (const std::string& iComment) {
+      _comment = Comment_T (iComment);
+    }
+
+    /**
      * Set the related/served IATA city code.
      */
     void setCityCode (const std::string& iCityCode) {
@@ -505,6 +554,13 @@ namespace OPENTREP {
      */
     void setStateCode (const std::string& iStateCode) {
       _stateCode = StateCode_T (iStateCode);
+    }
+    
+    /**
+     * Set the continent code.
+     */
+    void setContinentCode (const std::string& iContinentCode) {
+      _continentCode = ContinentCode_T (iContinentCode);
     }
     
     /**
@@ -851,6 +907,7 @@ namespace OPENTREP {
      */
     Location (const IATACode_T&, const ICAOCode_T&, const GeonamesID_T&,
               const CommonName_T&, const ASCIIName_T&, const FAACode_T&,
+              const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const ContinentName_T&,
@@ -925,6 +982,21 @@ namespace OPENTREP {
     FAACode_T _faaCode;
 
     /**
+     * Beginning date of the validity period
+     */
+    Date_T _dateFrom;
+
+    /**
+     * End date of the validity period
+     */
+    Date_T _dateEnd;
+
+    /**
+     * Commentaries.
+     */
+    Comment_T _comment;
+
+    /**
      * Related IATA city code (e.g., CHI).
      * \note The related city code is empty when the Location structure
      *       is itself a city.
@@ -965,6 +1037,11 @@ namespace OPENTREP {
      * Country name (e.g., Germany).
      */
     CountryName_T _countryName;
+
+    /**
+     * Continent code (e.g., SA for South America).
+     */
+    ContinentCode_T _continentCode;
 
     /**
      * Continent name (e.g., North America).

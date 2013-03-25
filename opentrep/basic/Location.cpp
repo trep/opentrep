@@ -19,10 +19,13 @@ namespace OPENTREP {
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (TvlPORListString_T ("")),
-    _faaCode (FAACode_T ("")), _cityCode (CityCode_T ("ZZZ")),
+    _faaCode (FAACode_T ("")),
+    _dateFrom (1970, 01, 01), _dateEnd (2999, 12, 31), _comment (""),
+    _cityCode (CityCode_T ("ZZZ")),
     _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
+    _continentCode (ContinentCode_T ("NA")),
     _continentName (ContinentName_T ("NotAvailable")),
     _latitude (0), _longitude (0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
@@ -53,12 +56,16 @@ namespace OPENTREP {
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
     _tvlPORListString (iLocation._tvlPORListString),
-    _faaCode (iLocation._faaCode), _cityCode (iLocation._cityCode),
+    _faaCode (iLocation._faaCode),
+    _dateFrom (iLocation.getDateFrom()), _dateEnd (iLocation.getDateEnd()),
+    _comment (iLocation.getComment()),
+    _cityCode (iLocation._cityCode),
     _cityUtfName (iLocation._cityUtfName),
     _cityAsciiName (iLocation._cityAsciiName),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
     _countryName (iLocation._countryName),
+    _continentCode (iLocation._continentCode),
     _continentName (iLocation._continentName),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
     _featClass (iLocation._featClass), _featCode (iLocation._featCode),
@@ -95,6 +102,8 @@ namespace OPENTREP {
                       const CommonName_T& iCommonName,
                       const ASCIIName_T& iASCIIName,
                       const FAACode_T& iFaaCode,
+                      const Date_T& iDateFrom, const Date_T& iDateEnd,
+                      const Comment_T& iComment,
                       const CityCode_T& iCityCode,
                       const CityUTFName_T& iCityUtfName,
                       const CityASCIIName_T& iCityAsciiName,
@@ -134,13 +143,14 @@ namespace OPENTREP {
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (iTvlPORListString),
-    _faaCode (iFaaCode), _cityCode (iCityCode),
-    _cityUtfName (CityUTFName_T (iCityUtfName)),
-    _cityAsciiName (CityASCIIName_T (iCityAsciiName)),
+    _faaCode (iFaaCode), _dateFrom (iDateFrom), _dateEnd (iDateEnd),
+    _comment (iComment),
+    _cityCode (iCityCode),
+    _cityUtfName (iCityUtfName), _cityAsciiName (iCityAsciiName),
     _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
-    _countryName (CountryName_T (iCountryName)),
-    _continentName (iContinentName),
+    _countryName (iCountryName),
+    _continentCode ("NA"), _continentName (iContinentName),
     _latitude (iLatitude), _longitude (iLongitude),
     _featClass (iFeatureClass), _featCode (iFeatureCode), _iataType (iIATAType),
     _admin1Code (iAdmin1Code),
@@ -197,10 +207,12 @@ namespace OPENTREP {
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
          << ", " << _faaCode
+         << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
          << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
          << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
-         << ", " << _countryName << ", " << _continentName
+         << ", " << _countryName
+         << ", " << _continentCode << ", " << _continentName
          << ", " << _latitude << ", " << _longitude
          << ", " << _featClass << ", " << _featCode
          << ", " << _iataType.getTypeAsString()
