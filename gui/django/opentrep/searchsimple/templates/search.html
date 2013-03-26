@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %} Travel search {% endblock %}
+
+{% block content %}
+<center>
+<h1>Travel search</h1>
+
+Original query string: <em>{{query_string}}</em><br>
+
+{% for place in place_list %}
+<b>{{place.tvl_code.code}}-{{place.icao_code.code}}-{{place.geoname_id.id}}</b>
+ ({{ place.page_rank.rank }}) / ({{ place.coord.latitude }}, {{ place.coord.longitude }}); 
+{% endfor %}
+
+</center>
+{% endblock %}
+
