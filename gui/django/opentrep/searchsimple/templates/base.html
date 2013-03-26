@@ -1,0 +1,25 @@
+{% load url from future %}
+<!DOCTYPE html>
+<html>
+  <head>
+  {% block head %}
+
+    {% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    {% endblock %}
+
+    <title>{% block title %}Django REST framework{% endblock %}</title>
+
+    {% block style %}
+	{% endblock %}
+
+  {% endblock %}
+  </head>
+
+  <body class="{% block bodyclass %}{% endblock %} container">
+	{% block content %}
+	{% endblock %}
+
+  </body>
+</html>
