@@ -16,6 +16,6 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     #
-    url(r'^searchsimple', include('searchsimple.urls')),
-    url(r'^', include('search.urls')),
+    url(r'^searchsimple/', include('searchsimple.urls', namespace="searchsimple")),
+    url(r'^search/', include('search.urls', namespace="search")),
 )

@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from search import views
 
 # Uncomment the next two lines to enable the admin:
@@ -17,6 +17,6 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     #
-    url(r'^search/$', 'search.views.search'),
-    url(r'^search/(?P<query_string>[^/]+)', 'search.views.search'),
+    url(r'^$', views.index, name='index'),
+    url(r'^(?P<query_string>[^/]+)/$', views.index, name='index'),
 )
