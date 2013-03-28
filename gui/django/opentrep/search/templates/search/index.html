@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "search/base.html" %}
 
 {% block style %}
   <style type="text/css">
@@ -73,39 +73,28 @@ for marker in list_markers:
   </script>
 {% endblock %}
 
-{% block title %}Travel Search{% endblock %}
+{% block title %} Travel Search {% endblock %}
+
+{% block bodyclass %} onload="initialize()" {% endblock %}
 
 {% block content %}
 
-<!---------
-Original query string: <em>{{query_string}}</em><br>
-
-{% for place in place_list %}
-<b>{{place.tvl_code.code}}-{{place.icao_code.code}}-{{place.geoname_id.id}}</b>
- ({{ place.page_rank.rank }}) / ({{ place.coord.latitude }}, {{ place.coord.longitude }}); 
-{% endfor %}
-
------->
-
-<%= body_declaration %>
-
-<%
-%>
     <center>
       <br clear="all" id="lgpd">
       <img id="logo" alt="Search Airports" height="110" width="276"
            src="/icons/airports.gif">
       <br><br>
-      <form action="airports.psp" method="post" name="f">
+      <form action="{% url search:index %}" method="post" name="search_form">
+		{% csrf_token %}
         <table cellpadding=0 cellspacing=0>
           <tr valign=top>
             <td width="25%">&nbsp;</td>
             <td align="center" nowrap>
               <input type="text" name="data" autocomplete="off"
 				 maxlength="2048" size="55" title="Airport Search" 
-	             value="<%= form_value%>" class="lst">
+	             value="{{ query_string }}" class="lst">
 			  <input type="hidden" name="zoom" value="<%= zoom_level%>">
-			  <input type="hidden" name="map_type" value="<%= map_type_value%>"
+			  <input type="hidden" name="map_type" value="<%= map_type_value%>">
               <br>
               <input name="query_text" type="submit" value="Search Airports"
 	             class="lsb">
@@ -122,23 +111,32 @@ Original query string: <em>{{query_string}}</em><br>
 
     <br><br>
 
-<%
+<center>
+Original query string: <em>{{query_string}}</em><br>
+
+{% for place in place_list %}
+<b>{{place.tvl_code.code}}-{{place.icao_code.code}}-{{place.geoname_id.id}}</b>
+ ({{ place.page_rank.rank }}) / ({{ place.coord.latitude }}, {{ place.coord.longitude }}); 
+{% endfor %}
+</center>
+
+{%
 # No entry has been submitted yet. So, no map is displayed.
 if (result == False):
-%>
+%}
     <center>
       <font size=-1>
         <a href="airports.psp">About Search-Airports</a>
       </font>
       <p><font size=-2>
-        &copy;2009-2012 - <a href="#">Privacy</a>
+        &copy;2009-2013 - <a href="#">Privacy</a>
       </font></p>
     </center>
 
-<%
+{%
 # A user entry has been submitted. A Google Map is therefore displayed.
 else:
-%>
+%}
     <center>
       <p><font size="-1"><%= msg %></font></p>
     </center>

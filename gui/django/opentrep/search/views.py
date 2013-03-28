@@ -1,5 +1,7 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import Http404
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
 import sys, getopt, os
 import simplejson as json
 sys.path.append ('/home/dan/dev/deliveries/opentrep-0.5.4/lib64')
@@ -166,10 +168,68 @@ def travelSearch (openTrepLibrary, travelPB2):
     return body_declaration, msg
 
 
-def search (request, query_string = None):
+def index (request, query_string = ''):
     #
-    if query_string is None:
-        query_string = 'rio de janero sna francisco'
+    place_list = []
+    result = False
+
+    # Try with the query string within the URL
+    if query_string != '':
+        result = True
+
+    # Try with GET
+    search_form = request.GET
+
+    # Detect the required action
+    if search_form.has_key('query_text'):
+	query_string = search_form['data']
+	result = True
+    elif search_form.has_key('show_airport'):
+        # TODO: implement that API into OpenTREP and uncomment
+	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2)]
+        place_list = ['NCE']
+	query_string = ' '.join(place_list)
+	result = True
+    elif search_form.has_key('show_itinerary'):
+        # TODO: implement that API into OpenTREP and uncomment
+	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2) for i in range(3)]
+        place_list = ['NCE', 'JFK', 'LAX']
+	query_string = ' '.join(place_list)
+	result = True
+
+    # Try with POST
+    search_form = request.POST
+
+    # Detect the required action
+    if search_form.has_key('query_text'):
+	query_string = search_form['data']
+	result = True
+    elif search_form.has_key('show_airport'):
+	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2)]
+        place_list = ['NCE']
+	query_string = ' '.join(place_list)
+	result = True
+    elif search_form.has_key('show_itinerary'):
+	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2) for i in range(3)]
+        place_list = ['NCE', 'JFK', 'LAX']
+	query_string = ' '.join(place_list)
+	result = True
+
+    #
+    if result == False:
+        return render (request, 'search/index.html', {
+                'place_list': None,
+                'query_string': ''})
+
+    # Delegate the call to the display view
+    return display (request, query_string)
+
+
+def display (request, query_string):
+    #
+    if query_string == '':
+        return HttpResponseRedirect(reverse('search:index'))
+        
 
     # Initialise the OpenTrep C++ library
     xapianDBPath = "/tmp/opentrep/traveldb"
@@ -197,7 +257,7 @@ def search (request, query_string = None):
     openTrepLibrary.finalize()
 
     #
-    return render_to_response ('search.html',
-                               {'place_list': placeList.place,
-                                'query_string': query_string})
+    return render (request, 'search/index.html', {
+            'place_list': placeList.place,
+            'query_string': query_string})
 

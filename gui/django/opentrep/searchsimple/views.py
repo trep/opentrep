@@ -7,7 +7,7 @@ sys.path.append ('/home/dan/dev/deliveries/opentrep-0.5.4/lib64/python/opentrep'
 import libpyopentrep
 import Travel_pb2
 
-def search (request, query_string = None):
+def searchsimple (request, query_string = None):
     #
     if query_string is None:
         query_string = 'rio de janero sna francisco'
@@ -38,7 +38,7 @@ def search (request, query_string = None):
     openTrepLibrary.finalize()
 
     #
-    return render_to_response ('search.html',
+    return render_to_response ('searchsimple/index.html',
                                {'place_list': placeList.place,
                                 'query_string': query_string})
 
