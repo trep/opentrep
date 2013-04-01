@@ -167,8 +167,15 @@ def travelSearch (openTrepLibrary, travelPB2):
 		body_declaration = body_for_GMap
     return body_declaration, msg
 
+#
+def index (request):
+    #
+    return render (request, 'search/index.html', {
+            'place_list': None,
+            'query_string': ''})
 
-def index (request, query_string = ''):
+#
+def search (request, query_string = ''):
     #
     place_list = []
     result = False
