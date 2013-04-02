@@ -1,10 +1,11 @@
-# Django settings for opentrep project.
+# Django settings for the Search-Travel project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
+    ('Denis Arnaud', 'denis.arnaud_searchtravel@m4x.org'),
 )
 
 MANAGERS = ADMINS
