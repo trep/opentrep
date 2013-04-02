@@ -1,4 +1,5 @@
 {% extends "search/base.html" %}
+{% load staticfiles %}
 
 {% block style %}
   <style type="text/css">
@@ -7,101 +8,34 @@
     #map_canvas { margin-left: auto; text-align:center; margin-right: auto; width:50%; height:50% }
   </style>
 {% endblock %}
-{% block jscript %}
-  <script type="text/javascript"
-          src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-  <script type="text/javascript">
-    var map;
-    function initialize() {
-      var placePoint = new google.maps.LatLng (<%= coord_for_GMap_center['lat'] %>, 
-					       <%= coord_for_GMap_center['lon'] %>);
-      var myOptions = {
-        zoom: <%= zoom_level%>,
-        center: placePoint,
-        mapTypeId: google.maps.MapTypeId.<%= map_type_value%>
-      }
-      map = new google.maps.Map (document.getElementById("map_canvas"), myOptions);
-    
-      // Markers and map bounds
-      var bounds = new google.maps.LatLngBounds();
-<%
-nbOfMarkers = len(list_markers)
-for marker in list_markers:
-%>
-      placePoint = new google.maps.LatLng (<%= marker['lat'] %>, <%= marker['lon'] %>);
-      var marker = new google.maps.Marker ({ 
-        position: placePoint,
-        title: "<%= marker['name'] %>",
-        map: map,
-      });
-
-      //
-      bounds.extend (placePoint);
-
-      // Fit the map with the newly calculated bounds
-<%
-if (nbOfMarkers >= 2):
-%>
-      map.fitBounds (bounds);
-<%
-#
-%>
-
-      // Polyline
-      var flightPlanCoordinates = [
-<%
-commaStr = ','
-idx = 0
-for marker in list_markers:
-	idx += 1
-	if (idx == nbOfMarkers): commaStr = ''
-%>
-        new google.maps.LatLng (<%= marker['lat'] %>, <%= marker['lon'] %>) <%= commaStr %>
-<%
-%>
-      ];
-
-      var flightPath = new google.maps.Polyline({
-        path: flightPlanCoordinates,
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
-
-      flightPath.setMap (map);
-    }
-  </script>
-{% endblock %}
 
 {% block title %} Travel Search {% endblock %}
-
-{% block bodyclass %} onload="initialize()" {% endblock %}
 
 {% block content %}
 
     <center>
       <br clear="all" id="lgpd">
-      <img id="logo" alt="Search Airports" height="110" width="276"
-           src="/icons/airports.gif">
+      <img id="logo" alt="Travel Search" height="110" width="276"
+           src="{% static "search/icons/airports.gif" %}">
       <br><br>
       <form action="{% url search:index %}" method="post" name="search_form">
 		{% csrf_token %}
-        <table cellpadding=0 cellspacing=0>
-          <tr valign=top>
+        <table cellpadding="0" cellspacing="0">
+          <tr valign="top">
             <td width="25%">&nbsp;</td>
             <td align="center" nowrap>
               <input type="text" name="data" autocomplete="off"
-				 maxlength="2048" size="55" title="Airport Search" 
-	             value="{{ query_string }}" class="lst">
-			  <input type="hidden" name="zoom" value="<%= zoom_level%>">
-			  <input type="hidden" name="map_type" value="<%= map_type_value%>">
+					 maxlength="2048" size="55" title="Airport Search" 
+					 value="{{ query_string }}" class="lst">
+			  <input type="hidden" name="zoom" value="{{zoom_level}}">
+			  <input type="hidden" name="map_type" value="{{map_type_value}}">
               <br>
               <input name="query_text" type="submit" value="Search Airports"
-	             class="lsb">
+					 class="lsb">
               <input name="show_airport" type="submit" value="Show an Airport!"
-	             class="lsb">
+					 class="lsb">
               <input name="show_itinerary" type="submit" 
-	             value="Show an Itinerary!" class="lsb">
+					 value="Show an Itinerary!" class="lsb">
             </td>
             <td nowrap width="25%" align="left">&nbsp;</td>
           </tr>
@@ -111,19 +45,6 @@ for marker in list_markers:
 
     <br><br>
 
-<center>
-Original query string: <em>{{query_string}}</em><br>
-
-{% for place in place_list %}
-<b>{{place.tvl_code.code}}-{{place.icao_code.code}}-{{place.geoname_id.id}}</b>
- ({{ place.page_rank.rank }}) / ({{ place.coord.latitude }}, {{ place.coord.longitude }}); 
-{% endfor %}
-</center>
-
-{%
-# No entry has been submitted yet. So, no map is displayed.
-if (result == False):
-%}
     <center>
       <font size=-1>
         <a href="airports.psp">About Search-Airports</a>
@@ -132,30 +53,6 @@ if (result == False):
         &copy;2009-2013 - <a href="#">Privacy</a>
       </font></p>
     </center>
-
-{%
-# A user entry has been submitted. A Google Map is therefore displayed.
-else:
-%}
-    <center>
-      <p><font size="-1"><%= msg %></font></p>
-    </center>
-<%
-	# The following HTML <div> (Google Maps API v3) must not be enclosed by
-	# <center> tags, as it would not be able to display correctly otherwise.
-%>
-    <%= html_for_GMap %>
-
-    <center>
-      <p><font size="-2">
-        &copy;2009-2013 - <a href="#">Privacy</a> - 
-        <a href="#">About Search-Airports</a>
-      </font>
-    </center>
-<%
-# Endof the Python part. It should not be removed.
-%>
-
 
 {% endblock %}
 

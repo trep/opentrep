@@ -21,7 +21,8 @@
   {% endblock %}
   </head>
 
-  <body class="{% block bodyclass %}{% endblock %} container">
+  <body class="{% block bodyclass %}{% endblock %}"
+		{% block bodyoptions %}{% endblock %}>
 	{% block content %}
 	{% endblock %}
 
