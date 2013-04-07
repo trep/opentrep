@@ -10,46 +10,6 @@ import libpyopentrep
 import Travel_pb2
 import log_service
 import por_service
-import map_display
-
-# Parser helpers
-def getMain(locations):
-    return locations[:3].upper()
-
-# Parse the OpenTREP compact-formatted result
-def parseCompactResult (resultString):
-    place_list = []
-    form_value, unrecognized = '', ''
-    if ';' in resultString:
-        resultString, unrecognized = resultString.split(';')
-        msg = 'Unrecognised: %s. ' % unrecognized
-    if resultString != '':
-        place_list = [getMain(x) for x in resultString.split(',')]
-    str_value = unrecognized
-
-    if len (place_list) > 0:
-        form_value = ' '.join(place_list) + ' ' + str_value
-
-    #
-    return (place_list, form_value, unrecognized)
-
-# Parse the OpenTREP compact-formatted result
-def parseJSONResult (resultString):
-    place_list = []
-    form_value, unrecognized = '', ''
-
-    #
-    return (place_list, form_value, unrecognized)
-
-# Imported from airports.psp
-def travelSearch (openTrepLibrary, travelPB2):
-    # Logging
-    if form.has_key ('data'):
-	log_service.log (localize.www_log_filename, req, form['data'], place_list,
-			 unrecognized)
-    os.system ('cat %s >> %s' % (localize.tmp_trep_log_filename, 
-                                 localize.trep_log_filename))
-    return '', ''
 
 # Extract the parameters from the incoming request
 def extract_params (request, query_string = ''):
@@ -122,11 +82,11 @@ def index (request):
         return render (request, 'search/index.html', {
                 'place_list': None,
                 'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
+                'nb_of_places': 0,
                 'dist_total': '0',
                 'query_string': query_string,
                 'coord_for_GMap_center': '',
-                'zoom_level': zoom_level, 'map_type_value': map_type_value,
-                'list_markers': [], 'nbOfMarkers': 0})
+                'zoom_level': zoom_level, 'map_type_value': map_type_value})
     else:
         # Delegate the call to the display view
         return display (request, query_string, zoom_level, map_type_value)
@@ -145,11 +105,11 @@ def search (request, query_string = ''):
         return render (request, 'search/index.html', {
                 'place_list': place_list,
                 'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
+                'nb_of_places': 0,
                 'dist_total': '0',
                 'query_string': query_string,
                 'coord_for_GMap_center': '',
-                'zoom_level': zoom_level, 'map_type_value': map_type_value,
-                'list_markers': [], 'nbOfMarkers': 0})
+                'zoom_level': zoom_level, 'map_type_value': map_type_value})
 
     # Delegate the call to the display view
     return display (request, query_string, zoom_level, map_type_value)
@@ -157,9 +117,12 @@ def search (request, query_string = ''):
 #
 def display (request, query_string = '',
              zoom_level = 5, map_type_value = 'HYBRID'):
+    # Logging
+    # log_service.log ('/tmp/travel-search.log', request, query_string)
+
     #
     if query_string == '':
-        return HttpResponseRedirect(reverse('search:index'))
+        return HttpResponseRedirect (reverse ('search:index'))
         
 
     # Initialise the OpenTrep C++ library
@@ -180,7 +143,6 @@ def display (request, query_string = '',
 
     #
     interpretedString, msg = '', ''
-    list_markers = []
     coord_for_GMap_center = {'lat': 10, 'lon': 0}
 
     # DEBUG
@@ -213,25 +175,11 @@ def display (request, query_string = '',
 	coord = por_service.get_lat_lon (place)
 	if coord:
             coord_for_GMap_center = {'lat': coord[0], 'lon': coord[1]}
-            city_name_utf, city_name_ascii = por_service.get_city_names (place)
-            aptMarker = map_display.create_marker (place, coord[0], coord[1],
-                                                   city_name_utf)
-            list_markers = [aptMarker]
 
     ##
     # Several airports => a map with several paths (and markers)
     ##
     elif n_airports >= 2:
-	# Markers
-	for place in place_list:
-            coord = por_service.get_lat_lon (place)
-            if coord:
-                city_name_utf, city_name_ascii= por_service.get_city_names(place)
-                aptMarker = map_display.create_marker (place,
-                                                       coord[0], coord[1],
-                                                       city_name_utf)
-                list_markers.append (aptMarker)
-
         # Iterate on two lists, one browsing elements [1, N-1],
         # the other browsing the elements [2, N]
         place_list_front = place_list[:-1]
@@ -242,15 +190,12 @@ def display (request, query_string = '',
             place_pair_list.append ({'dep': place1, 'arr': place2, 
                                      'dist': '%d' % dist})
 
-    # Number of markers for Google Maps
-    nbOfMarkers = len (list_markers)
-
     #
     return render (request, 'search/display.html', {
             'place_list': place_list, 'place_pair_list': place_pair_list,
+            'nb_of_places': n_airports,
             'dist_total': '%d' % dist_total,
             'query_string': query_string,
             'coord_for_GMap_center': coord_for_GMap_center,
-            'zoom_level': zoom_level, 'map_type_value': map_type_value,
-            'list_markers': list_markers, 'nbOfMarkers': nbOfMarkers})
+            'zoom_level': zoom_level, 'map_type_value': map_type_value})
 
