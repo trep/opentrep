@@ -2,14 +2,55 @@ from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-import sys, getopt, os
+import sys, getopt, os, math
 import simplejson as json
-sys.path.append ('/home/dan/dev/deliveries/opentrep-0.5.4/lib64')
-sys.path.append ('/home/dan/dev/deliveries/opentrep-0.5.4/lib64/python/opentrep')
-import libpyopentrep
-import Travel_pb2
-import log_service
-import por_service
+# Potentially add the following two pathes to the PYTHONPATH environment variable
+# 1. Path to the OpenTrep C++ library of the Python wrapper (libpyopentrep.so)
+# 2. Path to the OpenTrep ProtoBuf stubs (Travel_pb2.py)
+import libpyopentrep, Travel_pb2
+
+# Generate a random POR (points of reference) entry
+def get_random_airport (openTrepLibrary, travelPB2):
+  # OpenTREP
+  result = openTrepLibrary.getRandom()
+  # Protobuf
+  place = travelPB2.Place()
+  place.ParseFromString (result)
+  return place
+
+# Calculate the great circle distance, given the geographical coordinates
+def great_circle_distance (lat1, lon1, lat2, lon2, degrees=True):
+  if degrees:
+    lat1 = lat1 / 180.0 * math.pi
+    lon1 = lon1 / 180.0 * math.pi
+    lat2 = lat2 / 180.0 * math.pi
+    lon2 = lon2 / 180.0 * math.pi
+
+    diameter = 12756.0
+    lat_diff = (lat2-lat1) / 2.0
+    lat_diff_sin = math.sin (lat_diff)
+    lon_diff = (lon2-lon1) / 2.0
+    lon_diff_sin = math.sin (lon_diff)
+    lat_cos = math.cos (lat1) * math.cos (lat2)
+    proj_dist = lat_diff_sin**2.0 + lat_cos * lon_diff_sin**2.0
+    gcd = diameter * math.asin (math.sqrt (proj_dist))
+  return gcd
+
+# Calculate the great circle distance of two POR (points of reference) entries
+def get_distance_km (place1, place2):
+  lat1, lon1 = place1.coord.latitude, place1.coord.longitude
+  lat2, lon2 = place2.coord.latitude, place2.coord.longitude
+  dist = great_circle_distance (lat1, lon1, lat2, lon2)
+  return dist
+
+# Calculate the flight elapsed time
+def get_local_local_flight_duration_hr (place1, place2):
+  lat1, lon1 = place1.coord.latitude, place1.coord.longitude
+  lat2, lon2 = place2.coord.latitude, place2.coord.longitude
+  dist = great_circle_distance (lat1, lon1, lat2, lon2)
+  travel_hr = 0.5 + dist/800.0
+  time_diff_hr = (cit2['lon'] - cit1['lon']) / 15.0
+  return travel_hr + time_diff_hr
 
 # Extract the parameters from the incoming request
 def extract_params (request, query_string = ''):
@@ -128,7 +169,7 @@ def display (request, query_string = '',
     # Initialise the OpenTrep C++ library
     xapianDBPath = "/tmp/opentrep/traveldb"
     openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
+    initOK = openTrepLibrary.init (xapianDBPath, '/tmp/opentrep/pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         return render (request, 'search/500.html', {'error_msg': errorMsg})
@@ -172,9 +213,8 @@ def display (request, query_string = '',
     elif n_airports == 1:
 	place = place_list[0]
         place_pair_list = [{'dep': place, 'arr': None, 'dist': '0'}]
-	coord = por_service.get_lat_lon (place)
-	if coord:
-            coord_for_GMap_center = {'lat': coord[0], 'lon': coord[1]}
+        coord_for_GMap_center = {'lat': place.coord.latitude,
+                                 'lon': place.coord.longitude}
 
     ##
     # Several airports => a map with several paths (and markers)
@@ -185,7 +225,7 @@ def display (request, query_string = '',
         place_list_front = place_list[:-1]
         place_list_second = place_list[1:]
         for (place1, place2) in zip (place_list_front, place_list_second):
-            dist = por_service.get_distance_km (place1, place2)
+            dist = get_distance_km (place1, place2)
             dist_total += dist
             place_pair_list.append ({'dep': place1, 'arr': place2, 
                                      'dist': '%d' % dist})
