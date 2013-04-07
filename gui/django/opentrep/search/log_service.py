@@ -1,6 +1,6 @@
 import socket, os, datetime
 
-def log (filename, req, query, codes, unrecognized):
+def log (filename, req, query):
 	req.add_common_vars()
 
 	# Determine IP address
@@ -31,7 +31,7 @@ def log (filename, req, query, codes, unrecognized):
 
 	# Write to log file
 	str_out = '^'.join ([str_time,remote_client_ip, hostname, query,
-			     ','.join(codes), unrecognized, agent, languages,
+			     agent, languages,
 			     charsets])
 	os.system ('echo "%s" >> %s' % (str_out, filename))
 

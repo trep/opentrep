@@ -1,4 +1,5 @@
 {% extends "search/base.html" %}
+{% load url from future %}
 {% load staticfiles %}
 
 {% block style %}
@@ -6,46 +7,103 @@
     html { height: 100% }
     body { height: 100%; margin: 0; padding: 0 }
     #map_canvas { margin-left: auto; text-align:center; margin-right: auto; width:50%; height:50% }
+	#iw_body { margin-left: auto; text-align: left; margin-right: auto }
   </style>
 {% endblock %}
 {% block jscript %}
-  <script type="text/javascript"
-          src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
   <script type="text/javascript">
-    var map;
-    function initialize() {
-      var placePoint = new google.maps.LatLng ({{ coord_for_GMap_center.lat }},
-	                                           {{ coord_for_GMap_center.lon }});
+    var map = null;
+	//
+	function refreshMap() {
+      var mapCenter = new google.maps.LatLng ({{coord_for_GMap_center.lat}},
+	                                          {{coord_for_GMap_center.lon}});
       var myOptions = {
         zoom: {{zoom_level}},
-        center: placePoint,
+        center: mapCenter,
+        mapTypeId: google.maps.MapTypeId.{{map_type_value}}
+      };
+      map.setOptions (myOptions);
+	}
+
+	//
+    function initialize() {
+      var mapCenter = new google.maps.LatLng ({{coord_for_GMap_center.lat}},
+	                                          {{coord_for_GMap_center.lon}});
+      var myOptions = {
+        zoom: {{zoom_level}},
+        center: mapCenter,
         mapTypeId: google.maps.MapTypeId.{{map_type_value}}
       }
       map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
     
       // Markers and map bounds
       var bounds = new google.maps.LatLngBounds();
-{% for marker in list_markers %}
-      placePoint = new google.maps.LatLng ({{ marker.lat }}, {{ marker.lon }});
+{% for place in place_list %}
+      var placePoint = new google.maps.LatLng ({{place.coord.latitude}}, {{place.coord.longitude}});
       var marker = new google.maps.Marker ({ 
         position: placePoint,
-        title: "{{ marker.name }}",
+        title: "{{place.city_name_utf}}",
         map: map,
       });
+
+      var contentString = '<div id="content">'+
+	    '<div id="info_window"></div>'+
+        '<h1 id="iw_title" class="firstHeading">{{place.name_utf}}</h1>'+
+        '<div id="iw_body">'+
+        'Travel-related name: <b>{{place.name_utf}}</b><br/>'+
+        'Served city: <b>{{place.city_name_utf}}</b><br/>'+
+        'PageRank: <b>{{place.page_rank.rank}}%</b><br/>'+
+        'IATA code: <b>{{place.tvl_code.code}}</b><br/>'+
+        'ICAO code: '+
+		  {% if place.icao_code.code != "ZZZZ" %}
+		  '<b>{{place.icao_code.code}}</b><br/>'+
+		  {% else %}
+		  'None<br/>'+
+		  {% endif %}
+        'Geonames ID: '+
+		  {% if place.geoname_id.id != 0 %}
+		  '<a href="http://geonames.org/{{place.geoname_id.id}}">'+
+		  '{{place.geoname_id.id}}</a><br/>'+
+		  {% else %}
+		  'None<br/>'+
+		  {% endif %}
+{% for wikilink in place.link_list.link %}
+        'Wikipedia: <a href="{{wikilink.link}}">{{wikilink.link}}</a>.<br/>'+
+{% endfor %}
+        '</div>'+
+        '</div>';
+
+      var infowindow = new google.maps.InfoWindow ({
+        content: contentString
+      });
+
+	  // Creating a closure to retain the correct data
+	  // See http://www.svennerberg.com/2012/03/adding-multiple-markers-to-google-maps-from-json/ for the trick
+	  (function (marker, contentString) {
+	    // Attaching a click event to the current marker
+        google.maps.event.addListener (marker, 'click', function() {
+          infowindow.setContent (contentString);
+          infowindow.open (map, marker);
+        });
+
+	  })(marker, contentString)
+
+      // Attaching a closeclick event to the current marker
+	  google.maps.event.addListener (marker, 'closeclick', refreshMap());
 
       //
       bounds.extend (placePoint);
 {% endfor %}
 
       // Fit the map with the newly calculated bounds
-{% if nbOfMarkers >= 2 %}
+{% if nb_of_places >= 2 %}
       map.fitBounds (bounds);
 {% endif %}
 
       // Polyline
       var flightPlanCoordinates = [
-{% for marker in list_markers %}
-        new google.maps.LatLng ({{ marker.lat }}, {{ marker.lon }}),
+{% for place in place_list %}
+        new google.maps.LatLng ({{place.coord.latitude}}, {{place.coord.longitude}}),
 {% endfor %}
       ];
 
@@ -58,13 +116,23 @@
 
       flightPath.setMap (map);
     }
+
+	// Load the JavaScript for the Google Maps API v3 asynchronously
+	function loadScript() {
+	  var script = document.createElement ("script");
+	  script.type = "text/javascript";
+	  script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+	  document.body.appendChild (script);
+	}
+
+	window.onload = loadScript;
   </script>
 {% endblock %}
 
 {% block title %} Travel Search {% endblock %}
 
 {% block bodyclass %}body{% endblock %}
-{% block bodyoptions %}onload="initialize()"{% endblock %}
+{% block bodyoptions %}{% endblock %}
 
 {% block content %}
 
@@ -73,7 +141,7 @@
       <img id="logo" alt="Travel Search" height="110" width="276"
            src="{% static "search/icons/airports.gif" %}">
       <br><br>
-      <form action="{% url search:search query_string %}" method="post"
+      <form action="{% url 'search:search' query_string %}" method="post"
 			name="search_form">
 		{% csrf_token %}
         <table cellpadding="0" cellspacing="0">
@@ -111,18 +179,6 @@
   {% if forloop.last and place_pair.dist != "0" %}
       {{place_pair.arr.name_utf}} ({{place_pair.arr.city_name_utf}}) ----
       Total: {{dist_total}} km
-  {% endif %}
-{% endfor %}
-	  </font></p>
-
-	  <p><font size="-2">
-{% for place_pair in place_pair_list %}
-	  <b>{{place_pair.dep.tvl_code.code}}-{{place_pair.dep.icao_code.code}}-{{place_pair.dep.geoname_id.id}}</b>
-	  ({{place_pair.dep.page_rank.rank}}) / ({{place_pair.dep.coord.latitude}}, {{place_pair.dep.coord.longitude}})
-  {% if not forloop.last or place_pair.dist != "0" %} -- {% endif %}
-  {% if forloop.last and place_pair.dist != "0" %}
-	  <b>{{place_pair.arr.tvl_code.code}}-{{place_pair.arr.icao_code.code}}-{{place_pair.arr.geoname_id.id}}</b>
-	  ({{place_pair.arr.page_rank.rank}}) / ({{place_pair.arr.coord.latitude}}, {{place_pair.arr.coord.longitude}}) -- 
   {% endif %}
 {% endfor %}
 	  </font></p>
