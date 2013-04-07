@@ -51,7 +51,16 @@
         '<h1 id="iw_title" class="firstHeading">{{place.name_utf}}</h1>'+
         '<div id="iw_body">'+
         'Travel-related name: <b>{{place.name_utf}}</b><br/>'+
-        'Served city: <b>{{place.city_name_utf}}</b><br/>'+
+        'Location (city, state, country): '+
+		  '<b>{{place.city_name_utf}}</b>'+
+{% if place.adm2_name_utf != "Z" %}
+		  ', <b>{{place.adm2_name_utf}}</b>'+
+{% endif %}
+{% if place.adm1_name_utf != "Z" %}
+		  ', <b>{{place.adm1_name_utf}}</b>'+
+{% endif %}
+		  ', <b>{{place.country_name}}</b>'+
+		  '<br/>'+
         'PageRank: <b>{{place.page_rank.rank}}%</b><br/>'+
         'IATA code: <b>{{place.tvl_code.code}}</b><br/>'+
         'ICAO code: '+
@@ -70,6 +79,21 @@
 {% for wikilink in place.link_list.link %}
         'Wikipedia: <a href="{{wikilink.link}}">{{wikilink.link}}</a>.<br/>'+
 {% endfor %}
+        'Time zone and offset (GMT, DST, raw): '+
+		  '<b>{{place.tz.tz}}</b> '+
+		  '({{place.gmt_offset.offset}}, {{place.dst_offset.offset}}, '+
+		  '{{place.raw_offset.offset}})<br/>'+
+        'Original keywords: '+
+{% for original_keyword in place.original_keywords.word %}
+          '<b>{{original_keyword}} </b>'+
+{% endfor %}
+          '<br/>'+
+        'Corrected keywords (distance={{place.edit_distance_actual.dist}}): '+
+{% for corrected_keyword in place.corrected_keywords.word %}
+          '<b>{{corrected_keyword}} </b>'+
+{% endfor %}
+          '<br/>'+
+        'Matching: <b>{{place.matching_percentage.percentage}}%</b><br/>'+
         '</div>'+
         '</div>';
 
@@ -174,7 +198,7 @@
 
 	  <p><font size="-1">
 {% for place_pair in place_pair_list %}
-      {{place_pair.dep.name_utf}} ({{place_pair.dep.city_name_utf}}) 
+      {{place_pair.dep.name_utf}} 
   {% if place_pair.dist != "0" %} -- {{place_pair.dist}} km -- {% endif %}
   {% if forloop.last and place_pair.dist != "0" %}
       {{place_pair.arr.name_utf}} ({{place_pair.arr.city_name_utf}}) ----
