@@ -174,8 +174,8 @@
               <input type="text" name="q" maxlength="2048" size="55"
 					 title="Airport Search" value="{{query_string}}"
 					 class="lst">
-			  <input type="hidden" name="zoom" value="{{zoom_level}}">
-			  <input type="hidden" name="map_type" value="{{map_type_value}}">
+			  <input type="hidden" name="z" value="{{zoom_level}}">
+			  <input type="hidden" name="mt" value="{{map_type_value}}">
               <br>
               <input name="query_text" type="submit" value="Search Airports"
 					 class="lsb">
@@ -196,7 +196,7 @@
 		Original query string: <em>{{query_string}}</em><br/>
 {% if query_string != corrected_query_string %}
 		Did you mean
-		<em><b><a href="{% url 'search:index' %}?q={{corrected_query_string}}&zoom={{zoom_level}}&map_type={{map_type_value}}">{{corrected_query_string}}</a>?</b></em>
+		<em><b><a href="{% url 'search:index' %}?q={{corrected_query_string}}&z={{zoom_level}}&mt={{map_type_value}}">{{corrected_query_string}}</a>?</b></em>
 {% endif %}
 	  </p>
 
@@ -222,7 +222,7 @@
     <center>
       <p><font size="-2">
         &copy;2009-2013 - <a href="#">Privacy</a> - 
-        <a href="#">About Search-Airports</a>
+        <a href="#">About Travel Search</a>
       </font>
     </center>
 

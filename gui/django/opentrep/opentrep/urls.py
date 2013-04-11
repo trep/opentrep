@@ -18,7 +18,11 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 
-    #
+    # Catch-all
+    # url(r'^$', include('search.urls', namespace="search")),
+
+    # The following two directives do not match if the catch-all directive
+    # above is active (not commented)
     url(r'^searchsimple/', include('searchsimple.urls',
                                    namespace="searchsimple")),
     url(r'^search/', include('search.urls', namespace="search")),
