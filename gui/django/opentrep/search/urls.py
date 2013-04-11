@@ -18,5 +18,4 @@ urlpatterns = patterns('',
 
     #
     url(r'^$', views.index, name='index'),
-    url(r'^(?P<query_string>[^/]+)/$', views.search, name='search'),
 )

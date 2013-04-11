@@ -64,8 +64,8 @@ def extract_params (request, query_string = ''):
     search_form = request.GET
 
     # Detect the required action
-    if search_form.has_key('query_text'):
-	query_string = search_form['data']
+    if search_form.has_key('q'):
+	query_string = search_form['q']
 	result = True
     elif search_form.has_key('show_airport'):
         # TODO: implement that API into OpenTREP and uncomment
@@ -90,8 +90,8 @@ def extract_params (request, query_string = ''):
     search_form = request.POST
 
     # Detect the required action
-    if search_form.has_key('query_text'):
-	query_string = search_form['data']
+    if search_form.has_key('q'):
+	query_string = search_form['q']
 	result = True
     elif search_form.has_key('show_airport'):
 	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2)]
@@ -113,6 +113,21 @@ def extract_params (request, query_string = ''):
     #
     return query_string, result, place_list, zoom_level, map_type_value
 
+# Calculate the corrected query string, based on the corrected keywords for
+# every place
+def calculate_corrected_query_string (place_list):
+  corrected_query_string = ''
+  idx = 0
+  for place in place_list:
+    for corrected_keyword in place.corrected_keywords.word:
+      if idx != 0:
+        corrected_query_string += ' '
+      corrected_query_string += corrected_keyword
+
+    idx += 1
+
+  return corrected_query_string
+
 #
 def index (request):
     # Extract the parameters from the incoming request
@@ -126,34 +141,12 @@ def index (request):
                 'nb_of_places': 0,
                 'dist_total': '0',
                 'query_string': query_string,
+                'corrected_query_string': query_string,
                 'coord_for_GMap_center': '',
                 'zoom_level': zoom_level, 'map_type_value': map_type_value})
     else:
         # Delegate the call to the display view
         return display (request, query_string, zoom_level, map_type_value)
-
-#
-def search (request, query_string = ''):
-    # Extract the parameters from the incoming request
-    query_string, result, place_list, zoom_level, map_type_value = extract_params (request, query_string)
-
-    # Try with the query string within the URL
-    if query_string != '':
-        result = True
-
-    #
-    if result == False:
-        return render (request, 'search/index.html', {
-                'place_list': place_list,
-                'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
-                'nb_of_places': 0,
-                'dist_total': '0',
-                'query_string': query_string,
-                'coord_for_GMap_center': '',
-                'zoom_level': zoom_level, 'map_type_value': map_type_value})
-
-    # Delegate the call to the display view
-    return display (request, query_string, zoom_level, map_type_value)
 
 #
 def display (request, query_string = '',
@@ -230,12 +223,16 @@ def display (request, query_string = '',
             place_pair_list.append ({'dep': place1, 'arr': place2, 
                                      'dist': '%d' % dist})
 
+    # Calculate the corrected query string
+    corrected_query_string = calculate_corrected_query_string (place_list)
+
     #
     return render (request, 'search/display.html', {
             'place_list': place_list, 'place_pair_list': place_pair_list,
             'nb_of_places': n_airports,
             'dist_total': '%d' % dist_total,
             'query_string': query_string,
+            'corrected_query_string': corrected_query_string,
             'coord_for_GMap_center': coord_for_GMap_center,
             'zoom_level': zoom_level, 'map_type_value': map_type_value})
 
