@@ -205,8 +205,7 @@
       {{place_pair.dep.name_utf}} 
   {% if place_pair.dist != "0" %} -- {{place_pair.dist}} km -- {% endif %}
   {% if forloop.last and place_pair.dist != "0" %}
-      {{place_pair.arr.name_utf}} ({{place_pair.arr.city_name_utf}}) ----
-      Total: {{dist_total}} km
+      {{place_pair.arr.name_utf}} ---- Total: {{dist_total}} km
   {% endif %}
 {% endfor %}
 	  </font></p>
