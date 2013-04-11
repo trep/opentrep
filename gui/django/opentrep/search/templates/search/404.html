@@ -7,4 +7,15 @@
 <h1>Page not found</h1>
 
 <p>Sorry, but the requested page could not be found.</p>
+
+<p>
+  Examples of valid searches are as following:<br/>
+  <ul>
+	<li><a href="{% url 'search:index' %}?q=sfo airport">{% url 'search:index' %}?q=sfo airport</a></li>
+	<li><a href="{% url 'search:index' %}?q=cdg">{% url 'search:index' %}?q=Nice Airport</a></li>
+	<li><a href="{% url 'search:index' %}?q=jfk lax atl">{% url 'search:index' %}?q=jfk lax atl</a></li>
+	<li><a href="{% url 'search:index' %}?q=buenos aeres rio de janero rekjavik">{% url 'search:index' %}?q=buenos aeres rio de janero rekjavik</a></li>
+  </ul>
+</p>
+
 {% endblock %}

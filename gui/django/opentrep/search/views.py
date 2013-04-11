@@ -10,8 +10,9 @@ import simplejson as json
 import libpyopentrep, Travel_pb2
 
 # 404 - Page not found
-def custom_404_view ():
-  return Http404 ('search/404.html')
+def custom_404_view (request):
+  #errorMsg = 'Error: page not found'
+  return render (request, 'search/404.html', {'error_msg': ''})
 
 # 500 - Server error
 def custom_500_view (request):
