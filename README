@@ -93,7 +93,7 @@ Then, as usual:
 * To run the installed version (the first following line must be done once
   per session):
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
-  $INSTALL_BASEDIR/opentrep-99.99.99/bin/opentrep -b
+  $INSTALL_BASEDIR/opentrep-$TREP_VER/bin/opentrep -b
 
 Running the Django-based application server:
 --------------------------------------------
