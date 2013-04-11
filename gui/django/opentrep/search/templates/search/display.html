@@ -7,7 +7,6 @@
     html { height: 100% }
     body { height: 100%; margin: 0; padding: 0 }
     #map_canvas { margin-left: auto; text-align:center; margin-right: auto; width:50%; height:50% }
-	#iw_body { margin-left: auto; text-align: left; margin-right: auto }
   </style>
 {% endblock %}
 {% block jscript %}
@@ -85,14 +84,16 @@
 		  '{{place.raw_offset.offset}})<br/>'+
         'Original keywords: '+
 {% for original_keyword in place.original_keywords.word %}
-          '<b>{{original_keyword}} </b>'+
+          '<b>{{original_keyword}}</b>'+
 {% endfor %}
           '<br/>'+
+{% if query_string != corrected_query_string %}
         'Corrected keywords (distance={{place.edit_distance_actual.dist}}): '+
-{% for corrected_keyword in place.corrected_keywords.word %}
-          '<b>{{corrected_keyword}} </b>'+
-{% endfor %}
+  {% for corrected_keyword in place.corrected_keywords.word %}
+          '<b>{{corrected_keyword}}</b>'+
+  {% endfor %}
           '<br/>'+
+{% endif %}
         'Matching: <b>{{place.matching_percentage.percentage}}%</b><br/>'+
         '</div>'+
         '</div>';
@@ -165,16 +166,14 @@
       <img id="logo" alt="Travel Search" height="110" width="276"
            src="{% static "search/icons/airports.gif" %}">
       <br><br>
-      <form action="{% url 'search:search' query_string %}" method="post"
-			name="search_form">
-		{% csrf_token %}
+      <form action="{% url 'search:index' %}" method="get"	name="search_form">
         <table cellpadding="0" cellspacing="0">
           <tr valign="top">
             <td width="25%">&nbsp;</td>
             <td align="center" nowrap>
-              <input type="text" name="data" autocomplete="off"
-					 maxlength="2048" size="55" title="Airport Search" 
-					 value="{{ query_string }}" class="lst">
+              <input type="text" name="q" maxlength="2048" size="55"
+					 title="Airport Search" value="{{query_string}}"
+					 class="lst">
 			  <input type="hidden" name="zoom" value="{{zoom_level}}">
 			  <input type="hidden" name="map_type" value="{{map_type_value}}">
               <br>
@@ -188,13 +187,18 @@
             <td nowrap width="25%" align="left">&nbsp;</td>
           </tr>
         </table>
+		{% csrf_token %}
       </form>
-    </center>
+
 
     <br><br>
-
-	<center>
-	  <p>Original query string: <em>{{query_string}}</em></p>
+	  <p>
+		Original query string: <em>{{query_string}}</em><br/>
+{% if query_string != corrected_query_string %}
+		Did you mean
+		<em><b><a href="{% url 'search:index' %}?q={{corrected_query_string}}&zoom={{zoom_level}}&map_type={{map_type_value}}">{{corrected_query_string}}</a>?</b></em>
+{% endif %}
+	  </p>
 
 	  <p><font size="-1">
 {% for place_pair in place_pair_list %}
