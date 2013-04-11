@@ -413,6 +413,16 @@ namespace OPENTREP {
       addNameToXapianSets (lFaaCode, lFeatureCode);
     }
 
+    // Add the city IATA code
+    const GeonamesID_T& lGeonamesID = _location.getGeonamesID();
+    if (lGeonamesID != 0) {
+      std::stringstream oStr;
+      oStr << lGeonamesID;
+      const std::string lGeonamesIDStr = oStr.str();
+      _termSet.insert (lGeonamesIDStr);
+      _spellingSet.insert (lGeonamesIDStr);
+    }
+
     // Add the feature code
     if (lFeatureCode.empty() == false) {
       _termSet.insert (lFeatureCode);
