@@ -1,6 +1,7 @@
 # Django settings for the Search-Travel project.
 
 DEBUG = True
+#DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
