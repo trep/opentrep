@@ -77,10 +77,7 @@ def extract_params (request, query_string = ''):
     search_form = request.GET
 
     # Detect the required action
-    if search_form.has_key('q'):
-	query_string = search_form['q']
-	result = True
-    elif search_form.has_key('show_airport'):
+    if search_form.has_key('show_airport'):
         # TODO: implement that API into OpenTREP and uncomment
 	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2)]
         place_list = ['NCE']
@@ -91,6 +88,9 @@ def extract_params (request, query_string = ''):
 	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2) for i in range(3)]
         place_list = ['NCE', 'JFK', 'LAX']
 	query_string = ' '.join(place_list)
+	result = True
+    elif search_form.has_key('q'):
+	query_string = search_form['q']
 	result = True
 
     # Detect the Google Map parameters (if any)
@@ -132,11 +132,9 @@ def calculate_corrected_query_string (place_list):
   corrected_query_string = ''
   idx = 0
   for place in place_list:
-    for corrected_keyword in place.corrected_keywords.word:
-      if idx != 0:
-        corrected_query_string += ' '
-      corrected_query_string += corrected_keyword
-
+    if idx != 0:
+      corrected_query_string += ' '
+    corrected_query_string += ' '.join(place.corrected_keywords.word)
     idx += 1
 
   return corrected_query_string
