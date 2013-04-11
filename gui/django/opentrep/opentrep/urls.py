@@ -4,6 +4,9 @@ from django.conf.urls import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
+handler404 = 'search.views.custom_404_view'
+handler500 = 'search.views.custom_500_view'
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'opentrep.views.home', name='home'),

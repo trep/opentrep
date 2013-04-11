@@ -9,6 +9,16 @@ import simplejson as json
 # 2. Path to the OpenTrep ProtoBuf stubs (Travel_pb2.py)
 import libpyopentrep, Travel_pb2
 
+# 404 - Page not found
+def custom_404_view ():
+  return Http404 ('search/404.html')
+
+# 500 - Server error
+def custom_500_view (request):
+  #errorMsg = 'Error: Standard Django error'
+  return render (request, 'search/500.html', {'error_msg': ''})
+
+
 # Generate a random POR (points of reference) entry
 def get_random_airport (openTrepLibrary, travelPB2):
   # OpenTREP
