@@ -12,12 +12,14 @@ import libpyopentrep, Travel_pb2
 # 404 - Page not found
 def custom_404_view (request):
   #errorMsg = 'Error: page not found'
-  return render (request, 'search/404.html', {'error_msg': ''})
+  return render (request, 'search/404.html', {'error_msg': '',
+                                              'request_path': request.path})
 
 # 500 - Server error
 def custom_500_view (request):
   #errorMsg = 'Error: Standard Django error'
-  return render (request, 'search/500.html', {'error_msg': ''})
+  return render (request, 'search/500.html', {'error_msg': '',
+                                              'request_path': request.path})
 
 
 # Generate a random POR (points of reference) entry
@@ -92,10 +94,10 @@ def extract_params (request, query_string = ''):
 	result = True
 
     # Detect the Google Map parameters (if any)
-    if search_form.has_key('zoom'):
-        zoom_level = search_form['zoom']
-    if search_form.has_key('map_type'):
-        map_type_value = search_form['map_type']
+    if search_form.has_key('z'):
+        zoom_level = search_form['z']
+    if search_form.has_key('mt'):
+        map_type_value = search_form['mt']
 
     # Try with POST
     search_form = request.POST
@@ -116,10 +118,10 @@ def extract_params (request, query_string = ''):
 	result = True
 
     # Detect the Google Map parameters (if any)
-    if search_form.has_key('zoom'):
-        zoom_level = search_form['zoom']
-    if search_form.has_key('map_type'):
-        map_type_value = search_form['map_type']
+    if search_form.has_key('z'):
+        zoom_level = search_form['z']
+    if search_form.has_key('mt'):
+        map_type_value = search_form['mt']
 
     #
     return query_string, result, place_list, zoom_level, map_type_value
