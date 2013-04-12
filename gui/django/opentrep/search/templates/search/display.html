@@ -6,7 +6,7 @@
   <style type="text/css">
     html { height: 100% }
     body { height: 100%; margin: 0; padding: 0 }
-    #map_canvas { margin-left: auto; text-align:center; margin-right: auto; width:50%; height:50% }
+    #map_canvas { margin-left: auto; text-align:center; margin-right: auto; width:100%; height:100% }
   </style>
 {% endblock %}
 {% block jscript %}
@@ -190,8 +190,6 @@
 		{% csrf_token %}
       </form>
 
-
-    <br><br>
 	  <p>
 		Original query string: <em>{{query_string}}</em><br/>
 {% if query_string != corrected_query_string %}
@@ -202,10 +200,11 @@
 
 	  <p><font size="-1">
 {% for place_pair in place_pair_list %}
-      {{place_pair.dep.name_utf}} 
+      {{place_pair.dep.name_utf}} (<b>{{place_pair.dep.tvl_code.code}}</b>)
   {% if place_pair.dist != "0" %} -- {{place_pair.dist}} km -- {% endif %}
   {% if forloop.last and place_pair.dist != "0" %}
-      {{place_pair.arr.name_utf}} ---- Total: {{dist_total}} km
+      {{place_pair.arr.name_utf}} (<b>{{place_pair.arr.tvl_code.code}}</b>)
+      ---- Total: {{dist_total}} km
   {% endif %}
 {% endfor %}
 	  </font></p>
