@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+from django.utils.encoding import smart_text, smart_bytes
 import sys, getopt, os, math
 import simplejson as json
 # Potentially add the following two pathes to the PYTHONPATH environment variable
@@ -178,8 +179,10 @@ def display (request, query_string = '',
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         return render (request, 'search/500.html', {'error_msg': errorMsg})
 
-    # Call the underlying OpenTREP library
-    query_string_str = str(query_string)
+    # Call the underlying C++ OpenTREP library. The input string is converted
+    # into UTF-8 (from Unicode), so that the OpenTREP library be happy with it.
+    query_string_str = smart_bytes (query_string, encoding='utf-8',
+                                    strings_only=True, errors='strict')
     result = openTrepLibrary.search ('P', query_string_str)
 
     # Protobuf
