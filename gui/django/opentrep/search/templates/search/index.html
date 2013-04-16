@@ -18,17 +18,16 @@
       <img id="logo" alt="Travel Search" height="110" width="276"
            src="{% static "search/icons/airports.gif" %}">
       <br><br>
-      <form action="{% url search:index %}" method="post" name="search_form">
-		{% csrf_token %}
+      <form action="{% url 'search:index' %}" method="get"	name="search_form">
         <table cellpadding="0" cellspacing="0">
           <tr valign="top">
             <td width="25%">&nbsp;</td>
             <td align="center" nowrap>
-              <input type="text" name="data" autocomplete="off"
-					 maxlength="2048" size="55" title="Airport Search" 
-					 value="{{ query_string }}" class="lst">
-			  <input type="hidden" name="zoom" value="{{zoom_level}}">
-			  <input type="hidden" name="map_type" value="{{map_type_value}}">
+              <input type="text" name="q" maxlength="2048" size="55"
+					 title="Airport Search" value="{{query_string}}"
+					 class="lst">
+			  <input type="hidden" name="z" value="{{zoom_level}}">
+			  <input type="hidden" name="mt" value="{{map_type_value}}">
               <br>
               <input name="query_text" type="submit" value="Search Airports"
 					 class="lsb">
@@ -40,6 +39,7 @@
             <td nowrap width="25%" align="left">&nbsp;</td>
           </tr>
         </table>
+		{% csrf_token %}
       </form>
     </center>
 
