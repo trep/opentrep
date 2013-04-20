@@ -18,6 +18,10 @@ int main (int argc, char* argv[]) {
   const OPENTREP::LocationKey lLocationKey (OPENTREP::IATACode_T ("KBP"),
                                             OPENTREP::ICAOCode_T ("UKBB"),
                                             OPENTREP::GeonamesID_T (6300952));
+  // Build the list of non-matching keywords
+  const std::string lNonMatchedKeyword ("zorglub");
+  OPENTREP::WordList_T lNonMatchedWordList;
+  lNonMatchedWordList.push_back (lNonMatchedKeyword);
 
   // Build a Location structure to hold the POR details
   OPENTREP::Location lLocation;
@@ -27,7 +31,8 @@ int main (int argc, char* argv[]) {
 
   // Serialise the Location structure with Protobuf
   std::ostringstream oStr;
-  OPENTREP::LocationExchange::exportLocationList (oStr, lLocationList);
+  OPENTREP::LocationExchange::exportLocationList (oStr, lLocationList,
+                                                  lNonMatchedWordList);
   const std::string& lSerialisedLocation = oStr.str();
 
   // DEBUG

@@ -192,22 +192,35 @@
 
 	  <p>
 		Original query string: <em>{{query_string}}</em><br/>
-{% if query_string != corrected_query_string %}
+{% if corrected_query_string != "" and query_string != corrected_query_string %}
 		Did you mean
 		<em><b><a href="{% url 'search:index' %}?q={{corrected_query_string}}&z={{zoom_level}}&mt={{map_type_value}}">{{corrected_query_string}}</a>?</b></em>
 {% endif %}
 	  </p>
 
+{% if n_airports != 0 %}
 	  <p><font size="-1">
-{% for place_pair in place_pair_list %}
+ {% for place_pair in place_pair_list %}
       {{place_pair.dep.name_utf}} (<b>{{place_pair.dep.tvl_code.code}}</b>)
   {% if place_pair.dist != "0" %} -- {{place_pair.dist}} km -- {% endif %}
   {% if forloop.last and place_pair.dist != "0" %}
       {{place_pair.arr.name_utf}} (<b>{{place_pair.arr.tvl_code.code}}</b>)
       ---- Total: {{dist_total}} km
   {% endif %}
-{% endfor %}
+ {% endfor %}
 	  </font></p>
+{% endif %}
+
+{% if n_unmatched_kw != 0 %}
+	  <p>
+		{{n_unmatched_kw}} unmatched keyword(s): 
+ {% for unmatched_keyword in unmatched_keyword_list %}
+  {% if not forloop.first %}, {% endif %}
+		{{unmatched_keyword}}
+ {% endfor %}
+	  </p>
+{% endif %}
+
     </center>
 
 	<!-- The following HTML <div> (Google Maps API v3) must not be enclosed by

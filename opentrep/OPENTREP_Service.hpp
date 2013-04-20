@@ -25,7 +25,29 @@ namespace OPENTREP {
   public:
     // /////////// Business Methods /////////////
     /** 
+     * Get the number of documents within the Xapian database (index).
+     *
+     * @return NbOfDBEntries_T Number of documents within the Xapian database. 
+     */
+    NbOfDBEntries_T getIndexSize();
+
+    /** 
+     * Return a given number of locations, all randomly draw from the Xapian
+     * database (index).
+     *
+     * @param LocationList_T& List of (geographical) locations randomly
+     *        picked up from the Xapian database.
+     * @return NbOfMatches_T Number of documents actually retrieved from
+     *         the Xapian database/index.
+     */
+    NbOfMatches_T drawRandomLocations (const NbOfMatches_T& iNbOfDraws,
+                                       LocationList_T&);
+
+    /** 
      * Build the Xapian database (index) on the BOM held in memory. 
+     *
+     * @return NbOfDBEntries_T Number of documents indexed by the Xapian
+     *         database/index.
      */
     NbOfDBEntries_T buildSearchIndex();
 
@@ -63,8 +85,7 @@ namespace OPENTREP {
      *  Constructor.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const TravelDBFilePath_T& File-path of the Xapian
-     *                                    index/database. 
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      */
     OPENTREP_Service (std::ostream& ioLogStream, const TravelDBFilePath_T&);
 
@@ -74,8 +95,7 @@ namespace OPENTREP {
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
-     * @param const TravelDBFilePath_T& File-path of the Xapian
-     *                                    index/database. 
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      */
     OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
                       const TravelDBFilePath_T&);
@@ -101,8 +121,7 @@ namespace OPENTREP {
      * Initialise.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const TravelDBFilePath_T& File-path of the Xapian
-     *                                    index/database. 
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      */
     void init (std::ostream& ioLogStream, const TravelDBFilePath_T&);
 
@@ -112,8 +131,7 @@ namespace OPENTREP {
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
-     * @param const TravelDBFilePath_T& File-path of the Xapian
-     *                                    index/database. 
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      */
     void init (std::ostream& ioLogStream, const PORFilePath_T&,
                const TravelDBFilePath_T&);

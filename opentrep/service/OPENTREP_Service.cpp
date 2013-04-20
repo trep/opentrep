@@ -12,6 +12,7 @@
 #include <opentrep/basic/BasChronometer.hpp>
 #include <opentrep/factory/FacWorld.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
+#include <opentrep/command/XapianIndexManager.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
 #include <opentrep/factory/FacOpenTrepServiceContext.hpp>
 #include <opentrep/service/OPENTREP_ServiceContext.hpp>
@@ -118,6 +119,66 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T OPENTREP_Service::getIndexSize() {
+    NbOfDBEntries_T oNbOfEntries = 0;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the Xapian database name (directorty of the index)
+    const TravelDBFilePath_T& lTravelDBFilePath =
+      lOPENTREP_ServiceContext.getTravelDBFilePath();
+      
+    // Delegate the query execution to the dedicated command
+    BasChronometer lIndexSizeChronometer; lIndexSizeChronometer.start();
+    oNbOfEntries = XapianIndexManager::getSize (lTravelDBFilePath);
+    const double lIndexSizeMeasure = lIndexSizeChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Size retrieval of the Xapian database (index): "
+                        << lIndexSizeMeasure << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T OPENTREP_Service::
+  drawRandomLocations (const NbOfMatches_T& iNbOfDraws,
+                       LocationList_T& ioLocationList) {
+    NbOfMatches_T oNbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext= *_opentrepServiceContext;
+
+    // Retrieve the Xapian database name (directorty of the index)
+    const TravelDBFilePath_T& lTravelDBFilePath =
+      lOPENTREP_ServiceContext.getTravelDBFilePath();
+      
+    // Delegate the query execution to the dedicated command
+    BasChronometer lRandomGetChronometer; lRandomGetChronometer.start();
+    oNbOfMatches = XapianIndexManager::drawRandomLocations (lTravelDBFilePath,
+                                                            iNbOfDraws,
+                                                            ioLocationList);
+    const double lRandomGetMeasure = lRandomGetChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Random retrieval of locations (index): "
+                        << lRandomGetMeasure << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oNbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T OPENTREP_Service::buildSearchIndex() {
     NbOfDBEntries_T oNbOfEntries = 0;
     
@@ -206,7 +267,8 @@ namespace OPENTREP {
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("Match query on Xapian database (index): "
-                        << lRequestInterpreterMeasure);
+                        << lRequestInterpreterMeasure << " - "
+                        << lOPENTREP_ServiceContext.display());
       
     return nbOfMatches;
   }

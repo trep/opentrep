@@ -45,6 +45,17 @@ namespace OPENTREP {
     }
 
     /** 
+     * Public wrapper around the random generation use case. 
+     */
+    std::string generate (const std::string& iOutputFormatString,
+                          const NbOfMatches_T& iNbOfDraws) {
+      const OutputFormat lOutputFormat (iOutputFormatString);
+      const OutputFormat::EN_OutputFormat& lOutputFormatEnum =
+        lOutputFormat.getFormat();
+      return generateImpl (iNbOfDraws, lOutputFormatEnum);
+    }
+
+    /** 
      * Public wrapper around the search use case. 
      */
     std::string search (const std::string& iOutputFormatString,
@@ -222,9 +233,10 @@ namespace OPENTREP {
         const TravelDBFilePath_T& lTravelDBFilePath = lFilePathPair.second;
 
         // DEBUG
-        *_logOutputStream << "Xapian travel database/index: '" << lPORFilePath
+        *_logOutputStream << "Xapian travel database/index: '"
+                          << lTravelDBFilePath
                           << "' - ORI-maintained list of POR: '"
-                          << lTravelDBFilePath << "'" << std::endl;
+                          << lPORFilePath << "'" << std::endl;
 
         // Query the Xapian database (index)
         WordList_T lNonMatchedWordList;
@@ -324,7 +336,186 @@ namespace OPENTREP {
         BomJSONExport::jsonExportLocationList (oJSONStr, lLocationList);
 
         // Export the list of Location objects into a Protobuf-formatted string
-        LocationExchange::exportLocationList (oProtobufStr, lLocationList);
+        LocationExchange::exportLocationList (oProtobufStr, lLocationList,
+                                              lNonMatchedWordList);
+
+        // DEBUG
+        *_logOutputStream << "Short version: "
+                          << oNoDetailedStr.str() << std::endl;
+        *_logOutputStream << "Long version: "
+                          << oDetailedStr.str() << std::endl;
+        *_logOutputStream << "JSON version: "
+                          << oJSONStr.str() << std::endl;
+        *_logOutputStream << "Protobuf version: "
+                          << oProtobufStr.str() << std::endl;
+
+      } catch (const RootException& eOpenTrepError) {
+        *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()
+                          << std::endl;
+
+      } catch (const std::exception& eStdError) {
+        *_logOutputStream << "Error: "  << eStdError.what() << std::endl;
+
+      } catch (...) {
+        *_logOutputStream << "Unknown error" << std::endl;
+      }
+
+      // Return the string corresponding to the request (either with
+      // or without details).
+      switch (iOutputFormat) {
+      case OutputFormat::SHORT: {
+        return oNoDetailedStr.str();
+      }
+
+      case OutputFormat::FULL: {
+        return oDetailedStr.str();
+      }
+
+      case OutputFormat::JSON: {
+        return oJSONStr.str();
+      }
+
+      case OutputFormat::PROTOBUF: {
+        return oProtobufStr.str();
+      }
+
+      default: {
+        // If the output format is not known, an exception is thrown by
+        // the call to the OutputFormat() constructor above.
+        assert (false);
+      }
+      }
+    }
+
+    /**
+     * Private wrapper around the random generation use case. 
+     */
+    std::string generateImpl(const NbOfMatches_T& iNbOfDraws,
+                             const OutputFormat::EN_OutputFormat& iOutputFormat){
+      std::ostringstream oNoDetailedStr;
+      std::ostringstream oDetailedStr;
+      std::ostringstream oJSONStr;
+      std::ostringstream oProtobufStr;
+
+      // Sanity check
+      if (_logOutputStream == NULL) {
+        oNoDetailedStr << "The log filepath is not valid." << std::endl;
+        return oNoDetailedStr.str();
+      }
+      assert (_logOutputStream != NULL);
+
+      try {
+
+        // DEBUG
+        *_logOutputStream << "Number of random draws: " << iNbOfDraws
+                          << std::endl;
+
+        if (_opentrepService == NULL) {
+          oNoDetailedStr << "The OpenTREP service has not been initialised, "
+                         << "i.e., the init() method has not been called "
+                         << "correctly on the OpenTrepSearcher object. Please "
+                         << "check that all the parameters are not empty and "
+                         << "point to actual files.";
+          *_logOutputStream << oNoDetailedStr.str();
+          return oNoDetailedStr.str();
+        }
+        assert (_opentrepService != NULL);
+
+        // Retrieve the underlying file-path details
+        const OPENTREP_Service::FilePathPair_T& lFilePathPair =
+          _opentrepService->getFilePaths();
+        const PORFilePath_T& lPORFilePath = lFilePathPair.first;
+        const TravelDBFilePath_T& lTravelDBFilePath = lFilePathPair.second;
+
+        // DEBUG
+        *_logOutputStream << "Xapian travel database/index: '"
+                          << lTravelDBFilePath
+                          << "' - ORI-maintained list of POR: '"
+                          << lPORFilePath << "'" << std::endl;
+
+        // Query the Xapian database (index)
+        LocationList_T lLocationList;
+        const NbOfMatches_T nbOfMatches =
+          _opentrepService->drawRandomLocations (iNbOfDraws, lLocationList);
+
+        // DEBUG
+        *_logOutputStream << "Python generation of " << iNbOfDraws << " gave "
+                          << nbOfMatches << " documents." << std::endl;
+
+	if (nbOfMatches != 0) {
+          NbOfMatches_T idx = 0;
+
+          for(LocationList_T::const_iterator itLocation = lLocationList.begin();
+               itLocation != lLocationList.end(); ++itLocation, ++idx) {
+            const Location& lLocation = *itLocation;
+
+            if (idx != 0) {
+              oNoDetailedStr << ",";
+            }
+
+            //
+            oNoDetailedStr << lLocation.getIataCode();
+            oDetailedStr << idx+1 << ". " << lLocation.toSingleLocationString()
+			 << std::endl;
+
+            // List of extra matching locations (those with the same
+            // matching weight/percentage)
+            const LocationList_T& lExtraLocationList =
+              lLocation.getExtraLocationList();
+            if (lExtraLocationList.empty() == false) {
+              oDetailedStr << "  Extra matches: " << std::endl;
+
+              NbOfMatches_T idxExtra = 0;
+              for (LocationList_T::const_iterator itLoc =
+                     lExtraLocationList.begin();
+                   itLoc != lExtraLocationList.end(); ++itLoc, ++idxExtra) {
+                oNoDetailedStr << ":";
+                oDetailedStr << "    " << idx+1 << "." << idxExtra+1 << ". ";
+
+                const Location& lExtraLocation = *itLoc;
+                oNoDetailedStr << lExtraLocation.getIataCode();
+                oDetailedStr << lExtraLocation << std::endl;
+              }
+            }
+
+            // The matching weight/percentage is the same for the main
+            // and the extra matching locations
+            oNoDetailedStr << "/" << lLocation.getPercentage();
+            
+            // List of alternate matching locations (those with a lower
+            // matching weight/percentage)
+            const LocationList_T& lAlternateLocationList =
+              lLocation.getAlternateLocationList();
+            if (lAlternateLocationList.empty() == false) {
+              oDetailedStr << "  Alternate matches: " << std::endl;
+
+              NbOfMatches_T idxAlter = 0;
+              for (LocationList_T::const_iterator itLoc =
+                     lAlternateLocationList.begin();
+                   itLoc != lAlternateLocationList.end(); ++itLoc, ++idxAlter) {
+                oNoDetailedStr << "-";
+                oDetailedStr << "    " << idx+1 << "." << idxAlter+1 << ". ";
+
+                const Location& lAlternateLocation = *itLoc;
+                oNoDetailedStr << lAlternateLocation.getIataCode()
+                               << "/" << lAlternateLocation.getPercentage();
+                oDetailedStr << lAlternateLocation << std::endl;
+              }
+            }
+          }
+        }
+
+        // DEBUG
+        *_logOutputStream << "Python generation of " << iNbOfDraws
+                          << " yielded:" << std::endl;
+
+        // Export the list of Location objects into a JSON-formatted string
+        BomJSONExport::jsonExportLocationList (oJSONStr, lLocationList);
+
+        // Export the list of Location objects into a Protobuf-formatted string
+        WordList_T lNonMatchedWordList;
+        LocationExchange::exportLocationList (oProtobufStr, lLocationList,
+                                              lNonMatchedWordList);
 
         // DEBUG
         *_logOutputStream << "Short version: "
@@ -490,6 +681,7 @@ BOOST_PYTHON_MODULE(libpyopentrep) {
   boost::python::class_<OPENTREP::OpenTrepSearcher> ("OpenTrepSearcher")
     .def ("index", &OPENTREP::OpenTrepSearcher::index)
     .def ("search", &OPENTREP::OpenTrepSearcher::search)
+    .def ("generate", &OPENTREP::OpenTrepSearcher::generate)
     .def ("getPaths", &OPENTREP::OpenTrepSearcher::getPaths)
     .def ("init", &OPENTREP::OpenTrepSearcher::init)
     .def ("finalize", &OPENTREP::OpenTrepSearcher::finalize);

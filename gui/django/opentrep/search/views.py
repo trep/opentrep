@@ -23,15 +23,6 @@ def custom_500_view (request):
                                               'request_path': request.path})
 
 
-# Generate a random POR (points of reference) entry
-def get_random_airport (openTrepLibrary, travelPB2):
-  # OpenTREP
-  result = openTrepLibrary.getRandom()
-  # Protobuf
-  place = travelPB2.Place()
-  place.ParseFromString (result)
-  return place
-
 # Calculate the great circle distance, given the geographical coordinates
 def great_circle_distance (lat1, lon1, lat2, lon2, degrees=True):
   if degrees:
@@ -66,66 +57,129 @@ def get_local_local_flight_duration_hr (place1, place2):
   time_diff_hr = (cit2['lon'] - cit1['lon']) / 15.0
   return travel_hr + time_diff_hr
 
+# Initialise the OpenTrep library
+def initOpenTrep():
+  # Initialise the OpenTrep C++ library
+  xapianDBPath = "/tmp/opentrep/traveldb"
+  openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+  initOK = openTrepLibrary.init (xapianDBPath, '/tmp/opentrep/pyopentrep.log')
+  return initOK, openTrepLibrary
+
+# Extract the answer from the resulting ProtoBuf
+def extractAnswer (result):
+  # Unserialise the Protobuf
+  queryAnswer = Travel_pb2.QueryAnswer()
+  queryAnswer.ParseFromString (result)
+
+  # Status
+  okStatus = queryAnswer.ok_status
+
+  return okStatus, queryAnswer
+
+# Generate a query string with random place codes
+def generateRandomString (nbOfDraws):
+  # Initialise the OpenTrep C++ library
+  initOK, openTrepLibrary = initOpenTrep()
+  if initOK == False:
+    return initOK, False, ''
+
+  # Randomly generate one place
+  result = openTrepLibrary.generate ('P', nbOfDraws)
+
+  # Extract the answer
+  okStatus, queryAnswer = extractAnswer (result)
+
+  # List of places
+  placeList = queryAnswer.place_list
+  place_list = [place.tvl_code.code for place in placeList.place]
+
+  # Build the query string
+  query_string = ' '.join(place_list)
+
+  return initOK, okStatus, query_string
+
+
 # Extract the parameters from the incoming request
 def extract_params (request, query_string = ''):
-    #
-    result = False
-    place_list = None
-    zoom_level = 5
-    map_type_value = 'HYBRID'
+  #
+  result = False
+  place_list = None
+  zoom_level = 5
+  map_type_value = 'HYBRID'
 
-    # Try with GET
-    search_form = request.GET
+  # Try with GET
+  search_form = request.GET
 
-    # Detect the required action
-    if search_form.has_key('show_airport'):
-        # TODO: implement that API into OpenTREP and uncomment
-	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2)]
-        place_list = ['NCE']
-	query_string = ' '.join(place_list)
-	result = True
-    elif search_form.has_key('show_itinerary'):
-        # TODO: implement that API into OpenTREP and uncomment
-	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2) for i in range(3)]
-        place_list = ['NCE', 'JFK', 'LAX']
-	query_string = ' '.join(place_list)
-	result = True
-    elif search_form.has_key('q'):
-	query_string = search_form['q']
-	result = True
+  # Detect the required action
+  if search_form.has_key('show_airport'):
+    # Randomly generate one place
+    initOK, okStatus, query_string = generateRandomString (1)
+    if initOK == False:
+      errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    elif okStatus == False or query_string == '':
+      errorMsg = 'Error: The OpenTrepLibrary cannot generate ' + str(nbOfDraws) + ' places'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    result = True
 
-    # Detect the Google Map parameters (if any)
-    if search_form.has_key('z'):
-        zoom_level = search_form['z']
-    if search_form.has_key('mt'):
-        map_type_value = search_form['mt']
+  elif search_form.has_key('show_itinerary'):
+    # Randomly generate three places
+    initOK, okStatus, query_string = generateRandomString (3)
+    if initOK == False:
+      errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    elif okStatus == False or query_string == '':
+      errorMsg = 'Error: The OpenTrepLibrary cannot generate ' + str(nbOfDraws) + ' places'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    result = True
 
-    # Try with POST
-    search_form = request.POST
+  elif search_form.has_key('q'):
+    query_string = search_form['q']
+    result = True
 
-    # Detect the required action
-    if search_form.has_key('q'):
-	query_string = search_form['q']
-	result = True
-    elif search_form.has_key('show_airport'):
-	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2)]
-        place_list = ['NCE']
-	query_string = ' '.join(place_list)
-	result = True
-    elif search_form.has_key('show_itinerary'):
-	# place_list = [por_service.get_random_airport (openTrepLibrary, travelPB2) for i in range(3)]
-        place_list = ['NCE', 'JFK', 'LAX']
-	query_string = ' '.join(place_list)
-	result = True
+  # Detect the Google Map parameters (if any)
+  if search_form.has_key('z'):
+    zoom_level = search_form['z']
+  if search_form.has_key('mt'):
+    map_type_value = search_form['mt']
 
-    # Detect the Google Map parameters (if any)
-    if search_form.has_key('z'):
-        zoom_level = search_form['z']
-    if search_form.has_key('mt'):
-        map_type_value = search_form['mt']
+  # Try with POST
+  search_form = request.POST
 
-    #
-    return query_string, result, place_list, zoom_level, map_type_value
+  # Detect the required action
+  if search_form.has_key('q'):
+    query_string = search_form['q']
+    result = True
+
+  elif search_form.has_key('show_airport'):
+    # Randomly generate one place
+    initOK, okStatus, query_string = generateRandomString (1)
+    if initOK == False:
+      errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    elif okStatus == False or query_string == '':
+      errorMsg = 'Error: The OpenTrepLibrary cannot generate ' + str(nbOfDraws) + ' places'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    result = True
+  elif search_form.has_key('show_itinerary'):
+    # Randomly generate three places
+    initOK, okStatus, query_string = generateRandomString (3)
+    if initOK == False:
+      errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    elif okStatus == False or query_string == '':
+      errorMsg = 'Error: The OpenTrepLibrary cannot generate ' + str(nbOfDraws) + ' places'
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
+    result = True
+
+  # Detect the Google Map parameters (if any)
+  if search_form.has_key('z'):
+    zoom_level = search_form['z']
+  if search_form.has_key('mt'):
+    map_type_value = search_form['mt']
+
+  #
+  return query_string, result, place_list, zoom_level, map_type_value
 
 # Calculate the corrected query string, based on the corrected keywords for
 # every place
@@ -135,118 +189,131 @@ def calculate_corrected_query_string (place_list):
   for place in place_list:
     if idx != 0:
       corrected_query_string += ' '
-    corrected_query_string += ' '.join(place.corrected_keywords.word)
+    corrected_query_string += ' '.join(place.corrected_keyword_list.word)
     idx += 1
 
   return corrected_query_string
 
 #
 def index (request):
-    # Extract the parameters from the incoming request
-    query_string, result, place_list, zoom_level, map_type_value = extract_params (request, query_string='')
+  # Extract the parameters from the incoming request
+  query_string, result, place_list, zoom_level, map_type_value = extract_params (request, query_string='')
 
-    if query_string == '':
-        #
-        return render (request, 'search/index.html', {
-                'place_list': None,
-                'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
-                'nb_of_places': 0,
-                'dist_total': '0',
-                'query_string': query_string,
-                'corrected_query_string': query_string,
-                'coord_for_GMap_center': '',
-                'zoom_level': zoom_level, 'map_type_value': map_type_value})
-    else:
-        # Delegate the call to the display view
-        return display (request, query_string, zoom_level, map_type_value)
+  if query_string == '':
+    #
+    return render (request, 'search/index.html', {
+        'place_list': None,
+        'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
+        'nb_of_places': 0,
+        'dist_total': '0',
+        'unmatched_keyword_list': None, 'n_unmatched_kw': 0,
+        'query_string': query_string,
+        'corrected_query_string': query_string,
+        'coord_for_GMap_center': '',
+        'zoom_level': zoom_level, 'map_type_value': map_type_value})
+  else:
+    # Delegate the call to the display view
+    return display (request, query_string, zoom_level, map_type_value)
 
 #
 def display (request, query_string = '',
              zoom_level = 5, map_type_value = 'HYBRID'):
-    # Logging
-    # log_service.log ('/tmp/travel-search.log', request, query_string)
+  # Logging
+  # log_service.log ('/tmp/travel-search.log', request, query_string)
 
-    #
-    if query_string == '':
-        return HttpResponseRedirect (reverse ('search:index'))
+  #
+  if query_string == '':
+    return HttpResponseRedirect (reverse ('search:index'))
         
 
-    # Initialise the OpenTrep C++ library
-    xapianDBPath = "/tmp/opentrep/traveldb"
-    openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init (xapianDBPath, '/tmp/opentrep/pyopentrep.log')
-    if initOK == False:
-        errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
-        return render (request, 'search/500.html', {'error_msg': errorMsg})
+  # Initialise the OpenTrep C++ library
+  initOK, openTrepLibrary = initOpenTrep()
+  if initOK == False:
+    errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+    return render (request, 'search/500.html', {'error_msg': errorMsg})
 
-    # Call the underlying C++ OpenTREP library. The input string is converted
-    # into UTF-8 (from Unicode), so that the OpenTREP library be happy with it.
-    query_string_str = smart_bytes (query_string, encoding='utf-8',
-                                    strings_only=True, errors='strict')
-    result = openTrepLibrary.search ('P', query_string_str)
+  # Call the underlying C++ OpenTREP library. The input string is converted
+  # into UTF-8 (from Unicode), so that the OpenTREP library be happy with it.
+  query_string_str = smart_bytes (query_string, encoding='utf-8',
+                                  strings_only=True, errors='strict')
+  result = openTrepLibrary.search ('P', query_string_str)
 
-    # Protobuf
-    placeList = Travel_pb2.PlaceList()
-    placeList.ParseFromString (result)
+  # Extract the answer
+  okStatus, queryAnswer = extractAnswer (result)
 
-    #
-    interpretedString, msg = '', ''
-    coord_for_GMap_center = {'lat': 10, 'lon': 0}
+  # Query status
+  if okStatus == False:
+    errorMsg = 'Error in the OpenTREP library: ' + queryAnswer.error_msg.msg
+    return render (request, 'search/500.html', {'error_msg': errorMsg})
 
-    # DEBUG
-    #print 'Result: ' + str(placeList)
+  # List of places
+  placeList = queryAnswer.place_list
 
-    # Free the OpenTREP library resource
-    openTrepLibrary.finalize()
+  # List of unmatched keywords
+  unmatchedKeywordList = queryAnswer.unmatched_keyword_list
 
-    # Calling appropriate program (nothing, coordinates, or distance)
-    place_list = placeList.place
-    n_airports = len (place_list)
-    place_pair_list = []
-    dist_total = 0
+  #
+  interpretedString, msg = '', ''
+  coord_for_GMap_center = {'lat': 10, 'lon': 0}
 
-    ##
-    # No airport (=> no map)
-    ##
-    if n_airports == 0:
-	if (result == True):
-		msg += 'Your entry ("%s") was not recognised:<br>' % query_string_str
-		msg += 'Enter a three-letter code or the name of an airport or city to find out its coordinates (e.g., JFK, or Rio de Janeiro)<br>'
-		msg += 'Enter a sequence of two three-letter place_list or names to find out the distance between those airports (e.g., JFK CDG Tokyo)'
+  # DEBUG
+  #print 'Result: ' + str(placeList)
 
-    ##
-    # A single airport => a map with a single marker
-    ##
-    elif n_airports == 1:
-	place = place_list[0]
-        place_pair_list = [{'dep': place, 'arr': None, 'dist': '0'}]
-        coord_for_GMap_center = {'lat': place.coord.latitude,
-                                 'lon': place.coord.longitude}
+  # Free the OpenTREP library resource
+  openTrepLibrary.finalize()
 
-    ##
-    # Several airports => a map with several paths (and markers)
-    ##
-    elif n_airports >= 2:
-        # Iterate on two lists, one browsing elements [1, N-1],
-        # the other browsing the elements [2, N]
-        place_list_front = place_list[:-1]
-        place_list_second = place_list[1:]
-        for (place1, place2) in zip (place_list_front, place_list_second):
-            dist = get_distance_km (place1, place2)
-            dist_total += dist
-            place_pair_list.append ({'dep': place1, 'arr': place2, 
-                                     'dist': '%d' % dist})
+  # Calling appropriate program (nothing, coordinates, or distance)
+  place_list = placeList.place
+  n_airports = len (place_list)
+  place_pair_list = []
+  dist_total = 0
+  unmatched_keyword_list = unmatchedKeywordList.word
+  n_unmatched_kw = len (unmatched_keyword_list)
 
-    # Calculate the corrected query string
-    corrected_query_string = calculate_corrected_query_string (place_list)
+  ##
+  # No airport (=> no map)
+  ##
+  if n_airports == 0:
+    if (result == True):
+      msg += 'Your entry ("%s") was not recognised:<br>' % query_string_str
+      msg += 'Enter a three-letter code or the name of an airport or city to find out its coordinates (e.g., JFK, or Rio de Janeiro)<br>'
+      msg += 'Enter a sequence of two three-letter place_list or names to find out the distance between those airports (e.g., JFK CDG Tokyo)'
 
-    #
-    return render (request, 'search/display.html', {
-            'place_list': place_list, 'place_pair_list': place_pair_list,
-            'nb_of_places': n_airports,
-            'dist_total': '%d' % dist_total,
-            'query_string': query_string,
-            'corrected_query_string': corrected_query_string,
-            'coord_for_GMap_center': coord_for_GMap_center,
-            'zoom_level': zoom_level, 'map_type_value': map_type_value})
+  ##
+  # A single airport => a map with a single marker
+  ##
+  elif n_airports == 1:
+    place = place_list[0]
+    place_pair_list = [{'dep': place, 'arr': None, 'dist': '0'}]
+    coord_for_GMap_center = {'lat': place.coord.latitude,
+                             'lon': place.coord.longitude}
+
+  ##
+  # Several airports => a map with several paths (and markers)
+  ##
+  elif n_airports >= 2:
+    # Iterate on two lists, one browsing elements [1, N-1],
+    # the other browsing the elements [2, N]
+    place_list_front = place_list[:-1]
+    place_list_second = place_list[1:]
+    for (place1, place2) in zip (place_list_front, place_list_second):
+      dist = get_distance_km (place1, place2)
+      dist_total += dist
+      place_pair_list.append ({'dep': place1, 'arr': place2, 
+                               'dist': '%d' % dist})
+
+  # Calculate the corrected query string
+  corrected_query_string = calculate_corrected_query_string (place_list)
+
+  #
+  return render (request, 'search/display.html', {
+      'place_list': place_list, 'place_pair_list': place_pair_list,
+      'nb_of_places': n_airports,
+      'dist_total': '%d' % dist_total,
+      'unmatched_keyword_list': unmatched_keyword_list,
+      'n_unmatched_kw': n_unmatched_kw,
+      'query_string': query_string,
+      'corrected_query_string': corrected_query_string,
+      'coord_for_GMap_center': coord_for_GMap_center,
+      'zoom_level': zoom_level, 'map_type_value': map_type_value})
 

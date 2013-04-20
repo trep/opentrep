@@ -9,30 +9,45 @@
 
 namespace OPENTREP {
 
-  /** Structure allowing measuring the time elapsed between two events. */
+  /**
+   * @brief Structure allowing measuring the time elapsed between two events.
+   */
   struct BasChronometer {
-    /** Constructor. */
+    /**
+     * Constructor.
+     */
     BasChronometer();
       
-    /** Start the chronometer from the local time
-        <br>The elapsed time given is the one elapsed since the start
-        is launched. */
+    /**
+     * Start the chronometer from the local time.
+     *
+     * The elapsed time given is the one elapsed since the start is launched.
+     */
     void start ();
     
-    /** Get the start time. */
+    /**
+     * Get the start time.
+     */
     std::string getStart () const {
       return boost::posix_time::to_simple_string (_startTime);
     }
     
-    /** Return the time elapsed since the structure has been instanciated.
-        <br>That elapsed time is expressed in seconds. */
+    /**
+     * Return the time elapsed since the structure has been instanciated.
+     *
+     * That elapsed time is expressed in seconds.
+     */
     double elapsed () const;
     
   private:
-    /** Start time. */
+    /**
+     * Start time.
+     */
     boost::posix_time::ptime _startTime;
 
-    /** Boolean which states whether the chronometer is started or not.*/
+    /**
+     * Boolean which states whether the chronometer is started or not.
+     */
     bool _startTimeLaunched;
   };
 
