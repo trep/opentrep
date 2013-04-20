@@ -52,7 +52,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string World::shortDisplay() const {
     std::ostringstream oStr;
-    oStr << describeKey() << " one world " << std::endl;
+    oStr << describeKey();
     return oStr.str();
   }
 
