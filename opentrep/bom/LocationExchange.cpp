@@ -17,17 +17,34 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void LocationExchange::
   exportLocationList (std::ostream& oStream,
-                      const LocationList_T& iLocationList) {
+                      const LocationList_T& iLocationList,
+                      const WordList_T& iNonMatchedWordList) {
     // Protobuf structure
-    treppb::PlaceList oPlaceList;
+    treppb::QueryAnswer oQueryAnswer;
     
-    // Browse the list of Location structures
+    // //// 1. Status ////
+    const bool kOKStatus = true;
+    oQueryAnswer.set_ok_status (kOKStatus);
+
+    // //// 2. Error message ////
+    /** Uncomment in order to set an error message
+    const std::string kEmptyMessage ("");
+    treppb::ErrorMessage* lErrorMessagePtr = oQueryAnswer.mutable_error_msg();
+    assert (lErrorMessagePtr != NULL);
+    lErrorMessagePtr->set_msg (kEmptyMessage);
+    */
+    
+    // //// 3. List of places ////
+    treppb::PlaceList* lPlaceListPtr = oQueryAnswer.mutable_place_list();
+    assert (lPlaceListPtr != NULL);
+
+    // Browse the list of Location structures, and fill the Protobuf structure
     for (LocationList_T::const_iterator itLocation = iLocationList.begin();
          itLocation != iLocationList.end(); ++itLocation) {
       const Location& lLocation = *itLocation;
 
       // Create an instance of a Protobuf Place structure
-      treppb::Place* lPlacePtr = oPlaceList.add_place();
+      treppb::Place* lPlacePtr = lPlaceListPtr->add_place();
       assert (lPlacePtr != NULL);
       
       // Fill the Protobuf Place structure with the content of
@@ -35,8 +52,21 @@ namespace OPENTREP {
       exportLocation (*lPlacePtr, lLocation);
     }
 
+    // //// 4. List of un-matched keywords ////
+    // Create an instance of a Protobuf UnknownKeywordList structure
+    treppb::UnknownKeywordList* lUnknownKeywordListPtr =
+      oQueryAnswer.mutable_unmatched_keyword_list();
+      assert (lUnknownKeywordListPtr != NULL);
+
+    // Browse the list of un-matched keywords, and fill the Protobuf structure
+    for (WordList_T::const_iterator itWord = iNonMatchedWordList.begin();
+         itWord != iNonMatchedWordList.end(); ++itWord) {
+      const Word_T& lWord = *itWord;
+      lUnknownKeywordListPtr->add_word (lWord);
+    }
+
     // Serialise the Protobuf
-    oPlaceList.SerializeToOstream (&oStream);
+    oQueryAnswer.SerializeToOstream (&oStream);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -312,7 +342,7 @@ namespace OPENTREP {
      */
     const std::string& lOriginalKeywords = iLocation.getOriginalKeywords();
     treppb::KeywordList* lOriginalKeywordListPtr =
-      ioPlace.mutable_original_keywords();
+      ioPlace.mutable_original_keyword_list();
     assert (lOriginalKeywordListPtr != NULL);
     lOriginalKeywordListPtr->add_word (lOriginalKeywords);
 
@@ -323,7 +353,7 @@ namespace OPENTREP {
      */
     const std::string& lCorrectedKeywords = iLocation.getCorrectedKeywords();
     treppb::KeywordList* lCorrectedKeywordListPtr =
-      ioPlace.mutable_corrected_keywords();
+      ioPlace.mutable_corrected_keyword_list();
     assert (lCorrectedKeywordListPtr != NULL);
     lCorrectedKeywordListPtr->add_word (lCorrectedKeywords);
 

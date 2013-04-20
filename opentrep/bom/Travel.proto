@@ -208,11 +208,26 @@ message Place {
   optional PlaceType loc_type = 41;
   optional WikiLinkList link_list = 42;
   optional AltNameList alt_name_list = 43;
-  optional KeywordList original_keywords = 44;
-  optional KeywordList corrected_keywords = 45;
+  optional KeywordList original_keyword_list = 44;
+  optional KeywordList corrected_keyword_list = 45;
   optional EditDistance edit_distance_actual = 46;
   optional EditDistance edit_distance_allowable = 47;
   optional MatchingPercentage matching_percentage = 48;
   optional PlaceList extra_place_list = 49;
   optional PlaceList alt_place_list = 50;
+}
+
+message UnknownKeywordList {
+  repeated string word = 1;
+}
+
+message ErrorMessage {
+  required string msg = 1;
+}
+
+message QueryAnswer {
+  required bool ok_status = 1;
+  optional ErrorMessage error_msg = 2;
+  required PlaceList place_list = 3;
+  required UnknownKeywordList unmatched_keyword_list = 4;
 }

@@ -324,7 +324,8 @@ namespace OPENTREP {
         BomJSONExport::jsonExportLocationList (oJSONStr, lLocationList);
 
         // Export the list of Location objects into a Protobuf-formatted string
-        LocationExchange::exportLocationList (oProtobufStr, lLocationList);
+        LocationExchange::exportLocationList (oProtobufStr, lLocationList,
+                                              lNonMatchedWordList);
 
         // DEBUG
         *_logOutputStream << "Short version: "

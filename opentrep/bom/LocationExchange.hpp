@@ -33,8 +33,10 @@ namespace OPENTREP {
      * @param std::ostream& Output stream in which the Location objects
                             should be logged/dumped.
      * @param const LocationList_T& List of Location objects to be exported.
+     * @param const WordList_T& The list of non-matching keywords.
      */
-    static void exportLocationList (std::ostream&, const LocationList_T&);
+    static void exportLocationList (std::ostream&, const LocationList_T&,
+                                    const WordList_T& iNonMatchedWordList);
 
     /**
      * Export (dump in the underlying output log stream and in Protobuf format)

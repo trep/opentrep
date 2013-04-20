@@ -135,7 +135,7 @@ def calculate_corrected_query_string (place_list):
   for place in place_list:
     if idx != 0:
       corrected_query_string += ' '
-    corrected_query_string += ' '.join(place.corrected_keywords.word)
+    corrected_query_string += ' '.join(place.corrected_keyword_list.word)
     idx += 1
 
   return corrected_query_string
@@ -152,6 +152,7 @@ def index (request):
                 'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
                 'nb_of_places': 0,
                 'dist_total': '0',
+                'unmatched_keyword_list': None, 'n_unmatched_kw': 0,
                 'query_string': query_string,
                 'corrected_query_string': query_string,
                 'coord_for_GMap_center': '',
@@ -185,9 +186,24 @@ def display (request, query_string = '',
                                     strings_only=True, errors='strict')
     result = openTrepLibrary.search ('P', query_string_str)
 
+    ##
     # Protobuf
-    placeList = Travel_pb2.PlaceList()
-    placeList.ParseFromString (result)
+    #placeList = Travel_pb2.PlaceList()
+    #placeList.ParseFromString (result)
+    queryAnswer = Travel_pb2.QueryAnswer()
+    queryAnswer.ParseFromString (result)
+
+    # Query status
+    okStatus = queryAnswer.ok_status
+    if okStatus == False:
+        errorMsg = 'Error in the OpenTREP library: ' + queryAnswer.error_msg.msg
+        return render (request, 'search/500.html', {'error_msg': errorMsg})
+
+    # List of places
+    placeList = queryAnswer.place_list
+
+    # List of unmatched keywords
+    unmatchedKeywordList = queryAnswer.unmatched_keyword_list
 
     #
     interpretedString, msg = '', ''
@@ -204,6 +220,8 @@ def display (request, query_string = '',
     n_airports = len (place_list)
     place_pair_list = []
     dist_total = 0
+    unmatched_keyword_list = unmatchedKeywordList.word
+    n_unmatched_kw = len (unmatched_keyword_list)
 
     ##
     # No airport (=> no map)
@@ -245,6 +263,8 @@ def display (request, query_string = '',
             'place_list': place_list, 'place_pair_list': place_pair_list,
             'nb_of_places': n_airports,
             'dist_total': '%d' % dist_total,
+            'unmatched_keyword_list': unmatched_keyword_list,
+            'n_unmatched_kw': n_unmatched_kw,
             'query_string': query_string,
             'corrected_query_string': corrected_query_string,
             'coord_for_GMap_center': coord_for_GMap_center,

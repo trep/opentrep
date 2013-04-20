@@ -194,11 +194,14 @@ def interpretFromJSON (jsonFormattedResult):
 # Protobuf interpreter. The Protobuf structure contains a list with the
 # main matches, along with their associated fields (weights, coordinates, etc).
 def interpretFromProtobuf (protobufFormattedResult):
-    interpretedString = ''
+    unmatchedKeywordString, interpretedString = '', ''
 
     # Protobuf
-    placeList = Travel_pb2.PlaceList()
-    placeList.ParseFromString (protobufFormattedResult)
+    queryAnswer = Travel_pb2.QueryAnswer()
+    queryAnswer.ParseFromString (protobufFormattedResult)
+
+    # List of recognised places
+    placeList = queryAnswer.place_list
 
     # DEBUG
     #print 'Result: ' + str(placeList)
@@ -218,8 +221,14 @@ def interpretFromProtobuf (protobufFormattedResult):
         interpretedString += str(geo_point.latitude) + ' ' 
         interpretedString += str(geo_point.longitude) + '; '
 
+    # List of un-matched keywords
+    unmatchedKeywords = queryAnswer.unmatched_keywords
+
+    for keyword in unmatchedKeywords.word:
+        unmatchedKeywordString += keyword
+
     #
-    return interpretedString
+    return unmatchedKeywordString, interpretedString
 
 
 ##
@@ -286,6 +295,7 @@ def search (openTrepLibrary, searchString, outputFormat):
         parsedStruct = compactResultParser (result)
         print 'Compact format => recognised place (city/airport) codes:'
         print parsedStruct
+        print '------------------'
 
     # When the full details have been requested, the result string is
     # potentially big and complex, and is not aimed to be
@@ -293,11 +303,13 @@ def search (openTrepLibrary, searchString, outputFormat):
     elif (outputFormat == 'F'):
         print 'Raw result from the OpenTrep library:'
         print result
+        print '------------------'
 
     # When the raw JSON format has been requested, no handling is necessary.
     elif (outputFormat == 'J'):
         print 'Raw (JSON) result from the OpenTrep library:'
         print result
+        print '------------------'
 
     # The interpreted JSON format is an example of how to extract relevant
     # information from the corresponding Python structure. That code can be
@@ -306,14 +318,18 @@ def search (openTrepLibrary, searchString, outputFormat):
         interpretedString = interpretFromJSON (result)
         print 'JSON format => recognised place (city/airport) codes:'
         print interpretedString
+        print '------------------'
 
     # The interpreted Protobuf format is an example of how to extract relevant
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'P'):
-        interpretedString = interpretFromProtobuf (result)
+        unmatchedKeywords, interpretedString = interpretFromProtobuf (result)
         print 'Protobuf format => recognised place (city/airport) codes:'
         print interpretedString
+        print 'Unmatched keywords:'
+        print unmatchedKeywords
+        print '------------------'
 
 
 ############################
