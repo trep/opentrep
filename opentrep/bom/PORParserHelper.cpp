@@ -81,7 +81,7 @@ namespace OPENTREP {
 
       const std::string lFaaCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::FAACode_T lFaaCode (lFaaCodeStr);
-      _location.setIcaoCode (lFaaCode);
+      _location.setFaaCode (lFaaCode);
 
       // DEBUG
       //OPENTREP_LOG_DEBUG ("FAA code: " << _location.getFaaCode());
