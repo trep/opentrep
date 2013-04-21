@@ -4,6 +4,7 @@
 // STL
 #include <cassert>
 #include <sstream>
+#include <algorithm>
 // Boost
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
@@ -587,22 +588,77 @@ namespace OPENTREP {
       }
     }
 
+    // Check whether or not the query string is made of a single word
+    WordList_T lWordList;
+    WordHolder::tokeniseStringIntoWordList (_queryString, lWordList);
+    NbOfWords_T nbOfWords = lWordList.size();
+
     //
-    if (hasFullTextMatched() == true) {
-      // DEBUG
+    if (_hasFullTextMatched == true) {
+      /**
+       * Check whether the query string is made of a single IATA, ICAO
+       * or FAA code. Also, there should have been no correction.
+       */
+      const size_t lNbOfLetters = _queryString.size();
+      if (nbOfWords == 1 && lNbOfLetters >= 3 && lNbOfLetters <= 4
+          && _correctedQueryString == _queryString) {
+        // Convert the query string (made of one word of 3 or 4 letters)
+        // to uppercase letters
+        std::string lUpperQueryWord;
+        lUpperQueryWord.resize (lNbOfLetters);
+        std::transform (_queryString.begin(), _queryString.end(),
+                        lUpperQueryWord.begin(), ::toupper);
+
+        // Browse through all the matching documents,
+        // not only the best maching one
+        for (DocumentList_T::const_iterator itDoc = _documentList.begin();
+             itDoc != _documentList.end(); ++itDoc) {
+          // Retrieve the primary key (IATA, ICAO, Geonames ID) of the place
+          // corresponding to the document
+          const Xapian::Document& lXapianDoc = itDoc->first;
+          const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
+
+          // Retrieve with the IATA and ICAO codes
+          const IATACode_T& lIataCode = lLocationKey.getIataCode();
+          const ICAOCode_T& lIcaoCode = lLocationKey.getIcaoCode();
+
+          // Compare the 3/4-letter-word query string with the IATA
+          // and ICAO codes
+          if (lUpperQueryWord == lIataCode || lUpperQueryWord == lIcaoCode) {
+            /**
+             * The query string matches with the IATA or ICAO code.
+             */
+            lMaxPercentage = 100.0;
+
+            // Register the document as the best matching one
+            const Xapian::docid& lDocID = lXapianDoc.get_docid();
+            const std::string& lDocData = lXapianDoc.get_data();
+            lBestDocID = lDocID;
+            lBestDocData = lDocData;
+
+            // DEBUG
+            OPENTREP_LOG_NOTIFICATION ("        [pct] '" << describeShortKey()
+                                       << "' matches the IATA/ICAO code of "
+                                       << lLocationKey << " (doc ID = "
+                                       << lBestDocID << ") => match of 100%");
+
+            break;
+          }
+        }
+      }
+
+      // Retrieve the primary key (IATA, ICAO, Geonames ID) of the place
+      // corresponding to the document
       const Xapian::Document& lXapianDoc = getDocument (lBestDocID);
       const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
+
+      // DEBUG
       OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
                           << "' matches at " << lMaxPercentage
                           << "% for " << lLocationKey << " (doc ID = "
                           << lBestDocID << ")");
 
     } else {
-      // Check whether or not the query string is made of a single word
-      WordList_T lWordList;
-      WordHolder::tokeniseStringIntoWordList (_queryString, lWordList);
-      NbOfWords_T nbOfWords = lWordList.size();
-
       /**
        * Check whether that word should be filtered out (e.g., less than
        * 3 characters, words like 'international', 'airport', etc).
