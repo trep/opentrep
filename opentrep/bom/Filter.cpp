@@ -30,17 +30,17 @@ namespace OPENTREP {
   /**
    * Helper function to check whether the word should be kept.
    *
-   * If the word has no more than 3 letters (e.g., 'de', 'san'), it should
-   * be filtered out. Indeed, when 'san' is part of 'san francisco',
+   * If the word has no more than <iMinWordLength> letters (e.g., 'de', 'san'),
+   * it should be filtered out. Indeed, when 'san' is part of 'san francisco',
    * for instance, it should not be indexed/searched alone (in a search,
    * the resulting match score will be zero).
    */
   // //////////////////////////////////////////////////////////////////////
-  bool hasGoodSize (const std::string& iWord) {
+  bool hasGoodSize (const std::string& iWord, const NbOfLetters_T& iMinWordLength) {
     bool hasGoodSizeFlag = true;
     // 
     const size_t lWordLength = iWord.size();
-    if (lWordLength <= 2) {
+    if (lWordLength < iMinWordLength) {
       hasGoodSizeFlag = false;
     }
     return hasGoodSizeFlag;
@@ -69,7 +69,7 @@ namespace OPENTREP {
    * Helper function to trim the non-relevant right outer words.
    */
   // //////////////////////////////////////////////////////////////////////
-  void rtrim (WordList_T& ioWordList) {
+  void rtrim (WordList_T& ioWordList, const NbOfLetters_T& iMinWordLength) {
     // If the list is empty, obviously nothing can be done at that stage.
     if (ioWordList.empty() == true) {
       return;
@@ -80,13 +80,13 @@ namespace OPENTREP {
     assert (itWord != ioWordList.rend());
     const std::string& lWord = *itWord;
 
-    // Check whether that word has the good size (>= 3) and whether it is
+    // Check whether that word has the good size (>= iMinWordLength) and whether it is
     // black-listed.
-    const bool hasGoodSizeFlag = hasGoodSize (lWord);
+    const bool hasGoodSizeFlag = hasGoodSize (lWord, iMinWordLength);
     const bool isBlackListedFlag = isBlackListed (lWord);
     if (hasGoodSizeFlag == false || isBlackListedFlag == true) {
       ioWordList.erase (--itWord.base());
-      rtrim (ioWordList);
+      rtrim (ioWordList, iMinWordLength);
     }
   }
 
@@ -94,7 +94,7 @@ namespace OPENTREP {
    * Helper function to trim the non-relevant left outer words.
    */
   // //////////////////////////////////////////////////////////////////////
-  void ltrim (WordList_T& ioWordList) {
+  void ltrim (WordList_T& ioWordList, const NbOfLetters_T& iMinWordLength) {
     // If the list is empty, obviously nothing can be done at that stage.
     if (ioWordList.empty() == true) {
       return;
@@ -105,13 +105,13 @@ namespace OPENTREP {
     assert (itWord != ioWordList.end());
     const std::string& lWord = *itWord;
 
-    // Check whether that word has the good size (>= 3) and whether it is
+    // Check whether that word has the good size (>= iMinWordLength) and whether it is
     // black-listed.
-    const bool hasGoodSizeFlag = hasGoodSize (lWord);
+    const bool hasGoodSizeFlag = hasGoodSize (lWord, iMinWordLength);
     const bool isBlackListedFlag = isBlackListed (lWord);
     if (hasGoodSizeFlag == false || isBlackListedFlag == true) {
       ioWordList.erase (itWord);
-      ltrim (ioWordList);
+      ltrim (ioWordList, iMinWordLength);
     }
   }
 
@@ -119,22 +119,22 @@ namespace OPENTREP {
    * Helper function to trim the non-relevant left and right outer words.
    */
   // //////////////////////////////////////////////////////////////////////
-  void trim (WordList_T& ioWordList) {
+  void trim (WordList_T& ioWordList, const NbOfLetters_T& iMinWordLength) {
     // Trim the non-relevant left outer words
-    //ltrim (ioWordList);
+    ltrim (ioWordList, iMinWordLength);
 
     // Trim the non-relevant right outer words
-    //rtrim (ioWordList);
+    rtrim (ioWordList, iMinWordLength);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void Filter::trim (std::string& ioPhrase) {
+  void Filter::trim (std::string& ioPhrase, const NbOfLetters_T& iMinWordLength) {
     // Create a list of words from the given phrase
     WordList_T lWordList;
     tokeniseStringIntoWordList (ioPhrase, lWordList);
 
     // Trim the non-relevant left and right outer words
-    OPENTREP::trim (lWordList);
+    OPENTREP::trim (lWordList, iMinWordLength);
 
     // Re-create the phrase from the (potentially altered) list of words
     ioPhrase = createStringFromWordList (lWordList);
@@ -166,7 +166,7 @@ namespace OPENTREP {
     // filtered out. Indeed, when 'de' is part of 'charles de gaulle',
     // for instance, it should not be indexed/searched alone (in a search,
     // the resulting match score will be zero).
-    isToBeKept = hasGoodSize (iWord);
+    isToBeKept = hasGoodSize (iWord, 3);
     if (isToBeKept == false) {
       return isToBeKept;
     }

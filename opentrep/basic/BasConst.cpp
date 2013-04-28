@@ -69,6 +69,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   BlackList_T ListGenerator::createBlackList() {
     BlackList_T oBL;
+    oBL.insert ("City"); oBL.insert ("city");
+    oBL.insert ("Ville"); oBL.insert ("ville");
+    oBL.insert ("Stadt"); oBL.insert ("stadt");
+    oBL.insert ("Gorod"); oBL.insert ("gorod");
     oBL.insert ("Airport"); oBL.insert ("airport");
     oBL.insert ("Airfield"); oBL.insert ("airfield");
     oBL.insert ("Airbase"); oBL.insert ("airbase");
