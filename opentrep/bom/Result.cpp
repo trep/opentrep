@@ -495,8 +495,8 @@ namespace OPENTREP {
       OPENTREP_LOG_DEBUG ("      Current query string: '"<< iQueryString << "'");
 
       // Check whether the string should be filtered out
-      //const bool isToBeAdded = Filter::shouldKeep ("", iQueryString);
-      const bool isToBeAdded = true;
+      const bool isToBeAdded = Filter::shouldKeep ("", iQueryString);
+      //const bool isToBeAdded = true;
 
       Xapian::MSet lMatchingSet;
       if (isToBeAdded == true) {
@@ -507,6 +507,10 @@ namespace OPENTREP {
       fillResult (lMatchingSet);
 
       // DEBUG
+      if (isToBeAdded == false) {
+        OPENTREP_LOG_DEBUG ("      No full text search performed as '" << iQueryString
+                            << "' is not made of searchable words");
+      }
       OPENTREP_LOG_DEBUG ("      ==> " << toString());
       OPENTREP_LOG_DEBUG ("      ----------------");
 
@@ -588,25 +592,37 @@ namespace OPENTREP {
       }
     }
 
-    // Check whether or not the query string is made of a single word
-    WordList_T lWordList;
-    WordHolder::tokeniseStringIntoWordList (_queryString, lWordList);
-    NbOfWords_T nbOfWords = lWordList.size();
+    // Check whether or not the (original) query string is made of a single word
+    WordList_T lOriginalQueryWordList;
+    WordHolder::tokeniseStringIntoWordList (_queryString, lOriginalQueryWordList);
+    const NbOfWords_T nbOfOriginalQueryWords = lOriginalQueryWordList.size();
+
+    // Filter out "standard" words such as "airport", "international", "city",
+    // as well as words having a length strictly less than 3 letters.
+    std::string lFilteredString (_queryString);
+    const NbOfLetters_T kMinWordLength = 3;
+    Filter::trim (lFilteredString, kMinWordLength);
+
+    // Check whether or not the filtered query string is made of a single word
+    WordList_T lFilteredQueryWordList;
+    WordHolder::tokeniseStringIntoWordList (lFilteredString, lFilteredQueryWordList);
+    const NbOfWords_T nbOfFilteredQueryWords = lFilteredQueryWordList.size();
 
     //
     if (_hasFullTextMatched == true) {
       /**
-       * Check whether the query string is made of a single IATA, ICAO
-       * or FAA code. Also, there should have been no correction.
+       * Check whether the query string, when some standard words (e.g., "airport",
+       * "international", "city") have been filtered out, is made of a single IATA,
+       * ICAO or FAA code. Also, there should have been no correction.
        */
-      const size_t lNbOfLetters = _queryString.size();
-      if (nbOfWords == 1 && lNbOfLetters >= 3 && lNbOfLetters <= 4
+      const size_t lNbOfLetters = lFilteredString.size();
+      if (nbOfFilteredQueryWords == 1 && lNbOfLetters >= 3 && lNbOfLetters <= 4
           && _correctedQueryString == _queryString) {
         // Convert the query string (made of one word of 3 or 4 letters)
         // to uppercase letters
         std::string lUpperQueryWord;
         lUpperQueryWord.resize (lNbOfLetters);
-        std::transform (_queryString.begin(), _queryString.end(),
+        std::transform (lFilteredString.begin(), lFilteredString.end(),
                         lUpperQueryWord.begin(), ::toupper);
 
         // Browse through all the matching documents,
@@ -665,7 +681,7 @@ namespace OPENTREP {
        */
       const bool shouldBeKept = Filter::shouldKeep ("", _queryString);
 
-      if (nbOfWords == 1 && shouldBeKept == true) {
+      if (nbOfOriginalQueryWords == 1 && shouldBeKept == true) {
         /**
          * There is no full-text match for that single-word query. That is
          * therefore an unknown word. The percentage is set to 100%, though,
@@ -674,10 +690,10 @@ namespace OPENTREP {
         lMaxPercentage = 100.0;
 
         // DEBUG
-        OPENTREP_LOG_DEBUG("        [pct] '" << describeShortKey()
-                           << "' does not match, but it is a non black-listed "
-                           << "single-word string; hence, the weight is "
-                           << lMaxPercentage << "%");
+        OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
+                            << "' does not match, but it is a non black-listed "
+                            << "single-word string; hence, the weight is "
+                            << lMaxPercentage << "%");
 
       } else {
         /**
@@ -688,7 +704,7 @@ namespace OPENTREP {
          * percentage. The corresponding string set will therefore have
          * almost no chance to being selected/chosen.
          */
-        lMaxPercentage = std::pow (10.0, -3*nbOfWords);
+        lMaxPercentage = std::pow (10.0, -3*nbOfOriginalQueryWords);
 
         // DEBUG
         OPENTREP_LOG_DEBUG("        [pct] '" << describeShortKey()

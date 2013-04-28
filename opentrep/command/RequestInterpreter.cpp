@@ -50,8 +50,8 @@ namespace OPENTREP {
     if (lQueryStringWordList.size() == 1) {
       // Add the unmatched/unknown word, only when that latter has not
       // already been stored, and when it is not black-listed.
-      // const bool shouldBeKept = Filter::shouldKeep ("", iQueryString);
-      const bool shouldBeKept = true;
+      const bool shouldBeKept = Filter::shouldKeep ("", iQueryString);
+      //const bool shouldBeKept = true;
               
       WordSet_T::const_iterator itWord = ioWordSet.find (iQueryString);
       if (shouldBeKept == true && itWord == ioWordSet.end()) {
