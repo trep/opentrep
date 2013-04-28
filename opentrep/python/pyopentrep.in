@@ -229,7 +229,7 @@ def interpretFromProtobuf (protobufFormattedResult):
         interpretedString += str(geo_point.longitude) + '; '
 
     # List of un-matched keywords
-    unmatchedKeywords = queryAnswer.unmatched_keywords
+    unmatchedKeywords = queryAnswer.unmatched_keyword_list
 
     for keyword in unmatchedKeywords.word:
         unmatchedKeywordString += keyword
