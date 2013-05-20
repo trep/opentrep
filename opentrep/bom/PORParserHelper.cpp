@@ -1014,7 +1014,7 @@ namespace OPENTREP {
        dst_offset         decimal(3,1)
        raw_offset         decimal(3,1)
        moddate            date
-       city_code          varchar(3)
+       city_code_list     varchar(200)
        city_name_utf      varchar(200)
        city_name_ascii    varchar(200)
        tvl_por_list       varchar(200)
@@ -1033,7 +1033,7 @@ namespace OPENTREP {
        adm3_code^adm4_code^
        population^elevation^gtopo30^
        timezone^gmt_offset^dst_offset^raw_offset^moddate^
-       city_code^city_name_utf^city_name_ascii^tvl_por_list^
+       city_code_list^city_name_utf^city_name_ascii^tvl_por_list^
        state_code^location_type^wiki_link^
        alt_name_section
     */ 
@@ -1099,7 +1099,7 @@ namespace OPENTREP {
           >> '^' >> -dst_offset
           >> '^' >> -raw_offset
           >> '^' >> (mod_date | bsq::lit("-1"))
-          >> '^' >> city_code
+          >> '^' >> city_code_list
           >> '^' >> -city_name_utf
           >> '^' >> -city_name_ascii
           >> '^' >> -tvl_por_code_list[storeTvlPORListString(_location)]
@@ -1256,6 +1256,8 @@ namespace OPENTREP {
            >> '-'
            >> day_p[boost::phoenix::ref(_location._itDay) = bsq::labels::_1] ];
 
+        city_code_list = city_code % ',';
+
         city_code =
           bsq::repeat(3)[bsu::char_('A', 'Z')][storeCityCode(_location)]
           ;
@@ -1370,6 +1372,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (dst_offset);
         BOOST_SPIRIT_DEBUG_NODE (mod_date);
         BOOST_SPIRIT_DEBUG_NODE (date);
+        BOOST_SPIRIT_DEBUG_NODE (city_code_list);
         BOOST_SPIRIT_DEBUG_NODE (city_code);
         BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
@@ -1403,7 +1406,7 @@ namespace OPENTREP {
         population, elevation, gtopo30,
         time_zone, gmt_offset, dst_offset, raw_offset,
         mod_date, date,
-        city_code, city_name_utf, city_name_ascii, state_code,
+        city_code_list, city_code, city_name_utf, city_name_ascii, state_code,
         por_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,
