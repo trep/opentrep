@@ -14,12 +14,12 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   Location::Location() :
-    _key (IATACode_T ("AAA"), ICAOCode_T ("AAAA"), 0),
+    _key (IATACode_T ("AAA"), IATAType::LAST_VALUE, 0),
+    _icaoCode (ICAOCode_T ("AAAA")), _faaCode (FAACode_T ("")),
     _commonName (CommonName_T ("NotAvailable")),
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (TvlPORListString_T ("")),
-    _faaCode (FAACode_T ("")),
     _dateFrom (1970, 01, 01), _dateEnd (2999, 12, 31), _comment (""),
     _cityCode (CityCode_T ("ZZZ")),
     _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
@@ -29,7 +29,6 @@ namespace OPENTREP {
     _continentName (ContinentName_T ("NotAvailable")),
     _latitude (0), _longitude (0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
-    _iataType (IATAType::LAST_VALUE),
     _admin1Code (Admin1Code_T ("Z")),
     _admin1UtfName (Admin1UTFName_T ("Z")),
     _admin1AsciiName (Admin1ASCIIName_T ("Z")),
@@ -53,10 +52,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   Location::Location (const Location& iLocation) :
     _key (iLocation._key),
+    _icaoCode (iLocation._icaoCode), _faaCode (iLocation._faaCode),
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
     _tvlPORListString (iLocation._tvlPORListString),
-    _faaCode (iLocation._faaCode),
     _dateFrom (iLocation.getDateFrom()), _dateEnd (iLocation.getDateEnd()),
     _comment (iLocation.getComment()),
     _cityCode (iLocation._cityCode),
@@ -69,7 +68,6 @@ namespace OPENTREP {
     _continentName (iLocation._continentName),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
     _featClass (iLocation._featClass), _featCode (iLocation._featCode),
-    _iataType (iLocation._iataType),
     _admin1Code (iLocation._admin1Code),
     _admin1UtfName (iLocation._admin1UtfName),
     _admin1AsciiName (iLocation._admin1AsciiName),
@@ -97,11 +95,11 @@ namespace OPENTREP {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  Location::Location (const IATACode_T& iIataCode, const ICAOCode_T& iIcaoCode,
+  Location::Location (const IATACode_T& iIataCode, const IATAType& iIataType,
                       const GeonamesID_T& iGeonamesID,
+                      const ICAOCode_T& iIcaoCode, const FAACode_T& iFaaCode,
                       const CommonName_T& iCommonName,
                       const ASCIIName_T& iASCIIName,
-                      const FAACode_T& iFaaCode,
                       const Date_T& iDateFrom, const Date_T& iDateEnd,
                       const Comment_T& iComment,
                       const CityCode_T& iCityCode,
@@ -115,7 +113,6 @@ namespace OPENTREP {
                       const Latitude_T& iLatitude, const Longitude_T& iLongitude,
                       const FeatureClass_T& iFeatureClass,
                       const FeatureCode_T& iFeatureCode,
-                      const IATAType& iIATAType,
                       const Admin1Code_T& iAdmin1Code,
                       const Admin1UTFName_T& iAdmin1UtfName,
                       const Admin1ASCIIName_T& iAdmin1AsciiName,
@@ -139,11 +136,12 @@ namespace OPENTREP {
                       const NbOfErrors_T& iEditDistance,
                       const NbOfErrors_T& iAllowableEditDistance,
                       const RawDataString_T& iRawDataString) :
-    _key (iIataCode, iIcaoCode, iGeonamesID),
+    _key (iIataCode, iIataType, iGeonamesID),
+    _icaoCode (iIcaoCode), _faaCode (iFaaCode),
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (iTvlPORListString),
-    _faaCode (iFaaCode), _dateFrom (iDateFrom), _dateEnd (iDateEnd),
+    _dateFrom (iDateFrom), _dateEnd (iDateEnd),
     _comment (iComment),
     _cityCode (iCityCode),
     _cityUtfName (iCityUtfName), _cityAsciiName (iCityAsciiName),
@@ -152,7 +150,7 @@ namespace OPENTREP {
     _countryName (iCountryName),
     _continentCode ("NA"), _continentName (iContinentName),
     _latitude (iLatitude), _longitude (iLongitude),
-    _featClass (iFeatureClass), _featCode (iFeatureCode), _iataType (iIATAType),
+    _featClass (iFeatureClass), _featCode (iFeatureCode),
     _admin1Code (iAdmin1Code),
     _admin1UtfName (Admin1UTFName_T (iAdmin1UtfName)),
     _admin1AsciiName (Admin1ASCIIName_T (iAdmin1AsciiName)),
@@ -206,7 +204,7 @@ namespace OPENTREP {
 
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
-         << ", " << _faaCode
+         << ", " << _icaoCode << ", " << _faaCode
          << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
          << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
          << ", " << _stateCode
@@ -215,7 +213,6 @@ namespace OPENTREP {
          << ", " << _continentCode << ", " << _continentName
          << ", " << _latitude << ", " << _longitude
          << ", " << _featClass << ", " << _featCode
-         << ", " << _iataType.getTypeAsString()
          << ", " << _admin1Code
          << ", " << _admin1UtfName << ", " << _admin1AsciiName
          << ", " << _admin2Code

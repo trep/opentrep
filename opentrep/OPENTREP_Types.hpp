@@ -40,12 +40,22 @@ namespace OPENTREP {
   };
 
   /** 
-   * Xapian database name, corresponding to the (potentially relative)
+   * Xapian database file-path/name, corresponding to the (potentially relative)
    * directory name (on the filesystem) where Xapian stores its index.
    */
   struct TravelDBFilePath_T : public std::string {
   public:
     explicit TravelDBFilePath_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
+  /** 
+   * SQLite database file-path, corresponding to the (potentially relative)
+   * directory name (on the filesystem) where SQLite stores its database.
+   */
+  struct SQLiteDBFilePath_T : public std::string {
+  public:
+    explicit SQLiteDBFilePath_T (const std::string& iValue)
       : std::string (iValue) { }
   };
 

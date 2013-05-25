@@ -11,9 +11,9 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   LocationKey::LocationKey (const IATACode_T& iIataCode,
-                            const ICAOCode_T& iIcaoCode,
+                            const IATAType& iIataType,
                             const GeonamesID_T& iGeonamesID) :
-    _iataCode (iIataCode), _icaoCode (iIcaoCode), _geonamesID (iGeonamesID) {
+    _iataCode (iIataCode), _iataType (iIataType), _geonamesID (iGeonamesID) {
     if (_geonamesID == 0) {
       _isGeonames = false;
     } else {
@@ -23,14 +23,14 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   LocationKey::LocationKey() :
-    _iataCode (IATACode_T ("")), _icaoCode (ICAOCode_T ("")),
+    _iataCode (IATACode_T ("")), _iataType (IATAType::LAST_VALUE),
     _geonamesID (0), _isGeonames (false) {
     assert (false);
   }
   
   // //////////////////////////////////////////////////////////////////////
   LocationKey::LocationKey (const LocationKey& iLocationKey) :
-    _iataCode (iLocationKey._iataCode), _icaoCode (iLocationKey._icaoCode),
+    _iataCode (iLocationKey._iataCode), _iataType (iLocationKey._iataType),
     _geonamesID (iLocationKey._geonamesID),
     _isGeonames (iLocationKey._isGeonames) {
   }
@@ -42,7 +42,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   bool LocationKey::operator== (const LocationKey& iLocationKey) const {
     const bool areEqual = (_iataCode == iLocationKey._iataCode
-                           && _icaoCode == iLocationKey._icaoCode
+                           && _iataType == iLocationKey._iataType
                            && _geonamesID == iLocationKey._geonamesID);
     return areEqual;
   }
@@ -50,7 +50,9 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string LocationKey::describe() const {
     std::ostringstream oStr;
-    oStr << _iataCode << "-" << _icaoCode << "-" << _geonamesID;
+    oStr << _iataCode << "-" << _iataType.getTypeAsString()
+         << "-" << _geonamesID;
+
     return oStr.str();
   }
 

@@ -70,13 +70,17 @@ namespace OPENTREP {
      * Get the file-paths of the Xapian database/index and of the ORI-maintained
      * POR (points of reference).
      *
-     * @param const PORFilePath_T File-path of the file of POR
-     *                            (points of reference).
-     * @param const TravelDBFilePath_T File-path of the Xapian index/database. 
+     * @return std::pair<const PORFilePath_T,  File-path of the file of POR
+     *                                         (points of reference).
+     *                   std::pair<const TravelDBFilePath_T, File-path of the
+     *                                                       Xapian database.
+     *                             const SQLiteDBFilePath_T> > File-path of the
+     *                                                         SQLite3 database.
      */
-    typedef std::pair<const PORFilePath_T,
-                      const TravelDBFilePath_T> FilePathPair_T;
-    FilePathPair_T getFilePaths() const;
+    typedef std::pair<const TravelDBFilePath_T,
+                      const SQLiteDBFilePath_T> DBFilePathPair_T;
+    typedef std::pair<const PORFilePath_T, const DBFilePathPair_T> FilePathSet_T;
+    FilePathSet_T getFilePaths() const;
 
 
   public:
@@ -86,8 +90,10 @@ namespace OPENTREP {
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
-    OPENTREP_Service (std::ostream& ioLogStream, const TravelDBFilePath_T&);
+    OPENTREP_Service (std::ostream& ioLogStream, const TravelDBFilePath_T&,
+                      const SQLiteDBFilePath_T&);
 
     /**
      *  Constructor.
@@ -96,9 +102,10 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
-                      const TravelDBFilePath_T&);
+                      const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
 
     /** 
      * Destructor. 
@@ -122,8 +129,10 @@ namespace OPENTREP {
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
-    void init (std::ostream& ioLogStream, const TravelDBFilePath_T&);
+    void init (std::ostream& ioLogStream, const TravelDBFilePath_T&,
+               const SQLiteDBFilePath_T&);
 
     /**
      * Initialise.
@@ -132,9 +141,10 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     void init (std::ostream& ioLogStream, const PORFilePath_T&,
-               const TravelDBFilePath_T&);
+               const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
 
     /**
      *  Finalise. 

@@ -45,6 +45,17 @@ struct UnitTestConfig {
   }
 };
 
+// //////////// Constants for the tests ///////////////
+/**
+ * Xapian database/index file-path (directory containing the index).
+ */
+const std::string X_XAPIAN_DB_FP (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
+
+/**
+ * SQlite3 database file-path.
+ */
+const std::string X_SQLITE_DB_FP (OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH);
+
 
 // /////////////// Main: Unit Test Suite //////////////
 
@@ -60,10 +71,6 @@ BOOST_AUTO_TEST_SUITE (master_test_suite)
 BOOST_AUTO_TEST_CASE (slice_small_string) {
 
   // Output log File
-  const OPENTREP::TravelDBFilePath_T
-    lTravelDBFilePath (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
-
-  // Output log File
   const std::string lLogFilename ("SliceTestSuite.log");
 
   // Set the log parameters
@@ -73,7 +80,10 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   logOutputFile.clear();
 
   // Initialise the context
-  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath);
+  const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
+  const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (X_SQLITE_DB_FP);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath,
+                                              lSQLiteDBFilePath);
   
   // A few sample strings
   const std::string lLax1Str = "los angeles";

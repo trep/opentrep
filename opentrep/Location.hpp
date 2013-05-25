@@ -11,7 +11,6 @@
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/OPENTREP_ParserHelperTypes.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
-#include <opentrep/IATAType.hpp>
 #include <opentrep/Language.hpp>
 #include <opentrep/LocationKey.hpp>
 #include <opentrep/NameMatrix.hpp>
@@ -40,12 +39,12 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the ICAO code.
+     * Get the IATA location type (e.g., A for airport).
      */
-    const ICAOCode_T& getIcaoCode() const {
-      return _key.getIcaoCode();
+    const IATAType& getIataType() const {
+      return _key.getIataType();
     }
-    
+
     /**
      * Get the Geonames ID.
      */
@@ -60,6 +59,20 @@ namespace OPENTREP {
       return _key.isGeonames();
     }
 
+    /**
+     * Get the ICAO code.
+     */
+    const ICAOCode_T& getIcaoCode() const {
+      return _icaoCode;
+    }
+    
+    /** 
+     * Get the FAA code. 
+     */
+    const FAACode_T& getFaaCode() const {
+      return _faaCode;
+    }
+    
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -89,13 +102,6 @@ namespace OPENTREP {
       return _tvlPORListString;
     }
 
-    /** 
-     * Get the FAA code. 
-     */
-    const FAACode_T& getFaaCode() const {
-      return _faaCode;
-    }
-    
     /**
      * Get the beginning date of the validity period
      */
@@ -234,13 +240,6 @@ namespace OPENTREP {
      */
     const FeatureCode_T& getFeatureCode() const {
       return _featCode;
-    }
-
-    /**
-     * Get the IATA location type (e.g., A for airport).
-     */
-    const IATAType& getIATAType() const {
-      return _iataType;
     }
 
     /**
@@ -437,12 +436,12 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the ICAO code.
+     * Set the IATA location type (e.g., A for airport).
      */
-    void setIcaoCode (const std::string& iIcaoCode) {
-      _key.setIcaoCode (iIcaoCode);
+    void setIataType (const IATAType& iIATAType) {
+      _key.setIataType (iIATAType);
     }
-    
+
     /**
      * Set the Geonames ID.
      */
@@ -450,6 +449,20 @@ namespace OPENTREP {
       _key.setGeonamesID (iGeonamesID);
     }
 
+    /**
+     * Set the ICAO code.
+     */
+    void setIcaoCode (const std::string& iIcaoCode) {
+      _icaoCode = ICAOCode_T (iIcaoCode);
+    }
+    
+    /**
+     * Set the FAA code. 
+     */
+    void setFaaCode (const std::string& iFaaCode) {
+      _faaCode = FAACode_T (iFaaCode);
+    }
+    
     /** 
      * Set the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -479,13 +492,6 @@ namespace OPENTREP {
       _tvlPORListString = TvlPORListString_T (iPORListString);
     }
 
-    /**
-     * Set the FAA code. 
-     */
-    void setFaaCode (const std::string& iFaaCode) {
-      _faaCode = FAACode_T (iFaaCode);
-    }
-    
     /**
      * Set the beginning date of the validity period
      */
@@ -624,13 +630,6 @@ namespace OPENTREP {
      */
     void setFeatureCode (const std::string& iFeatCode) {
       _featCode = FeatureCode_T (iFeatCode);
-    }
-
-    /**
-     * Set the IATA location type (e.g., A for airport).
-     */
-    void setIATAType (const IATAType& iIATAType) {
-      _iataType = iIATAType;
     }
 
     /**
@@ -905,14 +904,15 @@ namespace OPENTREP {
     /**
      * Main Constructor. 
      */
-    Location (const IATACode_T&, const ICAOCode_T&, const GeonamesID_T&,
-              const CommonName_T&, const ASCIIName_T&, const FAACode_T&,
+    Location (const IATACode_T&, const IATAType&, const GeonamesID_T&,
+              const ICAOCode_T&, const FAACode_T&,
+              const CommonName_T&, const ASCIIName_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const ContinentName_T&,
               const Latitude_T&, const Longitude_T&,
-              const FeatureClass_T&, const FeatureCode_T&, const IATAType&,
+              const FeatureClass_T&, const FeatureCode_T&,
               const Admin1Code_T&, const Admin1UTFName_T&,
               const Admin1ASCIIName_T&,
               const Admin2Code_T&, const Admin2UTFName_T&,
@@ -953,6 +953,16 @@ namespace OPENTREP {
      */
     LocationKey _key;
 
+    /**
+     * ICAO code (e.g., KORD).
+     */
+    ICAOCode_T _icaoCode;
+
+    /**
+     * FAA code (e.g., ORD).
+     */
+    FAACode_T _faaCode;
+
     /** 
      * Common name (usually in American English, but not necessarily in ASCII).
      */
@@ -975,11 +985,6 @@ namespace OPENTREP {
      * a single string (e.g., "EMB,JCC,SFO" for San Francisco, California, USA).
      */
     TvlPORListString_T _tvlPORListString;
-
-    /**
-     * FAA code (e.g., ORD).
-     */
-    FAACode_T _faaCode;
 
     /**
      * Beginning date of the validity period
@@ -1067,11 +1072,6 @@ namespace OPENTREP {
      * Feature code (e.g., AIRP for airport).
      */
     FeatureCode_T _featCode;
-
-    /**
-     * IATA location type (e.g., A for airport).
-     */
-    IATAType _iataType;
 
     /**
      * Administrative code of rank 1 (e.g., IL for Illinois).

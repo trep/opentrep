@@ -97,19 +97,25 @@ namespace OPENTREP {
         assert (_opentrepService != NULL);
 
         // Retrieve the underlying file-path details
-        const OPENTREP_Service::FilePathPair_T& lFilePathPair =
+        const OPENTREP_Service::FilePathSet_T& lFilePathSet =
           _opentrepService->getFilePaths();
-        const PORFilePath_T& lPORFilePath = lFilePathPair.first;
-        const TravelDBFilePath_T& lTravelDBFilePath = lFilePathPair.second;
+        const PORFilePath_T& lPORFilePath = lFilePathSet.first;
+        const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
+          lFilePathSet.second;
+        const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
+        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
 
         // Dump the results into the output string
-        oPythonLogStr << lPORFilePath << ";" << lTravelDBFilePath;
+        oPythonLogStr << lPORFilePath << ";" << lTravelDBFilePath
+                      << ";" << lSQLiteDBFilePath;
 
         // DEBUG
         *_logOutputStream << "ORI-maintained list of POR: '" << lPORFilePath
                           << "'" << std::endl;
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath << "'" << std::endl;
+        *_logOutputStream << "SQLite3 database: '"
+                          << lSQLiteDBFilePath << "'" << std::endl;
 
       } catch (const RootException& eOpenTrepError) {
         *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()
@@ -156,16 +162,22 @@ namespace OPENTREP {
         assert (_opentrepService != NULL);
 
         // Retrieve the underlying file-path details
-        const OPENTREP_Service::FilePathPair_T& lFilePathPair =
+        const OPENTREP_Service::FilePathSet_T& lFilePathSet =
           _opentrepService->getFilePaths();
-        const PORFilePath_T& lPORFilePath = lFilePathPair.first;
-        const TravelDBFilePath_T& lTravelDBFilePath = lFilePathPair.second;
+        const PORFilePath_T& lPORFilePath = lFilePathSet.first;
+        const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
+          lFilePathSet.second;
+        const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
+        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
 
+        
         // DEBUG
         *_logOutputStream << "ORI-maintained list of POR: '" << lPORFilePath
                           << "'" << std::endl;
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath << "'" << std::endl;
+        *_logOutputStream << "SQLite3 database: '"
+                          << lSQLiteDBFilePath << "'" << std::endl;
 
         // Launch the indexation by Xapian of the ORI-maintained list of POR
         const NbOfDBEntries_T lNbOfEntries= _opentrepService->buildSearchIndex();
@@ -227,14 +239,19 @@ namespace OPENTREP {
         assert (_opentrepService != NULL);
 
         // Retrieve the underlying file-path details
-        const OPENTREP_Service::FilePathPair_T& lFilePathPair =
+        const OPENTREP_Service::FilePathSet_T& lFilePathSet =
           _opentrepService->getFilePaths();
-        const PORFilePath_T& lPORFilePath = lFilePathPair.first;
-        const TravelDBFilePath_T& lTravelDBFilePath = lFilePathPair.second;
+        const PORFilePath_T& lPORFilePath = lFilePathSet.first;
+        const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
+          lFilePathSet.second;
+        const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
+        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
 
         // DEBUG
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath
+                          << "' - SQLite3 database: '"
+                          << lSQLiteDBFilePath
                           << "' - ORI-maintained list of POR: '"
                           << lPORFilePath << "'" << std::endl;
 
@@ -422,14 +439,19 @@ namespace OPENTREP {
         assert (_opentrepService != NULL);
 
         // Retrieve the underlying file-path details
-        const OPENTREP_Service::FilePathPair_T& lFilePathPair =
+        const OPENTREP_Service::FilePathSet_T& lFilePathSet =
           _opentrepService->getFilePaths();
-        const PORFilePath_T& lPORFilePath = lFilePathPair.first;
-        const TravelDBFilePath_T& lTravelDBFilePath = lFilePathPair.second;
+        const PORFilePath_T& lPORFilePath = lFilePathSet.first;
+        const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
+          lFilePathSet.second;
+        const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
+        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
 
         // DEBUG
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath
+                          << "' - SQLite3 database: '"
+                          << lSQLiteDBFilePath
                           << "' - ORI-maintained list of POR: '"
                           << lPORFilePath << "'" << std::endl;
 
@@ -592,6 +614,7 @@ namespace OPENTREP {
      * Wrapper around the search use case. 
      */
     bool init (const std::string& iTravelDBFilePath,
+               const std::string& iSQLiteDBFilePath,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
@@ -619,8 +642,11 @@ namespace OPENTREP {
         
         // Initialise the context
         const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (iTravelDBFilePath);
+        const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (iSQLiteDBFilePath);
+
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
-                                                 lTravelDBFilePath);
+                                                 lTravelDBFilePath,
+                                                 lSQLiteDBFilePath);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;

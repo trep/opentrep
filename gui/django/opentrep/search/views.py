@@ -61,8 +61,10 @@ def get_local_local_flight_duration_hr (place1, place2):
 def initOpenTrep():
   # Initialise the OpenTrep C++ library
   xapianDBPath = "/tmp/opentrep/traveldb"
+  sqliteDBPath = xapianDBPath + "/ori_por_public.db"
   openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-  initOK = openTrepLibrary.init (xapianDBPath, '/tmp/opentrep/pyopentrep.log')
+  initOK = openTrepLibrary.init (xapianDBPath, sqliteDBPath,
+                                 '/tmp/opentrep/pyopentrep.log')
   return initOK, openTrepLibrary
 
 # Extract the answer from the resulting ProtoBuf

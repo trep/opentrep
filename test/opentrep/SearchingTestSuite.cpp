@@ -48,6 +48,11 @@ struct UnitTestConfig {
  */
 const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
 
+/**
+ * SQlite3 database file-path.
+ */
+const std::string X_SQLITE_DB_FP ("/tmp/opentrep/test_traveldb/ori_por_public.csv");
+
 
 // /////////////// Main: Unit Test Suite //////////////
 
@@ -76,7 +81,9 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
 
   // Initialise the context
   const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
-  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath);
+  const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (X_SQLITE_DB_FP);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath,
+                                              lSQLiteDBFilePath);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;
