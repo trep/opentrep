@@ -66,12 +66,12 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the ICAO code.
+     * Get the IATA location type (e.g., A for airport).
      */
-    const ICAOCode_T& getIcaoCode() const {
-      return _location.getIcaoCode();
+    const IATAType& getIataType() const {
+      return _location.getIataType();
     }
-    
+
     /**
      * Get the Geonames ID.
      */
@@ -86,6 +86,20 @@ namespace OPENTREP {
       return _location.isGeonames();
     }
 
+    /**
+     * Get the ICAO code.
+     */
+    const ICAOCode_T& getIcaoCode() const {
+      return _location.getIcaoCode();
+    }
+    
+    /**
+     * Get the FAA code.
+     */
+    const FAACode_T& getFaaCode() const {
+      return _location.getFaaCode();
+    }
+    
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -108,13 +122,6 @@ namespace OPENTREP {
       return _location.getAltNameShortListString();
     }
 
-    /**
-     * Get the FAA code.
-     */
-    const FAACode_T& getFaaCode() const {
-      return _location.getFaaCode();
-    }
-    
     /**
      * Get the beginning date of the validity period
      */
@@ -253,13 +260,6 @@ namespace OPENTREP {
      */
     const FeatureCode_T& getFeatureCode() const {
       return _location.getFeatureCode();
-    }
-
-    /**
-     * Get the IATA location type (e.g., A for airport).
-     */
-    const IATAType& getIATAType() const {
-      return _location.getIATAType();
     }
 
     /**
@@ -498,12 +498,12 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the ICAO code.
+     * Set the IATA location type (e.g., A for airport).
      */
-    void setIcaoCode (const std::string& iIcaoCode) {
-      _location.setIcaoCode (iIcaoCode);
+    void setIataType (const std::string& iIATAType) {
+      _location.setIataType (iIATAType);
     }
-    
+
     /**
      * Set the Geonames ID.
      */
@@ -511,6 +511,20 @@ namespace OPENTREP {
       _location.setGeonamesID (iGeonamesID);
     }
 
+    /**
+     * Set the ICAO code.
+     */
+    void setIcaoCode (const std::string& iIcaoCode) {
+      _location.setIcaoCode (iIcaoCode);
+    }
+    
+    /**
+     * Set the FAA code.
+     */
+    void setFaaCode (const std::string& iFaaCode) {
+      _location.setFaaCode (iFaaCode);
+    }
+    
     /** 
      * Set the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -533,13 +547,6 @@ namespace OPENTREP {
       _location.setAltNameShortListString (iNameListString);
     }
 
-    /**
-     * Set the FAA code.
-     */
-    void setFaaCode (const std::string& iFaaCode) {
-      _location.setFaaCode (iFaaCode);
-    }
-    
     /**
      * Set the beginning date of the validity period
      */
@@ -674,13 +681,6 @@ namespace OPENTREP {
     }
 
     /**
-     * Set the IATA location type (e.g., A for airport).
-     */
-    void setIATAType (const std::string& iIATAType) {
-      _location.setIATAType (iIATAType);
-    }
-
-    /**
      * Set the administrative code of rank 1 (e.g., IL for Illinois).
      */
     void setAdmin1Code (const std::string& iAdminCode) {
@@ -809,7 +809,8 @@ namespace OPENTREP {
      * @param const LanguageCode_T& Language in which to add the name.
      * @param const std::string& Name to be added.
      */
-    void addName (const LanguageCode_T& iLanguageCode, const std::string& iName) {
+    void addName (const LanguageCode_T& iLanguageCode,
+                  const std::string& iName) {
       _location.addName (iLanguageCode, iName);
     }
 

@@ -33,7 +33,8 @@ const int K_OPENTREP_EARLY_RETURN_STATUS = 99;
 /** Read and parse the command line options. */
 int readConfiguration (int argc, char* argv[], 
                        std::string& ioPORFilepath, 
-                       std::string& ioDatabaseFilepath,
+                       std::string& ioXapianDBFilepath,
+                       std::string& ioSQLiteDBFilepath,
                        std::string& ioLogFilename) {
 
   // Declare a group of options that will be allowed only on command line
@@ -50,9 +51,12 @@ int readConfiguration (int argc, char* argv[],
     ("porfile,p",
      boost::program_options::value< std::string >(&ioPORFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_POR_FILEPATH),
      "POR file-path (e.g., ori_por_public.csv)")
-    ("database,d",
-     boost::program_options::value< std::string >(&ioDatabaseFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
-     "Xapian database file-path (e.g., /tmp/opentrep/traveldb)")
+    ("xapiandb,d",
+     boost::program_options::value< std::string >(&ioXapianDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
+     "Xapian database filepath (e.g., /tmp/opentrep/traveldb)")
+    ("sqlite,s",
+     boost::program_options::value< std::string >(&ioSQLiteDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
+     "SQLite3 database filepath (e.g., ~/tmp/opentrep/traveldb/ori_por_public.db)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
@@ -108,9 +112,15 @@ int readConfiguration (int argc, char* argv[],
     std::cout << "POR file-path is: " << ioPORFilepath << std::endl;
   }
 
-  if (vm.count ("database")) {
-    ioDatabaseFilepath = vm["database"].as< std::string >();
-    std::cout << "Xapian database filepath is: " << ioDatabaseFilepath
+  if (vm.count ("xapiandb")) {
+    ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
+    std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
+              << std::endl;
+  }
+
+  if (vm.count ("sqlitedb")) {
+    ioSQLiteDBFilepath = vm["sqlitedb"].as< std::string >();
+    std::cout << "SQLite3 database filepath is: " << ioSQLiteDBFilepath
               << std::endl;
   }
 
@@ -135,10 +145,13 @@ int main (int argc, char* argv[]) {
   // Xapian database name (directory of the index)
   std::string lXapianDBNameStr;
 
+  // SQLite3 database file-path
+  std::string lSQLiteDBFilePathStr;
+
   // Call the command-line option parser
   const int lOptionParserStatus =
-    readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
-                       lLogFilename);
+    readConfiguration (argc, argv, lPORFilepathStr,
+                       lXapianDBNameStr, lSQLiteDBFilePathStr, lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -158,8 +171,9 @@ int main (int argc, char* argv[]) {
   // Initialise the context
   const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
   const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
+  const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (lSQLiteDBFilePathStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
-                                              lXapianDBName);
+                                              lXapianDBName, lSQLiteDBFilePath);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =

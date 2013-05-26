@@ -10,6 +10,7 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
+#include <opentrep/IATAType.hpp>
 
 namespace OPENTREP {
 
@@ -28,12 +29,12 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the ICAO code.
+     * Get the IATA location type (e.g., A for airport).
      */
-    const ICAOCode_T& getIcaoCode() const {
-      return _icaoCode;
+    const IATAType& getIataType() const {
+      return _iataType;
     }
-    
+
     /**
      * Get the Geonames ID.
      */
@@ -59,12 +60,12 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the ICAO code.
+     * Set the IATA location type (e.g., A for airport).
      */
-    void setIcaoCode (const std::string& iIcaoCode) {
-      _icaoCode = ICAOCode_T (iIcaoCode);
+    void setIataType (const IATAType& iIATAType) {
+      _iataType = iIATAType;
     }
-    
+
     /**
      * Set the Geonames ID.
      */
@@ -113,7 +114,7 @@ namespace OPENTREP {
     /**
      * Main constructor.
      */
-    LocationKey (const IATACode_T&, const ICAOCode_T&, const GeonamesID_T&);
+    LocationKey (const IATACode_T&, const IATAType&, const GeonamesID_T&);
 
     /**
      * Default copy constructor.
@@ -152,9 +153,9 @@ namespace OPENTREP {
     IATACode_T _iataCode;
 
     /**
-     * ICAO code (e.g., KORD).
+     * IATA location type (e.g., A for airport).
      */
-    ICAOCode_T _icaoCode;
+    IATAType _iataType;
 
     /**
      * Geonames ID (e.g., 4887479).

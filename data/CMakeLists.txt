@@ -25,3 +25,5 @@ set (OPENTREP_DATA_DIR ${OPENTREP_DATA_ROOT_DIR}/${por_data_DIR})
 # Installation of the data files.
 install (DIRECTORY ${por_data_DIR} DESTINATION ${OPENTREP_DATA_ROOT_DIR}
   FILES_MATCHING PATTERN "*.csv")
+install (DIRECTORY ${por_data_DIR} DESTINATION ${OPENTREP_DATA_ROOT_DIR}
+  FILES_MATCHING PATTERN "*.db")

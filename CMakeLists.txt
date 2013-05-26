@@ -67,7 +67,7 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ########################################
 #
 get_external_libs (git "python 2.6" "boost 1.48" "icu 4.2" protobuf
-  "xapian 1.0" doxygen)
+  "xapian 1.0" "soci 3.0" doxygen)
 
 
 ##############################################

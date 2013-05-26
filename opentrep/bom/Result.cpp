@@ -594,7 +594,8 @@ namespace OPENTREP {
 
     // Check whether or not the (original) query string is made of a single word
     WordList_T lOriginalQueryWordList;
-    WordHolder::tokeniseStringIntoWordList (_queryString, lOriginalQueryWordList);
+    WordHolder::tokeniseStringIntoWordList (_queryString,
+                                            lOriginalQueryWordList);
     const NbOfWords_T nbOfOriginalQueryWords = lOriginalQueryWordList.size();
 
     // Filter out "standard" words such as "airport", "international", "city",
@@ -605,15 +606,17 @@ namespace OPENTREP {
 
     // Check whether or not the filtered query string is made of a single word
     WordList_T lFilteredQueryWordList;
-    WordHolder::tokeniseStringIntoWordList (lFilteredString, lFilteredQueryWordList);
+    WordHolder::tokeniseStringIntoWordList (lFilteredString,
+                                            lFilteredQueryWordList);
     const NbOfWords_T nbOfFilteredQueryWords = lFilteredQueryWordList.size();
 
     //
     if (_hasFullTextMatched == true) {
       /**
-       * Check whether the query string, when some standard words (e.g., "airport",
-       * "international", "city") have been filtered out, is made of a single IATA,
-       * ICAO or FAA code. Also, there should have been no correction.
+       * Check whether the query string, when some standard words (e.g.,
+       * "airport", "international", "city") have been filtered out, is made of
+       * a single IATA, ICAO or FAA code. Also, there should have been no
+       * correction.
        */
       const size_t lNbOfLetters = lFilteredString.size();
       if (nbOfFilteredQueryWords == 1 && lNbOfLetters >= 3 && lNbOfLetters <= 4
@@ -629,18 +632,17 @@ namespace OPENTREP {
         // not only the best maching one
         for (DocumentList_T::const_iterator itDoc = _documentList.begin();
              itDoc != _documentList.end(); ++itDoc) {
-          // Retrieve the primary key (IATA, ICAO, Geonames ID) of the place
-          // corresponding to the document
+          // Retrieve the primary key (IATA, location type, Geonames ID)
+          // of the place corresponding to the document
           const Xapian::Document& lXapianDoc = itDoc->first;
           const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
 
-          // Retrieve with the IATA and ICAO codes
+          // Retrieve with the IATA code
           const IATACode_T& lIataCode = lLocationKey.getIataCode();
-          const ICAOCode_T& lIcaoCode = lLocationKey.getIcaoCode();
 
           // Compare the 3/4-letter-word query string with the IATA
           // and ICAO codes
-          if (lUpperQueryWord == lIataCode || lUpperQueryWord == lIcaoCode) {
+          if (lUpperQueryWord == lIataCode) {
             /**
              * The query string matches with the IATA or ICAO code.
              */
@@ -663,8 +665,8 @@ namespace OPENTREP {
         }
       }
 
-      // Retrieve the primary key (IATA, ICAO, Geonames ID) of the place
-      // corresponding to the document
+      // Retrieve the primary key (IATA, location type, Geonames ID) of
+      // the place corresponding to the document
       const Xapian::Document& lXapianDoc = getDocument (lBestDocID);
       const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
 

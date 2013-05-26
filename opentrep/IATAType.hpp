@@ -94,9 +94,10 @@ namespace OPENTREP {
 
   public:
     /**
-     * Comparison operator.
+     * Comparison operators.
      */
     bool operator== (const EN_IATAType&) const;
+    bool operator== (const IATAType&) const;
     
   public:
     /**

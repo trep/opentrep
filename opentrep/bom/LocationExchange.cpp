@@ -81,6 +81,14 @@ namespace OPENTREP {
     assert (lIataAirportPtr != NULL);
     lIataAirportPtr->set_code (lIataCode);
 
+    // Retrieve and set the location type
+    const IATAType& lLocationType = lLocationKey.getIataType();
+    const treppb::PlaceType& lPlaceType = lLocationType.getTypeAsPB();
+    const treppb::PlaceType_LocationType& lPlaceTypeEnum = lPlaceType.type();
+    treppb::PlaceType* lPlaceTypePtr = ioPlace.mutable_loc_type();
+    assert (lPlaceTypePtr != NULL);
+    lPlaceTypePtr->set_type (lPlaceTypeEnum);
+
     // Retrieve and set the Geonames ID
     const GeonamesID_T& lGeonamesID = lLocationKey.getGeonamesID();
     treppb::GeonameID* lGeonameIDPtr = ioPlace.mutable_geoname_id();
@@ -88,7 +96,7 @@ namespace OPENTREP {
     lGeonameIDPtr->set_id (lGeonamesID);
 
     // Retrieve and set the ICAO code
-    const ICAOCode_T& lIcaoCode = lLocationKey.getIcaoCode();
+    const ICAOCode_T& lIcaoCode = iLocation.getIcaoCode();
     treppb::ICAOCode* lIcaoCodePtr = ioPlace.mutable_icao_code();
     assert (lIcaoCodePtr != NULL);
     lIcaoCodePtr->set_code (lIcaoCode);
@@ -104,14 +112,6 @@ namespace OPENTREP {
     ioPlace.set_name_utf (lUtfName);
     const ASCIIName_T& lAsciiName = iLocation.getAsciiName();
     ioPlace.set_name_ascii (lAsciiName);
-
-    // Retrieve and set the location type
-    const IATAType& lLocationType = iLocation.getIATAType();
-    const treppb::PlaceType& lPlaceType = lLocationType.getTypeAsPB();
-    const treppb::PlaceType_LocationType& lPlaceTypeEnum = lPlaceType.type();
-    treppb::PlaceType* lPlaceTypePtr = ioPlace.mutable_loc_type();
-    assert (lPlaceTypePtr != NULL);
-    lPlaceTypePtr->set_type (lPlaceTypeEnum);
 
     // Retrieve and set the feature class and code
     const FeatureClass_T& lFeatClass = iLocation.getFeatureClass();

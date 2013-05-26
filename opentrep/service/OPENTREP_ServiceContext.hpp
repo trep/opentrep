@@ -55,6 +55,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the SQLite3 database file-path.
+     */
+    const SQLiteDBFilePath_T& getSQLiteDBFilePath() const {
+      return _sqliteDBFilePath;
+    }
+    
+    /**
      * Get the Unicode transliterator.
      */
     const OTransliterator& getTransliterator() const {
@@ -85,6 +92,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the SQLite3 database file-path.
+     */
+    void setSQLiteDBFilePath (const std::string& iSQLiteDBFilePath) {
+      _sqliteDBFilePath = SQLiteDBFilePath_T (iSQLiteDBFilePath);
+    }
+    
+    /**
      * Set the Unicode transliterator.
      */
     void setTransliterator (const OTransliterator& iTransliterator) {
@@ -108,14 +122,15 @@ namespace OPENTREP {
   private:
     // /////// Construction / initialisation ////////
     /**
-     * Main constructor without database usage.
+     * Main constructor for the search-related services.
      */
-    OPENTREP_ServiceContext (const TravelDBFilePath_T&);
+    OPENTREP_ServiceContext (const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
 
     /**
-     * Main constructor.
+     * Main constructor for the indexation-related services.
      */
-    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&);
+    OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&,
+                             const SQLiteDBFilePath_T&);
 
     /**
      * Default constructor.
@@ -146,9 +161,19 @@ namespace OPENTREP {
     PORFilePath_T _porFilePath;
 
     /**
-     * Xapian Database (directory of the index).
+     * Xapian database (directory of the index).
      */
     TravelDBFilePath_T _travelDBFilePath;
+
+    /**
+     * Read/write SQLite database file-path.
+     *
+     * OpenTREP is delivered with a SQLite3 database. That latter is read-only,
+     * as it is potentially delivered in a read-only directory on standard platforms
+     * (e.g., thanks to RPM on RedHat-derived Linux platforms). A read-write copy is
+     * then needed to for local changes (addition, deletion and updates of the POR).
+     */
+    SQLiteDBFilePath_T _sqliteDBFilePath;
 
     /**
      * Unicode transliterator.

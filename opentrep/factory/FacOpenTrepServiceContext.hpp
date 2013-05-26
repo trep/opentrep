@@ -41,9 +41,11 @@ namespace OPENTREP {
      *
      * This new object is added to the list of instantiated objects.
      *
+     * @param const TravelDBFilePath_T& File-path of the Xapian database.
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
-    OPENTREP_ServiceContext& create (const TravelDBFilePath_T&);
+    OPENTREP_ServiceContext& create (const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
 
     /**
      * Create a new OPENTREP_ServiceContext object.
@@ -52,10 +54,11 @@ namespace OPENTREP {
      *
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
     OPENTREP_ServiceContext& create (const PORFilePath_T&,
-                                     const TravelDBFilePath_T&);
+                                     const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
 
 
   protected:

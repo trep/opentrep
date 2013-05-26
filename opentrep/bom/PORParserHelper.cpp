@@ -711,9 +711,9 @@ namespace OPENTREP {
                                    bsq::unused_type, bsq::unused_type) const {
       const std::string lIATATypeStr (iChar.begin(), iChar.end());
       const IATAType lIATAType (lIATATypeStr);
-      _location.setIATAType (lIATAType);
+      _location.setIataType (lIATAType);
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("IATA type: " << _location.getIATAType());
+      //OPENTREP_LOG_DEBUG ("IATA type: " << _location.getIataType());
     }
 
     // //////////////////////////////////////////////////////////////////

@@ -657,6 +657,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/opentrep-indexer.doc \
                          @srcdir@/opentrep-searcher.doc \
+                         @srcdir@/opentrep-dbmgr.doc \
                          @srcdir@/opentrep-config.doc \
                          @srcdir@/pyopentrep.doc
 

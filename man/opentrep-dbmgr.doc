@@ -1,0 +1,60 @@
+/*!
+\page opentrep-dbmgr
+      Command-line utility to manage the SQLite3 database
+
+\section sec_synopsis SYNOPSIS
+
+<b>opentrep-dbmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-i|--input <path-to-input>] [-l|--log <path-to-output-log-file>]</tt>
+
+\section sec_description DESCRIPTION
+
+\e opentrep-dbmgr is a small program to manage the SQLite3 database.
+   The file with the list of the ORI-maintained POR (points of reference)
+   may be parsed, and the corresponding content inserted into the SQLite3 DB.
+
+\e opentrep-dbmgr accepts the following options:
+
+ \b --prefix<br>
+    Show the Opentrep installation prefix.
+
+ \b -v, \b --version<br>
+    Print the currently installed version of Opentrep on the standard output.
+
+ \b -h, \b --help<br>
+    Produce that message and show usage.
+
+ \b -b, \b --builtin<br>
+    The sample BOM tree can be either built-in or parsed from an input
+    file.  When that option is selected, an input file must then be
+    given with the -y/--yield option. When that option is not selected,
+    the \b opentrep program builds a simple use case directly from internal
+    hard-coded parameters (yield rules).
+
+ \b -y, \b --yield <path-to-input-file><br>
+    Path (absolute or relative) of the (CSV) input file specifying
+    the yield rules.<br>
+
+ \b -l, \b --log <path-to-output-log-file><br>
+    Path (absolute or relative) of the output log file.
+
+See the output of the <tt>`opentrep --help'</tt> command for default options.
+
+
+\section sec_see_also SEE ALSO
+\b opentrep-indexer(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
+
+
+\section sec_support SUPPORT
+
+Please report any bugs to http://github.com/trep/opentrep/issues
+
+
+\section sec_copyright COPYRIGHT
+
+Copyright © 2009-2013 Denis Arnaud
+
+See the COPYING file for more information on the (LGPLv2+) license, or
+directly on Internet:<br>
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+*/

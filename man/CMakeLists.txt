@@ -4,5 +4,6 @@
 
 #
 doc_add_man_pages (
-  MAN1 opentrep-indexer opentrep-searcher opentrep-config pyopentrep
+  MAN1 opentrep-indexer opentrep-searcher opentrep-dbmgr opentrep-config
+       pyopentrep
   MAN3 opentrep-library)

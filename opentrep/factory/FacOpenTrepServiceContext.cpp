@@ -32,11 +32,12 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext& FacOpenTrepServiceContext::
-  create (const TravelDBFilePath_T& iTravelDBFilePath) {
+  create (const TravelDBFilePath_T& iTravelDBFilePath,
+          const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
     OPENTREP_ServiceContext* aOPENTREP_ServiceContext_ptr = NULL;
 
     aOPENTREP_ServiceContext_ptr =
-      new OPENTREP_ServiceContext (iTravelDBFilePath);
+      new OPENTREP_ServiceContext (iTravelDBFilePath, iSQLiteDBFilePath);
     assert (aOPENTREP_ServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool
@@ -48,11 +49,12 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext& FacOpenTrepServiceContext::
   create (const PORFilePath_T& iPORFilePath,
-          const TravelDBFilePath_T& iTravelDBFilePath) {
+          const TravelDBFilePath_T& iTravelDBFilePath,
+          const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
     OPENTREP_ServiceContext* aOPENTREP_ServiceContext_ptr = NULL;
 
     aOPENTREP_ServiceContext_ptr =
-      new OPENTREP_ServiceContext (iPORFilePath, iTravelDBFilePath);
+      new OPENTREP_ServiceContext (iPORFilePath, iTravelDBFilePath, iSQLiteDBFilePath);
     assert (aOPENTREP_ServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool

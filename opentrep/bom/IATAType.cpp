@@ -110,20 +110,17 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string& IATAType::
-  getLabel (const EN_IATAType& iType) {
+  const std::string& IATAType::getLabel (const EN_IATAType& iType) {
     return _labels[iType];
   }
   
   // //////////////////////////////////////////////////////////////////////
-  char IATAType::
-  getTypeLabel (const EN_IATAType& iType) {
+  char IATAType::getTypeLabel (const EN_IATAType& iType) {
     return _typeLabels[iType];
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string IATAType::
-  getTypeLabelAsString (const EN_IATAType& iType) {
+  std::string IATAType::getTypeLabelAsString (const EN_IATAType& iType) {
     std::ostringstream oStr;
     oStr << _typeLabels[iType];
     return oStr.str();
@@ -163,8 +160,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  IATAType::EN_IATAType
-  IATAType::getType() const {
+  IATAType::EN_IATAType IATAType::getType() const {
     return _type;
   }
   
@@ -194,9 +190,13 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool IATAType::
-  operator== (const EN_IATAType& iType) const {
+  bool IATAType::operator== (const EN_IATAType& iType) const {
     return (_type == iType);
   }
   
+  // //////////////////////////////////////////////////////////////////////
+  bool IATAType::operator== (const IATAType& iIATAType) const {
+    return (_type == iIATAType._type);
+  }
+
 }
