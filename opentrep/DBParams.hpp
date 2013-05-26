@@ -104,7 +104,17 @@ namespace OPENTREP {
     /**
      * Check that all the parameters are fine.
      */
-    bool check () const {
+    bool checkSQLite () const {
+      if (_dbname.empty() == true) {
+        return false;
+      }
+      return true;
+    }
+    
+    /**
+     * Check that all the parameters are fine.
+     */
+    bool checkMySQL () const {
       if (_user.empty() == true || _passwd.empty() == true
           || _host.empty() == true || _port.empty()
           || _dbname.empty() == true) {
@@ -152,10 +162,19 @@ namespace OPENTREP {
     /**
      * Get the serialised version of the DBParams structure.
      */
-    std::string toConnectionString() const {
+    std::string toMySQLConnectionString() const {
       std::ostringstream oStr;
       oStr << "db=" << _dbname << " user=" << _user << " password=" << _passwd
            << " port=" << _port << " host=" << _host;
+      return oStr.str();
+    }
+
+    /**
+     * Get the serialised version of the DBParams structure.
+     */
+    std::string toSQLiteConnectionString() const {
+      std::ostringstream oStr;
+      oStr << "db=" << _dbname;
       return oStr.str();
     }
 
@@ -163,13 +182,15 @@ namespace OPENTREP {
   public:
     // /////////////// Constructors and Destructors ///////////////////
     /**
-     * Main Constructor.
+     * Main constructors.
      */
     DBParams (const std::string& iDBUser, const std::string& iDBPasswd,
               const std::string& iDBHost, const std::string& iDBPort,
               const std::string& iDBName)
       : _user (iDBUser), _passwd (iDBPasswd), _host (iDBHost), _port (iDBPort),
         _dbname (iDBName) {
+    }
+    DBParams (const std::string& iDBName) : _dbname (iDBName) {
     }
 
     /**

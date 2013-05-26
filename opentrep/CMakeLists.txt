@@ -48,6 +48,7 @@ module_library_add_specific (pyopentrep python "na" python/pyopentrep.cpp)
 #    module.
 module_binary_add (batches opentrep-indexer)
 module_binary_add (batches opentrep-searcher)
+module_binary_add (batches opentrep-dbmgr)
 
 ##
 # Installing Python scripts

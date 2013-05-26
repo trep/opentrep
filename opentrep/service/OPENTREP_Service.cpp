@@ -11,6 +11,7 @@
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/basic/BasChronometer.hpp>
 #include <opentrep/factory/FacWorld.hpp>
+#include <opentrep/command/DBManager.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/command/XapianIndexManager.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
@@ -185,6 +186,37 @@ namespace OPENTREP {
                         << lOPENTREP_ServiceContext.display());
 
     return oNbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T OPENTREP_Service::buildSQLDB() {
+    NbOfDBEntries_T oNbOfEntries = 0;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the file-path of the POR (points of reference) file
+    const PORFilePath_T& lPORFilePath= lOPENTREP_ServiceContext.getPORFilePath();
+      
+    // Retrieve the SQLite3 database file-path
+    const SQLiteDBFilePath_T& lSQLiteDBFilePath =
+      lOPENTREP_ServiceContext.getSQLiteDBFilePath();
+      
+    // Delegate the database creation to the dedicated command
+    BasChronometer lDBCreationChronometer;
+    lDBCreationChronometer.start();
+    oNbOfEntries = DBManager::buildSQLDB (lPORFilePath, lSQLiteDBFilePath);
+    const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Created the SQLite3 database: " << lDBCreationMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+
+    return oNbOfEntries;
   }
 
   // //////////////////////////////////////////////////////////////////////

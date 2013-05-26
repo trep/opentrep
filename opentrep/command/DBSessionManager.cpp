@@ -40,7 +40,7 @@ namespace OPENTREP {
   void DBSessionManager::init (const DBParams& iDBParams) {
     
     // Check that the parameters for the SQL database are not empty
-    if (iDBParams.check() == false) {
+    if (iDBParams.checkSQLite() == false) {
       std::ostringstream errorStr;
       errorStr << "At least one of the parameters for the SQL "
                << "database is empty: " << iDBParams;
@@ -55,7 +55,7 @@ namespace OPENTREP {
     try {
 
       // Open the connection to the database
-      _dbSession->open (soci::sqlite3, iDBParams.toConnectionString());
+      _dbSession->open (soci::sqlite3, iDBParams.toSQLiteConnectionString());
       
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;

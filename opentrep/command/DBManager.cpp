@@ -19,6 +19,60 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void DBManager::
+  prepareSelectAllStatement (soci::session& ioSociSession,
+                             soci::statement& ioSelectStatement,
+                             Place& ioPlace) {
+  
+    try {
+    
+      // Instanciate a SQL statement (no request is performed at that stage)
+      /**
+         select iata_code, icao_code, faa_code, is_geonames, geoname_id,
+         envelope_id, name, asciiname, latitude, longitude, fclass, fcode,
+         page_rank, date_from, date_until, comment,
+         country_code, cc2, country_name, continent_name,
+         admin1_code, admin1_UTF8_name, admin1_ASCII_name,
+         admin2_code, admin2_UTF8_name, admin2_ASCII_name,
+         admin3_code, admin4_code,
+         population, elevation, gtopo30,
+         time_zone, gmt_offset, dst_offset, raw_offset, moddate,
+         city_code_list, city_UTF8_name_list, city_ASCII_name_list, tvl_por_list,
+         state_code, location_type, wiki_link, alt_name_section
+         from ori_por_public
+         order by iata_code, location_type, geonameid
+      */
+
+      ioSelectStatement =
+        (ioSociSession.prepare
+         << "select iata_code, icao_code, faa_code, is_geonames, geoname_id, "
+         << "envelope_id, name, asciiname, latitude, longitude, fclass, fcode, "
+         << "page_rank, date_from, date_until, comment, "
+         << "country_code, cc2, country_name, continent_name, "
+         << "admin1_code, admin1_UTF8_name, admin1_ASCII_name, "
+         << "admin2_code, admin2_UTF8_name, admin2_ASCII_name, "
+         << "admin3_code, admin4_code, "
+         << "population, elevation, gtopo30, "
+         << "time_zone, gmt_offset, dst_offset, raw_offset, moddate, "
+         << "city_code_list, city_UTF8_name_list, city_ASCII_name_list, "
+         << "tvl_por_list, "
+         << "state_code, location_type, wiki_link, alt_name_section "
+         << "from ori_por_public "
+         << "order by iata_code, location_type, geoname_id",soci::into(ioPlace));
+
+      // Execute the SQL query
+      ioSelectStatement.execute();
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error in the 'select * from ori_por_public' SQL request: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::
   prepareSelectFromCodeStatement (soci::session& ioSociSession,
                                   soci::statement& ioSelectStatement,
                                   Place& ioPlace) {
@@ -66,7 +120,7 @@ namespace OPENTREP {
          << "from place_names as pn, place_details as rpd "
          << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
          << "where rpd.iata_code = pn.iata_code "
-         << "order by rpd.iata_code, icao_code, geonameid", soci::into (ioPlace));
+         << "order by rpd.iata_code, icao_code, geonameid", soci::into(ioPlace));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -298,7 +352,8 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool DBManager::iterateOnStatement (soci::statement& ioStatement, Place& ioPlace) {
+  bool DBManager::iterateOnStatement (soci::statement& ioStatement,
+                                      Place& ioPlace) {
     bool hasStillData = false;
   
     try {
@@ -403,7 +458,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool DBManager::retrieveClosestPlaces (soci::session&  ioSociSession,
+  bool DBManager::retrieveClosestPlaces (soci::session& ioSociSession,
                                          const double& iLatitude,
                                          const double& iLongitude,
                                          PlaceOrderedList_T& ioPlaceList) {
@@ -423,4 +478,51 @@ namespace OPENTREP {
     return oHasRetrievedPlace;
   }
   
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::
+  buildSQLDB (const PORFilePath_T& iPORFilepath,
+              const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      // Open the connection to the database
+      soci::session* lSociSession_ptr = new soci::session();
+      assert (lSociSession_ptr != NULL);
+      soci::session& lSociSession = *lSociSession_ptr;
+      lSociSession.open (soci::sqlite3, iSQLiteDBFilePath);
+
+      // Prepare the SQL request corresponding to the select statement
+      soci::statement lSelectStatement (lSociSession);
+      Place& lPlace = FacPlace::instance().create();
+      DBManager::prepareSelectAllStatement (lSociSession, lSelectStatement,
+                                            lPlace);
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement, lPlace);
+
+        // It is enough to have (at least) one database retrieved row
+        if (hasStillData == true) {
+          ++oNbOfEntries;
+        }
+
+        // Debug
+        OPENTREP_LOG_DEBUG ("[" << lPlace.getKey() << "] " << lPlace);
+      }
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve " << oNbOfEntries
+               << "-th row from the SQLite3 database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    return oNbOfEntries;
+  }
+
 }

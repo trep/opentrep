@@ -43,8 +43,17 @@ namespace OPENTREP {
     NbOfMatches_T drawRandomLocations (const NbOfMatches_T& iNbOfDraws,
                                        LocationList_T&);
 
-    /** 
-     * Build the Xapian database (index) on the BOM held in memory. 
+    /**
+     * Build the SQL database from the file with the ORI-maintained list
+     * of POR (points of reference).
+     *
+     * @return NbOfDBEntries_T Number of documents inserted in the SQLite3 DB.
+     */
+    NbOfDBEntries_T buildSQLDB();
+
+    /**
+     * Build the Xapian database (index) from the file with the ORI-maintained
+     * list of POR (points of reference).
      *
      * @return NbOfDBEntries_T Number of documents indexed by the Xapian
      *         database/index.

@@ -6,6 +6,7 @@
 // //////////////////////////////////////////////////////////////////////
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/LocationKey.hpp>
 #include <opentrep/bom/PlaceList.hpp>
 
 // Forward declarations
@@ -26,6 +27,18 @@ namespace OPENTREP {
    */
   class DBManager {
   public:
+    /**
+     * Build the SQL database from the file with the ORI-maintained list
+     * of POR (points of reference).
+     *
+     * @param const PORFilePath_T& File-path of the file of POR
+     *                             (points of reference).
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @return NbOfDBEntries_T Number of documents inserted in the SQLite3 DB.
+     */
+    static NbOfDBEntries_T buildSQLDB (const PORFilePath_T&,
+                                       const SQLiteDBFilePath_T&);
+
     /**
      * Update the Xapian document ID field of the database row
      * corresponding to the given Place object.
@@ -67,6 +80,16 @@ namespace OPENTREP {
 
     
   public:
+    /**
+     * Prepare (parse and put in cache) the SQL statement.
+     *
+     * @param soci::session& SOCI session handler.
+     * @param soci::statement& SOCI SQL statement handler.
+     * @param Place& The object corresponding to the place to be retrieved.
+     *        It has to be given empty, and is filled by the method.
+     */
+    static void prepareSelectAllStatement (soci::session&, soci::statement&,
+                                           Place&);
     /**
      * Prepare (parse and put in cache) the SQL statement.
      *
@@ -133,7 +156,7 @@ namespace OPENTREP {
     static void prepareSelectOnDocIDStatement (soci::session&, soci::statement&,
                                                const XapianDocID_T&, Place&);
 
-    
+
   private:
     /**
      * Default constructor.

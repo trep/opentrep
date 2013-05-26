@@ -55,8 +55,9 @@ namespace OPENTREP {
   const std::string OPENTREP_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
     oStr << "OPENTREP_ServiceContext: "
-         << "file-path of the POR file: " << _porFilePath << ", "
-         << "Xapian Database (directory of the index): " << _travelDBFilePath
+         << "file-path of the POR file: " << _porFilePath
+         << "; Xapian database (directory of the index): " << _travelDBFilePath
+         << "; SQLite3 database file-path: " << _sqliteDBFilePath
          << std::endl;
     return oStr.str();
   }

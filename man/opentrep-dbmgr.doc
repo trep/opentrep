@@ -1,17 +1,18 @@
 /*!
-\page opentrep-indexer
-      Command-line utility to Xapian-index a travel-related database text file
+\page opentrep-dbmgr
+      Command-line utility to manage the SQLite3 database
 
 \section sec_synopsis SYNOPSIS
 
-<b>opentrep-indexer</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-i|--input <path-to-input>] [-l|--log <path-to-output-log-file>]</tt>
+<b>opentrep-dbmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-i|--input <path-to-input>] [-l|--log <path-to-output-log-file>]</tt>
 
 \section sec_description DESCRIPTION
 
-\e opentrep-indexer is a small program to Xapian-index the key-words
-   appearing in the given input file.
+\e opentrep-dbmgr is a small program to manage the SQLite3 database.
+   The file with the list of the ORI-maintained POR (points of reference)
+   may be parsed, and the corresponding content inserted into the SQLite3 DB.
 
-\e opentrep-indexer accepts the following options:
+\e opentrep-dbmgr accepts the following options:
 
  \b --prefix<br>
     Show the Opentrep installation prefix.
@@ -40,7 +41,7 @@ See the output of the <tt>`opentrep --help'</tt> command for default options.
 
 
 \section sec_see_also SEE ALSO
-\b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
+\b opentrep-indexer(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
 
 
 \section sec_support SUPPORT
