@@ -102,17 +102,17 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeValidityID::storeValidityID (Location& ioLocation)
+    storeEnvelopeID::storeEnvelopeID (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeValidityID::operator() (unsigned int iValidityId,
+    void storeEnvelopeID::operator() (unsigned int iEnvelopeID,
                                       bsq::unused_type, bsq::unused_type) const {
-      //_location.setValidityID (iPorId);
+      _location.setEnvelopeID (iEnvelopeID);
       
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("Validity ID: " << _location.getValidityID());
+      //OPENTREP_LOG_DEBUG ("Envelope ID: " << _location.getEnvelopeID());
     }
     
     // //////////////////////////////////////////////////////////////////
@@ -1066,7 +1066,7 @@ namespace OPENTREP {
           >> '^' >> -faa_code
           >> '^' >> is_geonames
           >> '^' >> geoname_id
-          >> '^' >> -validity_id
+          >> '^' >> -envelope_id
           ;
 
         por_details = common_name
@@ -1120,7 +1120,7 @@ namespace OPENTREP {
 
         geoname_id = uint1_9_p[storeGeonamesID(_location)];
 
-        validity_id = uint1_4_p[storeValidityID(_location)];
+        envelope_id = uint1_4_p[storeEnvelopeID(_location)];
 
         is_geonames = boolean_p;
 
@@ -1333,7 +1333,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (icao_code);
         BOOST_SPIRIT_DEBUG_NODE (faa_code);
         BOOST_SPIRIT_DEBUG_NODE (geoname_id);
-        BOOST_SPIRIT_DEBUG_NODE (validity_id);
+        BOOST_SPIRIT_DEBUG_NODE (envelope_id);
         BOOST_SPIRIT_DEBUG_NODE (is_geonames);
         BOOST_SPIRIT_DEBUG_NODE (common_name);
         BOOST_SPIRIT_DEBUG_NODE (ascii_name);      
@@ -1394,7 +1394,7 @@ namespace OPENTREP {
       // Instantiation of rules
       bsq::rule<Iterator, bsu::blank_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
-        iata_code, icao_code, faa_code, geoname_id, validity_id, is_geonames,
+        iata_code, icao_code, faa_code, geoname_id, envelope_id, is_geonames,
         common_name, ascii_name,
         alt_name_short_list, alt_name_short, alt_name_sep,
         tvl_por_code_list, tvl_por_code, tvl_por_sep,

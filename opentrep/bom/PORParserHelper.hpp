@@ -73,10 +73,10 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed validity ID. */
-    struct storeValidityID : public ParserSemanticAction {
+    /** Store the parsed envelope ID. */
+    struct storeEnvelopeID : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeValidityID (Location&);
+      storeEnvelopeID (Location&);
       /** Actor Function (functor). */
       void operator() (unsigned int,
                        boost::spirit::qi::unused_type,

@@ -27,44 +27,77 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select iata_code, icao_code, faa_code, is_geonames, geoname_id,
-         envelope_id, name, asciiname, latitude, longitude, fclass, fcode,
-         page_rank, date_from, date_until, comment,
+         select dts.iata_code as iata_code, dts.location_type as location_type,
+         dts.geoname_id as geoname_id,
+         icao_code, faa_code,
+         envelope_id, dts.name as utf_name, asciiname, latitude, longitude,
+         fclass, fcode, page_rank,
+         date(date_from) as date_from, date(date_until) as date_until,
+         comment,
          country_code, cc2, country_name, continent_name,
          admin1_code, admin1_UTF8_name, admin1_ASCII_name,
          admin2_code, admin2_UTF8_name, admin2_ASCII_name,
          admin3_code, admin4_code,
          population, elevation, gtopo30,
-         time_zone, gmt_offset, dst_offset, raw_offset, moddate,
-         city_code_list, city_UTF8_name_list, city_ASCII_name_list, tvl_por_list,
-         state_code, location_type, wiki_link, alt_name_section
-         from ori_por_public
-         order by iata_code, location_type, geonameid
+         time_zone, gmt_offset, dst_offset, raw_offset,
+         date(moddate) as moddate,
+         state_code, wiki_link,
+         alt.lang_code as alt_lang_code, alt.name as alt_name,
+         alt.specifiers as alt_spec,
+         city_iata_code, city_location_type, city_geoname_id,
+         city_UTF8_name, city_ASCII_name
+         from ori_por_public_details dts, ori_por_public_alt_names alt,
+              ori_por_public_served_cities cty
+         where dts.iata_code = alt.iata_code
+           and dts.location_type = alt.location_type
+           and dts.geoname_id = alt.geoname_id
+           and dts.iata_code = cty.iata_code
+           and dts.location_type = cty.location_type
+           and dts.geoname_id = cty.geoname_id
+         order by dts.iata_code, dts.location_type, dts.geoname_id
+         ;
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select iata_code, icao_code, faa_code, is_geonames, geoname_id, "
-         << "envelope_id, name, asciiname, latitude, longitude, fclass, fcode, "
-         << "page_rank, date_from, date_until, comment, "
-         << "country_code, cc2, country_name, continent_name, "
-         << "admin1_code, admin1_UTF8_name, admin1_ASCII_name, "
-         << "admin2_code, admin2_UTF8_name, admin2_ASCII_name, "
-         << "admin3_code, admin4_code, "
-         << "population, elevation, gtopo30, "
-         << "time_zone, gmt_offset, dst_offset, raw_offset, moddate, "
-         << "city_code_list, city_UTF8_name_list, city_ASCII_name_list, "
-         << "tvl_por_list, "
-         << "state_code, location_type, wiki_link, alt_name_section "
-         << "from ori_por_public "
-         << "order by iata_code, location_type, geoname_id",soci::into(ioPlace));
+         << "select dts.iata_code as iata_code, "
+         << "  dts.location_type as location_type, "
+         << "  dts.geoname_id as geoname_id, "
+         << "  icao_code, faa_code, "
+         << "  envelope_id, dts.name as utf_name, asciiname, "
+         << "  latitude, longitude, fclass, fcode, "
+         << "  page_rank, "
+         << "  date(date_from) as date_from, date(date_until) as date_until, "
+         << "  comment, "
+         << "  country_code, cc2, country_name, continent_name, "
+         << "  admin1_code, admin1_UTF8_name, admin1_ASCII_name, "
+         << "  admin2_code, admin2_UTF8_name, admin2_ASCII_name, "
+         << "  admin3_code, admin4_code, "
+         << "  population, elevation, gtopo30, "
+         << "  time_zone, gmt_offset, dst_offset, raw_offset, "
+         << "  date(moddate) as moddate, "
+         << "  state_code, wiki_link, "
+         << "  alt.lang_code as alt_lang_code, alt.name as alt_name, "
+         << "  alt.specifiers as alt_spec, "
+         << "  city_iata_code, city_location_type, city_geoname_id, "
+         << "  city_UTF8_name, city_ASCII_name "
+         << "from ori_por_public_details dts, ori_por_public_alt_names alt, "
+         << "     ori_por_public_served_cities cty "
+         << "where dts.iata_code = alt.iata_code "
+         << "  and dts.location_type = alt.location_type "
+         << "  and dts.geoname_id = alt.geoname_id "
+         << "  and dts.iata_code = cty.iata_code "
+         << "  and dts.location_type = cty.location_type "
+         << "  and dts.geoname_id = cty.geoname_id "
+         << "order by dts.iata_code, dts.location_type, dts.geoname_id",
+         soci::into (ioPlace));
 
       // Execute the SQL query
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from ori_por_public' SQL request: "
+      errorStr << "Error in the 'select * from ori_por_public_xxx' SQL request: "
                << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -508,10 +541,11 @@ namespace OPENTREP {
         // It is enough to have (at least) one database retrieved row
         if (hasStillData == true) {
           ++oNbOfEntries;
-        }
 
-        // Debug
-        OPENTREP_LOG_DEBUG ("[" << lPlace.getKey() << "] " << lPlace);
+          // Debug
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "][" << lPlace.getKey()
+                              << "] " << lPlace);
+        }
       }
       
     } catch (std::exception const& lException) {

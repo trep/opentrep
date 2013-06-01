@@ -123,6 +123,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the envelope ID.
+     */
+    const EnvelopeID_T& getEnvelopeID() const {
+      return _location.getEnvelopeID();
+    }
+
+    /**
      * Get the beginning date of the validity period
      */
     const Date_T& getDateFrom() const {
@@ -548,6 +555,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the envelope ID.
+     */
+    void setEnvelopeID (const EnvelopeID_T& iEnvelopeID) {
+      _location.setEnvelopeID (iEnvelopeID);
+    }
+
+    /**
      * Set the beginning date of the validity period
      */
     void setDateFrom (const Date_T& iDate) {
@@ -608,6 +622,13 @@ namespace OPENTREP {
      */
     void setAltCountryCode (const std::string& iCountryCode) {
       _location.setAltCountryCode (iCountryCode);
+    }
+    
+    /**
+     * Set the country name.
+     */
+    void setCountryName (const std::string& iCountryName) {
+      _location.setCountryName (iCountryName);
     }
     
     /**
@@ -688,10 +709,38 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the administrative UTF8 name of rank 1 (e.g., Illinois).
+     */
+    void setAdmin1UtfName (const std::string& iAdminName) {
+      _location.setAdmin1UtfName (iAdminName);
+    }
+
+    /**
+     * Set the administrative ASCII name of rank 1 (e.g., Illinois).
+     */
+    void setAdmin1AsciiName (const std::string& iAdminName) {
+      _location.setAdmin1AsciiName (iAdminName);
+    }
+
+    /**
      * Set the administrative code of rank 2.
      */
     void setAdmin2Code (const std::string& iAdminCode) {
       _location.setAdmin2Code (iAdminCode);
+    }
+
+    /**
+     * Set the administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    void setAdmin2UtfName (const std::string& iAdminName) {
+      _location.setAdmin2UtfName (iAdminName);
+    }
+
+    /**
+     * Set the administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+     */
+    void setAdmin2AsciiName (const std::string& iAdminName) {
+      _location.setAdmin2AsciiName (iAdminName);
     }
 
     /**

@@ -36,6 +36,16 @@ namespace OPENTREP {
   const std::string DEFAULT_OPENTREP_SQLITE_DB_FILEPATH (OPENTREP_POR_DATA_DIR
                                                          "/ori_por_public.db");
 
+  /**
+   * Default date-time with std::tm structure as type.
+   */
+  const std::tm DEFAULT_DATE_TM =
+    boost::gregorian::to_tm (Date_T (1970, boost::gregorian::Jan, 01));
+
+  /**
+   * Default date-time with std::string as type.
+   */
+  const std::string DEFAULT_DATE_STR ("1970-01-01");
   
   // //////////////// Unicode (ICU) ////////////////
   /**

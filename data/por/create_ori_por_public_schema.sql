@@ -75,10 +75,6 @@
 --                     R/RAIL railway Station; S/ASSOC a location without its
 --                     own IATA code, but attached to an IATA location.
 -- wiki_link         : Link onto the Wikipedia article, when existing
--- alt_name_section  : List of the alternate names, with their language and specifiers
---                     (p for preferred, s for short, c for colloquial, h for historical).
---                     The list if separated by equal ('=') signs. The fields are
---                     separated by pipe ('|') signs. varchar(2000)
 --
 --
 -- Continents:
@@ -93,16 +89,21 @@
 --
 -- Samples:
 -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.651959893408^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
+-- ORY^LFPO^^Y^2988500^^Paris-Orly^Paris-Orly^48.725278^2.359444^S^AIRP^0.278594625966^^^^FR^FR^France^Europe^A8^Île-de-France^Ile-de-France^91^Département de l'Essonne^Departement de l'Essonne^913^91479^0^88^80^Europe/Paris^1.0^2.0^1.0^2012-02-27^PAR^Paris^Paris^^^A^http://en.wikipedia.org/wiki/Orly_Airport^|Aéroport de Paris-Orly|=|Aéroport d'Orly|=|Orly|=|Paris-Orly|=es|Aeropuerto París-Orly|p
 -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^C^http://en.wikipedia.org/wiki/Paris^en|Paris|p=fr|Paris|p=ru|Париж|=
 --
 
-drop table if exists ori_por_public;
-create table ori_por_public (
+--
+-- POR details, without any language specificities.
+-- The first three fields are the primary key.
+--
+drop table if exists ori_por_public_details;
+create table ori_por_public_details (
  iata_code varchar(3) NOT NULL,
+ location_type varchar(4) NOT NULL,
+ geoname_id int(11) default NULL,
  icao_code varchar(4) default NULL,
  faa_code varchar(4) default NULL,
- is_geonames varchar(1) NOT NULL,
- geoname_id int(11) default NULL,
  envelope_id int(11) default NULL,
  name varchar(200) default NULL,
  asciiname varchar(200) default NULL,
@@ -134,35 +135,58 @@ create table ori_por_public (
  dst_offset decimal(3,1) default NULL,
  raw_offset decimal(3,1) default NULL,
  moddate date default NULL,
- city_code_list varchar(100) default NULL,
- city_UTF8_name_list varchar(500) default NULL,
- city_ASCII_name_list varchar(500) default NULL,
- tvl_por_list varchar(100) default NULL,
  state_code varchar(3) default NULL,
- location_type varchar(4) default NULL,
- wiki_link varchar(200) default NULL,
- alt_name_section varchar(4000) default NULL
+ wiki_link varchar(200) default NULL
 );
 
 --
--- MySQL load statement
+-- POR language specificities.
+-- The first three fields are the primary key.
 --
-load data local infile 'ori_por_public.csv' replace into table ori_por_public
-character set utf8 columns terminated by '^' ignore 1 lines;
+drop table if exists ori_por_public_alt_names;
+create table ori_por_public_alt_names (
+ iata_code varchar(3) NOT NULL,
+ location_type varchar(4) NOT NULL,
+ geoname_id int(11) default NULL,
+ lang_code varchar(10) default NULL,
+ name varchar(200) NOT NULL,
+ specifiers varchar(5) default NULL
+);
 
+--
+-- Cities served by the POR.
+-- The first three fields are the primary key.
+--
+drop table if exists ori_por_public_served_cities;
+create table ori_por_public_served_cities (
+ iata_code varchar(3) NOT NULL,
+ location_type varchar(4) NOT NULL,
+ geoname_id int(11) default NULL,
+ city_iata_code varchar(3) NOT NULL,
+ city_location_type varchar(4) NOT NULL,
+ city_geoname_id int(11) default NULL,
+ city_UTF8_name varchar(200) default NULL,
+ city_ASCII_name varchar(200) default NULL
+);
 
 --
--- SQLite3 load statement
+-- Indices
 --
--- delete from ori_por_public;
--- .separator '^'
--- .import ori_por_public.csv ori_por_public
+-- POR details
+create unique index ori_por_public_details_idx
+on ori_por_public_details (iata_code, location_type, geoname_id);
+-- POR alternate names
+create index ori_por_public_alt_names_idx
+on ori_por_public_alt_names (iata_code, location_type, geoname_id);
+-- POR served cities
+create unique index ori_por_public_served_cities_idx
+on ori_por_public_served_cities (iata_code, location_type, geoname_id);
+
 
 --
 -- Structure for the table storing airport importance (PageRank-ed thanks to
 -- schedule)
 --
-
 drop table if exists ori_por_pagerank;
 create table ori_por_pagerank (
  pk varchar(6) NOT NULL,
