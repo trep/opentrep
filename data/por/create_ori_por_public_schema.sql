@@ -17,9 +17,10 @@
 -- faa_code          : FAA code; varchar(4)
 -- is_geoname        : Whether that POR is referenced in Geonames; varchar(1)
 -- geoname_id        : Integer ID of record in geonames database; int(11)
--- envelope_id       : ID of the envelope. Empty when valid, i.e., for the current
---                     envelope/state. Incrementing ID when no longer valid; the validity
---                     date range then allows to derive when that POR was valid.
+-- envelope_id       : ID of the envelope. Empty when valid, i.e., for the
+--                     current envelope/state. Incrementing ID when no longer
+--                     valid; the validity date range then allows to derive when
+--                     that POR was valid.
 -- name              : Name of geographical point
 --                     (UTF8) varchar(200)
 -- asciiname         : Name of geographical point in plain ascii characters
@@ -30,11 +31,12 @@
 --                     char(1)
 -- feature_code      : See http://www.geonames.org/export/codes.html
 --                     varchar(10)
--- page_rank         : PageRank value, reflecting the importance of the POR; 100% is
---                     the most important one. float
+-- page_rank         : PageRank value, reflecting the importance of the POR;
+--                     100% is the most important one. float
 -- date_from         : Beginning date of the validity period. date
 -- date_until        : End date of the validity period. date
--- comment           : Comment. Mainly used for no longer valid POR. varchar(2000)
+-- comment           : Comment. Mainly used for no longer valid POR.
+--                     varchar(2000)
 -- country_code      : ISO-3166 2-letter country code, 2 characters
 -- cc2               : Alternate country codes, comma separated, ISO-3166
 --                     2-letter country code, 60 characters
@@ -61,12 +63,17 @@
 -- dst_offset        : DST offset to GMT on 1st of July (of the current year)
 -- raw_offset        : Raw Offset without DST
 -- modification_date : Date of last modification in yyyy-MM-dd format
--- city_code_list    : The (list of) IATA code(s) of the related (list of) cities.
+-- city_code_list    : The (list of) IATA code(s) of the related (list of)
+--                     cities.
 --                     varchar(100)
--- city_UTF8_name_list: UTF-8 name of the served (list of) cities
--- city_ASCII_name_list: ASCII name of the served (list of) cities
--- tvl_por_list      : list of the IATA codes of the travel-related POR serving the city.
---                     varchar(2000)
+-- city_name_list    : UTF-8 names of the served (list of) cities
+--                     varchar(500)
+-- city_detail_list  : Details (Geonames ID, names) of the served (list of)
+--                     cities
+--                     varchar(500)
+-- tvl_por_list      : list of the IATA codes of the travel-related POR serving
+--                     the city.
+--                     varchar(100)
 -- state_code        : The ISO code of the related state; varchar(3)
 -- location type     : A/APT airport; B/BUS bus/coach station; C/CITY City;
 --                     G/GRD ground transport (this code is used for SK in
@@ -75,6 +82,10 @@
 --                     R/RAIL railway Station; S/ASSOC a location without its
 --                     own IATA code, but attached to an IATA location.
 -- wiki_link         : Link onto the Wikipedia article, when existing
+-- alt_name_section  : List of the alternate names, with their language and specifiers
+--                     (p for preferred, s for short, c for colloquial, h for historical).
+--                     The list if separated by equal ('=') signs. The fields are
+--                     separated by pipe ('|') signs. varchar(2000)
 --
 --
 -- Continents:
@@ -91,19 +102,18 @@
 -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.651959893408^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
 -- ORY^LFPO^^Y^2988500^^Paris-Orly^Paris-Orly^48.725278^2.359444^S^AIRP^0.278594625966^^^^FR^FR^France^Europe^A8^Île-de-France^Ile-de-France^91^Département de l'Essonne^Departement de l'Essonne^913^91479^0^88^80^Europe/Paris^1.0^2.0^1.0^2012-02-27^PAR^Paris^Paris^^^A^http://en.wikipedia.org/wiki/Orly_Airport^|Aéroport de Paris-Orly|=|Aéroport d'Orly|=|Orly|=|Paris-Orly|=es|Aeropuerto París-Orly|p
 -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^C^http://en.wikipedia.org/wiki/Paris^en|Paris|p=fr|Paris|p=ru|Париж|=
+-- RDU^KRDU^^Y^4487056^^Raleigh-Durham International Airport^Raleigh-Durham International Airport^35.87946^-78.7871^S^AIRP^0.0818187017848^^^^US^^United States^North America^NC^North Carolina^North Carolina^183^Wake County^Wake County^^^0^126^124^America/New_York^-5.0^-4.0^-5.0^2011-12-11^RDU^Raleigh^Raleigh^^NC^A^http://en.wikipedia.org/wiki/Raleigh%E2%80%93Durham_International_Airport^
+-- RDU^ZZZZ^^Y^4464368^^Durham^Durham^35.99403^-78.89862^P^PPLA2^0.0818187017848^^^^US^^United States^North America^NC^North Carolina^North Carolina^063^Durham County^Durham County^^^228330^123^121^America/New_York^-5.0^-4.0^-5.0^2012-11-27^RDU^Raleigh^Raleigh^RDU^NC^C^http://en.wikipedia.org/wiki/Durham%2C_North_Carolina^en|Durham|p=ru|Дарем|=zh|德罕|
+-- RDU^ZZZZ^^Y^4487042^^Raleigh^Raleigh^35.7721^-78.63861^P^PPLA^0.0818187017848^^^^US^^United States^North America^NC^North Carolina^North Carolina^183^Wake County^Wake County^^^403892^96^99^America/New_York^-5.0^-4.0^-5.0^2012-11-27^RDU^Raleigh^Raleigh^RDU^NC^C^http://en.wikipedia.org/wiki/Raleigh%2C_North_Carolina^en|Raleigh|p=ru|Роли|=zh|罗利|
 --
 
---
--- POR details, without any language specificities.
--- The first three fields are the primary key.
---
-drop table if exists ori_por_public_details;
-create table ori_por_public_details (
+drop table if exists ori_por_public;
+create table ori_por_public (
  iata_code varchar(3) NOT NULL,
- location_type varchar(4) NOT NULL,
- geoname_id int(11) default NULL,
  icao_code varchar(4) default NULL,
  faa_code varchar(4) default NULL,
+ is_geonames varchar(1) NOT NULL,
+ geoname_id int(11) default NULL,
  envelope_id int(11) default NULL,
  name varchar(200) default NULL,
  asciiname varchar(200) default NULL,
@@ -135,58 +145,35 @@ create table ori_por_public_details (
  dst_offset decimal(3,1) default NULL,
  raw_offset decimal(3,1) default NULL,
  moddate date default NULL,
+ city_code_list varchar(100) default NULL,
+ city_name_list varchar(500) default NULL,
+ city_detail_list varchar(500) default NULL,
+ tvl_por_list varchar(100) default NULL,
  state_code varchar(3) default NULL,
- wiki_link varchar(200) default NULL
+ location_type varchar(4) default NULL,
+ wiki_link varchar(200) default NULL,
+ alt_name_section varchar(4000) default NULL
 );
 
 --
--- POR language specificities.
--- The first three fields are the primary key.
+-- MySQL load statement
 --
-drop table if exists ori_por_public_alt_names;
-create table ori_por_public_alt_names (
- iata_code varchar(3) NOT NULL,
- location_type varchar(4) NOT NULL,
- geoname_id int(11) default NULL,
- lang_code varchar(10) default NULL,
- name varchar(200) NOT NULL,
- specifiers varchar(5) default NULL
-);
+-- load data local infile 'ori_por_public.csv' replace into table ori_por_public
+-- character set utf8 columns terminated by '^' ignore 1 lines;
+
 
 --
--- Cities served by the POR.
--- The first three fields are the primary key.
+-- SQLite3 load statement
 --
-drop table if exists ori_por_public_served_cities;
-create table ori_por_public_served_cities (
- iata_code varchar(3) NOT NULL,
- location_type varchar(4) NOT NULL,
- geoname_id int(11) default NULL,
- city_iata_code varchar(3) NOT NULL,
- city_location_type varchar(4) NOT NULL,
- city_geoname_id int(11) default NULL,
- city_UTF8_name varchar(200) default NULL,
- city_ASCII_name varchar(200) default NULL
-);
-
---
--- Indices
---
--- POR details
-create unique index ori_por_public_details_idx
-on ori_por_public_details (iata_code, location_type, geoname_id);
--- POR alternate names
-create index ori_por_public_alt_names_idx
-on ori_por_public_alt_names (iata_code, location_type, geoname_id);
--- POR served cities
-create unique index ori_por_public_served_cities_idx
-on ori_por_public_served_cities (iata_code, location_type, geoname_id);
-
+-- delete from ori_por_public;
+-- .separator '^'
+-- .import ori_por_public.csv ori_por_public
 
 --
 -- Structure for the table storing airport importance (PageRank-ed thanks to
 -- schedule)
 --
+
 drop table if exists ori_por_pagerank;
 create table ori_por_pagerank (
  pk varchar(6) NOT NULL,

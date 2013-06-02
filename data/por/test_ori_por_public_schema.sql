@@ -2,33 +2,22 @@
 -- See create_ori_por_public_schema.sql
 --
 
+-- SQLite3 separator
+.separator '^'
+
 -- Insert Paris CDG details into the table
-insert into ori_por_public_details
-values ('CDG', 'A', 6269554, 'LFPG', '', '', 'Paris - Charles-de-Gaulle', 'Paris - Charles-de-Gaulle', 49.012779, 2.55, 'S', 'AIRP', 0.651959893408, '', '', '', 'FR', '', 'France', 'Europe', 'A8', 'Île-de-France', 'Ile-de-France', '95', 'Département du Val-d''Oise', 'Departement du Val-d''Oise', '', '', '0', '119', '106', 'Europe/Paris', 1.0, 2.0, 1.0, '2008-07-09', '', 'http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport');
-insert into ori_por_public_details
-values ('ORY', 'A', 2988500, 'LFPO', '', '', 'Paris-Orly', 'Paris-Orly', 48.725278, 2.359444, 'S', 'AIRP', 0.278594625966, '', '', '', 'FR', 'FR', 'France', 'Europe', 'A8', 'Île-de-France', 'Ile-de-France', '91', 'Département de l''Essonne', 'Departement de l''Essonne', '913', '91479', '0', '88', '80', 'Europe/Paris', 1.0, 2.0, 1.0, '2012-02-27', '', 'http://en.wikipedia.org/wiki/Orly_Airport');
-
--- Insert Paris CDG alternate names into the table
-insert into ori_por_public_alt_names
-values ('CDG', 'A', '6269554', 'es', 'París - Charles de Gaulle', 'p');
-insert into ori_por_public_alt_names
-values ('CDG', 'A', '6269554', '', 'Roissy Charles de Gaulle', '');
-insert into ori_por_public_alt_names
-values ('ORY', 'A', 2988500, '', 'Aéroport de Paris-Orly', '');
-insert into ori_por_public_alt_names
-values ('ORY', 'A', 2988500, '', 'Aéroport d''Orly', '');
-insert into ori_por_public_alt_names
-values ('ORY', 'A', 2988500, '', 'Orly', '');
-insert into ori_por_public_alt_names
-values ('ORY', 'A', 2988500, '', 'Paris-Orly', '');
-insert into ori_por_public_alt_names
-values ('ORY', 'A', 2988500, 'es', 'Aeropuerto París-Orly', 'p');
-
--- Insert Paris airports served cities names into the table
-insert into ori_por_public_served_cities
-values ('CDG', 'A', 6269554, 'PAR', 'C', 2988507, 'Paris', 'Paris');
-insert into ori_por_public_served_cities
-values ('ORY', 'A', 2988500, 'PAR', 'C', 2988507, 'Paris', 'Paris');
+insert into ori_por_public
+values ('CDG', 'LFPG', '', 'Y', 6269554, '', 'Paris - Charles-de-Gaulle', 'Paris - Charles-de-Gaulle', 49.012779, 2.55, 'S', 'AIRP', 0.651959893408, '', '', '', 'FR', '', 'France', 'Europe', 'A8', 'Île-de-France', 'Ile-de-France', '95', 'Département du Val-d''Oise', 'Departement du Val-d''Oise', '', '', '0', '119', '106', 'Europe/Paris', 1.0, 2.0, 1.0, 2008-07-09, 'PAR|C|2988507', 'Paris', 'Paris', '', '', 'A', 'http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport', 'es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|');
+insert into ori_por_public
+values ('ORY', 'LFPO', '', 'Y', 2988500, '', 'Paris-Orly', 'Paris-Orly', 48.725278, 2.359444, 'S', 'AIRP', 0.278594625966, '', '', '', 'FR', 'FR', 'France', 'Europe', 'A8', 'Île-de-France', 'Ile-de-France', '91', 'Département de l''Essonne', 'Departement de l''Essonne', '913', '91479', '0', '88', '80', 'Europe/Paris', 1.0, 2.0, 1.0, 2012-02-27, 'PAR|C|2988507', 'Paris', 'Paris', '', '', 'A', 'http://en.wikipedia.org/wiki/Orly_Airport', '|Aéroport de Paris-Orly|=|Aéroport d''Orly|=|Orly|=|Paris-Orly|=es|Aeropuerto París-Orly|p');
+insert into ori_por_public
+values ('PAR', 'ZZZZ', '', 'Y', 2988507, '', 'Paris', 'Paris', 48.85341, 2.3488, 'P', 'PPLC', 1.0, '', '', '', 'FR', '', 'France', 'Europe', 'A8', 'Île-de-France', 'Ile-de-France', '75', 'Paris', 'Paris', '751', '75056', '2138551', '', '42', 'Europe/Paris', 1.0, 2.0, 1.0, 2012-08-19, 'PAR|C|2988507', 'Paris', 'Paris', 'BVA,CDG,JDP,JPU,LBG,ORY,POX,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT', '', 'C', 'http://en.wikipedia.org/wiki/Paris', 'en|Paris|p=fr|Paris|p=ru|Париж|=');
+insert into ori_por_public
+values ('RDU', 'KRDU', '', 'Y', 4487056, '', 'Raleigh-Durham International Airport', 'Raleigh-Durham International Airport', 35.87946, -78.7871, 'S', 'AIRP', 0.0818187017848, '', '', '', 'US', '', 'United States', 'North America', 'NC', 'North Carolina', 'North Carolina', '183', 'Wake County', 'Wake County', '', '', '0', '126', '124', 'America/New_York', -5.0, -4.0, -5.0, 2011-12-11, 'RDU|C|4464368=RDU|C|4487042', 'Raleigh=Durham', 'Raleigh=Durham', '', 'NC', 'A', 'http://en.wikipedia.org/wiki/Raleigh%E2%80%93Durham_International_Airport', '');
+insert into ori_por_public
+values ('RDU', 'ZZZZ', '', 'Y', 4464368, '', 'Durham', 'Durham', 35.99403, -78.89862, 'P', 'PPLA2', 0.0818187017848, '', '', '', 'US', '', 'United States', 'North America', 'NC', 'North Carolina', 'North Carolina', '063', 'Durham County', 'Durham County', '', '', '228330', '123', '121', 'America/New_York', -5.0, -4.0, -5.0, 2012-11-27, 'RDU', 'Raleigh', 'Raleigh', 'RDU', 'NC', 'C', 'http://en.wikipedia.org/wiki/Durham%2C_North_Carolina', 'en|Durham|p=ru|Дарем|=zh|德罕|');
+insert into ori_por_public
+values ('RDU', 'ZZZZ', '', 'Y', 4487042, '', 'Raleigh', 'Raleigh', 35.7721, -78.63861, 'P', 'PPLA', 0.0818187017848, '', '', '', 'US', '', 'United States', 'North America', 'NC', 'North Carolina', 'North Carolina', '183', 'Wake County', 'Wake County', '', '', '403892', '96', '99', 'America/New_York', -5.0, -4.0, -5.0, 2012-11-27, 'RDU', 'Raleigh', 'Raleigh', 'RDU', 'NC', 'C', 'http://en.wikipedia.org/wiki/Raleigh%2C_North_Carolina', 'en|Raleigh|p=ru|Роли|=zh|罗利|');
 
 
 --
@@ -36,43 +25,15 @@ values ('ORY', 'A', 2988500, 'PAR', 'C', 2988507, 'Paris', 'Paris');
 --
 -- Display the details of a given POR
 select iata_code, location_type, geoname_id,
-       name, asciiname, date_from, date_until, moddate
-from  ori_por_public_details
-where iata_code = 'CDG' or iata_code = 'ORY';
-
--- Display all the alternate names of a given POR
-select dts.iata_code, dts.location_type, dts.geoname_id,
-       alt.lang_code, alt.name, alt.specifiers
-from  ori_por_public_details dts, ori_por_public_alt_names alt
-where dts.iata_code = alt.iata_code
-  and dts.location_type = alt.location_type
-  and dts.geoname_id = alt.geoname_id
-  and (dts.iata_code = 'CDG' or dts.iata_code = 'ORY');
-
--- Display all the served cities of a given POR
-select dts.iata_code, dts.location_type, dts.geoname_id,
-	   cty.city_iata_code, cty.city_location_type, cty.city_geoname_id,
-	   cty.city_UTF8_name, cty.city_ASCII_name
-from  ori_por_public_details dts, ori_por_public_served_cities cty
-where dts.iata_code = cty.iata_code
-  and dts.location_type = cty.location_type
-  and dts.geoname_id = cty.geoname_id
-  and (dts.iata_code = 'CDG' or dts.iata_code = 'ORY');
-
--- Display all the serving travel-related POR of a given city
-select cty.city_iata_code, cty.city_location_type, cty.city_geoname_id,
-	   cty.city_UTF8_name, cty.city_ASCII_name,
-	   dts.iata_code, dts.location_type, dts.geoname_id, dts.name
-from  ori_por_public_details dts, ori_por_public_served_cities cty
-where dts.iata_code = cty.iata_code
-  and dts.location_type = cty.location_type
-  and dts.geoname_id = cty.geoname_id
-  and cty.city_iata_code = 'PAR';
+       name, asciiname, date_from, date_until, moddate,
+	   latitude, longitude, page_rank,
+	   city_code_list, city_UTF8_name_list, city_ASCII_name_list,
+	   tvl_por_list, alt_name_section
+from  ori_por_public
+where iata_code = 'CDG' or iata_code = 'ORY' or iata_code = 'PAR'
+   or iata_code = 'RDU';
 
 --
 -- Cleaning
 --
-delete from ori_por_public_details;
-delete from ori_por_public_alt_names;
-delete from ori_por_public_served_cities;
-
+delete from ori_por_public;
