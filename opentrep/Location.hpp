@@ -152,6 +152,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the city Geonames ID (may be 0 if unknown).
+     */
+    const GeonamesID_T& getCityGeonamesID() const {
+      return _cityGeonamesID;
+    }
+
+    /**
      * Get the state code.
      */
     const StateCode_T& getStateCode() const {
@@ -549,6 +556,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the city Geonames ID (may be 0 if unknown).
+     */
+    void setCityGeonamesID (const GeonamesID_T& iGeonamesID) {
+      _cityGeonamesID = iGeonamesID;
+    }
+
+    /**
      * Set the country code. 
      */
     void setCountryCode (const std::string& iCountryCode) {
@@ -924,6 +938,7 @@ namespace OPENTREP {
               const EnvelopeID_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
+              const GeonamesID_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const ContinentName_T&,
               const Latitude_T&, const Longitude_T&,
@@ -1047,6 +1062,13 @@ namespace OPENTREP {
      *       is itself a city.
      */
     CityASCIIName_T _cityAsciiName;
+
+    /**
+     * Related city Geonames ID.
+     * \note The related city Geonames ID is null when the Location structure
+     *       is itself a city.
+     */
+    GeonamesID_T _cityGeonamesID;
 
     /**
      * State code (e.g., IL).

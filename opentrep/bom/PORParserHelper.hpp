@@ -453,6 +453,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed city Geonames ID. */
+    struct storeCityGeonamesID : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityGeonamesID (Location&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed state code. */
     struct storeStateCode : public ParserSemanticAction {
       /** Actor Constructor. */
