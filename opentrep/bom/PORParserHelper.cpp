@@ -686,6 +686,21 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeCityGeonamesID::storeCityGeonamesID (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCityGeonamesID::operator() (unsigned int iCtyId,
+                                          bsq::unused_type,
+                                          bsq::unused_type) const {
+
+      _location.setCityGeonamesID (iCtyId);
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("City Geonames ID: " << _location.getCityGeonamesID());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeStateCode::storeStateCode (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -945,12 +960,21 @@ namespace OPENTREP {
        --
        -- is_geonames       : Whether that POR is known by Geonames; varchar(1)
        --                     varchar(1)
-       -- city code         : The IATA code of the related city, when known;
-       --                     varchar(3)
-       -- city UTF8 name    : UTF8 name for the related city, when known;
-       --                     varchar(200)
-       -- city ASCII name   : ASCII name for the related city, when known;
-       --                     varchar(200)
+       -- envelope_id       : ID of the envelope. Empty when valid, i.e., for the
+       --                     current envelope/state. Incrementing ID when no
+       --                     longer valid; the validity date range then allows
+       --                     to derive when that POR was valid.
+       -- city_code_list    : The (list of) IATA code(s) of the related (list of)
+       --                     cities.
+       --                     varchar(100)
+       -- city_name_list    : UTF-8 names of the served (list of) cities
+       --                     varchar(500)
+       -- city_detail_list  : Details (Geonames ID, names) of the served
+       --                     (list of) cities
+       --                     varchar(500)
+       -- tvl_por_list      : list of the IATA codes of the travel-related POR
+       --                     serving the city.
+       --                     varchar(100)
        -- state code        : The ISO code of the related state; varchar(3)
        -- location type     : A/APT airport; B/BUS bus/coach station;
        --                     C/CITY City;
@@ -983,7 +1007,7 @@ namespace OPENTREP {
        faa_code           varchar(4)
        is_geonames        varchar(1)
        geoname_id         int(11)
-       valid_id           int(2)
+       envelope_id        int(11)
        name               varchar(200)
        asciiname          varchar(200)
        latitude           decimal(10,7)
@@ -1014,16 +1038,16 @@ namespace OPENTREP {
        dst_offset         decimal(3,1)
        raw_offset         decimal(3,1)
        moddate            date
-       city_code_list     varchar(200)
-       city_name_utf      varchar(200)
-       city_name_ascii    varchar(200)
-       tvl_por_list       varchar(200)
+       city_code_list     varchar(100)
+       city_name_list     varchar(500)
+       city_detail_list   varchar(500)
+       tvl_por_list       varchar(100)
        state_code         varchar(3)
        location_type      varchar(4)
        wiki_link          varchar(200)
        alt_name_section   text
 
-       iata_code^icao_code^faa_code^is_geonames^geoname_id^valid_id^
+       iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
        latitude^longitude^fclass^fcode^
        page_rank^date_from^date_until^comment^
@@ -1033,7 +1057,7 @@ namespace OPENTREP {
        adm3_code^adm4_code^
        population^elevation^gtopo30^
        timezone^gmt_offset^dst_offset^raw_offset^moddate^
-       city_code_list^city_name_utf^city_name_ascii^tvl_por_list^
+       city_code_list^city_name_list^city_detail_list^tvl_por_list^
        state_code^location_type^wiki_link^
        alt_name_section
     */ 
@@ -1100,8 +1124,8 @@ namespace OPENTREP {
           >> '^' >> -raw_offset
           >> '^' >> (mod_date | bsq::lit("-1"))
           >> '^' >> city_code_list
-          >> '^' >> -city_name_utf
-          >> '^' >> -city_name_ascii
+          >> '^' >> -city_name_list
+          >> '^' >> -city_detail_list
           >> '^' >> -tvl_por_code_list[storeTvlPORListString(_location)]
           >> '^' >> -state_code
           >> '^' >> por_type
@@ -1262,15 +1286,28 @@ namespace OPENTREP {
           bsq::repeat(3)[bsu::char_('A', 'Z')][storeCityCode(_location)]
           ;
 
+        city_name_list = city_name_utf % '=';
+
         city_name_utf =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsu::char_("^|=")]
            - (bsq::eoi|bsq::eol))[storeCityUtfName(_location)]
           ;
 
         city_name_ascii =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsu::char_("^|=")]
            - (bsq::eoi|bsq::eol))[storeCityAsciiName(_location)]
           ;
+
+        city_detail_list = city_details % '=';
+
+        city_details =
+          city_code
+          >> '|' >> city_geoname_id
+          >> '|' >> city_name_utf
+          >> '|' >> city_name_ascii
+          ;
+
+        city_geoname_id = uint1_9_p[storeCityGeonamesID(_location)];
 
         state_code =
           (bsq::no_skip[+~bsu::char_('^')]
@@ -1373,6 +1410,10 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (mod_date);
         BOOST_SPIRIT_DEBUG_NODE (date);
         BOOST_SPIRIT_DEBUG_NODE (city_code_list);
+        BOOST_SPIRIT_DEBUG_NODE (city_name_list);
+        BOOST_SPIRIT_DEBUG_NODE (city_detail_list);
+        BOOST_SPIRIT_DEBUG_NODE (city_details);
+        BOOST_SPIRIT_DEBUG_NODE (city_geoname_id);
         BOOST_SPIRIT_DEBUG_NODE (city_code);
         BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
@@ -1406,7 +1447,10 @@ namespace OPENTREP {
         population, elevation, gtopo30,
         time_zone, gmt_offset, dst_offset, raw_offset,
         mod_date, date,
-        city_code_list, city_code, city_name_utf, city_name_ascii, state_code,
+        city_code_list, city_code,
+        city_name_list, city_name_utf, city_name_ascii,
+        city_detail_list, city_details, city_geoname_id,
+        state_code,
         por_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,

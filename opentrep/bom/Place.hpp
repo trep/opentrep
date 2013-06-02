@@ -172,6 +172,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the city Geonames ID (may be 0 if unknown).
+     */
+    const GeonamesID_T& getCityGeonamesID() const {
+      return _location.getCityGeonamesID();
+    }
+
+    /**
      * Get the state code.
      */
     const StateCode_T& getStateCode() const {
@@ -603,6 +610,13 @@ namespace OPENTREP {
       _location.setCityAsciiName (iCityAsciiName);
     }
     
+    /**
+     * Set the city Geonames ID (may be 0 if unknown).
+     */
+    void setCityGeonamesID (const GeonamesID_T& iGeonamesID) {
+      _location.setCityGeonamesID (iGeonamesID);
+    }
+
     /**
      * Set the state code.
      */
