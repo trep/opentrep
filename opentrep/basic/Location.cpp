@@ -20,6 +20,7 @@ namespace OPENTREP {
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (TvlPORListString_T ("")),
+    _envelopeID (0),
     _dateFrom (1970, 01, 01), _dateEnd (2999, 12, 31), _comment (""),
     _cityCode (CityCode_T ("ZZZ")),
     _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
@@ -56,6 +57,7 @@ namespace OPENTREP {
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
     _tvlPORListString (iLocation._tvlPORListString),
+    _envelopeID (iLocation.getEnvelopeID()),
     _dateFrom (iLocation.getDateFrom()), _dateEnd (iLocation.getDateEnd()),
     _comment (iLocation.getComment()),
     _cityCode (iLocation._cityCode),
@@ -100,6 +102,7 @@ namespace OPENTREP {
                       const ICAOCode_T& iIcaoCode, const FAACode_T& iFaaCode,
                       const CommonName_T& iCommonName,
                       const ASCIIName_T& iASCIIName,
+                      const EnvelopeID_T& iEnvelopeID,
                       const Date_T& iDateFrom, const Date_T& iDateEnd,
                       const Comment_T& iComment,
                       const CityCode_T& iCityCode,
@@ -141,6 +144,7 @@ namespace OPENTREP {
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (iTvlPORListString),
+    _envelopeID (iEnvelopeID),
     _dateFrom (iDateFrom), _dateEnd (iDateEnd),
     _comment (iComment),
     _cityCode (iCityCode),
@@ -205,6 +209,7 @@ namespace OPENTREP {
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
          << ", " << _icaoCode << ", " << _faaCode
+         << ", " << _envelopeID
          << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
          << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
          << ", " << _stateCode

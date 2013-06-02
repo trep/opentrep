@@ -4,6 +4,8 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
+// STL
+#include <ctime>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 
@@ -33,5 +35,14 @@ namespace OPENTREP {
    */
   extern const BlackList_T K_BLACK_LIST;
 
+  /**
+   * Default std::tm (date-time) structure (e.g., 1970-JAN-01).
+   */
+  extern const std::tm DEFAULT_DATE_TM;
+
+  /**
+   * Default date-time with std::string as type (e.g., "1970-01-01").
+   */
+  extern const std::string DEFAULT_DATE_STR;
 }
 #endif // __OPENTREP_BAS_BASCONST_GENERAL_HPP

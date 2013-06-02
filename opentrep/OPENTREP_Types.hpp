@@ -91,6 +91,11 @@ namespace OPENTREP {
   typedef int GeonamesID_T;
 
   /**
+   * Envelope ID.
+   */
+  typedef int EnvelopeID_T;
+
+  /**
    * FAA three-letter code (e.g., ORD).
    */
   struct FAACode_T : public std::string {
@@ -399,17 +404,17 @@ namespace OPENTREP {
   /**
    * GMT offset (e.g., 1)
    */
-  typedef short GMTOffset_T;
+  typedef float GMTOffset_T;
 
   /**
    * DST offset (e.g., 2)
    */
-  typedef short DSTOffset_T;
+  typedef float DSTOffset_T;
 
   /**
    * Raw offset (e.g., 1)
    */
-  typedef short RawOffset_T;
+  typedef float RawOffset_T;
 
   /**
    * Whether or not that POR is referenced by Geonames

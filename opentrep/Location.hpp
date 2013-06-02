@@ -103,6 +103,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the envelope ID.
+     */
+    const EnvelopeID_T& getEnvelopeID() const {
+      return _envelopeID;
+    }
+
+    /**
      * Get the beginning date of the validity period
      */
     const Date_T& getDateFrom() const {
@@ -490,6 +497,13 @@ namespace OPENTREP {
      */
     void setTvlPORListString (const std::string& iPORListString) {
       _tvlPORListString = TvlPORListString_T (iPORListString);
+    }
+
+    /**
+     * Set the envelope ID.
+     */
+    void setEnvelopeID (const EnvelopeID_T& iEnvelopeID) {
+      _envelopeID = iEnvelopeID;
     }
 
     /**
@@ -907,6 +921,7 @@ namespace OPENTREP {
     Location (const IATACode_T&, const IATAType&, const GeonamesID_T&,
               const ICAOCode_T&, const FAACode_T&,
               const CommonName_T&, const ASCIIName_T&,
+              const EnvelopeID_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
@@ -985,6 +1000,16 @@ namespace OPENTREP {
      * a single string (e.g., "EMB,JCC,SFO" for San Francisco, California, USA).
      */
     TvlPORListString_T _tvlPORListString;
+
+    /**
+     * Envelope ID.
+     * <ul>
+     *   <li>It is empty or null when valid/current.</li>
+     *   <li>It has a value from 1 to positive infinite,
+     *       when it used to exist, but no longer exists.</li>
+     * </ul>
+     */
+    EnvelopeID_T _envelopeID;
 
     /**
      * Beginning date of the validity period
