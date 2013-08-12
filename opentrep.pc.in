@@ -2,8 +2,15 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+pkgdatadir=@pkgdatadir@
+sampledir=@sampledir@
+docdir=@docdir@
+mandir=@mandir@
+infodir=@infodir@
 
-Name: @PACKAGE_NAME@
+Name: @PACKAGE_PRETTY_NAME@
 Description: C++ library providing a clean API for parsing travel-focused requests
 Version: @PACKAGE_VERSION@
 URL: http://www.sourceforge.net/projects/@PACKAGE@
