@@ -4,15 +4,25 @@ prefix=@prefix@
 exec_prefix=${prefix}
 libdir=@libdir@
 includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+pkgdatadir=@pkgdatadir@
+sampledir=@sampledir@
+docdir=@docdir@
+mandir=@mandir@
+infodir=@infodir@
+version=@PACKAGE_VERSION@
+package_name=@PACKAGE@
+package_pretty_name=@PACKAGE_PRETTY_NAME@
 
 usage()
 {
   cat <<EOF
-Usage: @PACKAGE@-config [OPTION]
+Usage: ${package_name}-config [OPTION]
 
 Known values for OPTION are:
 
-  --prefix        print @PACKAGE_NAME@ installation prefix
+  --prefix        print $package_pretty_name installation prefix
   --libs          print library linking information
   --cflags        print pre-processor and compiler flags
   --help          display this help and exit
@@ -44,7 +54,7 @@ while test $# -gt 0; do
       ;;
 
     --version)
-      echo @VERSION@
+      echo $version
       ;;
 
     --help)
@@ -60,11 +70,7 @@ while test $# -gt 0; do
       ;;
 
     --libs)
-      if [ "${prefix}" != "/usr" ]; then
-        echo -L${libdir} -l@PACKAGE@
-      else
-        echo -l@PACKAGE@
-      fi
+      echo -L${libdir} -l${package_name}
       ;;
 
     *)
