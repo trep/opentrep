@@ -4,9 +4,8 @@
 // STL
 #include <cassert>
 #include <sstream>
-// Boost
-#include <boost/lexical_cast.hpp>
 // OpenTrep
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/basic/float_utils.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/ScoreBoard.hpp>
@@ -67,7 +66,30 @@ namespace OPENTREP {
       const FloatingPoint<Percentage_T> lComparablePct (oScore);
       const FloatingPoint<Percentage_T> lFullMatchingPct (100.0);
       if (lComparablePct.AlmostEquals (lFullMatchingPct) == true) {
-        oScore = 99.999;
+        // Normally, K_DEFAULT_MODIFIED_MATCHING_PCT == 99.999.
+        // See basic/BasConst.cpp
+        oScore = K_DEFAULT_MODIFIED_MATCHING_PCT;
+      }
+    }
+
+    /**
+     * When the envelope ID is null, the object is valid. The percentage
+     * must therefore be full, i.e., 100%. There is no need to set it
+     * to a lower value (e.g., 99.999%), as that role is already played
+     * by the modified Xapian matching value calculated above.
+     * When the envelope ID is not null, the object is no longer valid
+     * (it has been valid sometime ago, but is no longer). Its weight
+     * must therefore be decreased to the default matching percentage
+     * (normally, 0.10%, that is 0.001).
+     */
+    if (iScoreType == ScoreType::ENV_ID) {
+      const FloatingPoint<Percentage_T> lComparableValue (oScore);
+      const FloatingPoint<Percentage_T> lNoEnvelopeIDValue (0.0);
+      if (lComparableValue.AlmostEquals (lNoEnvelopeIDValue) == true) {
+        oScore = 100.00;
+      } else {
+        // Normally, K_DEFAULT_ENVELOPE_PCT == 0.001. See basic/BasConst.cpp
+        oScore = K_DEFAULT_ENVELOPE_PCT;
       }
     }
 

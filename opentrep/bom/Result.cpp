@@ -7,7 +7,6 @@
 #include <algorithm>
 // Boost
 #include <boost/tokenizer.hpp>
-#include <boost/lexical_cast.hpp>
 // OpenTREP
 #include <opentrep/LocationKey.hpp>
 #include <opentrep/basic/BasConst_General.hpp>
@@ -274,6 +273,20 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  Score_T Result::getEnvelopeID (const Xapian::Document& iDocument) {
+    // Parse the POR (point of reference) details held by the Xapian document
+    const Location& lLocation = retrieveLocation (iDocument);
+
+    // Get the envelope ID (it is an integer value in the Location structure)
+    const EnvelopeID_T& lEnvelopeIDInt = lLocation.getEnvelopeID();
+
+    // Convert the envelope ID value, from an integer to a floating point one
+    const Score_T oEnvelopeID = static_cast<const Score_T> (lEnvelopeIDInt);
+
+    return oEnvelopeID;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   PageRank_T Result::getPageRank (const Xapian::Document& iDocument) {
     // Parse the POR (point of reference) details held by the Xapian document
     const Location& lLocation = retrieveLocation (iDocument);
@@ -508,7 +521,8 @@ namespace OPENTREP {
 
       // DEBUG
       if (isToBeAdded == false) {
-        OPENTREP_LOG_DEBUG ("      No full text search performed as '" << iQueryString
+        OPENTREP_LOG_DEBUG ("      No full text search performed as '"
+                            << iQueryString
                             << "' is not made of searchable words");
       }
       OPENTREP_LOG_DEBUG ("      ==> " << toString());
@@ -523,6 +537,37 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void Result::calculateEnvelopeWeights() {
+    // Browse the list of Xapian documents
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+
+      // Extract the envelope ID from the document data
+      const EnvelopeID_T& lEnvelopeIDInt = getEnvelopeID (lXapianDoc);
+
+      // DEBUG
+      if (lEnvelopeIDInt != 0) {
+        OPENTREP_LOG_NOTIFICATION ("        [pct] '" << describeShortKey()
+                                   << "' has a non-null envelope ID ("
+                                   << lEnvelopeIDInt << ") => match of 0.10%");
+      }
+
+      // Convert the envelope ID value, from an integer to a floating point one
+      const Score_T lEnvelopeID = static_cast<const Score_T> (lEnvelopeIDInt);
+
+      // Retrieve the score board for that Xapian document
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      // Store the PageRank weight
+      lScoreBoard.setScore (ScoreType::ENV_ID, lEnvelopeID);
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Result::calculatePageRanks() {
     // Browse the list of Xapian documents
     for (DocumentList_T::iterator itDoc = _documentList.begin();
@@ -532,7 +577,7 @@ namespace OPENTREP {
       // Retrieve the Xapian document
       const Xapian::Document& lXapianDoc = lDocumentPair.first;
 
-      // Extract the PageRank from the document data.      
+      // Extract the PageRank from the document data
       const Score_T& lPageRank = getPageRank (lXapianDoc);
 
       // Retrieve the score board for that Xapian document

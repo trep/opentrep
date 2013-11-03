@@ -70,6 +70,21 @@ namespace OPENTREP {
     /**
      * Set the score for the given type. If no score value has
      * already been stored for that type, create it.
+     *
+     * A few rules are applied:
+     * <ul>
+     *   <li>For Xapian matching weight, the full text match, i.e., 100%,
+     *       is replaced by 99.999%, so that the combination decreases:
+     *       99.999% x 99.999% = 99.998%, which is lower than 99.999%</li>
+     *   <li>For envelope ID:
+     *     <ul>
+     *       <li>When null, the score is taken as the full matching,
+     *           i.e., 100% (1.00). There is no need to take 99.999%,
+     *           as the Xapian matching value above already plays that role.</li>
+     *       <li>When not null, the score is taken as the minimal default,
+     *           i.e., 0.10% (0.001).</li>
+     *     </ul></li>
+     * </ul>
      */
     void setScore (const ScoreType&, const Score_T&);
 

@@ -30,6 +30,7 @@ namespace OPENTREP {
       PAGE_RANK,
       PAX_NB,
       HEURISTIC,
+      ENV_ID,
       LAST_VALUE
     } EN_ScoreType;
 

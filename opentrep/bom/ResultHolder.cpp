@@ -92,6 +92,19 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void ResultHolder::calculateEnvelopeWeights() const {
+    // Browse the Result objects
+    for (ResultList_T::const_iterator itResult = _resultList.begin();
+         itResult != _resultList.end(); ++itResult) {
+      Result* lResult_ptr = *itResult;
+      assert (lResult_ptr != NULL);
+
+      //
+      lResult_ptr->calculateEnvelopeWeights();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void ResultHolder::calculatePageRanks() const {
     // Browse the Result objects
     for (ResultList_T::const_iterator itResult = _resultList.begin();
