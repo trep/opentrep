@@ -27,7 +27,7 @@ packaging_init (${PROJECT_NAME})
 packaging_set_summary ("${PROJECT_NAME} That project aims at providing 
 a clean API, and the corresponding C++ implementation, for parsing
 travel-focused requests (e.g.,
-"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog").
+\"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog\").
 
 The C++ library uses Xapian (http://www.xapian.org) for the
 Information Retrieval part, on freely available travel-related data
@@ -38,8 +38,8 @@ The C++ library exposes a simple, clean and object-oriented, API. For
 instance, the static Parse() method takes, as input, a string
 containing the travel request, and yields, as output, the list of the
 recognised terms as well as their corresponding types. As an example,
-the travel request "washington dc beijing monday a/r +aa -ua 1 week 2
-adults 1 dog" would give the following list:
+the travel request \"washington dc beijing monday a/r +aa -ua 1 week 2
+adults 1 dog\" would give the following list:
   * Origin airport: Washington, DC, USA
   * Destination airport: Beijing, China
   * Date of travel: next Monday
