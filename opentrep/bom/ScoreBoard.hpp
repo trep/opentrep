@@ -71,11 +71,20 @@ namespace OPENTREP {
      * Set the score for the given type. If no score value has
      * already been stored for that type, create it.
      *
+     * A trick is used to decrease the overall percentage of word combinations,
+     * when compared to the whole string. For instance, {"san francisco"}
+     * will have a percentage of 99.999%, compared to {"san", "francisco"}
+     * which will have a percentage of 99.998%.
+     *
      * A few rules are applied:
      * <ul>
-     *   <li>For Xapian matching weight, the full text match, i.e., 100%,
-     *       is replaced by 99.999%, so that the combination decreases:
-     *       99.999% x 99.999% = 99.998%, which is lower than 99.999%</li>
+     *   <li>For matching with IATA/ICAO codes:
+     *     <ul>
+     *       <li>When the query string fully matches with a IATA/ICAO code,
+     *           the matching percentage is set to 100% (1.00).</li>
+     *       <li>Otherwise, it is set to 99.999% (0.99999).</li>
+     *     </ul></li>
+     *   <li>The Xapian matching weight is registered as is.</li>
      *   <li>For envelope ID:
      *     <ul>
      *       <li>When null, the score is taken as the full matching,

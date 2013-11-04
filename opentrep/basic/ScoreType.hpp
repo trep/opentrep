@@ -31,6 +31,7 @@ namespace OPENTREP {
       PAX_NB,
       HEURISTIC,
       ENV_ID,
+      CODE_FULL_MATCH,
       LAST_VALUE
     } EN_ScoreType;
 

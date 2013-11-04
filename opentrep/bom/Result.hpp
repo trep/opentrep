@@ -314,6 +314,12 @@ namespace OPENTREP {
     void calculateEnvelopeWeights();
 
     /**
+     * Calculate/set the IATA/ICAO code matching weights for all
+     * the matching documents
+     */
+    void calculateCodeMatches();
+
+    /**
      * Calculate/set the PageRanks for all the matching documents
      */
     void calculatePageRanks();

@@ -56,12 +56,36 @@ namespace OPENTREP {
     Score_T oScore = iScore;
 
     /**
-     * For the full-text matching process, a trick is used to decrease
-     * the overall percentage of word combinations, when compared to
-     * the whole string. For instance, {"san francisco"}
-     * will have a percentage of 99.999%, compared to {"san", "francisco"}
-     * which will have a percentage of 99.998%.
+     * <ul>
+     *   <li>When the query string fully matches with a IATA/ICAO code,
+     *       the matching percentage is set to 100% (1.00).</li>
+     *   <li>Otherwise, it is set to 99.999% (0.99999).</li>
+     * </ul>
+     *
+     * Indeed, a trick is used to decrease the overall percentage
+     * of word combinations, when compared to the whole string.
+     * For instance, {"san francisco"} will have a percentage of 99.999%,
+     * compared to {"san", "francisco"} which will have a percentage of 99.998%.
      */
+    if (iScoreType == ScoreType::CODE_FULL_MATCH) {
+      const FloatingPoint<Percentage_T> lComparablePct (oScore);
+      const FloatingPoint<Percentage_T> lCodeFullMatchingPct (1.0);
+      if (lComparablePct.AlmostEquals (lCodeFullMatchingPct) == true) {
+        oScore = 100.0;
+
+      } else {
+        // Normally, K_DEFAULT_MODIFIED_MATCHING_PCT == 99.999.
+        // See basic/BasConst.cpp
+        oScore = K_DEFAULT_MODIFIED_MATCHING_PCT;
+      }
+    }
+
+    /**
+     * There is no need to override the Xapian text matching percentage here,
+     * as that role is already played by the modified Xapian matching value
+     * calculated above.
+     */
+    /*
     if (iScoreType == ScoreType::XAPIAN_PCT) {
       const FloatingPoint<Percentage_T> lComparablePct (oScore);
       const FloatingPoint<Percentage_T> lFullMatchingPct (100.0);
@@ -71,6 +95,7 @@ namespace OPENTREP {
         oScore = K_DEFAULT_MODIFIED_MATCHING_PCT;
       }
     }
+    */
 
     /**
      * When the envelope ID is null, the object is valid. The percentage

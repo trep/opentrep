@@ -324,17 +324,23 @@ namespace OPENTREP {
       lResultCombination.calculateEnvelopeWeights();
 
       /**
-       * 1.3. Calculate/set the PageRanks for all the matching documents
+       * 1.3. Calculate/set the IATA/ICAO code matching weights
+       *      for all the matching documents
+       */
+      lResultCombination.calculateCodeMatches();
+
+      /**
+       * 1.4. Calculate/set the PageRanks for all the matching documents
        */
       lResultCombination.calculatePageRanks();
 
       /**
-       * 1.4. Calculate/set the heuristic weights for all the matching documents
+       * 1.5. Calculate/set the heuristic weights for all the matching documents
        */
       lResultCombination.calculateHeuristicWeights();
 
       /**
-       * 1.5. Calculate/set the combined weights for all the matching documents
+       * 1.6. Calculate/set the combined weights for all the matching documents
        */
       lResultCombination.calculateCombinedWeights();
 
