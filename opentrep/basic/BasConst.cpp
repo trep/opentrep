@@ -76,9 +76,19 @@ namespace OPENTREP {
 
   // /////////////// General ////////////////
   /**
-   * Default PageRank (e.g., 0.1% == 0.001)
+   * Default envelope percentage (e.g., 0.10% == 0.001)
    */
-  const Percentage_T K_DEFAULT_PAGE_RANK (0.1);
+  const Percentage_T K_DEFAULT_ENVELOPE_PCT (0.10);
+
+  /**
+   * Default modified matching percentage (e.g., 99.999% == 0.99999)
+   */
+  const Percentage_T K_DEFAULT_MODIFIED_MATCHING_PCT (99.999);
+
+  /**
+   * Default PageRank (e.g., 0.10% == 0.001)
+   */
+  const Percentage_T K_DEFAULT_PAGE_RANK (0.10);
 
   /**
    * Default number of characters by allowable spelling error unit

@@ -283,6 +283,17 @@ namespace OPENTREP {
     static LocationKey getPrimaryKey (const Xapian::Document&);
 
     /**
+     * Extract the Envelope ID from the data of the given Xapian document.
+     *
+     * The retrieveLocation() is used to parse the Xapian document raw data.
+     *
+     * @param Xapian::Document& The Xapian document.
+     * @return Score_T& The Envelope ID of the place/POR (point of reference),
+     *         converted into a floating point (from an integer value).
+     */
+    static Score_T getEnvelopeID (const Xapian::Document&);
+
+    /**
      * Extract the PageRank from the data of the given Xapian document.
      *
      * The retrieveLocation() is used to parse the Xapian document raw data.
@@ -291,6 +302,22 @@ namespace OPENTREP {
      * @return PageRank_T& The PageRank of the place/POR (point of reference).
      */
     static PageRank_T getPageRank (const Xapian::Document&);
+
+    /**
+     * Calculate/set the envelope weights for all the matching documents.
+     *
+     * Some documents have a non-null envelope, meaning that they are no
+     * longer valid: they were valid for a given period of time in the past,
+     * but no longer are. For instance, the corresponding object (POR, airline,
+     * etc) may have been closed, removed, replaced.
+     */
+    void calculateEnvelopeWeights();
+
+    /**
+     * Calculate/set the IATA/ICAO code matching weights for all
+     * the matching documents
+     */
+    void calculateCodeMatches();
 
     /**
      * Calculate/set the PageRanks for all the matching documents

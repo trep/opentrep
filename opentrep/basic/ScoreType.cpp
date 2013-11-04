@@ -13,9 +13,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   const std::string ScoreType::_labels[LAST_VALUE] =
         { "Combination", "Xapian Percentage", "Page Rank", "Passenger Number",
-          "Heuristic"};
+          "Heuristic", "Envelope ID", "IATA/ICAO Code Full Match"};
 
-  const char ScoreType::_typeLabels[LAST_VALUE] = { 'C', 'X', 'R', 'N', 'H' };
+  const char ScoreType::_typeLabels[LAST_VALUE] = { 'C', 'X', 'R', 'N', 'H',
+                                                    'E', 'F' };
 
 
   // //////////////////////////////////////////////////////////////////////
@@ -31,6 +32,8 @@ namespace OPENTREP {
     case 'R': _type = PAGE_RANK; break;
     case 'N': _type = PAX_NB; break;
     case 'H': _type = HEURISTIC; break;
+    case 'E': _type = ENV_ID; break;
+    case 'F': _type = CODE_FULL_MATCH; break;
     default: _type = LAST_VALUE; break;
     }
 

@@ -7,7 +7,6 @@
 #include <algorithm>
 // Boost
 #include <boost/tokenizer.hpp>
-#include <boost/lexical_cast.hpp>
 // OpenTREP
 #include <opentrep/LocationKey.hpp>
 #include <opentrep/basic/BasConst_General.hpp>
@@ -274,6 +273,20 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  Score_T Result::getEnvelopeID (const Xapian::Document& iDocument) {
+    // Parse the POR (point of reference) details held by the Xapian document
+    const Location& lLocation = retrieveLocation (iDocument);
+
+    // Get the envelope ID (it is an integer value in the Location structure)
+    const EnvelopeID_T& lEnvelopeIDInt = lLocation.getEnvelopeID();
+
+    // Convert the envelope ID value, from an integer to a floating point one
+    const Score_T oEnvelopeID = static_cast<const Score_T> (lEnvelopeIDInt);
+
+    return oEnvelopeID;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   PageRank_T Result::getPageRank (const Xapian::Document& iDocument) {
     // Parse the POR (point of reference) details held by the Xapian document
     const Location& lLocation = retrieveLocation (iDocument);
@@ -508,7 +521,8 @@ namespace OPENTREP {
 
       // DEBUG
       if (isToBeAdded == false) {
-        OPENTREP_LOG_DEBUG ("      No full text search performed as '" << iQueryString
+        OPENTREP_LOG_DEBUG ("      No full text search performed as '"
+                            << iQueryString
                             << "' is not made of searchable words");
       }
       OPENTREP_LOG_DEBUG ("      ==> " << toString());
@@ -523,6 +537,131 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void Result::calculateEnvelopeWeights() {
+    // Browse the list of Xapian documents
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+
+      // Extract the Xapian document ID
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
+
+      // Extract the envelope ID from the document data
+      const EnvelopeID_T& lEnvelopeIDInt = getEnvelopeID (lXapianDoc);
+
+      // DEBUG
+      if (lEnvelopeIDInt != 0) {
+        OPENTREP_LOG_NOTIFICATION ("        [env] '" << describeShortKey()
+                                   << "' (doc ID = " << lDocID
+                                   << ") has a non-null envelope ID ("
+                                   << lEnvelopeIDInt << ") => match of 0.10%");
+      }
+
+      // Convert the envelope ID value, from an integer to a floating point one
+      const Score_T lEnvelopeID = static_cast<const Score_T> (lEnvelopeIDInt);
+
+      // Retrieve the score board for that Xapian document
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      // Store the PageRank weight
+      lScoreBoard.setScore (ScoreType::ENV_ID, lEnvelopeID);
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Result::calculateCodeMatches() {
+    // Browse the list of Xapian documents
+    for (DocumentList_T::iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+
+      // Extract the Xapian document ID
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
+
+      // Extract the envelope ID from the document data
+      const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
+
+      // Initialisation of the IATA/ICAO code full matching percentage
+      Score_T lCodeMatchPct = 0.0;
+      bool hasCodeFullyMatched = false;
+
+      // Filter out "standard" words such as "airport", "international",
+      // "city", as well as words having a length strictly less than
+      // 3 letters.
+      std::string lFilteredString (_queryString);
+      const NbOfLetters_T kMinWordLength = 3;
+      Filter::trim (lFilteredString, kMinWordLength);
+
+      // Check whether or not the filtered query string is made of
+      // a single word
+      WordList_T lFilteredQueryWordList;
+      WordHolder::tokeniseStringIntoWordList (lFilteredString,
+                                              lFilteredQueryWordList);
+      const NbOfWords_T nbOfFilteredQueryWords = lFilteredQueryWordList.size();
+
+      //
+      if (_hasFullTextMatched == true) {
+        /**
+         * Check whether the query string, when some standard words (e.g.,
+         * "airport", "international", "city") have been filtered out,
+         * is made of a single IATA, ICAO or FAA code. Also, there should
+         * have been no correction.
+         */
+        const size_t lNbOfLetters = lFilteredString.size();
+        if (nbOfFilteredQueryWords == 1
+            && lNbOfLetters >= 3 && lNbOfLetters <= 4
+            && _correctedQueryString == _queryString) {
+          // Convert the query string (made of one word of 3 or 4 letters)
+          // to uppercase letters
+          std::string lUpperQueryWord;
+          lUpperQueryWord.resize (lNbOfLetters);
+          std::transform (lFilteredString.begin(), lFilteredString.end(),
+                          lUpperQueryWord.begin(), ::toupper);
+
+          // Retrieve with the IATA code
+          const IATACode_T& lIataCode = lLocationKey.getIataCode();
+
+          // Compare the 3/4-letter-word query string with the IATA
+          // and ICAO codes
+          if (lUpperQueryWord == lIataCode) {
+            /**
+             * The query string matches with the IATA or ICAO code.
+             */
+            lCodeMatchPct = 1.0;
+            hasCodeFullyMatched = true;
+          }
+        }
+
+        if (hasCodeFullyMatched == true) {
+          // DEBUG
+          OPENTREP_LOG_NOTIFICATION ("        [code] '" << describeShortKey()
+                                     << "' matches the IATA/ICAO code of "
+                                     << lLocationKey << " (doc ID = "
+                                     << lDocID << ") => match of 100%");
+        } else {
+          // DEBUG
+          OPENTREP_LOG_NOTIFICATION ("        [code] '" << describeShortKey()
+                                     << "' no match with any IATA/ICAO code "
+                                     << "(doc ID = "
+                                     << lDocID << ") => match of 99.999%");
+        }
+      }
+
+      // Retrieve the score board for that Xapian document
+      ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      // Store the PageRank weight
+      lScoreBoard.setScore (ScoreType::CODE_FULL_MATCH, lCodeMatchPct);
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Result::calculatePageRanks() {
     // Browse the list of Xapian documents
     for (DocumentList_T::iterator itDoc = _documentList.begin();
@@ -532,8 +671,16 @@ namespace OPENTREP {
       // Retrieve the Xapian document
       const Xapian::Document& lXapianDoc = lDocumentPair.first;
 
-      // Extract the PageRank from the document data.      
+      // Extract the Xapian document ID
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
+
+      // Extract the PageRank from the document data
       const Score_T& lPageRank = getPageRank (lXapianDoc);
+
+      // DEBUG
+      OPENTREP_LOG_NOTIFICATION ("        [pr] '" << describeShortKey()
+                                 << "' (doc ID = " << lDocID
+                                 << ") has a PageRank of " << lPageRank);
 
       // Retrieve the score board for that Xapian document
       ScoreBoard& lScoreBoard = lDocumentPair.second;
@@ -598,73 +745,8 @@ namespace OPENTREP {
                                             lOriginalQueryWordList);
     const NbOfWords_T nbOfOriginalQueryWords = lOriginalQueryWordList.size();
 
-    // Filter out "standard" words such as "airport", "international", "city",
-    // as well as words having a length strictly less than 3 letters.
-    std::string lFilteredString (_queryString);
-    const NbOfLetters_T kMinWordLength = 3;
-    Filter::trim (lFilteredString, kMinWordLength);
-
-    // Check whether or not the filtered query string is made of a single word
-    WordList_T lFilteredQueryWordList;
-    WordHolder::tokeniseStringIntoWordList (lFilteredString,
-                                            lFilteredQueryWordList);
-    const NbOfWords_T nbOfFilteredQueryWords = lFilteredQueryWordList.size();
-
     //
     if (_hasFullTextMatched == true) {
-      /**
-       * Check whether the query string, when some standard words (e.g.,
-       * "airport", "international", "city") have been filtered out, is made of
-       * a single IATA, ICAO or FAA code. Also, there should have been no
-       * correction.
-       */
-      const size_t lNbOfLetters = lFilteredString.size();
-      if (nbOfFilteredQueryWords == 1 && lNbOfLetters >= 3 && lNbOfLetters <= 4
-          && _correctedQueryString == _queryString) {
-        // Convert the query string (made of one word of 3 or 4 letters)
-        // to uppercase letters
-        std::string lUpperQueryWord;
-        lUpperQueryWord.resize (lNbOfLetters);
-        std::transform (lFilteredString.begin(), lFilteredString.end(),
-                        lUpperQueryWord.begin(), ::toupper);
-
-        // Browse through all the matching documents,
-        // not only the best maching one
-        for (DocumentList_T::const_iterator itDoc = _documentList.begin();
-             itDoc != _documentList.end(); ++itDoc) {
-          // Retrieve the primary key (IATA, location type, Geonames ID)
-          // of the place corresponding to the document
-          const Xapian::Document& lXapianDoc = itDoc->first;
-          const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
-
-          // Retrieve with the IATA code
-          const IATACode_T& lIataCode = lLocationKey.getIataCode();
-
-          // Compare the 3/4-letter-word query string with the IATA
-          // and ICAO codes
-          if (lUpperQueryWord == lIataCode) {
-            /**
-             * The query string matches with the IATA or ICAO code.
-             */
-            lMaxPercentage = 100.0;
-
-            // Register the document as the best matching one
-            const Xapian::docid& lDocID = lXapianDoc.get_docid();
-            const std::string& lDocData = lXapianDoc.get_data();
-            lBestDocID = lDocID;
-            lBestDocData = lDocData;
-
-            // DEBUG
-            OPENTREP_LOG_NOTIFICATION ("        [pct] '" << describeShortKey()
-                                       << "' matches the IATA/ICAO code of "
-                                       << lLocationKey << " (doc ID = "
-                                       << lBestDocID << ") => match of 100%");
-
-            break;
-          }
-        }
-      }
-
       // Retrieve the primary key (IATA, location type, Geonames ID) of
       // the place corresponding to the document
       const Xapian::Document& lXapianDoc = getDocument (lBestDocID);

@@ -73,6 +73,17 @@ namespace OPENTREP {
   public:
     // /////////// Business methods ///////////
     /**
+     * Calculate/set the envelope weights for all the matching documents
+     */
+    void calculateEnvelopeWeights() const;
+
+    /**
+     * Calculate/set the IATA/ICAO code matching weights for all
+     * the matching documents
+     */
+    void calculateCodeMatches() const;
+
+    /**
      * Calculate/set the PageRanks for all the matching documents
      */
     void calculatePageRanks() const;

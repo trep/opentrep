@@ -108,6 +108,34 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::calculateEnvelopeWeights() const {
+    // Browse the ResultHolder objects
+    for (ResultHolderList_T::const_iterator itResultHolder =
+           _resultHolderList.begin();
+         itResultHolder != _resultHolderList.end(); ++itResultHolder) {
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
+      assert (lResultHolder_ptr != NULL);
+
+      //
+      lResultHolder_ptr->calculateEnvelopeWeights();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::calculateCodeMatches() const {
+    // Browse the ResultHolder objects
+    for (ResultHolderList_T::const_iterator itResultHolder =
+           _resultHolderList.begin();
+         itResultHolder != _resultHolderList.end(); ++itResultHolder) {
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
+      assert (lResultHolder_ptr != NULL);
+
+      //
+      lResultHolder_ptr->calculateCodeMatches();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void ResultCombination::calculatePageRanks() const {
     // Browse the ResultHolder objects
     for (ResultHolderList_T::const_iterator itResultHolder =

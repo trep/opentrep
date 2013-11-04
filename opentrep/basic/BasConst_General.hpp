@@ -13,7 +13,17 @@ namespace OPENTREP {
 
 
   /**
-   * Default PageRank (e.g., 0.1% == 0.001)
+   * Default envelope percentage (e.g., 0.10% == 0.001)
+   */
+  extern const Percentage_T K_DEFAULT_ENVELOPE_PCT;
+
+  /**
+   * Default modified matching percentage (e.g., 99.999% == 0.99999)
+   */
+  extern const Percentage_T K_DEFAULT_MODIFIED_MATCHING_PCT;
+
+  /**
+   * Default PageRank (e.g., 0.10% == 0.001)
    */
   extern const Percentage_T K_DEFAULT_PAGE_RANK;
 
