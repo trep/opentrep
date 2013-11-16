@@ -68,6 +68,11 @@ namespace OPENTREP {
   public:
     // /////////// Business methods ///////////
     /**
+     * Display the Xapian matching percentages for all the matching documents.
+     */
+    void displayXapianPercentages() const;
+
+    /**
      * Calculate/set the envelope weights for all the matching documents
      */
     void calculateEnvelopeWeights() const;

@@ -13,6 +13,16 @@ namespace OPENTREP {
 
 
   /**
+   * Default size of matching set for Xapian (e.g., 30)
+   */
+  extern const NbOfMatches_T K_DEFAULT_XAPIAN_MATCHING_SET_SIZE;
+
+  /**
+   * Default full match percentage for a IATA/ICAO code (e.g., 1,000% == 100,000)
+   */
+  extern const Percentage_T K_DEFAULT_FULL_CODE_MATCH_PCT;
+
+  /**
    * Default envelope percentage (e.g., 0.10% == 0.001)
    */
   extern const Percentage_T K_DEFAULT_ENVELOPE_PCT;

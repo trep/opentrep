@@ -345,8 +345,9 @@ namespace OPENTREP {
       // Give the query object to the enquire session
       enquire.set_query (lXapianQuery);
 
-      // Get the top 20 results of the query
-      ioMatchingSet = enquire.get_mset (0, 20);
+      // Get the top K_DEFAULT_XAPIAN_MATCHING_SET_SIZE (normally, 30)
+      // results of the query
+      ioMatchingSet = enquire.get_mset (0, K_DEFAULT_XAPIAN_MATCHING_SET_SIZE);
 
       // Display the results
       int nbMatches = ioMatchingSet.size();
@@ -430,8 +431,10 @@ namespace OPENTREP {
                                   | Xapian::QueryParser::FLAG_PHRASE
                                   | Xapian::QueryParser::FLAG_LOVEHATE);
 
+      // Retrieve a maximum of K_DEFAULT_XAPIAN_MATCHING_SET_SIZE (normally,
+      // 30) entries
       enquire.set_query (lCorrectedXapianQuery);
-      ioMatchingSet = enquire.get_mset (0, 20);
+      ioMatchingSet = enquire.get_mset (0, K_DEFAULT_XAPIAN_MATCHING_SET_SIZE);
 
       // Display the results
       nbMatches = ioMatchingSet.size();
@@ -537,6 +540,36 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void Result::displayXapianPercentages() const {
+    // Browse the list of Xapian documents
+    for (DocumentList_T::const_iterator itDoc = _documentList.begin();
+         itDoc != _documentList.end(); ++itDoc) {
+      const XapianDocumentPair_T& lDocumentPair = *itDoc;
+
+      // Retrieve the Xapian document
+      const Xapian::Document& lXapianDoc = lDocumentPair.first;
+
+      // Extract the Xapian document ID
+      const Xapian::docid& lDocID = lXapianDoc.get_docid();
+
+      // Extract the envelope ID from the document data
+      const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
+
+      // Retrieve the score board for that Xapian document
+      const ScoreBoard& lScoreBoard = lDocumentPair.second;
+
+      // Extract the Xapian matching percentage
+      const Score_T& lXapianPct = lScoreBoard.getScore (ScoreType::XAPIAN_PCT);
+
+      // DEBUG
+      OPENTREP_LOG_NOTIFICATION ("        [xapian] '" << describeShortKey()
+                                 << "' with (" << lLocationKey << ", doc ID = "
+                                 << lDocID << ") matches at " << lXapianPct
+                                 << "%");
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Result::calculateEnvelopeWeights() {
     // Browse the list of Xapian documents
     for (DocumentList_T::iterator itDoc = _documentList.begin();
@@ -550,13 +583,16 @@ namespace OPENTREP {
       const Xapian::docid& lDocID = lXapianDoc.get_docid();
 
       // Extract the envelope ID from the document data
+      const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
+
+      // Extract the envelope ID from the document data
       const EnvelopeID_T& lEnvelopeIDInt = getEnvelopeID (lXapianDoc);
 
       // DEBUG
       if (lEnvelopeIDInt != 0) {
-        OPENTREP_LOG_NOTIFICATION ("        [env] '" << describeShortKey()
-                                   << "' (doc ID = " << lDocID
-                                   << ") has a non-null envelope ID ("
+        OPENTREP_LOG_NOTIFICATION ("        [env][" << describeShortKey()
+                                   << "] (" << lLocationKey << ", doc ID = "
+                                   << lDocID << ") has a non-null envelope ID ("
                                    << lEnvelopeIDInt << ") => match of 0.10%");
       }
 
@@ -641,15 +677,17 @@ namespace OPENTREP {
         if (hasCodeFullyMatched == true) {
           // DEBUG
           OPENTREP_LOG_NOTIFICATION ("        [code] '" << describeShortKey()
-                                     << "' matches the IATA/ICAO code of "
-                                     << lLocationKey << " (doc ID = "
-                                     << lDocID << ") => match of 100%");
+                                     << "' matches the IATA/ICAO code ("
+                                     << lLocationKey << ", doc ID = "
+                                     << lDocID << ") => match of "
+                                     << K_DEFAULT_FULL_CODE_MATCH_PCT << "%");
         } else {
           // DEBUG
           OPENTREP_LOG_NOTIFICATION ("        [code] '" << describeShortKey()
-                                     << "' no match with any IATA/ICAO code "
-                                     << "(doc ID = "
-                                     << lDocID << ") => match of 99.999%");
+                                     << "' does not match with the IATA/ICAO "
+                                     << "code (" << lLocationKey << ", doc ID = "
+                                     << lDocID << ") => match of "
+                                     << K_DEFAULT_MODIFIED_MATCHING_PCT << "%");
         }
       }
 
@@ -674,13 +712,17 @@ namespace OPENTREP {
       // Extract the Xapian document ID
       const Xapian::docid& lDocID = lXapianDoc.get_docid();
 
+      // Extract the envelope ID from the document data
+      const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
+
       // Extract the PageRank from the document data
       const Score_T& lPageRank = getPageRank (lXapianDoc);
 
       // DEBUG
-      OPENTREP_LOG_NOTIFICATION ("        [pr] '" << describeShortKey()
-                                 << "' (doc ID = " << lDocID
-                                 << ") has a PageRank of " << lPageRank);
+      OPENTREP_LOG_NOTIFICATION ("        [pr][" << describeShortKey()
+                                 << "] (" << lLocationKey << ", doc ID = "
+                                 << lDocID << ") has a PageRank of "
+                                 << lPageRank << "%");
 
       // Retrieve the score board for that Xapian document
       ScoreBoard& lScoreBoard = lDocumentPair.second;

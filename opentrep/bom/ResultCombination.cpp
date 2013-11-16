@@ -108,6 +108,20 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::displayXapianPercentages() const {
+    // Browse the ResultHolder objects
+    for (ResultHolderList_T::const_iterator itResultHolder =
+           _resultHolderList.begin();
+         itResultHolder != _resultHolderList.end(); ++itResultHolder) {
+      ResultHolder* lResultHolder_ptr = *itResultHolder;
+      assert (lResultHolder_ptr != NULL);
+
+      //
+      lResultHolder_ptr->displayXapianPercentages();
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void ResultCombination::calculateEnvelopeWeights() const {
     // Browse the ResultHolder objects
     for (ResultHolderList_T::const_iterator itResultHolder =

@@ -319,6 +319,11 @@ namespace OPENTREP {
                               lResultCombination, ioWordList);
 
       /**
+       * Display a summary of the Xapian matching results.
+       */
+      lResultCombination.displayXapianPercentages();
+
+      /**
        * 1.2. Calculate/set the envelope weights for all the matching documents
        */
       lResultCombination.calculateEnvelopeWeights();
