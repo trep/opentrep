@@ -304,6 +304,14 @@ namespace OPENTREP {
     static PageRank_T getPageRank (const Xapian::Document&);
 
     /**
+     * Display the Xapian matching percentages for all the matching documents.
+     *
+     * That is just a summarising step, for convenience/debug reason.
+     * No calculation is done here.
+     */
+    void displayXapianPercentages() const;
+
+    /**
      * Calculate/set the envelope weights for all the matching documents.
      *
      * Some documents have a non-null envelope, meaning that they are no

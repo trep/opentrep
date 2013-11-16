@@ -58,9 +58,12 @@ namespace OPENTREP {
     /**
      * <ul>
      *   <li>When the query string fully matches with a IATA/ICAO code,
-     *       the matching percentage is set to 100% (1.00).</li>
+     *       the matching percentage is set to 100,000% (1,000.00).</li>
      *   <li>Otherwise, it is set to 99.999% (0.99999).</li>
      * </ul>
+     * The idea is that even when the corresponding airport/city has
+     * no PageRank (hence, has got a PageRank of 0.10%), the result is 100%
+     * (1,000 x 0.001 == 1.00).
      *
      * Indeed, a trick is used to decrease the overall percentage
      * of word combinations, when compared to the whole string.
@@ -71,7 +74,7 @@ namespace OPENTREP {
       const FloatingPoint<Percentage_T> lComparablePct (oScore);
       const FloatingPoint<Percentage_T> lCodeFullMatchingPct (1.0);
       if (lComparablePct.AlmostEquals (lCodeFullMatchingPct) == true) {
-        oScore = 100.0;
+        oScore = K_DEFAULT_FULL_CODE_MATCH_PCT;
 
       } else {
         // Normally, K_DEFAULT_MODIFIED_MATCHING_PCT == 99.999.
