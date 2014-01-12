@@ -1207,6 +1207,13 @@ namespace OPENTREP {
 
     /**
      * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
+     * When the location is not referenced (e.g., by any schedule),
+     * its PageRank/importance should be null (equal to zero).
+     * But, as in some circonstances, it is required to have a
+     * non-zero PageRank/importance, it is set to a pre-set value,
+     * i.e., K_DEFAULT_PAGE_RANK (e.g., 0.1% == 0.001). Hence, if the
+     * PageRank/importance value is equal to K_DEFAULT_PAGE_RANK,
+     * it can be considered as to be equivalent to zero.
      */
     PageRank_T _pageRank;
 

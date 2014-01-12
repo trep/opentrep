@@ -37,6 +37,7 @@ namespace OPENTREP {
      * indexing, spelling, stemming, synonyms, etc).
      */
     typedef std::set<std::string> StringSet_T;
+    typedef std::map<const Weight_T, StringSet_T> TermSetMap_T;
 
 
   public:
@@ -460,11 +461,18 @@ namespace OPENTREP {
     }
 
     /**
-     * Get the (STL) set of terms (for the Xapian index).
+     * Get the (STL) map of term set (for the Xapian index).
      */
-    const StringSet_T& getTermSet() const {
-      return _termSet;
+    const TermSetMap_T& getTermSetMap() const {
+      return _termSetMap;
     }
+
+    /**
+     * Get the (STL) set of terms (for the Xapian index for the given weight).
+     *
+     * @param const Weight_T& Weight with which the terms should be indexed.
+     */
+    StringSet_T getTermSet (const Weight_T&) const;
 
     /**
      * Get the (STL) set of spelling terms (for the Xapian spelling dictionary).
@@ -863,6 +871,18 @@ namespace OPENTREP {
       _docID = iDocID;
     }
 
+    /**
+     * Set the (STL) set of terms (for the Xapian index for the given weight).
+     *
+     * If no set of terms existed for the given weight, it is inserted
+     * in the (STL) map.
+     * Otherwise, the existing set of terms is just replaced.
+     *
+     * @param const Weight_T& Weight with which the terms should be indexed.
+     * @param const StringSet_T& Set of terms (to be indexed by Xapian).
+     */
+    bool setTermSet (const Weight_T&, const StringSet_T&);
+
     
   public:
     // ////////// Setters in underlying names ////////
@@ -903,11 +923,13 @@ namespace OPENTREP {
     const Location& completeLocation();
 
     /**
-     * Add the given name to the Xapian index and spelling dictionary.
+     * Add the given name to the Xapian index with the given weight,
+     * and add that name to the spelling dictionary.
      * Tokenise and re-assemble the given name, so as to replace all the
      * punctuations and other separators by mere spaces.
      * For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
      *
+     * @param const Weight_T& The weight with which the terms should be indexed
      * @param const LocationName_T& Name of the POR (point of reference)
      * @param const FeatureCode_T& Geonames feature code
      * @param const CityUTFName_T& UTF8 name of the served city
@@ -926,7 +948,8 @@ namespace OPENTREP {
      * @param const ContinentName_T& Name of the continent of the POR
      * @param const OTransliterator& Unicode transliterator
      */
-    void addNameToXapianSets (const LocationName_T&, const FeatureCode_T&,
+    void addNameToXapianSets (const Weight_T&,
+                              const LocationName_T&, const FeatureCode_T&,
                               const CityUTFName_T&, const CityASCIIName_T&,
                               const Admin1UTFName_T&, const Admin1ASCIIName_T&,
                               const Admin2UTFName_T&, const Admin2ASCIIName_T&,
@@ -943,14 +966,17 @@ namespace OPENTREP {
     void buildIndexSets (const OTransliterator&);
 
     /**
-     * Add the given name to the Xapian index. Derive a list of feature names
+     * Add the given name to the Xapian index with the given weight.
+     * Derive a list of feature names
      * from the feature code. See the Location::getFeatureList() method
      * for more information.
      *
+     * @param const Weight_T& The weight with which the terms should be indexed
      * @param const std::string& Name of the POR (point of reference)
      * @param const FeatureCode_T& Geonames feature code
      */
-    void addNameToXapianSets(const std::string& iBaseName, const FeatureCode_T&);
+    void addNameToXapianSets (const Weight_T&, const std::string& iBaseName,
+                              const FeatureCode_T&);
 
 
   public:
@@ -1087,10 +1113,11 @@ namespace OPENTREP {
     PlaceOrderedList_T _alternatePlaceList;
 
     /**
-     * Set of unique terms (strings), which serve as indexing the
-     * Xapian document corresponding to the current Place object.
+     * Set of unique terms (strings) and associated weights, which serve
+     * as indexing the Xapian document corresponding to the current
+     * Place object.
      */
-    StringSet_T _termSet;
+    TermSetMap_T _termSetMap;
 
     /**
      * Set of unique terms (strings), which serve as basis for right

@@ -78,7 +78,17 @@ namespace OPENTREP {
   /**
    * Default size of matching set for Xapian (e.g., 30)
    */
-  const NbOfMatches_T K_DEFAULT_XAPIAN_MATCHING_SET_SIZE = 30;
+  const NbOfMatches_T K_DEFAULT_XAPIAN_MATCHING_SET_SIZE (30);
+
+  /**
+   * Default indexing weight (e.g., 100)
+   */
+  const Weight_T K_DEFAULT_INDEXING_WEIGHT (100);
+
+  /**
+   * Default minimum indexing weight (e.g., 1)
+   */
+  const Weight_T K_DEFAULT_INDEXING_MINIMUM_WEIGHT (1);
 
   /**
    * Default full match percentage for a IATA/ICAO code (e.g., 1,000% == 100,000)

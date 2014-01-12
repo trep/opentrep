@@ -29,22 +29,34 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void addToXapian (const Place& iPlace, Xapian::Document& ioDocument,
                     Xapian::WritableDatabase& ioDatabase) {
-
-    // Build a Xapian TermGenerator:
-    // http://xapian.org/docs/apidoc/html/classXapian_1_1TermGenerator.html
-    // It is an helper to insert terms into the Xapian index for the given
-    // document.
+    /**
+     * Build a Xapian TermGenerator:
+     * http://xapian.org/docs/apidoc/html/classXapian_1_1TermGenerator.html
+     * It is an helper to insert terms into the Xapian index for the given
+     * document.
+     */
     Xapian::TermGenerator lTermGenerator;
     lTermGenerator.set_database (ioDatabase);
     lTermGenerator.set_document (ioDocument);
 
-    const Place::StringSet_T& lTermSet = iPlace.getTermSet();
-    for (Place::StringSet_T::const_iterator itString = lTermSet.begin();
-         itString != lTermSet.end(); ++itString) {
-      const std::string& lString = *itString;
-      lTermGenerator.index_text (lString);
+    const Place::TermSetMap_T& lTermSetMap = iPlace.getTermSetMap();
+    for (Place::TermSetMap_T::const_iterator itStringSet = lTermSetMap.begin();
+         itStringSet != lTermSetMap.end(); ++itStringSet) {
+      // Retrieve the weight
+      const Weight_T& lWeight = itStringSet->first;
+      const Xapian::termcount lWDFInc =
+        static_cast<const Xapian::termcount> (lWeight);
+
+      // Retrieve the set of strings for that weight
+      const Place::StringSet_T& lTermSet = itStringSet->second;
+      for (Place::StringSet_T::const_iterator itString = lTermSet.begin();
+           itString != lTermSet.end(); ++itString) {
+        const std::string& lString = *itString;
+        lTermGenerator.index_text (lString, lWDFInc);
+      }
     }
 
+    // Spelling terms
     const Place::StringSet_T& lSpellingSet = iPlace.getSpellingSet();
     for (Place::StringSet_T::const_iterator itTerm = lSpellingSet.begin();
          itTerm != lSpellingSet.end(); ++itTerm) {

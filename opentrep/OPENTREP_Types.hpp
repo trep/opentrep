@@ -433,6 +433,11 @@ namespace OPENTREP {
 
 
   /**
+   * Weight when indexing terms of a Xapian document.
+   */
+  typedef unsigned short Weight_T;
+
+  /**
    * Travel search query.
    */
   typedef std::string TravelQuery_T;
