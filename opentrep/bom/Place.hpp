@@ -876,12 +876,13 @@ namespace OPENTREP {
      *
      * If no set of terms existed for the given weight, it is inserted
      * in the (STL) map.
-     * Otherwise, the existing set of terms is just replaced.
+     * Otherwise, the existing set of terms is just added to the existing
+     * set of terms.
      *
      * @param const Weight_T& Weight with which the terms should be indexed.
      * @param const StringSet_T& Set of terms (to be indexed by Xapian).
      */
-    bool setTermSet (const Weight_T&, const StringSet_T&);
+    bool addTermSet (const Weight_T&, const StringSet_T&);
 
     
   public:

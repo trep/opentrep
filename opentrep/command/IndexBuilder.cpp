@@ -39,6 +39,9 @@ namespace OPENTREP {
     lTermGenerator.set_database (ioDatabase);
     lTermGenerator.set_document (ioDocument);
 
+    // DEBUG
+    // OPENTREP_LOG_DEBUG ("Indexing for " << iPlace.describeKey());
+
     const Place::TermSetMap_T& lTermSetMap = iPlace.getTermSetMap();
     for (Place::TermSetMap_T::const_iterator itStringSet = lTermSetMap.begin();
          itStringSet != lTermSetMap.end(); ++itStringSet) {
@@ -53,6 +56,9 @@ namespace OPENTREP {
            itString != lTermSet.end(); ++itString) {
         const std::string& lString = *itString;
         lTermGenerator.index_text (lString, lWDFInc);
+
+        // DEBUG
+        //OPENTREP_LOG_DEBUG("[" << lWeight << "/" << lWDFInc << "] "<< lString);
       }
     }
 

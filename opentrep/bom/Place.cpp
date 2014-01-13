@@ -158,7 +158,7 @@ namespace OPENTREP {
     // Xapian index for the current place/POR (point of reference)
     oStr << "[index] ";
     short idx_map = 0;
-    for (Place::TermSetMap_T::const_iterator itStringSet = _termSetMap.begin();
+    for (TermSetMap_T::const_iterator itStringSet = _termSetMap.begin();
          itStringSet != _termSetMap.end(); ++itStringSet, ++idx_map) {
       if (idx_map != 0) {
         oStr << " - ";
@@ -170,7 +170,7 @@ namespace OPENTREP {
       // Retrieve and browse the set of strings for that weight
       const StringSet_T& lStringSet = itStringSet->second;
       short idx_set = 0;
-      for (Place::StringSet_T::const_iterator itString = lStringSet.begin();
+      for (StringSet_T::const_iterator itString = lStringSet.begin();
            itString != lStringSet.end(); ++itString, ++idx_set) {
         if (idx_set != 0) {
           oStr << ", ";
@@ -183,7 +183,7 @@ namespace OPENTREP {
     // Xapian spelling dictionary
     oStr << "; [spelling] ";
     short idx = 0;
-    for (Place::StringSet_T::const_iterator itTerm = _spellingSet.begin();
+    for (StringSet_T::const_iterator itTerm = _spellingSet.begin();
          itTerm != _spellingSet.end(); ++itTerm, ++idx) {
       if (idx != 0) {
         oStr << ", ";
@@ -237,11 +237,11 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool Place::setTermSet (const Weight_T& iWeight, const StringSet_T& iTermSet) {
+  bool Place::addTermSet (const Weight_T& iWeight, const StringSet_T& iTermSet) {
     bool hasInsertBeenSuccessful = true;
 
     // If existing, retrieve the string set for that weight.
-    TermSetMap_T::const_iterator itTermSet = _termSetMap.find (iWeight);
+    TermSetMap_T::iterator itTermSet = _termSetMap.find (iWeight);
 
     if (itTermSet == _termSetMap.end()) {
       // If there was no string set for that weight yet, insert it
@@ -252,8 +252,14 @@ namespace OPENTREP {
       assert (hasInsertBeenSuccessful == true);
 
     } else {
-      // Otherwise, replace the existing string set
-      _termSetMap[iWeight] = iTermSet;
+      // Otherwise, add the given string set, string by string,
+      // to the existing one
+      StringSet_T& lStringSet = itTermSet->second;
+      for (StringSet_T::const_iterator itString = iTermSet.begin();
+           itString != iTermSet.end(); ++itString) {
+        const std::string& lString = *itString;
+        lStringSet.insert (lString);
+      }
     }
 
     return hasInsertBeenSuccessful;
@@ -283,7 +289,7 @@ namespace OPENTREP {
     }
 
     // Insert (or replace) the newly created (or just altered) string set
-    setTermSet (iWeight, lTermSet);
+    addTermSet (iWeight, lTermSet);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -432,7 +438,7 @@ namespace OPENTREP {
     _spellingSet.insert (lNormalisedCommonName);
 
     // Insert (or replace) the newly created (or just altered) string set
-    setTermSet (iWeight, lTermSet);
+    addTermSet (iWeight, lTermSet);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -450,10 +456,12 @@ namespace OPENTREP {
 
     // Retrieve the PageRank
     const PageRank_T& lPageRankDouble = _location.getPageRank();
-    const Weight_T lPageRank =
-      (lPageRankDouble == K_DEFAULT_PAGE_RANK)?
-      K_DEFAULT_INDEXING_MINIMUM_WEIGHT:
-      static_cast<const Weight_T> (lPageRankDouble + 100.0);
+    //const Weight_T lPageRank =
+    //  (lPageRankDouble == K_DEFAULT_PAGE_RANK)?
+    //  K_DEFAULT_INDEXING_EXTRA_WEIGHT:
+    //  static_cast<const Weight_T> (lPageRankDouble);
+    const Weight_T lPageRank = K_DEFAULT_INDEXING_EXTRA_WEIGHT
+      + static_cast<const Weight_T> (lPageRankDouble / 5.0);
 
     // Retrieve the string set for the given weight, if existing
     // (empty otherwise)
@@ -461,7 +469,7 @@ namespace OPENTREP {
 
     // Retrieve the string set for the given weight, if existing
     // (empty otherwise)
-    StringSet_T lStdTermSet = getTermSet (K_DEFAULT_INDEXING_WEIGHT);
+    StringSet_T lStdTermSet = getTermSet (K_DEFAULT_INDEXING_STD_WEIGHT);
 
     // Retrieve the feature code
     const FeatureCode_T& lFeatureCode = _location.getFeatureCode();
@@ -602,7 +610,7 @@ namespace OPENTREP {
     // in ASCII).
     const std::string& lCommonName = _location.getCommonName();
     if (lCommonName.empty() == false) {
-      addNameToXapianSets (K_DEFAULT_INDEXING_WEIGHT,
+      addNameToXapianSets (K_DEFAULT_INDEXING_STD_WEIGHT,
                            LocationName_T (lCommonName),
                            FeatureCode_T (lFeatureCode),
                            CityUTFName_T (lCityUtfName),
@@ -620,7 +628,7 @@ namespace OPENTREP {
     // Add the ASCII name (not necessarily in English).
     const std::string& lASCIIName = _location.getAsciiName();
     if (lASCIIName.empty() == false) {
-      addNameToXapianSets (K_DEFAULT_INDEXING_WEIGHT,
+      addNameToXapianSets (K_DEFAULT_INDEXING_STD_WEIGHT,
                            LocationName_T (lASCIIName),
                            FeatureCode_T (lFeatureCode),
                            CityUTFName_T (lCityUtfName),
@@ -681,10 +689,10 @@ namespace OPENTREP {
     }
 
     // Insert (or replace) the newly created (or just altered) string set
-    setTermSet (lPageRank, lWeightedTermSet);
+    addTermSet (lPageRank, lWeightedTermSet);
 
     // Insert (or replace) the newly created (or just altered) string set
-    setTermSet (K_DEFAULT_INDEXING_WEIGHT, lStdTermSet);
+    addTermSet (K_DEFAULT_INDEXING_STD_WEIGHT, lStdTermSet);
   }
 
   // //////////////////////////////////////////////////////////////////////
