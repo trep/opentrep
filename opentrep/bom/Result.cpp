@@ -103,10 +103,10 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const Xapian::Document& Result::
-  getDocument (const Xapian::docid& iDocID) const {
-    // Retrieve the Xapian document corresponding to the doc ID of the
-    // best matching document
+  const XapianDocumentPair_T& Result::
+  getDocumentPair (const Xapian::docid& iDocID) const {
+    // Retrieve the Xapian document and associated ScoreBoard structure
+    // corresponding to the doc ID of the best matching document
     DocumentMap_T::const_iterator itDoc = _documentMap.find (iDocID);
 
     if (itDoc == _documentMap.end()) {
@@ -117,7 +117,20 @@ namespace OPENTREP {
     assert (itDoc != _documentMap.end());
 
     //
-    const XapianDocumentPair_T& lDocumentPair = itDoc->second;
+    const XapianDocumentPair_T& oDocumentPair = itDoc->second;
+
+    //
+    return oDocumentPair;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  const Xapian::Document& Result::
+  getDocument (const Xapian::docid& iDocID) const {
+    // First, retrieve the pair made of Xapian document and associated
+    // ScoreBoard structure
+    const XapianDocumentPair_T& lDocumentPair = getDocumentPair (iDocID);
+
+    // Then, take the Xapian document (and leave the ScoreBoard out)
     const Xapian::Document& oXapianDocument = lDocumentPair.first;
 
     //
@@ -570,6 +583,28 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void Result::setScoreOnDocMap (const Xapian::docid& iDocID,
+                                 const ScoreType& iType, const Score_T& iScore) {
+    // Retrieve the Xapian document and associated ScoreBoard structure
+    // corresponding to the given doc ID
+    DocumentMap_T::iterator itDoc = _documentMap.find (iDocID);
+
+    if (itDoc == _documentMap.end()) {
+      OPENTREP_LOG_ERROR ("The Xapian document (ID = " << iDocID
+                          << ") can not be found in the Result object "
+                          << describeKey());
+    }
+    assert (itDoc != _documentMap.end());
+
+    // Retrieve the associated ScoreBoard structure
+    XapianDocumentPair_T& lXapianDocPair = itDoc->second;
+    ScoreBoard& lScoreBoard = lXapianDocPair.second;
+
+    // Update the score/weight
+    lScoreBoard.setScore (iType, iScore);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void Result::calculateEnvelopeWeights() {
     // Browse the list of Xapian documents
     for (DocumentList_T::iterator itDoc = _documentList.begin();
@@ -602,8 +637,9 @@ namespace OPENTREP {
       // Retrieve the score board for that Xapian document
       ScoreBoard& lScoreBoard = lDocumentPair.second;
 
-      // Store the PageRank weight
+      // Store the envelope-related weight
       lScoreBoard.setScore (ScoreType::ENV_ID, lEnvelopeID);
+      setScoreOnDocMap (lDocID, ScoreType::ENV_ID, lEnvelopeID);
     }
   }
 
@@ -694,8 +730,9 @@ namespace OPENTREP {
       // Retrieve the score board for that Xapian document
       ScoreBoard& lScoreBoard = lDocumentPair.second;
 
-      // Store the PageRank weight
+      // Store the IATA/ICAO code match percentage/weight
       lScoreBoard.setScore (ScoreType::CODE_FULL_MATCH, lCodeMatchPct);
+      setScoreOnDocMap (lDocID, ScoreType::CODE_FULL_MATCH, lCodeMatchPct);
     }
   }
 
@@ -729,6 +766,7 @@ namespace OPENTREP {
 
       // Store the PageRank weight
       lScoreBoard.setScore (ScoreType::PAGE_RANK, lPageRank);
+      setScoreOnDocMap (lDocID, ScoreType::PAGE_RANK, lPageRank);
     }
   }
 
@@ -791,14 +829,17 @@ namespace OPENTREP {
     if (_hasFullTextMatched == true) {
       // Retrieve the primary key (IATA, location type, Geonames ID) of
       // the place corresponding to the document
-      const Xapian::Document& lXapianDoc = getDocument (lBestDocID);
+      const XapianDocumentPair_T& lXapianDocPair = getDocumentPair (lBestDocID);
+      const Xapian::Document& lXapianDoc = lXapianDocPair.first;
+      const ScoreBoard& lScoreBoard = lXapianDocPair.second;
       const LocationKey& lLocationKey = getPrimaryKey (lXapianDoc);
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("        [pct] '" << describeShortKey()
                           << "' matches at " << lMaxPercentage
                           << "% for " << lLocationKey << " (doc ID = "
-                          << lBestDocID << ")");
+                          << lBestDocID << "). Score calculation: "
+                          << lScoreBoard.describe());
 
     } else {
       /**

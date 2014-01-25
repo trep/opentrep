@@ -102,9 +102,15 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the Xapian document and associated score-board corresponding
+     * to the given document ID.
+     */
+    const XapianDocumentPair_T& getDocumentPair (const Xapian::docid&) const;
+
+    /**
      * Get the Xapian document corresponding to the given document ID.
      */
-    const Xapian::Document& getDocument (const Xapian::docid& iDocID) const;
+    const Xapian::Document& getDocument (const Xapian::docid&) const;
 
     /**
      * Get the Xapian ID of the best matching document.
@@ -310,6 +316,17 @@ namespace OPENTREP {
      * No calculation is done here.
      */
     void displayXapianPercentages() const;
+
+    /**
+     * Update the ScoreBoard structure, itself associated to the Xapian document
+     * corresponding to the given document ID, with the given score.
+     *
+     * @param const Xapian::docid& Document ID for the Xapian document
+     * @param const ScoreType& Score type
+     * @param const Score_T& Score/weight value
+     */
+    void setScoreOnDocMap (const Xapian::docid&,
+                           const ScoreType&, const Score_T&);
 
     /**
      * Calculate/set the envelope weights for all the matching documents.
