@@ -91,25 +91,32 @@ namespace OPENTREP {
   const Weight_T K_DEFAULT_INDEXING_EXTRA_WEIGHT (2);
 
   /**
-   * Default full match percentage for a IATA/ICAO code (e.g.,
-   * 100,000% == 10,000,000)
-   */
-  const Percentage_T K_DEFAULT_FULL_CODE_MATCH_PCT (100000.00);
-
-  /**
-   * Default envelope percentage (e.g., 0.10% == 0.001)
-   */
-  const Percentage_T K_DEFAULT_ENVELOPE_PCT (0.10);
-
-  /**
    * Default modified matching percentage (e.g., 99.999% == 0.99999)
    */
-  const Percentage_T K_DEFAULT_MODIFIED_MATCHING_PCT (99.999);
+  const Percentage_T K_DEFAULT_MODIFIED_MATCHING_PCT (100.0);
 
   /**
    * Default PageRank (e.g., 0.10% == 0.001)
    */
   const Percentage_T K_DEFAULT_PAGE_RANK (0.10);
+
+  /**
+   * Default envelope percentage (e.g., 0.10% == 0.001).
+   * Usually equal to K_DEFAULT_PAGE_RANK.
+   */
+  const Percentage_T K_DEFAULT_ENVELOPE_PCT (K_DEFAULT_PAGE_RANK);
+
+  /**
+   * Default full match percentage for a IATA/ICAO code (e.g.,
+   * 11,000,000% == 110,000 == 110 / 0.001).
+   * Usually equal to 100 * 1.1 / (K_DEFAULT_PAGE_RANK / 100).
+   */
+  const Percentage_T K_DEFAULT_FULL_CODE_MATCH_PCT (11000 / K_DEFAULT_PAGE_RANK);
+
+  /**
+   * Default attenuation factor (e.g., 34.0)
+   */
+  const Percentage_T K_DEFAULT_ATTENUATION_FCTR (34.0);
 
   /**
    * Default number of characters by allowable spelling error unit

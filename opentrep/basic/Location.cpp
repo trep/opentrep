@@ -357,6 +357,7 @@ namespace OPENTREP {
     if (iFeatureCode == "AIRP" || iFeatureCode == "AIRF"
         || iFeatureCode == "AIRQ") {
       oList.push_back (FeatureName_T ("airport"));
+      oList.push_back (FeatureName_T ("apt"));
       oList.push_back (FeatureName_T ("airdrome"));
       oList.push_back (FeatureName_T ("aerodrome"));
       oList.push_back (FeatureName_T ("airfield"));
@@ -368,6 +369,7 @@ namespace OPENTREP {
 
     } else if (iFeatureCode == "AIRB") {
       oList.push_back (FeatureName_T ("airport"));
+      oList.push_back (FeatureName_T ("apt"));
       oList.push_back (FeatureName_T ("airbase"));
       oList.push_back (FeatureName_T ("air base"));
       oList.push_back (FeatureName_T ("ab"));
@@ -375,6 +377,7 @@ namespace OPENTREP {
 
     } else if (iFeatureCode == "AIRS") {
       oList.push_back (FeatureName_T ("airport"));
+      oList.push_back (FeatureName_T ("apt"));
       oList.push_back (FeatureName_T ("spb"));
       oList.push_back (FeatureName_T ("sea plane base"));
       oList.push_back (FeatureName_T ("sea plane"));
@@ -384,7 +387,9 @@ namespace OPENTREP {
 
     } else if (iFeatureCode == "AIRH") {
       oList.push_back (FeatureName_T ("airport"));
+      oList.push_back (FeatureName_T ("apt"));
       oList.push_back (FeatureName_T ("heliport"));
+      oList.push_back (FeatureName_T ("hpt"));
 
     } else if (iFeatureCode == "RSTN") {
       oList.push_back (FeatureName_T ("railway"));
@@ -399,6 +404,7 @@ namespace OPENTREP {
       oList.push_back (FeatureName_T ("bus"));
       oList.push_back (FeatureName_T ("autobus"));
       oList.push_back (FeatureName_T ("station"));
+      oList.push_back (FeatureName_T ("stn"));
       oList.push_back (FeatureName_T ("stop"));
       oList.push_back (FeatureName_T ("bus station"));
       oList.push_back (FeatureName_T ("bus stop"));
@@ -408,6 +414,7 @@ namespace OPENTREP {
     } else if (iFeatureCode == "MTRO") {
       oList.push_back (FeatureName_T ("metro"));
       oList.push_back (FeatureName_T ("station"));
+      oList.push_back (FeatureName_T ("stn"));
       oList.push_back (FeatureName_T ("stop"));
       oList.push_back (FeatureName_T ("metro station"));
       oList.push_back (FeatureName_T ("metro stop"));
@@ -417,14 +424,17 @@ namespace OPENTREP {
       oList.push_back (FeatureName_T ("ferry"));
       oList.push_back (FeatureName_T ("maritime"));
       oList.push_back (FeatureName_T ("port"));
+      oList.push_back (FeatureName_T ("prt"));
       oList.push_back (FeatureName_T ("harbor"));
       oList.push_back (FeatureName_T ("harbour"));
+      oList.push_back (FeatureName_T ("hbr"));
       oList.push_back (FeatureName_T ("ferry port"));
       oList.push_back (FeatureName_T ("maritime port"));
 
     } else if (l3CharFeatCode == "PPL" || l3CharFeatCode == "ADM"
                || iFeatureCode == "LCTY") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("town"));
       oList.push_back (FeatureName_T ("downtown"));
       oList.push_back (FeatureName_T ("down town"));
@@ -433,6 +443,7 @@ namespace OPENTREP {
 
     } else if (l3CharFeatCode == "PCL" || iFeatureCode == "AREA") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("country"));
       oList.push_back (FeatureName_T ("town"));
       oList.push_back (FeatureName_T ("downtown"));
@@ -444,69 +455,96 @@ namespace OPENTREP {
 
     } else if (iFeatureCode == "MT") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("mount"));
+      oList.push_back (FeatureName_T ("mt"));
 
     } else if (iFeatureCode == "PLAT") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("plateau"));
 
     } else if (iFeatureCode == "OAS") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("oasis"));
 
     } else if (iFeatureCode == "PRK") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("park"));
+      oList.push_back (FeatureName_T ("prk"));
 
     } else if (l3CharFeatCode == "RES") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("reserve"));
+      oList.push_back (FeatureName_T ("rsv"));
 
     } else if (iFeatureCode == "CMP") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("camp"));
+      oList.push_back (FeatureName_T ("cmp"));
 
     } else if (l2CharFeatCode == "MN") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("mine"));
 
     } else if (iFeatureCode == "HMSD") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("homestead"));
 
     } else if (l2CharFeatCode == "RK") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("rock"));
 
     } else if (iFeatureCode == "PT") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("point"));
+      oList.push_back (FeatureName_T ("pt"));
 
     } else if (l3CharFeatCode == "RSV") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("reservoir"));
+      oList.push_back (FeatureName_T ("rsv"));
 
     } else if (iFeatureCode == "LK") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("lake"));
+      oList.push_back (FeatureName_T ("lk"));
 
     } else if (iFeatureCode == "BAY") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("bay"));
 
     } else if (iFeatureCode == "CHN") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("channel"));
+      oList.push_back (FeatureName_T ("chn"));
 
     } else if (l3CharFeatCode == "ISL") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("island"));
+      oList.push_back (FeatureName_T ("isl"));
       oList.push_back (FeatureName_T ("country"));
 
     } else if (iFeatureCode == "ATOL") {
       oList.push_back (FeatureName_T ("city"));
+      oList.push_back (FeatureName_T ("cty"));
       oList.push_back (FeatureName_T ("island"));
+      oList.push_back (FeatureName_T ("isl"));
       oList.push_back (FeatureName_T ("atoll"));
+      oList.push_back (FeatureName_T ("atl"));
       oList.push_back (FeatureName_T ("country"));
     }
 
