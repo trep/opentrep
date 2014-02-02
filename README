@@ -7,7 +7,9 @@ implementation, for parsing travel-focused requests (e.g.,
 
 OpenTREP uses Xapian (http://www.xapian.org) for the Information Retrieval part,
 on freely available travel-related data (e.g., country names and codes,
-city names and codes, airline names and codes, etc.).
+city names and codes, airline names and codes, etc.), mainly to be found
+in the OpenTravelData project (http://github.com/opentraveldata/optd):
+http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
 
 OpenTREP exposes a simple, clean and object-oriented, API. For instance,
 the static Parse() method takes, as input, a string containing the travel
@@ -30,6 +32,12 @@ OpenTREP makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the
 Boost (C++ Standard Extensions: http://www.boost.org) library is used.
 
+Note that OpenTREP currently only recognises points of reference (POR),
+as to be found in the ori_por_public.csv file:
+http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
+A good complementary tool is GeoBase (http://opentraveldata.github.io/geobases/),
+a Python-based software able to access to any travel-related data source.
+
 
 Getting and installing from the Fedora/CentOS/RedHat distribution:
 ------------------------------------------------------------------
@@ -38,8 +46,8 @@ yum -y install opentrep-devel opentrep-doc
 
 You can also get the RPM packages (which may work on Linux
 distributions like Novel Suse and Mandriva) from the Fedora repository
-(e.g., for Fedora 17, 
-http://fr2.rpmfind.net/linux/fedora/releases/17/Everything/)
+(e.g., for Fedora 21,
+http://fr2.rpmfind.net/linux/fedora/releases/21/Everything/)
 
 
 Building the library and test binary from Git repository:
@@ -56,6 +64,7 @@ but names may vary according to distributions):
   * boost-devel / libboost-dev
   * python-devel / python-dev
   * gettext-devel / gettext-dev
+  * sqlite3-devel / libsqlite3-dev
   * doxygen
   * tetex-latex (optional)
   * rpm-build (optional)
@@ -117,5 +126,5 @@ midori http://localhost:8000/search?q=rio de janero reykyavik sna francicso
 
 
 ----
-Denis Arnaud (April 2013)
+Denis Arnaud (February 2014)
 
