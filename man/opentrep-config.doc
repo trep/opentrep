@@ -52,11 +52,11 @@ macros, that are included with \e Opentrep, for GNU autoconf.
     Show where the PDF documentation is located.
 
 \section sec_see_also SEE ALSO
- \b opentrep-indexer(1), \b opentrep-searcher(1), \b boost-config(1), \b opentrep-library(3)
+ \b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b boost-config(1), \b opentrep-library(3)
 
 \section sec_copyright COPYRIGHT
 
-Copyright © 2009-2011 Denis Arnaud
+Copyright © 2009-2014 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
