@@ -7,6 +7,7 @@
 // Xapian
 #include <xapian.h>
 // OpenTrep
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/bom/StringSet.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/bom/ResultHolder.hpp>
@@ -180,6 +181,17 @@ namespace OPENTREP {
 
       // Take into account the current weight into the total
       oCombinedPercentage *= lPercentage / 100.0;
+    }
+
+    /**
+     * Weigh down a set of strings when compared to the single string.
+     * For instance, the {"paris", "texas"} combination is weighed down
+     * (by K_DEFAULT_ATTENUATION_FCTR, usually equal to 34), so that
+     * it is ranked less than "paris texas".
+     */
+    unsigned short nbOfResults = _resultList.size();
+    if (nbOfResults > 1) {
+      oCombinedPercentage /= std::pow (K_DEFAULT_ATTENUATION_FCTR, nbOfResults);
     }
 
     // DEBUG

@@ -203,7 +203,8 @@ namespace OPENTREP {
       ResultHolder* lResultHolder_ptr = *itResultHolder;
       assert (lResultHolder_ptr != NULL);
 
-      // Retrieve the weight from the full-text matching process
+      // Retrieve the weight from the all the matching processes: full-text,
+      // envelope ID, IATA/ICAO code, heuristic PageRank.
       const Percentage_T& lMatchingPercentage =
         lResultHolder_ptr->getCombinedWeight();
 

@@ -71,7 +71,7 @@ namespace OPENTREP {
     _mainPlace (iPlace._mainPlace),
     _location (iPlace._location),
     _docID (iPlace._docID),
-    _termSet (iPlace._termSet), _spellingSet (iPlace._spellingSet),
+    _termSetMap (iPlace._termSetMap), _spellingSet (iPlace._spellingSet),
     _stemmingSet (iPlace._stemmingSet), _synonymSet (iPlace._synonymSet) {
   }
   
@@ -157,20 +157,33 @@ namespace OPENTREP {
 
     // Xapian index for the current place/POR (point of reference)
     oStr << "[index] ";
-    short idx = 0;
-    for (Place::StringSet_T::const_iterator itString = _termSet.begin();
-         itString != _termSet.end(); ++itString, ++idx) {
-      if (idx != 0) {
-        oStr << ", ";
+    short idx_map = 0;
+    for (TermSetMap_T::const_iterator itStringSet = _termSetMap.begin();
+         itStringSet != _termSetMap.end(); ++itStringSet, ++idx_map) {
+      if (idx_map != 0) {
+        oStr << " - ";
       }
-      const std::string& lString = *itString;
-      oStr << lString;
+      // Retrieve the weight and display it
+      const Weight_T& lWeight = itStringSet->first;
+      oStr << "[" << lWeight << "] ";
+
+      // Retrieve and browse the set of strings for that weight
+      const StringSet_T& lStringSet = itStringSet->second;
+      short idx_set = 0;
+      for (StringSet_T::const_iterator itString = lStringSet.begin();
+           itString != lStringSet.end(); ++itString, ++idx_set) {
+        if (idx_set != 0) {
+          oStr << ", ";
+        }
+        const std::string& lString = *itString;
+        oStr << lString;
+      }
     }
 
     // Xapian spelling dictionary
     oStr << "; [spelling] ";
-    idx = 0;
-    for (Place::StringSet_T::const_iterator itTerm = _spellingSet.begin();
+    short idx = 0;
+    for (StringSet_T::const_iterator itTerm = _spellingSet.begin();
          itTerm != _spellingSet.end(); ++itTerm, ++idx) {
       if (idx != 0) {
         oStr << ", ";
@@ -203,30 +216,85 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void Place::resetIndexSets() {
-    _termSet.clear();
+    _termSetMap.clear();
     _spellingSet.clear();
     _stemmingSet.clear();
     _synonymSet.clear();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void Place::addNameToXapianSets (const std::string& iBaseName,
+  Place::StringSet_T Place::getTermSet (const Weight_T& iWeight) const {
+    // Initialise an empty string set
+    StringSet_T oTermSet;
+
+    // If existing, retrieve the string set for that weight.
+    TermSetMap_T::const_iterator itTermSet = _termSetMap.find (iWeight);
+    if (itTermSet != _termSetMap.end()) {
+      oTermSet = itTermSet->second;
+    }
+
+    return oTermSet;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool Place::addTermSet (const Weight_T& iWeight, const StringSet_T& iTermSet) {
+    bool hasInsertBeenSuccessful = true;
+
+    // If existing, retrieve the string set for that weight.
+    TermSetMap_T::iterator itTermSet = _termSetMap.find (iWeight);
+
+    if (itTermSet == _termSetMap.end()) {
+      // If there was no string set for that weight yet, insert it
+      hasInsertBeenSuccessful =
+        _termSetMap.insert (TermSetMap_T::value_type (iWeight, iTermSet)).second;
+
+      // Sanity check
+      assert (hasInsertBeenSuccessful == true);
+
+    } else {
+      // Otherwise, add the given string set, string by string,
+      // to the existing one
+      StringSet_T& lStringSet = itTermSet->second;
+      for (StringSet_T::const_iterator itString = iTermSet.begin();
+           itString != iTermSet.end(); ++itString) {
+        const std::string& lString = *itString;
+        lStringSet.insert (lString);
+      }
+    }
+
+    return hasInsertBeenSuccessful;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void Place::addNameToXapianSets (const Weight_T& iWeight,
+                                   const std::string& iBaseName,
                                    const FeatureCode_T& iFeatureCode) {
-    // Derive the list of feature names from the feature code. For instance,
-    // the 'AIRP' feature code provides the ('airport', 'airdrome', 'aerodrome',
-    // 'airfield', 'air field', 'airstrip', 'air strip', 'airbase', 'air base')
-    // list.
+    // Retrieve the string set for the given weight, if existing
+    // (empty otherwise)
+    StringSet_T lTermSet = getTermSet (iWeight);
+
+    /**
+     * Derive the list of feature names from the feature code. For instance,
+     * the 'AIRP' feature code provides the ('airport', 'airdrome', 'aerodrome',
+     * 'airfield', 'air field', 'airstrip', 'air strip', 'airbase', 'air base')
+     * list.
+     */
     const FeatureNameList_T& lFeatureNameList =
       Location::getFeatureList (iFeatureCode);
     for (FeatureNameList_T::const_iterator itFeatName = lFeatureNameList.begin();
          itFeatName != lFeatureNameList.end(); ++itFeatName) {
       const FeatureName_T& lFeatureName = *itFeatName;
-      _termSet.insert (iBaseName + " " + lFeatureName);
+
+      lTermSet.insert (iBaseName + " " + lFeatureName);
     }
+
+    // Insert (or replace) the newly created (or just altered) string set
+    addTermSet (iWeight, lTermSet);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void Place::addNameToXapianSets (const LocationName_T& iLocationName,
+  void Place::addNameToXapianSets (const Weight_T& iWeight,
+                                   const LocationName_T& iLocationName,
                                    const FeatureCode_T& iFeatureCode,
                                    const CityUTFName_T& iCityUtfName,
                                    const CityASCIIName_T& iCityAsciiName,
@@ -239,6 +307,10 @@ namespace OPENTREP {
                                    const CountryName_T& iCountryName,
                                    const ContinentName_T& iContinentName,
                                    const OTransliterator& iTransliterator) {
+    // Retrieve the string set for the given weight, if existing
+    // (empty otherwise)
+    StringSet_T lTermSet = getTermSet (iWeight);
+
     // Tokenise the name. Some of the names contain punctuation characters.
     // For instance, "Paris/FR/Gare" is transformed into "Paris FR Gare".
     WordList_T lWordList;
@@ -246,52 +318,52 @@ namespace OPENTREP {
     const std::string lTokenisedName = createStringFromWordList (lWordList);
 
     // Add the tokenised name to the Xapian index
-    _termSet.insert (lTokenisedName);
+    lTermSet.insert (lTokenisedName);
 
     // Add the (tokenised name, feature name) pair to the Xapian index
-    addNameToXapianSets (lTokenisedName, iFeatureCode);
+    addNameToXapianSets (iWeight, lTokenisedName, iFeatureCode);
 
     // Add the (tokenised name, UTF8 city name) pair to the Xapian index
     if (iCityUtfName.empty() == false) {
-      _termSet.insert (lTokenisedName + " " + iCityUtfName);
+      lTermSet.insert (lTokenisedName + " " + iCityUtfName);
     }
 
     // Add the (tokenised name, ASCII city name) pair to the Xapian index
     if (iCityAsciiName.empty() == false) {
-      _termSet.insert (lTokenisedName + " " + iCityAsciiName);
+      lTermSet.insert (lTokenisedName + " " + iCityAsciiName);
     }
 
     // Add the (tokenised name, UTF8 admin level 1 name) pair to the Xapian index
     if (iAdm1UtfName.empty() == false) {
-      _termSet.insert (lTokenisedName + " " + iAdm1UtfName);
+      lTermSet.insert (lTokenisedName + " " + iAdm1UtfName);
     }
 
     // Add the (tokenised name, ASCII adm level 1 name) pair to the Xapian index
     if (iAdm1AsciiName.empty() == false) {
-      _termSet.insert (lTokenisedName + " " + iAdm1AsciiName);
+      lTermSet.insert (lTokenisedName + " " + iAdm1AsciiName);
     }
 
     // Add the (tokenised name, UTF8 admin level 2 name) pair to the Xapian index
     if (iAdm2UtfName.empty() == false) {
-      _termSet.insert (lTokenisedName + " " + iAdm2UtfName);
+      lTermSet.insert (lTokenisedName + " " + iAdm2UtfName);
     }
 
     // Add the (tokenised name, ASCII adm level 2 name) pair to the Xapian index
     if (iAdm2AsciiName.empty() == false) {
-      _termSet.insert (lTokenisedName + " " + iAdm2AsciiName);
+      lTermSet.insert (lTokenisedName + " " + iAdm2AsciiName);
     }
 
     // Add the (tokenised name, state code) pair to the Xapian index
-    _termSet.insert (lTokenisedName + " " + iStateCode);
+    lTermSet.insert (lTokenisedName + " " + iStateCode);
 
     // Add the (tokenised name, country code) pair to the Xapian index
-    _termSet.insert (lTokenisedName + " " + iCountryCode);
+    lTermSet.insert (lTokenisedName + " " + iCountryCode);
 
     // Add the (tokenised name, country name) pair to the Xapian index
-    _termSet.insert (lTokenisedName + " " + iCountryName);
+    lTermSet.insert (lTokenisedName + " " + iCountryName);
 
     // Add the (tokenised name, continent name) pair to the Xapian index
-    _termSet.insert (lTokenisedName + " " + iContinentName);
+    lTermSet.insert (lTokenisedName + " " + iContinentName);
 
     // Add the tokenised name to the Xapian spelling dictionary
     _spellingSet.insert (lTokenisedName);
@@ -304,66 +376,69 @@ namespace OPENTREP {
       iTransliterator.normalise (lTokenisedName);
 
     // Add the tokenised and normalised name to the Xapian index
-    _termSet.insert (lNormalisedCommonName);
+    lTermSet.insert (lNormalisedCommonName);
 
     // Add the (tokenised and normalised name, feature name) pair
     // to the Xapian index
-    addNameToXapianSets (lNormalisedCommonName, iFeatureCode);
+    addNameToXapianSets (iWeight, lNormalisedCommonName, iFeatureCode);
 
     // Add the (tokenised and normalised name, UTF8 city name) pair
     // to the Xapian index
     if (iCityUtfName.empty() == false) {
-      _termSet.insert (lNormalisedCommonName + " " + iCityUtfName);
+      lTermSet.insert (lNormalisedCommonName + " " + iCityUtfName);
     }
 
     // Add the (tokenised and normalised name, ASCII city name) pair
     // to the Xapian index
     if (iCityAsciiName.empty() == false) {
-      _termSet.insert (lNormalisedCommonName + " " + iCityAsciiName);
+      lTermSet.insert (lNormalisedCommonName + " " + iCityAsciiName);
     }
 
     // Add the (tokenised and normalised name, UTF8 admin level 1 name) pair
     // to the Xapian index
     if (iAdm1UtfName.empty() == false) {
-      _termSet.insert (lNormalisedCommonName + " " + iAdm1UtfName);
+      lTermSet.insert (lNormalisedCommonName + " " + iAdm1UtfName);
     }
 
     // Add the (tokenised and normalised name, ASCII adm level 1 name) pair
     // to the Xapian index
     if (iAdm1AsciiName.empty() == false) {
-      _termSet.insert (lNormalisedCommonName + " " + iAdm1AsciiName);
+      lTermSet.insert (lNormalisedCommonName + " " + iAdm1AsciiName);
     }
 
     // Add the (tokenised and normalised name, UTF8 admin level 2 name) pair
     // to the Xapian index
     if (iAdm2UtfName.empty() == false) {
-      _termSet.insert (lNormalisedCommonName + " " + iAdm2UtfName);
+      lTermSet.insert (lNormalisedCommonName + " " + iAdm2UtfName);
     }
 
     // Add the (tokenised and normalised name, ASCII adm level 2 name) pair
     // to the Xapian index
     if (iAdm2AsciiName.empty() == false) {
-      _termSet.insert (lNormalisedCommonName + " " + iAdm2AsciiName);
+      lTermSet.insert (lNormalisedCommonName + " " + iAdm2AsciiName);
     }
 
     // Add the (tokenised and normalised name, state code) pair to the
     // Xapian index
-    _termSet.insert (lNormalisedCommonName + " " + iStateCode);
+    lTermSet.insert (lNormalisedCommonName + " " + iStateCode);
 
     // Add the (tokenised and normalised name, country code) pair to the
     // Xapian index
-    _termSet.insert (lNormalisedCommonName + " " + iCountryCode);
+    lTermSet.insert (lNormalisedCommonName + " " + iCountryCode);
 
     // Add the (tokenised and normalised name, country name) pair to the
     // Xapian index
-    _termSet.insert (lNormalisedCommonName + " " + iCountryName);
+    lTermSet.insert (lNormalisedCommonName + " " + iCountryName);
 
     // Add the (tokenised and normalised name, continent name) pair to the
     // Xapian index
-    _termSet.insert (lNormalisedCommonName + " " + iContinentName);
+    lTermSet.insert (lNormalisedCommonName + " " + iContinentName);
 
     // Add the tokenised and normalised name to the Xapian spelling dictionary
     _spellingSet.insert (lNormalisedCommonName);
+
+    // Insert (or replace) the newly created (or just altered) string set
+    addTermSet (iWeight, lTermSet);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -379,146 +454,164 @@ namespace OPENTREP {
      * </ul>
      */
 
+    // Retrieve the PageRank
+    const PageRank_T& lPageRankDouble = _location.getPageRank();
+    //const Weight_T lPageRank =
+    //  (lPageRankDouble == K_DEFAULT_PAGE_RANK)?
+    //  K_DEFAULT_INDEXING_EXTRA_WEIGHT:
+    //  static_cast<const Weight_T> (lPageRankDouble);
+    const Weight_T lPageRank = K_DEFAULT_INDEXING_EXTRA_WEIGHT
+      + static_cast<const Weight_T> (lPageRankDouble / 5.0);
+
+    // Retrieve the string set for the given weight, if existing
+    // (empty otherwise)
+    StringSet_T lWeightedTermSet = getTermSet (lPageRank);
+
+    // Retrieve the string set for the given weight, if existing
+    // (empty otherwise)
+    StringSet_T lStdTermSet = getTermSet (K_DEFAULT_INDEXING_STD_WEIGHT);
+
     // Retrieve the feature code
     const FeatureCode_T& lFeatureCode = _location.getFeatureCode();
 
     // Add the IATA code
     const std::string& lIataCode = _location.getIataCode();
     if (lIataCode.empty() == false) {
-      _termSet.insert (lIataCode);
+      lWeightedTermSet.insert (lIataCode);
       _spellingSet.insert (lIataCode);
 
       // Add the (IATA code, feature name) to the Xapian index, where the
       // feature name is derived from the feature code.
-      addNameToXapianSets (lIataCode, lFeatureCode);
+      addNameToXapianSets (lPageRank, lIataCode, lFeatureCode);
     }
 
     // Add the ICAO code
     const std::string& lIcaoCode = _location.getIcaoCode();
     if (lIcaoCode.empty() == false) {
-      _termSet.insert (lIcaoCode);
+      lWeightedTermSet.insert (lIcaoCode);
       _spellingSet.insert (lIcaoCode);
 
       // Add the (ICAO code, feature name) to the Xapian index, where the
       // feature name is derived from the feature code.
-      addNameToXapianSets (lIcaoCode, lFeatureCode);
+      addNameToXapianSets (lPageRank, lIcaoCode, lFeatureCode);
     }
 
     // Add the FAA code
     const std::string& lFaaCode = _location.getFaaCode();
     if (lFaaCode.empty() == false) {
-      _termSet.insert (lFaaCode);
+      lWeightedTermSet.insert (lFaaCode);
       _spellingSet.insert (lFaaCode);
 
       // Add the (FAA code, feature name) to the Xapian index, where the
       // feature name is derived from the feature code.
-      addNameToXapianSets (lFaaCode, lFeatureCode);
+      addNameToXapianSets (lPageRank, lFaaCode, lFeatureCode);
     }
 
-    // Add the city IATA code
+    // Add the Geonames ID
     const GeonamesID_T& lGeonamesID = _location.getGeonamesID();
     if (lGeonamesID != 0) {
       std::stringstream oStr;
       oStr << lGeonamesID;
       const std::string lGeonamesIDStr = oStr.str();
-      _termSet.insert (lGeonamesIDStr);
+      lStdTermSet.insert (lGeonamesIDStr);
       _spellingSet.insert (lGeonamesIDStr);
     }
 
     // Add the feature code
     if (lFeatureCode.empty() == false) {
-      _termSet.insert (lFeatureCode);
+      lWeightedTermSet.insert (lFeatureCode);
       _spellingSet.insert (lFeatureCode);
     }
 
     // Add the city IATA code
     const std::string& lCityCode = _location.getCityCode();
     if (lCityCode.empty() == false && lCityCode != lIataCode) {
-      _termSet.insert (lCityCode);
+      lWeightedTermSet.insert (lCityCode);
       _spellingSet.insert (lCityCode);
     }
 
     // Add the city UTF8 name
     const std::string& lCityUtfName = _location.getCityUtfName();
     if (lCityUtfName.empty() == false) {
-      _termSet.insert (lCityUtfName);
+      lWeightedTermSet.insert (lCityUtfName);
       _spellingSet.insert (lCityUtfName);
     }
 
     // Add the city ASCII name
     const std::string& lCityAsciiName = _location.getCityAsciiName();
     if (lCityAsciiName.empty() == false) {
-      _termSet.insert (lCityAsciiName);
+      lWeightedTermSet.insert (lCityAsciiName);
       _spellingSet.insert (lCityAsciiName);
     }
 
     // Add the state code
     const std::string& lStateCode = _location.getStateCode();
     if (lStateCode.empty() == false) {
-      _termSet.insert (lStateCode);
+      lWeightedTermSet.insert (lStateCode);
       _spellingSet.insert (lStateCode);
     }
 
     // Add the country code
     const std::string& lCountryCode = _location.getCountryCode();
-    _termSet.insert (lCountryCode);
+    lWeightedTermSet.insert (lCountryCode);
 
     // Add the country name
     const std::string& lCountryName = _location.getCountryName();
     if (lCountryName.empty() == false) {
-      _termSet.insert (lCountryName);
+      lWeightedTermSet.insert (lCountryName);
       _spellingSet.insert (lCountryName);
     }
 
     // Add the administrative level 1 code
     const std::string& lAdm1Code = _location.getAdmin1Code();
     if (lAdm1Code.empty() == false) {
-      _termSet.insert (lAdm1Code);
+      lWeightedTermSet.insert (lAdm1Code);
     }
 
     // Add the administrative level 1 UTF8 name
     const std::string& lAdm1UtfName = _location.getAdmin1UtfName();
     if (lAdm1UtfName.empty() == false) {
-      _termSet.insert (lAdm1UtfName);
+      lWeightedTermSet.insert (lAdm1UtfName);
       _spellingSet.insert (lAdm1UtfName);
     }
 
     // Add the administrative level 1 ASCII name
     const std::string& lAdm1AsciiName = _location.getAdmin1AsciiName();
     if (lAdm1AsciiName.empty() == false) {
-      _termSet.insert (lAdm1AsciiName);
+      lWeightedTermSet.insert (lAdm1AsciiName);
       _spellingSet.insert (lAdm1AsciiName);
     }
 
     // Add the administrative level 2 code
     const std::string& lAdm2Code = _location.getAdmin1Code();
     if (lAdm2Code.empty() == false) {
-      _termSet.insert (lAdm2Code);
+      lWeightedTermSet.insert (lAdm2Code);
     }
 
     // Add the administrative level 2 UTF8 name
     const std::string& lAdm2UtfName = _location.getAdmin2UtfName();
     if (lAdm2UtfName.empty() == false) {
-      _termSet.insert (lAdm2UtfName);
+      lWeightedTermSet.insert (lAdm2UtfName);
       _spellingSet.insert (lAdm2UtfName);
     }
 
     // Add the administrative level 2 ASCII name
     const std::string& lAdm2AsciiName = _location.getAdmin2AsciiName();
     if (lAdm2AsciiName.empty() == false) {
-      _termSet.insert (lAdm2AsciiName);
+      lWeightedTermSet.insert (lAdm2AsciiName);
       _spellingSet.insert (lAdm2AsciiName);
     }
 
     // Add the continent name
     const std::string& lContinentName = _location.getContinentName();
-    _termSet.insert (lContinentName);
+    lWeightedTermSet.insert (lContinentName);
 
     // Add the common name (usually in American English, but not necessarily
     // in ASCII).
     const std::string& lCommonName = _location.getCommonName();
     if (lCommonName.empty() == false) {
-      addNameToXapianSets (LocationName_T (lCommonName),
+      addNameToXapianSets (K_DEFAULT_INDEXING_STD_WEIGHT,
+                           LocationName_T (lCommonName),
                            FeatureCode_T (lFeatureCode),
                            CityUTFName_T (lCityUtfName),
                            CityASCIIName_T (lCityAsciiName),
@@ -535,7 +628,8 @@ namespace OPENTREP {
     // Add the ASCII name (not necessarily in English).
     const std::string& lASCIIName = _location.getAsciiName();
     if (lASCIIName.empty() == false) {
-      addNameToXapianSets (LocationName_T (lASCIIName),
+      addNameToXapianSets (K_DEFAULT_INDEXING_STD_WEIGHT,
+                           LocationName_T (lASCIIName),
                            FeatureCode_T (lFeatureCode),
                            CityUTFName_T (lCityUtfName),
                            CityASCIIName_T (lCityAsciiName),
@@ -583,16 +677,22 @@ namespace OPENTREP {
               iTransliterator.normalise (lWordCombination);
 
             // Add that combination of words into the set of terms
-            _termSet.insert (lWordCombination);
+            lStdTermSet.insert (lWordCombination);
             _spellingSet.insert (lWordCombination);
 
             // Add the normalised combination of words into the set of terms
-            _termSet.insert (lNormalisedWordCombination);
+            lStdTermSet.insert (lNormalisedWordCombination);
             _spellingSet.insert (lNormalisedWordCombination);
           }
         }
       }
     }
+
+    // Insert (or replace) the newly created (or just altered) string set
+    addTermSet (lPageRank, lWeightedTermSet);
+
+    // Insert (or replace) the newly created (or just altered) string set
+    addTermSet (K_DEFAULT_INDEXING_STD_WEIGHT, lStdTermSet);
   }
 
   // //////////////////////////////////////////////////////////////////////
