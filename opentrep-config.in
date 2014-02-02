@@ -1,8 +1,12 @@
 #!/bin/sh
 
+version=@PACKAGE_VERSION@
+package_name=@PACKAGE@
+package_pretty_name=@PACKAGE_PRETTY_NAME@
 prefix=@prefix@
 exec_prefix=${prefix}
-libdir=@libdir@
+#libdir=@libdir@
+libdir=`pkg-config --variable=libdir ${package_name}`
 includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
@@ -11,9 +15,6 @@ sampledir=@sampledir@
 docdir=@docdir@
 mandir=@mandir@
 infodir=@infodir@
-version=@PACKAGE_VERSION@
-package_name=@PACKAGE@
-package_pretty_name=@PACKAGE_PRETTY_NAME@
 
 usage()
 {
