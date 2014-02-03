@@ -53,6 +53,7 @@ module_binary_add (batches opentrep-dbmgr)
 ##
 # Installing Python scripts
 module_script_add (python/pyopentrep)
+python_module_add (python/__init__.py)
 
 ##
 # Install the CMake import helper, so that third party projects can refer to it

@@ -133,8 +133,8 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
     endif ()
   endforeach (_path_type)
 
-  # When the install directory is the canonical one (i.e., /usr), the
-  # run-path/rpath must be set in all the (executable and library)
+  # When the install directory is not the canonical one (i.e., /usr),
+  # the run-path/rpath must be set in all the (executable and library)
   # binaries, so that the dynamic loader can find the dependencies
   # without the user having to set the LD_LIBRARY_PATH environment
   # variable.
@@ -1703,10 +1703,21 @@ macro (module_library_add_specific
 
   ##
   # Installation of the library
-  install (TARGETS ${_lib_target}
-    EXPORT ${LIB_DEPENDENCY_EXPORT}
-    LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT runtime)
+  string (SUBSTRING ${_lib_short_name} 0 2 _lib_prefix)
+  if ("${_lib_prefix}" STREQUAL "py")
+	# If the library is Python, install it into a dedicated directory
+	message (STATUS "${_lib_short_name} is assumed to be a Python library")
+	install (TARGETS ${_lib_target}
+      EXPORT ${LIB_DEPENDENCY_EXPORT}
+      LIBRARY DESTINATION "${INSTALL_PY_LIB_DIR}" COMPONENT runtime)
 
+  else ("${_lib_prefix}" STREQUAL "py")
+	# Install the library in the standard location
+	install (TARGETS ${_lib_target}
+      EXPORT ${LIB_DEPENDENCY_EXPORT}
+      LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT runtime)
+  endif ("${_lib_prefix}" STREQUAL "py")
+  
   # Register, for reporting purpose, the list of libraries to be built
   # and installed for that module
   list (APPEND ${MODULE_NAME}_ALL_LIBS ${_lib_target})
@@ -1827,6 +1838,16 @@ macro (module_config_add _config_source_dir)
     DESTINATION "${INSTALL_ETC_DIR}" COMPONENT runtime)
 
 endmacro (module_config_add)
+
+##
+# Installation of Python module scripts (e.g., __init__.py)
+#
+# The parameter is the relative file path of the Python initialiser script
+# to be installed. A typical Python module script is __init__.py
+# 
+macro (python_module_add _python_module_file_path)
+  install (FILES ${_python_module_file_path} DESTINATION ${INSTALL_PY_LIB_DIR})
+endmacro (python_module_add)
 
 ##
 # Add a (Shell, Python, Perl, Ruby, etc) script to be installed.
