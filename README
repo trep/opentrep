@@ -104,6 +104,14 @@ Then, as usual:
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
   $INSTALL_BASEDIR/opentrep-$TREP_VER/bin/opentrep -b
 
+Checking that the Python module works:
+--------------------------------------
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python/opentrep/ \
+ python -c "import libpyopentrep; \
+ openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
+ initOK = openTrepLibrary.init ('/tmp/opentrep/traveldb', '', 'pyopentrep.log');\
+ print openTrepLibrary.search ('S', 'los las')"
+
 Running the Django-based application server:
 --------------------------------------------
 export TREP_LIB=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib$LIBSUFFIX

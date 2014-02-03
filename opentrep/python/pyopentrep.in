@@ -2,8 +2,8 @@
 
 import sys, getopt, os
 import simplejson as json
-sys.path.append ('@INSTALL_LIB_DIR@')
-sys.path.append ('@INSTALL_PY_LIB_DIR@')
+#sys.path.append ('@INSTALL_LIB_DIR@')
+#sys.path.append ('@INSTALL_PY_LIB_DIR@')
 import Travel_pb2
 
 # Usage
