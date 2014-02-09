@@ -1,7 +1,14 @@
 
-* 2013-04-28:
-- Version 0.5.4
-- Something
+* 2014-02-01:
+- Version 0.6.0
+- Issue #1 (http://github.com/trep/opentrep/issues/1):
+  The search algorithm is now modular.
+- Issues #3 (https://github.com/trep/opentrep/issues/3)
+  and #5 (https://github.com/trep/opentrep/issues/5):
+  POR are now indexed with their associated PageRank value
+  (equal to 0.1% when there is no PageRank vallue).
+- Latest ORI POR data:
+  http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
 
 * 2013-03-10:
 - Version 0.5.3

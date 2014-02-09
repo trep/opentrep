@@ -79,7 +79,7 @@ http://sourceforge.net/project/showfiles.php?group_id=252803
 To customise the following to your environment, you can alter the path
 to the installation directory:
 export INSTALL_BASEDIR=/home/user/dev/deliveries
-export TREP_VER=0.5.4
+export TREP_VER=0.6.0
 if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 
@@ -96,7 +96,7 @@ Then, as usual:
 * To install the library (libopentrep*.so*) and the binary (opentrep), just type:
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f opentrep-stable && ln -s opentrep-0.5.4 opentrep-stable
+  rm -f opentrep-stable && ln -s opentrep-${TREP_VER} opentrep-stable
   cd -
 * To package the source files, type:
   make dist
