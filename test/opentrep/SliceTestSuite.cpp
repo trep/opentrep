@@ -22,6 +22,7 @@
 #include <opentrep/bom/QuerySlices.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/service/Logger.hpp>
 
 namespace boost_utf = boost::unit_test;
 
@@ -92,6 +93,7 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   const std::string lRio2Str = "rio de janero";
   const std::string lRek1Str = "reikjavik";
   const std::string lRek2Str = "rekyavik";
+  const std::string lLwoIevHrk1Str = "lviv kiev kharkov";
   const std::string lSfoRio1Str = "san francisco rio de janeiro";
   const std::string lSfoRio2Str = "san francicso rio de janero";
   const std::string lSfoRio3Str = "sna francicso rio de janero";
@@ -105,22 +107,30 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   Xapian::Database lXapianDatabase (lTravelDBFilePath);
 
   // Create the query slices
-  OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lSfoRio1Str);
+  OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lLwoIevHrk1Str);
+
+  // DEBUG
+  OPENTREP_LOG_DEBUG (lQuerySlices.size() << " slices: "
+                      << lQuerySlices.describe());
 
   //
-  BOOST_CHECK_MESSAGE (lQuerySlices.size() == 5,
-                       "The query ('" << lSfoRio1Str
-                       << "') should contain 5 slices."
+  BOOST_CHECK_MESSAGE (lQuerySlices.size() == 3,
+                       "The query ('" << lLwoIevHrk1Str
+                       << "') should contain 3 slices."
                        << " However, its size is " << lQuerySlices.size()
                        << ".");
 
   // Create other query slices
   OPENTREP::QuerySlices lAnotherQuerySlices (lXapianDatabase, lChelseaStr);
 
+  // DEBUG
+  OPENTREP_LOG_DEBUG (lAnotherQuerySlices.size() << " slices: "
+                      << lAnotherQuerySlices.describe());
+
   //
-  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 3,
+  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 1,
                        "The query ('" << lChelseaStr
-                       << "') should contain 3 slices."
+                       << "') should contain 1 slice."
                        << " However, its size is " << lAnotherQuerySlices.size()
                        << ".");
 

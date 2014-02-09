@@ -142,12 +142,36 @@ namespace OPENTREP {
   /**
    * File not found.
    */
-  class FileNotFoundException : public RootException { 
+  class FileNotFoundException : public FileException { 
   public:
     /**
      * Constructor.
      */
-    FileNotFoundException (const std::string& iWhat) : RootException (iWhat) {}
+    FileNotFoundException (const std::string& iWhat) : FileException (iWhat) {}
+  };
+  
+  /**
+   * Unknown file extension.
+   */
+  class FileExtensionUnknownException : public FileException { 
+  public:
+    /**
+     * Constructor.
+     */
+    FileExtensionUnknownException (const std::string& iWhat)
+      : FileException (iWhat) {}
+  };
+  
+  /**
+   * Uncompressing file error.
+   */
+  class FileUncompressingErrorException : public FileException { 
+  public:
+    /**
+     * Constructor.
+     */
+    FileUncompressingErrorException (const std::string& iWhat)
+      : FileException (iWhat) {}
   };
   
   /**
