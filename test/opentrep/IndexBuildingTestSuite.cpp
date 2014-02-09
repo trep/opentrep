@@ -60,7 +60,7 @@ const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
 /**
  * SQlite3 database file-path.
  */
-const std::string X_SQLITE_DB_FP ("/tmp/opentrep/test_traveldb/ori_por_public.csv");
+const std::string X_SQLITE_DB_FP ("/tmp/opentrep/test_traveldb/ori_por_public.db");
 
 
 // /////////////// Main: Unit Test Suite //////////////

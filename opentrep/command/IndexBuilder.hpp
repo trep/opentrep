@@ -38,6 +38,17 @@ namespace OPENTREP {
     /**
      * Build Xapian database.
      *
+     * @param Xapian::WritableDatabase& Xapian database.
+     * @param std::ifstream& File stream for the POR data file.
+     * @param const OTransliterator& Unicode transliterator.
+     */
+    static NbOfDBEntries_T buildSearchIndex (Xapian::WritableDatabase&,
+                                             std::istream& iPORFileStream,
+                                             const OTransliterator&);
+
+    /**
+     * Build Xapian database.
+     *
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
      * @param const OTransliterator& Unicode transliterator.

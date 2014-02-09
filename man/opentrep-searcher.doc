@@ -4,7 +4,7 @@
 
 \section sec_synopsis SYNOPSIS
 
-<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error < spelling error>] [-d|--database <Xapian-travel-database-path>] [-l|--log <path-to-output-log-file>] [-n|--nodb] [-u|--user <db-user>] [-p|--passwd <db-password>] [-H|--host <db-server-hostname>] [-P|--port <db-server-port>] [-m|--dbname <db-name>] [-t|--type <search-type>] [-q|--query <search-query>]</tt>
+<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error < spelling error>] [-d|--database <Xapian-travel-database-path>] [-l|--log <path-to-output-log-file>] [-t|--type <search-type>] [-q|--query <search-query>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -27,42 +27,27 @@
 
  \b -d, \b --database <Xapian-travel-database-path><br>
     Path (directory) to the Xapian travel database.
+	The indexer creates, or overwrites it when it already exists,
+	the Xapian database. It materialises as a collection of data files
+	within a directory usually named 'traveldb'.
 
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.
-
- \b -n, \b --nodb<br>
-    Whether or not the (MySQL) database should be used.<br>
-	0 means that no MySQL database should be used. 1 means that the database is needed.
-
- \b -u, \b --user <db-user><br>
-    MySQL database user (e.g., geo).
-
- \b -p, \b --passwd <db-password><br>
-    MySQL database password (e.g., geo).
-
- \b -H, \b --host <db-server-hostname><br>
-    MySQL database server hostname (e.g., localhost).
-
- \b -P, \b --port <db-server-port><br>
-    MySQL database server hostname (e.g., 3306).
-
- \b -m, \b --dbname <db-name><br>
-    MySQL database name (e.g., geo_trep).
 
  \b -t, \b --type <search-type><br>
     Type of search request (0 = full text, 1 = coordinates).
 
  \b -q, \b --query <search-query><br>
-    Travel query word list (e.g. sna francicso rio de janero lso anglese reykyavki),
-	which sould be located at the end of the command line (otherwise, the other options
-	would be interpreted as part of that travel query word list).
+    Travel query word list (e.g. sna francicso rio de janero lso anglese
+	reykyavki),	which should be located at the end of the command line
+	(otherwise, the other options would be interpreted as part of that
+	travel query word list).
 
-See the output of the <tt>`opentrep --help'</tt> command for the default options.
+See the output of the <tt>`opentrep-searcher --help'</tt> command for the default options.
 
 
 \section sec_see_also SEE ALSO
-\b opentrep-indexer(1), \b opentrep-config(1), \b opentrep-library(3), \b pyopentrep(1)
+\b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-config(1), \b opentrep-library(3), \b pyopentrep(1)
 
 
 \section sec_support SUPPORT
@@ -72,7 +57,7 @@ Please report any bugs to http://github.com/trep/opentrep/issues
 
 \section sec_copyright COPYRIGHT
 
-Copyright © 2009-2013 Denis Arnaud
+Copyright © 2009-2014 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>

@@ -17,6 +17,9 @@
 
  \b -x, \b --xapiandb <Xapian-travel-database-path><br>
     Path (directory) to the Xapian travel database.
+	The indexer creates, or overwrites it when it already exists,
+	the Xapian database. It materialises as a collection of data files
+	within a directory usually named 'traveldb'.
 
  \b -f, \b --format<br>
  	Format of the output: Short (S, default), Full (F), raw JSON (J) and
@@ -26,7 +29,7 @@ See the output of the <tt>`pyopentrep --help'</tt> command for default options.
 
 
 \section sec_see_also SEE ALSO
-\b opentrep-indexer(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
+\b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
 
 
 \section sec_support SUPPORT
@@ -36,7 +39,7 @@ Please report any bugs to http://github.com/trep/opentrep/issues
 
 \section sec_copyright COPYRIGHT
 
-Copyright © 2009-2013 Denis Arnaud
+Copyright © 2009-2014 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>

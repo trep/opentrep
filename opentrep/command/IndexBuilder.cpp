@@ -10,6 +10,10 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/iostreams/device/file.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/filter/bzip2.hpp>
 // OpenTrep
 #include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/basic/Utilities.hpp>
@@ -110,6 +114,57 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
+  buildSearchIndex (Xapian::WritableDatabase& ioDatabase,
+                    std::istream& iPORFileStream,
+                    const OTransliterator& iTransliterator) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    // Open the file to be parsed
+    Place& lPlace = FacPlace::instance().create();
+    std::string itReadLine;
+    while (std::getline (iPORFileStream, itReadLine)) {
+      // Initialise the parser
+      PORStringParser lStringParser (itReadLine);
+
+      // Parse the string
+      const Location& lLocation = lStringParser.generateLocation();
+      //const LocationKey& lLocationKey = lLocation.getKey();
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+
+      // When the line/string was relevant, create a BOM instance from
+      // the Location structure.
+      if (!(lLocation.getCommonName() == "NotAvailable")) {
+        // Fill the Place object with the Location structure.
+        lPlace.setLocation (lLocation);
+
+        // Add the document, associated to the Place object, to the Xapian index
+        IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
+
+        // DEBUG
+        /*
+        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
+                            << ", Place: " << lPlace);
+        */
+
+        // Iteration
+        ++oNbOfEntries;
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+
+        // Reset for next turn
+        lPlace.resetMatrix();
+        lPlace.resetIndexSets();
+      }
+    }
+
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
                     const TravelDBFilePath_T& iTravelDBFilePath,
                     const OTransliterator& iTransliterator) {
@@ -176,46 +231,65 @@ namespace OPENTREP {
                                    + " does not exist or cannot be read");
     }
 
-    // Open the file to be parsed
-    boost::filesystem::ifstream fileToBeParsed (lPORFilePath);
-    Place& lPlace = FacPlace::instance().create();
-    std::string itReadLine;
-    while (std::getline (fileToBeParsed, itReadLine)) {
-      // Initialise the parser
-      PORStringParser lStringParser (itReadLine);
+    /**
+     * Check whether the data file is compressed.
+     *
+     * Note: that check is not very robust, as it is based on the
+     * file extension. A more robust approach would be to extract
+     * the magic number (first 4 bytes).
+     */
+    const boost::filesystem::path& lPORFileExtPath = lPORFilePath.extension();
+    const std::string& lPORFileExt = lPORFileExtPath.string();
+    if (lPORFileExt == ".bz2") {
+      // Open the file
+      boost::iostreams::file_source cprdFileToBeParsed (iPORFilePath,
+                                                        std::ios_base::in
+                                                        | std::ios_base::binary);
 
-      // Parse the string
-      const Location& lLocation = lStringParser.generateLocation();
-      //const LocationKey& lLocationKey = lLocation.getKey();
+      // Uncompress the file with the BZ2 library and its Boost wrapper
+      boost::iostreams::filtering_istream bunzip2Filter;
+      bunzip2Filter.push (boost::iostreams::bzip2_decompressor());
+      bunzip2Filter.push (cprdFileToBeParsed);
 
-      // DEBUG
-      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+      // Browse the input POR (point of reference) data file,
+      // and parse every of its rows
+      oNbOfEntries = buildSearchIndex(lDatabase, bunzip2Filter, iTransliterator);
 
-      // When the line/string was relevant, create a BOM instance from
-      // the Location structure.
-      if (!(lLocation.getCommonName() == "NotAvailable")) {
-        // Fill the Place object with the Location structure.
-        lPlace.setLocation (lLocation);
+    } else if (lPORFileExt == ".gz") {
+      // Open the file
+      boost::iostreams::file_source cprdFileToBeParsed (iPORFilePath,
+                                                        std::ios_base::in
+                                                        | std::ios_base::binary);
 
-        // Add the document, associated to the Place object, to the Xapian index
-        IndexBuilder::addDocumentToIndex (lDatabase, lPlace, iTransliterator);
+      // Uncompress the file with the BZ2 library and its Boost wrapper
+      boost::iostreams::filtering_istream gunzipFilter;
+      gunzipFilter.push (boost::iostreams::gzip_decompressor());
+      gunzipFilter.push (cprdFileToBeParsed);
 
-        // DEBUG
-        /*
-        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
-                            << ", Place: " << lPlace);
-        */
+      // Browse the input POR (point of reference) data file,
+      // and parse every of its rows
+      oNbOfEntries = buildSearchIndex(lDatabase, gunzipFilter, iTransliterator);
 
-        // Iteration
-        ++oNbOfEntries;
+    } else if (lPORFileExt == ".csv") {
+      // Open the file
+      boost::filesystem::ifstream fileToBeParsed (iPORFilePath,
+                                                  std::ios_base::in);
 
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+      // Browse the input POR (point of reference) data file,
+      // and parse every of its rows
+      oNbOfEntries =buildSearchIndex(lDatabase, fileToBeParsed, iTransliterator);
 
-        // Reset for next turn
-        lPlace.resetMatrix();
-        lPlace.resetIndexSets();
-      }
+    } else {
+      //
+      OPENTREP_LOG_ERROR ("The POR file " << iPORFilePath
+                          << " has got an unknown extension ('" << lPORFileExt
+                          << "'). Recognised extensions: .csv, .bz2, .gz"
+                          << std::endl);
+
+      throw FileExtensionUnknownException ("The POR file " + iPORFilePath
+                                           + " has got an unknown extension ('"
+                                           + lPORFileExt + "'). Recognised "
+                                           + "extensions: .csv, .bz2, .gz");
     }
 
     // Commit the pending modifications on the Xapian database (index)

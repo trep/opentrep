@@ -11,20 +11,21 @@
 \section sec_description DESCRIPTION
 
 OpenTREP aims at providing a clean API, and the corresponding C++
-implementation, for parsing travel-focused requests (e.g., "washington
-dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog").
+implementation, for parsing travel-focused requests (e.g.,
+"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog").
 
-OpenTREP library uses Xapian (http://www.xapian.org) for the
-Information Retrieval part, on freely available travel-related data
-(e.g., country names and codes, city names and codes, airline names
-and codes, etc.).
+OpenTREP uses Xapian (http://www.xapian.org) for the Information Retrieval part,
+on freely available travel-related data (e.g., country names and codes,
+city names and codes, airline names and codes, etc.), mainly to be found
+in the OpenTravelData project (http://github.com/opentraveldata/optd):
+http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
 
-OpenTREP exposes a simple, clean and object-oriented, API. For
-instance, the static Parse() method takes, as input, a string
-containing the travel request, and yields, as output, the list of the
-recognised terms as well as their corresponding types. As an example,
-the travel request "washington dc beijing monday a/r +aa -ua 1 week 2
-adults 1 dog" would give the following list:
+OpenTREP exposes a simple, clean and object-oriented, API. For instance,
+the static Parse() method takes, as input, a string containing the travel
+request, and yields, as output, the list of the recognised terms as well as
+their corresponding types. As an example, the travel request
+"washington dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog" would give
+the following list:
   * Origin airport: Washington, DC, USA
   * Destination airport: Beijing, China
   * Date of travel: next Monday
@@ -40,8 +41,14 @@ OpenTREP makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the
 Boost (C++ Standard Extensions: http://www.boost.org) library is used.
 
+Note that OpenTREP currently only recognises points of reference (POR),
+as to be found in the ori_por_public.csv file:
+http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
+A good complementary tool is GeoBase (http://opentraveldata.github.io/geobases/),
+a Python-based software able to access to any travel-related data source.
+
 \section sec_see_also SEE ALSO
- \b opentrep-indexer(1), \b opentrep-searcher(1), \b opentrep-config(1)
+ \b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b opentrep-config(1)
 
 
 \section sec_support SUPPORT
@@ -51,7 +58,7 @@ Please report any bugs to https://sourceforge.net/apps/trac/opentrep/report
 
 \section sec_copyright COPYRIGHT
 
-Copyright © 2009-2011 Denis Arnaud
+Copyright © 2009-2014 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
