@@ -47,6 +47,16 @@ namespace OPENTREP {
   struct QuerySlices : public StructAbstract {
   public:
     /**
+     * Get the underlying query string.
+     *
+     * Note that the query string has been normalised, and has therefore
+     * potentially been altered.
+     */
+    const TravelQuery_T& getQueryString() const {
+      return _queryString;
+    }
+
+    /**
      * Get the underlying list of string partitions.
      */
     const StringPartitionList_T& getStringPartitionList() const {

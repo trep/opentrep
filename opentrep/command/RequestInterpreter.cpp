@@ -288,6 +288,11 @@ namespace OPENTREP {
     // DEBUG
     OPENTREP_LOG_DEBUG ("+=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
     OPENTREP_LOG_DEBUG ("Travel query: `" << iTravelQuery << "'");
+    const TravelQuery_T& lNormalisedQueryString = lQuerySlices.getQueryString();
+    if (!(iTravelQuery == lNormalisedQueryString)) {
+      OPENTREP_LOG_DEBUG ("Normalised travel query: `" << lNormalisedQueryString
+                          << "'");
+    }
     OPENTREP_LOG_DEBUG ("Query slices: `" << lQuerySlices << "'");
 
     // Browse the travel query slices
