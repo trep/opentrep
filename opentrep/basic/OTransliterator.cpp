@@ -133,6 +133,9 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string OTransliterator::normalise (const std::string& iString) const {
     assert (_normaliser != NULL);
+    assert (_unquoter != NULL);
+    assert (_unpunctuater != NULL);
+    assert (_tranlist != NULL);
 
     // Build a UnicodeString from the STL string
     UnicodeString lString (iString.c_str());
@@ -143,7 +146,7 @@ namespace OPENTREP {
     _unpunctuater->transliterate (lString);
     _tranlist->transliterate (lString);
 
-    // Convert from UnicodeString to UTF8-encoded STL string
+    // Convert back from UnicodeString to UTF8-encoded STL string
     const std::string& lNormalisedString = getUTF8 (lString);
 
     return lNormalisedString;

@@ -8,6 +8,7 @@
 // OpenTrep
 #include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/basic/Utilities.hpp>
+#include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/bom/Levenshtein.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/QuerySlices.hpp>
@@ -17,9 +18,10 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   QuerySlices::QuerySlices (const Xapian::Database& iDatabase,
-                            const TravelQuery_T& iQueryString)
+                            const TravelQuery_T& iQueryString,
+                            const OTransliterator& iTransliterator)
     : _database (iDatabase), _queryString (iQueryString) {
-    init();
+    init (iTransliterator);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -298,9 +300,12 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void QuerySlices::init() {
+  void QuerySlices::init (const OTransliterator& iTransliterator) {
     // 0. Initialisation
-    // 0.1. Initialisation of the tokenizer
+    // 0.1. Stripping of the accents, punctuation and quote characters
+    _queryString = iTransliterator.normalise (_queryString);
+
+    // 0.2. Initialisation of the tokenizer
     WordList_T lWordList;
     tokeniseStringIntoWordList (_queryString, lWordList);
     const unsigned short nbOfWords = lWordList.size();
@@ -311,7 +316,7 @@ namespace OPENTREP {
       return;
     }
 
-    // 0.2. Re-create the initial phrase, without any (potential) seperator
+    // 0.3. Re-create the initial phrase, without any (potential) seperator
     const std::string lPhrase = createStringFromWordList (lWordList);
 
     // 1. Browse the words, two by two, and check whether their association

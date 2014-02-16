@@ -58,7 +58,7 @@ namespace OPENTREP {
    * quotes (e.g., "[\\u02B9] > \\u0027; [\\u002D] > \\u0020;")
    */
   const char* K_ICU_QUOTATION_REMOVAL_RULE =
-    "[\\u02B9] > \\u0027; [\\u002D] > \\u0020; [\\u0027] > \\u0020;";
+    "[\\u02B9] > \\u0027; [\\u002D] > \\u0020; [\\u201C] > \\u0020; [\\u201D] > \\u0020; [\\u0027] > \\u0020;";
 
   /**
    * Default Unicode transliterator rule for the removal of

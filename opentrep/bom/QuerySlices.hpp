@@ -16,6 +16,9 @@
 
 namespace OPENTREP {
 
+  // Forward declarations
+  class OTransliterator;
+
   /**
    * Class allowing to slice a query string into multiple slices.
    * Each of those slices will then give birth to the corresponding
@@ -80,8 +83,10 @@ namespace OPENTREP {
      *
      * That method is called by the main constructor. It should not be called
      * directly.
+     *
+     * @param const OTransliterator& Unicode transliterator
      */
-    void init();
+    void init (const OTransliterator&);
 
 
   public:
@@ -119,8 +124,10 @@ namespace OPENTREP {
      *
      * @param const Xapian::Database& Xapian database (index)
      * @param const TravelQuery_T& The string for which the partitions are sought
+     * @param const OTransliterator& Unicode transliterator
      */
-    QuerySlices (const Xapian::Database&, const TravelQuery_T&);
+    QuerySlices (const Xapian::Database&, const TravelQuery_T&,
+                 const OTransliterator&);
 
     /**
      * Default destructor.

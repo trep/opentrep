@@ -21,10 +21,12 @@ namespace OPENTREP {
   public:
     // //////////////// Business support methods ///////////////
     /**
-     * Remove the accents of the given string.
+     * Remove the accents, the punctuation and the quote characters
+     * of the given string.
      *
-     * @param const std::string& The string for which the strings must be removed
-     * @return std::string The unaccentuated string.
+     * @param const std::string& The string for which the accents, punctuation
+     *                           and quote characters must be removed
+     * @return std::string The unaccentuated, unpunctuated, unquoted string.
      */
     std::string normalise (const std::string& iString) const;
 

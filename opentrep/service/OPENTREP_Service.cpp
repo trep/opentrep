@@ -272,6 +272,10 @@ namespace OPENTREP {
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext= *_opentrepServiceContext;
 
+    // Retrieve the Unicode transliterator
+    const OTransliterator& lTransliterator =
+      lOPENTREP_ServiceContext.getTransliterator();
+      
     // Get the date-time for the present time
     boost::posix_time::ptime lNowDateTime =
       boost::posix_time::second_clock::local_time();
@@ -302,7 +306,8 @@ namespace OPENTREP {
     nbOfMatches = RequestInterpreter::interpretTravelRequest (lTravelDBFilePath,
                                                               iTravelQuery,
                                                               ioLocationList,
-                                                              ioWordList);
+                                                              ioWordList,
+                                                              lTransliterator);
     const double lRequestInterpreterMeasure =
       lRequestInterpreterChronometer.elapsed();
 

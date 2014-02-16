@@ -10,6 +10,7 @@
 // Boost
 #include <boost/filesystem.hpp>
 // OpenTrep
+#include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
 #include <opentrep/bom/Place.hpp>
@@ -250,7 +251,8 @@ namespace OPENTREP {
   interpretTravelRequest (const TravelDBFilePath_T& iTravelDBFilePath,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
-                          WordList_T& ioWordList) {
+                          WordList_T& ioWordList,
+                          const OTransliterator& iTransliterator) {
     NbOfMatches_T oNbOfMatches = 0;
 
     // Sanity check
@@ -281,7 +283,7 @@ namespace OPENTREP {
       
     // First, cut the travel query in slices and calculate all the partitions
     // for each of those query slices
-    QuerySlices lQuerySlices (lXapianDatabase, iTravelQuery);
+    QuerySlices lQuerySlices (lXapianDatabase, iTravelQuery, iTransliterator);
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("+=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
