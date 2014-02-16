@@ -19,6 +19,7 @@
 #define BOOST_TEST_MODULE SliceTestSuite
 #include <boost/test/unit_test.hpp>
 // OpenTrep
+#include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/bom/QuerySlices.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/OPENTREP_Service.hpp>
@@ -106,8 +107,12 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   // Open the Xapian database
   Xapian::Database lXapianDatabase (lTravelDBFilePath);
 
+  // Create a Unicode transliterator
+  const OPENTREP::OTransliterator lTransliterator;
+      
   // Create the query slices
-  OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lLwoIevHrk1Str);
+  OPENTREP::QuerySlices lQuerySlices (lXapianDatabase, lLwoIevHrk1Str,
+                                      lTransliterator);
 
   // DEBUG
   OPENTREP_LOG_DEBUG (lQuerySlices.size() << " slices: "
@@ -121,7 +126,8 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
                        << ".");
 
   // Create other query slices
-  OPENTREP::QuerySlices lAnotherQuerySlices (lXapianDatabase, lChelseaStr);
+  OPENTREP::QuerySlices lAnotherQuerySlices (lXapianDatabase, lChelseaStr,
+                                             lTransliterator);
 
   // DEBUG
   OPENTREP_LOG_DEBUG (lAnotherQuerySlices.size() << " slices: "

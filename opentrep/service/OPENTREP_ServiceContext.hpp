@@ -169,9 +169,10 @@ namespace OPENTREP {
      * Read/write SQLite database file-path.
      *
      * OpenTREP is delivered with a SQLite3 database. That latter is read-only,
-     * as it is potentially delivered in a read-only directory on standard platforms
-     * (e.g., thanks to RPM on RedHat-derived Linux platforms). A read-write copy is
-     * then needed to for local changes (addition, deletion and updates of the POR).
+     * as it is potentially delivered in a read-only directory on standard
+     * platforms (e.g., thanks to RPM on RedHat-derived Linux platforms).
+     * A read-write copy is then needed to for local changes (addition,
+     * deletion and updates of the POR).
      */
     SQLiteDBFilePath_T _sqliteDBFilePath;
 

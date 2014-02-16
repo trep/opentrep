@@ -21,7 +21,9 @@ namespace OPENTREP {
     // Boost Tokeniser
     typedef boost::tokenizer<boost::char_separator<char> > Tokeniser_T;
   
-    // Define the separators
+    // Define the single-character separators.
+    // Note that multi-byte Unicode characters (e.g., “, ”)
+    // should not be inserted here
     const boost::char_separator<char>
       lSepatorList(" .,;:|+-*/_=!@#$%`~^&(){}[]?'<>\"");
   

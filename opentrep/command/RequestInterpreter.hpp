@@ -10,6 +10,9 @@
 
 namespace OPENTREP {
 
+  // Forward declarations
+  class OTransliterator;
+
   /**
    * @brief Command wrapping the travel request process.
    */
@@ -26,11 +29,13 @@ namespace OPENTREP {
      * @param LocationList_T& List of (geographical) locations, if any,
      *        matching the given query string.
      * @param WordList_T& List of non-matched words of the query string.
+     * @param const OTransliterator& Unicode transliterator.
      * @return NbOfMatches_T Number of matches.
      */
     static NbOfMatches_T interpretTravelRequest (const TravelDBFilePath_T&,
                                                  const TravelQuery_T&,
-                                                 LocationList_T&, WordList_T&);
+                                                 LocationList_T&, WordList_T&,
+                                                 const OTransliterator&);
 
   private:
     /**
