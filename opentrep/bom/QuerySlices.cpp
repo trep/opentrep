@@ -302,8 +302,9 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void QuerySlices::init (const OTransliterator& iTransliterator) {
     // 0. Initialisation
-    // 0.1. Stripping of the accents, punctuation and quote characters
-    _queryString = iTransliterator.normalise (_queryString);
+    // 0.1. Stripping of the punctuation and quotation characters
+    _queryString = iTransliterator.unpunctuate (_queryString);
+    _queryString = iTransliterator.unquote (_queryString);
 
     // 0.2. Initialisation of the tokenizer
     WordList_T lWordList;

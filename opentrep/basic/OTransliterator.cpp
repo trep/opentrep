@@ -15,23 +15,23 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   OTransliterator::OTransliterator()
-    : _normaliser (NULL), _unquoter (NULL), _unpunctuater (NULL),
+    : _punctuationRemover (NULL), _quoteRemover (NULL), _accentRemover (NULL),
       _tranlist (NULL) {
     init();
   }
 
   // //////////////////////////////////////////////////////////////////////
   OTransliterator::OTransliterator (const OTransliterator& iTransliterator)
-    : _normaliser (NULL), _unquoter (NULL), _unpunctuater (NULL),
+    : _punctuationRemover (NULL), _quoteRemover (NULL), _accentRemover (NULL),
       _tranlist (NULL) {
-    assert (iTransliterator._normaliser != NULL);
-    _normaliser = iTransliterator._normaliser->clone();
+    assert (iTransliterator._punctuationRemover != NULL);
+    _punctuationRemover = iTransliterator._punctuationRemover->clone();
 
-    assert (iTransliterator._unquoter != NULL);
-    _unquoter = iTransliterator._unquoter->clone();
+    assert (iTransliterator._quoteRemover != NULL);
+    _quoteRemover = iTransliterator._quoteRemover->clone();
 
-    assert (iTransliterator._unpunctuater != NULL);
-    _unpunctuater = iTransliterator._unpunctuater->clone();
+    assert (iTransliterator._accentRemover != NULL);
+    _accentRemover = iTransliterator._accentRemover->clone();
 
     assert (iTransliterator._tranlist != NULL);
     _tranlist = iTransliterator._tranlist->clone();
@@ -44,67 +44,74 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OTransliterator::init() {
-    // Create a normaliser
-    UErrorCode lStatus = U_ZERO_ERROR;
-
-    _normaliser =
-      Transliterator::createInstance (K_ICU_ACCENT_REMOVAL_RULE, UTRANS_FORWARD,
-                                      lStatus);
-
-    if (_normaliser == NULL || U_FAILURE (lStatus)) {
-      std::ostringstream oStr;
-      oStr << "Unicode error: no Transliterator can be created for the '"
-           << K_ICU_ACCENT_REMOVAL_RULE << "' rule.";
-      OPENTREP_LOG_ERROR (oStr.str());
-      throw UnicodeTransliteratorCreationException (oStr.str());
-    }
-    assert (_normaliser != NULL);
-               
-    // Register the Unicode Transliterator
-    Transliterator::registerInstance (_normaliser);
-
-    // Create a remover of quotation
-    lStatus = U_ZERO_ERROR;
-    UParseError pError;
-    UnicodeString lUnquotedRules (K_ICU_QUOTATION_REMOVAL_RULE);
-    _unquoter = Transliterator::createFromRules("RBTUnaccent", lUnquotedRules,
-                                                UTRANS_FORWARD, pError, lStatus);
-
-    if (_unquoter == NULL || U_FAILURE (lStatus)) {
-      std::ostringstream oStr;
-      oStr << "Unicode error: no Transliterator can be created for the '"
-           << K_ICU_QUOTATION_REMOVAL_RULE << "' rule.";
-      OPENTREP_LOG_ERROR (oStr.str());
-      throw UnicodeTransliteratorCreationException (oStr.str());
-    }
-    assert (_unquoter != NULL);
-               
-    // Register the Unicode Transliterator
-    Transliterator::registerInstance (_unquoter);
-
+  void OTransliterator::initPunctuationRemover() {
     // Create a remover of punctuation
-    lStatus = U_ZERO_ERROR;
-
-    _unpunctuater =
+    UErrorCode lStatus = U_ZERO_ERROR;
+    _punctuationRemover =
       Transliterator::createInstance (K_ICU_PUNCTUATION_REMOVAL_RULE,
                                       UTRANS_FORWARD, lStatus);
 
-    if (_unpunctuater == NULL || U_FAILURE (lStatus)) {
+    if (_punctuationRemover == NULL || U_FAILURE (lStatus)) {
       std::ostringstream oStr;
       oStr << "Unicode error: no Transliterator can be created for the '"
            << K_ICU_PUNCTUATION_REMOVAL_RULE << "' rule.";
       OPENTREP_LOG_ERROR (oStr.str());
       throw UnicodeTransliteratorCreationException (oStr.str());
     }
-    assert (_unpunctuater != NULL);
+    assert (_punctuationRemover != NULL);
                
     // Register the Unicode Transliterator
-    Transliterator::registerInstance (_unpunctuater);
+    Transliterator::registerInstance (_punctuationRemover);
+  }
 
+  // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::initQuoteRemover() {
+    // Create a remover of quotation
+    UErrorCode lStatus = U_ZERO_ERROR;
+    UParseError pError;
+    UnicodeString lUnquotedRules (K_ICU_QUOTATION_REMOVAL_RULE);
+    _quoteRemover =
+      Transliterator::createFromRules ("RBTUnaccent", lUnquotedRules,
+                                       UTRANS_FORWARD, pError, lStatus);
+
+    if (_quoteRemover == NULL || U_FAILURE (lStatus)) {
+      std::ostringstream oStr;
+      oStr << "Unicode error: no Transliterator can be created for the '"
+           << K_ICU_QUOTATION_REMOVAL_RULE << "' rule.";
+      OPENTREP_LOG_ERROR (oStr.str());
+      throw UnicodeTransliteratorCreationException (oStr.str());
+    }
+    assert (_quoteRemover != NULL);
+               
+    // Register the Unicode Transliterator
+    Transliterator::registerInstance (_quoteRemover);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::initAccentRemover() {
+    // Create a remover of accents
+    UErrorCode lStatus = U_ZERO_ERROR;
+    _accentRemover =
+      Transliterator::createInstance (K_ICU_ACCENT_REMOVAL_RULE, UTRANS_FORWARD,
+                                      lStatus);
+
+    if (_accentRemover == NULL || U_FAILURE (lStatus)) {
+      std::ostringstream oStr;
+      oStr << "Unicode error: no Transliterator can be created for the '"
+           << K_ICU_ACCENT_REMOVAL_RULE << "' rule.";
+      OPENTREP_LOG_ERROR (oStr.str());
+      throw UnicodeTransliteratorCreationException (oStr.str());
+    }
+    assert (_accentRemover != NULL);
+               
+    // Register the Unicode Transliterator
+    Transliterator::registerInstance (_accentRemover);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::initTranlisterator() {
     // Create a generic transliterator
-    lStatus = U_ZERO_ERROR;
-
+    UErrorCode lStatus = U_ZERO_ERROR;
     _tranlist =
       Transliterator::createInstance (K_ICU_GENERIC_TRANSLITERATOR_RULE,
                                       UTRANS_FORWARD, lStatus);
@@ -123,28 +130,115 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::init() {
+    initPunctuationRemover();
+    initQuoteRemover();
+    initAccentRemover();
+    initTranlisterator();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void OTransliterator::finalise() {
-    delete _normaliser; _normaliser = NULL;
-    delete _unquoter; _unquoter = NULL;
-    delete _unpunctuater; _unpunctuater = NULL;
+    delete _punctuationRemover; _punctuationRemover = NULL;
+    delete _quoteRemover; _quoteRemover = NULL;
+    delete _accentRemover; _accentRemover = NULL;
     delete _tranlist; _tranlist = NULL;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string OTransliterator::normalise (const std::string& iString) const {
-    assert (_normaliser != NULL);
-    assert (_unquoter != NULL);
-    assert (_unpunctuater != NULL);
-    assert (_tranlist != NULL);
+  void OTransliterator::unpunctuate (UnicodeString& ioString) const {
+    // Apply the punctuation removal scheme
+    assert (_punctuationRemover != NULL);
+    _punctuationRemover->transliterate (ioString);
+  }
 
+  // //////////////////////////////////////////////////////////////////////
+  std::string OTransliterator::unpunctuate (const std::string& iString) const {
+    // Build a UnicodeString from the STL string
+    UnicodeString lString (iString.c_str());
+
+    // Apply the punctuation removal scheme
+    unpunctuate (lString);
+
+    // Convert back from UnicodeString to UTF8-encoded STL string
+    const std::string& lPunctuatedString = getUTF8 (lString);
+
+    return lPunctuatedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::unquote (UnicodeString& ioString) const {
+    // Apply the quotation removal scheme
+    assert (_quoteRemover != NULL);
+    _quoteRemover->transliterate (ioString);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string OTransliterator::unquote (const std::string& iString) const {
+    // Build a UnicodeString from the STL string
+    UnicodeString lString (iString.c_str());
+
+    // Apply the quotation removal scheme
+    unquote (lString);
+
+    // Convert back from UnicodeString to UTF8-encoded STL string
+    const std::string& lUnquotedString = getUTF8 (lString);
+
+    return lUnquotedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::unaccent (UnicodeString& ioString) const {
+    // Apply the accent removal scheme
+    assert (_accentRemover != NULL);
+    _accentRemover->transliterate (ioString);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string OTransliterator::unaccent (const std::string& iString) const {
+    // Build a UnicodeString from the STL string
+    UnicodeString lString (iString.c_str());
+
+    // Apply the accent removal scheme
+    unaccent (lString);
+
+    // Convert back from UnicodeString to UTF8-encoded STL string
+    const std::string& lUnaccentuatedString = getUTF8 (lString);
+
+    return lUnaccentuatedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OTransliterator::transliterate (UnicodeString& ioString) const {
+    // Apply the transliteration scheme
+    assert (_tranlist != NULL);
+    _tranlist->transliterate (ioString);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string OTransliterator::transliterate (const std::string& iString) const {
+    // Build a UnicodeString from the STL string
+    UnicodeString lString (iString.c_str());
+
+    // Apply the transliteration scheme
+    transliterate (lString);
+
+    // Convert back from UnicodeString to UTF8-encoded STL string
+    const std::string& lTransliteratedString = getUTF8 (lString);
+
+    return lTransliteratedString;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string OTransliterator::normalise (const std::string& iString) const {
     // Build a UnicodeString from the STL string
     UnicodeString lString (iString.c_str());
 
     // Apply the whole sery of transformators
-    _normaliser->transliterate (lString);
-    _unquoter->transliterate (lString);
-    _unpunctuater->transliterate (lString);
-    _tranlist->transliterate (lString);
+    unaccent (lString);
+    unquote (lString);
+    unpunctuate (lString);
+    transliterate (lString);
 
     // Convert back from UnicodeString to UTF8-encoded STL string
     const std::string& lNormalisedString = getUTF8 (lString);
