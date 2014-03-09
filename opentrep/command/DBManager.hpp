@@ -48,36 +48,6 @@ namespace OPENTREP {
      */
     static void updatePlaceInDB (soci::session&, const Place&);
 
-    /**
-     * Retrieve, from the (SQLite3) database, the row corresponding to
-     * the given place code (e.g., 'sfo' for San Francisco Intl
-     * airport), and fill the given Place object with that retrieved
-     * data.
-     *
-     * @param soci::session& SOCI session handler.
-     * @param const LocationKey& The primary key of the place to be retrieved.
-     * @param Place& The object corresponding to the place to be retrieved.
-     *               It has to be given empty, and is filled by the method.
-     */
-    static bool retrievePlace (soci::session&, const LocationKey&, Place&);
-
-    /**
-     * Retrieve, from the (SQLite3) database, the row corresponding to
-     * the given place code (e.g., 'sfo' for San Francisco Intl
-     * airport), and fill the given Place object with that retrieved
-     * data.
-     *
-     * @param soci::session& SOCI session handler.
-     * @param const std::double& The latitude of the place to be retrieved.
-     * @param const std::double& The longitude of the place to be retrieved.
-     * @param PlaceOrderedList_T& The list corresponding to the places to be
-     *        retrieved. It has to be given empty, and is filled by the
-     *        method.
-     */
-    static bool retrieveClosestPlaces (soci::session&, const double& iLatitude,
-                                       const double& iLongitude,
-                                       PlaceOrderedList_T&);
-
     
   public:
     /**
@@ -85,21 +55,10 @@ namespace OPENTREP {
      *
      * @param soci::session& SOCI session handler.
      * @param soci::statement& SOCI SQL statement handler.
-     * @param Place& The object corresponding to the place to be retrieved.
-     *        It has to be given empty, and is filled by the method.
+     * @return std::string The serialised place to be retrieved.
      */
-    static void prepareSelectAllStatement (soci::session&, soci::statement&,
-                                           Place&);
-    /**
-     * Prepare (parse and put in cache) the SQL statement.
-     *
-     * @param soci::session& SOCI session handler.
-     * @param soci::statement& SOCI SQL statement handler.
-     * @param Place& The object corresponding to the place to be retrieved.
-     *        It has to be given empty, and is filled by the method.
-     */
-    static void prepareSelectFromCodeStatement (soci::session&,
-                                                soci::statement&, Place&);
+    static std::string prepareSelectAllBlobStatement (soci::session&,
+                                                      soci::statement&);
 
     /**
      * Prepare (parse and put in cache) the SQL statement.
@@ -120,10 +79,11 @@ namespace OPENTREP {
      * The SQL has to be already prepared.
      *
      * @param soci::statement& SOCI SQL statement handler.
-     * @param Place& The object corresponding to the place to be retrieved.
-     *               It has to be given empty, and is filled by the method.
+     * @param std::string& The serialised place to be retrieved.
+     *                     It has to be given empty, and is filled by the method.
+     * @return bool Whether or not there are more rows to be fetched.
      */
-    static bool iterateOnStatement (soci::statement&, Place&);
+    static bool iterateOnStatement (soci::statement&, std::string&);
 
     
   private:
@@ -132,30 +92,13 @@ namespace OPENTREP {
      *
      * @param soci::session& SOCI session handler.
      * @param soci::statement& SOCI SQL statement handler.
-     * @param const std::string& The IATA code of the place to be retrieved.
-     * @param const std::string& The ICAO code of the place to be retrieved.
-     * @param const std::string& The Geonames ID of the place to be retrieved.
-     * @param Place& The object corresponding to the place to be retrieved.
-     *               It has to be given empty, and is filled by the method.
+     * @param const IATACode_T& The IATA code of the place to be retrieved.
+     * @return std::string The serialised place to be retrieved.
      */
-    static void prepareSelectOnPlaceCodeStatement(soci::session&,
-                                                  soci::statement&,
-                                                  const std::string& iPlaceCode,
-                                                  const std::string& iIcaoCode,
-                                                  const GeonamesID_T&, Place&);
+    static std::string prepareSelectBlobOnPlaceCodeStatement (soci::session&,
+                                                              soci::statement&,
+                                                              const IATACode_T&);
     
-    /**
-     * Prepare (parse and put in cache) the SQL statement.
-     *
-     * @param soci::session& SOCI session handler.
-     * @param soci::statement& SOCI SQL statement handler.
-     * @param const XapianDocID_T& The code of the place to be retrieved.
-     * @param Place& The object corresponding to the place to be retrieved.
-     *               It has to be given empty, and is filled by the method.
-     */
-    static void prepareSelectOnDocIDStatement (soci::session&, soci::statement&,
-                                               const XapianDocID_T&, Place&);
-
 
   private:
     /**
