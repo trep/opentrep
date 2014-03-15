@@ -14,6 +14,9 @@
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/filter/bzip2.hpp>
+// SOCI
+#include <soci/soci.h>
+#include <soci/sqlite3/soci-sqlite3.h>
 // OpenTrep
 #include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/basic/Utilities.hpp>
@@ -23,6 +26,7 @@
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/factory/FacPlace.hpp>
+#include <opentrep/command/DBManager.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/service/Logger.hpp>
 // Xapian
@@ -115,6 +119,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (Xapian::WritableDatabase& ioDatabase,
+                    soci::session& ioSociSession,
                     std::istream& iPORFileStream,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
@@ -142,6 +147,9 @@ namespace OPENTREP {
         // Add the document, associated to the Place object, to the Xapian index
         IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
 
+        // Add the document to the SQLite3 database
+        DBManager::insertPlaceInDB (ioSociSession, lPlace, itReadLine);
+
         // DEBUG
         /*
         OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
@@ -167,17 +175,36 @@ namespace OPENTREP {
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
                     const TravelDBFilePath_T& iTravelDBFilePath,
+                    const SQLiteDBFilePath_T& iSQLiteDBFilePath,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
-    // Check that the directory for the Xapian database (index) exists and,
-    // if not, create it.
+    /**
+     *            0. Remove any existing directory (for Xapian and SQLite)
+     */
+    // Xapian directory
+    boost::filesystem::path lTravelDBFilePath (iTravelDBFilePath.begin(),
+                                               iTravelDBFilePath.end());
     // DEBUG
     OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDBFilePath
                         << "') will be cleared");
-    boost::filesystem::path lTravelDBFilePath (iTravelDBFilePath.begin(),
-                                               iTravelDBFilePath.end());
     boost::filesystem::remove_all (lTravelDBFilePath);
+
+    // SQLite3 directory
+    boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
+                                               iSQLiteDBFilePath.end());
+    boost::filesystem::path lSQLiteDBParentPath =
+      lSQLiteDBFullPath.parent_path();
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The SQLite database directory ('" << lSQLiteDBParentPath
+                        << "') will be cleared");
+    boost::filesystem::remove_all (lSQLiteDBParentPath);
+
+
+    /**
+     *            1. Xapian Database Initialisation
+     */
+    // Re-create the Xapian directory
     boost::filesystem::create_directories (lTravelDBFilePath);
 
     // Check whether the just created directory exists and is a directory.
@@ -192,7 +219,8 @@ namespace OPENTREP {
 
     // Create the Xapian database (index). As the directory has been fully
     // cleaned, deleted and re-created, that Xapian database (index) is empty.
-    Xapian::WritableDatabase lDatabase (iTravelDBFilePath, Xapian::DB_CREATE);
+    Xapian::WritableDatabase lXapianDatabase (iTravelDBFilePath,
+                                              Xapian::DB_CREATE);
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelDBFilePath
@@ -206,18 +234,27 @@ namespace OPENTREP {
      * mean that every document addition would end up in a corresponding
      * independant transaction, which would be very much inefficient.
      */
-    lDatabase.begin_transaction();
+    lXapianDatabase.begin_transaction();
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("A transaction has begun on the Xapian database ('"
                         << iTravelDBFilePath << "')");
 
+
     /**
-     * Parse the list of POR (points of reference).
+     *            2. SQLite3 Database Initialisation
      */
+    soci::session* lSociSession_ptr = DBManager::buildSQLDB (iSQLiteDBFilePath);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+
+    /**
+     *            3. List of POR (points of reference)
+     */
+    // Check that the file exists and is regular.
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Parsing por input file: " << iPORFilePath);
+    OPENTREP_LOG_DEBUG ("Parsing POR input file: " << iPORFilePath);
 
     // Check whether the file to be parsed exists and is readable.
     boost::filesystem::path lPORFilePath (iPORFilePath.begin(),
@@ -253,7 +290,8 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex(lDatabase, bunzip2Filter, iTransliterator);
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, lSociSession,
+                                       bunzip2Filter, iTransliterator);
 
     } else if (lPORFileExt == ".gz") {
       // Open the file
@@ -268,7 +306,8 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex(lDatabase, gunzipFilter, iTransliterator);
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, lSociSession,
+                                       gunzipFilter, iTransliterator);
 
     } else if (lPORFileExt == ".csv") {
       // Open the file
@@ -277,7 +316,8 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries =buildSearchIndex(lDatabase, fileToBeParsed, iTransliterator);
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, lSociSession,
+                                       fileToBeParsed, iTransliterator);
 
     } else {
       //
@@ -293,7 +333,7 @@ namespace OPENTREP {
     }
 
     // Commit the pending modifications on the Xapian database (index)
-    lDatabase.commit_transaction();
+    lXapianDatabase.commit_transaction();
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("Xapian has indexed " << oNbOfEntries << " entries.");
@@ -305,7 +345,7 @@ namespace OPENTREP {
      *       the Boost Unit Test framework, that latter kills the process.
      *       When called from within GDB, all is fine.
      */
-    lDatabase.close();
+    lXapianDatabase.close();
 
     return oNbOfEntries;
   }

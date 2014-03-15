@@ -28,16 +28,32 @@ namespace OPENTREP {
   class DBManager {
   public:
     /**
-     * Build the SQL database from the file with the ORI-maintained list
-     * of POR (points of reference).
+     * Create an empty SQL database.
      *
-     * @param const PORFilePath_T& File-path of the file of POR
-     *                             (points of reference).
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
-     * @return NbOfDBEntries_T Number of documents inserted in the SQLite3 DB.
+     * @return soci::session* A pointer on the just created SQLite3 database
+     *                        connection.
      */
-    static NbOfDBEntries_T buildSQLDB (const PORFilePath_T&,
-                                       const SQLiteDBFilePath_T&);
+    static soci::session* buildSQLDB (const SQLiteDBFilePath_T&);
+
+    /**
+     * Get all the rows of the SQLite3 database.
+     *
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @return NbOfDBEntries_T Number of documents of the SQLite3 DB.
+     */
+    static NbOfDBEntries_T getAll (const SQLiteDBFilePath_T&);
+
+    /**
+     * Insert into the SQLite3 database the document
+     * corresponding to the given Place object.
+     *
+     * @param soci::session& SOCI session handler.
+     * @param const Place& The place to be inserted.
+     * @param const std::string& The serialised version of that place.
+     */
+    static void insertPlaceInDB (soci::session&, const Place&,
+                                 const std::string& iSerialisedPlaceStr);
 
     /**
      * Update the Xapian document ID field of the database row

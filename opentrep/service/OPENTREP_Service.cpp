@@ -199,9 +199,6 @@ namespace OPENTREP {
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
 
-    // Retrieve the file-path of the POR (points of reference) file
-    const PORFilePath_T& lPORFilePath= lOPENTREP_ServiceContext.getPORFilePath();
-      
     // Retrieve the SQLite3 database file-path
     const SQLiteDBFilePath_T& lSQLiteDBFilePath =
       lOPENTREP_ServiceContext.getSQLiteDBFilePath();
@@ -209,7 +206,7 @@ namespace OPENTREP {
     // Delegate the database creation to the dedicated command
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
-    oNbOfEntries = DBManager::buildSQLDB (lPORFilePath, lSQLiteDBFilePath);
+    DBManager::buildSQLDB (lSQLiteDBFilePath);
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
     // DEBUG
@@ -237,6 +234,10 @@ namespace OPENTREP {
     const TravelDBFilePath_T& lTravelDBFilePath =
       lOPENTREP_ServiceContext.getTravelDBFilePath();
       
+    // Retrieve the SQLite3 database file-path
+    const SQLiteDBFilePath_T& lSQLiteDBFilePath =
+      lOPENTREP_ServiceContext.getSQLiteDBFilePath();
+      
     // Retrieve the Unicode transliterator
     const OTransliterator& lTransliterator =
       lOPENTREP_ServiceContext.getTransliterator();
@@ -246,6 +247,7 @@ namespace OPENTREP {
     lBuildSearchIndexChronometer.start();
     oNbOfEntries = IndexBuilder::buildSearchIndex (lPORFilePath,
                                                    lTravelDBFilePath,
+                                                   lSQLiteDBFilePath,
                                                    lTransliterator);
     const double lBuildSearchIndexMeasure =
       lBuildSearchIndexChronometer.elapsed();

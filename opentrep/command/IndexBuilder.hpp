@@ -7,9 +7,18 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 
-// Forward declarations
+/**
+ * Forward declarations
+ */
+// Xapian
 namespace Xapian {
   class WritableDatabase;
+}
+
+// SOCI (for SQLite3)
+namespace soci {
+  class session;
+  class statement;
 }
 
 namespace OPENTREP {
@@ -32,17 +41,19 @@ namespace OPENTREP {
      * @param Place& Place object instance.
      * @param const OTransliterator& Unicode transliterator.
      */
-    static void addDocumentToIndex (Xapian::WritableDatabase&, Place&,
-                                    const OTransliterator&);
+    static void addDocumentToIndex (Xapian::WritableDatabase&,
+                                    Place&, const OTransliterator&);
 
     /**
      * Build Xapian database.
      *
      * @param Xapian::WritableDatabase& Xapian database.
+     * @param soci::session& SOCI session handler.
      * @param std::ifstream& File stream for the POR data file.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (Xapian::WritableDatabase&,
+                                             soci::session&,
                                              std::istream& iPORFileStream,
                                              const OTransliterator&);
 
@@ -51,10 +62,12 @@ namespace OPENTREP {
      *
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
                                              const TravelDBFilePath_T&,
+                                             const SQLiteDBFilePath_T&,
                                              const OTransliterator&);
 
   private:
