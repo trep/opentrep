@@ -270,7 +270,7 @@ namespace OPENTREP {
 
     try {
 
-      // Re-create the SQLite3 directory
+      // Re-create the SQLite3 directory, if needed
       boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
                                                  iSQLiteDBFilePath.end());
       boost::filesystem::path lSQLiteDBParentPath =

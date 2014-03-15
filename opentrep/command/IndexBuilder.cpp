@@ -190,15 +190,13 @@ namespace OPENTREP {
                         << "') will be cleared");
     boost::filesystem::remove_all (lTravelDBFilePath);
 
-    // SQLite3 directory
+    // SQLite3 file
     boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
                                                iSQLiteDBFilePath.end());
-    boost::filesystem::path lSQLiteDBParentPath =
-      lSQLiteDBFullPath.parent_path();
     // DEBUG
-    OPENTREP_LOG_DEBUG ("The SQLite database directory ('" << lSQLiteDBParentPath
+    OPENTREP_LOG_DEBUG ("The SQLite database file ('" << lSQLiteDBFullPath
                         << "') will be cleared");
-    boost::filesystem::remove_all (lSQLiteDBParentPath);
+    boost::filesystem::remove_all (lSQLiteDBFullPath);
 
 
     /**
