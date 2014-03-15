@@ -132,10 +132,10 @@ int readConfiguration (int argc, char* argv[],
      "Spelling error distance (e.g., 3)")
     ("xapiandb,d",
      boost::program_options::value< std::string >(&ioXapianDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
-     "Xapian database filepath (e.g., /tmp/opentrep/traveldb)")
+     "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
     ("sqlite,s",
      boost::program_options::value< std::string >(&ioSQLiteDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
-     "SQLite3 database filepath (e.g., ~/tmp/opentrep/traveldb/ori_por_public.db)")
+     "SQLite3 database filepath (e.g., ~/tmp/opentrep/sqlite_travel.db)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")

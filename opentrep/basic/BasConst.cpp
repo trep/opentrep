@@ -19,7 +19,13 @@ namespace OPENTREP {
    * Default file-path for the Xapian database/index.
    */
   const std::string
-  DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH ("/tmp/opentrep/traveldb");
+  DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH ("/tmp/opentrep/xapian_traveldb");
+
+  /**
+   * Default name and location for the SQLite3 database.
+   */
+  const std::string
+  DEFAULT_OPENTREP_SQLITE_DB_FILEPATH ("/tmp/opentrep/sqlite_travel.db");
 
   /**
    * Default name and location for the MySQL database (if existing).
@@ -29,12 +35,6 @@ namespace OPENTREP {
   const std::string DEFAULT_OPENTREP_MYSQL_DB_DBNAME ("geo_ori");
   const std::string DEFAULT_OPENTREP_MYSQL_DB_HOST ("localhost");
   const std::string DEFAULT_OPENTREP_MYSQL_DB_PORT ("3306");
-
-  /**
-   * Default name and location for the SQLite3 database.
-   */
-  const std::string DEFAULT_OPENTREP_SQLITE_DB_FILEPATH (OPENTREP_POR_DATA_DIR
-                                                         "/ori_por_public.db");
 
   /**
    * Default date-time with std::tm structure as type.

@@ -3,8 +3,10 @@ from django.http import Http404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_text, smart_bytes
+from google.protobuf import text_format
 import sys, getopt, os, math
 import simplejson as json
+import logging
 # Potentially add the following two pathes to the PYTHONPATH environment variable
 # 1. Path to the OpenTrep C++ library of the Python wrapper (libpyopentrep.so)
 # 2. Path to the OpenTrep ProtoBuf stubs (Travel_pb2.py)
@@ -221,7 +223,9 @@ def index (request):
 def display (request, query_string = '',
              zoom_level = 5, map_type_value = 'HYBRID'):
   # Logging
-  # log_service.log ('/tmp/travel-search.log', request, query_string)
+  logger = logging.getLogger ('django.request')
+  logger.info (str(request))
+  logger.info ('Query string: "' + query_string + '"')
 
   #
   if query_string == '':
@@ -232,6 +236,7 @@ def display (request, query_string = '',
   initOK, openTrepLibrary = initOpenTrep()
   if initOK == False:
     errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+    logger.error (errorMsg)
     return render (request, 'search/500.html', {'error_msg': errorMsg})
 
   # Call the underlying C++ OpenTREP library. The input string is converted
@@ -246,6 +251,7 @@ def display (request, query_string = '',
   # Query status
   if okStatus == False:
     errorMsg = 'Error in the OpenTREP library: ' + queryAnswer.error_msg.msg
+    logger.error (errorMsg)
     return render (request, 'search/500.html', {'error_msg': errorMsg})
 
   # List of places
@@ -259,7 +265,7 @@ def display (request, query_string = '',
   coord_for_GMap_center = {'lat': 10, 'lon': 0}
 
   # DEBUG
-  #print 'Result: ' + str(placeList)
+  logger.debug ('Result: ' + str(placeList))
 
   # Free the OpenTREP library resource
   openTrepLibrary.finalize()
@@ -308,6 +314,10 @@ def display (request, query_string = '',
   corrected_query_string = calculate_corrected_query_string (place_list)
 
   #
+  logger.info ('Query string: "' + query_string
+               + '", corrected query string: "' + corrected_query_string
+               + '", unmatched keywords: "' + str(unmatched_keyword_list) + '"')
+  logger.info ('Place list: ' + text_format.MessageToString (placeList))
   return render (request, 'search/display.html', {
       'place_list': place_list, 'place_pair_list': place_pair_list,
       'nb_of_places': n_airports,

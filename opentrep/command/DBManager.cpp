@@ -4,6 +4,10 @@
 // STL
 #include <cassert>
 #include <sstream>
+// Boost
+#include <boost/lexical_cast.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/filesystem.hpp>
 // SOCI
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
@@ -18,375 +22,77 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  void DBManager::
-  prepareSelectAllStatement (soci::session& ioSociSession,
-                             soci::statement& ioSelectStatement,
-                             Place& ioPlace) {
+  std::string DBManager::
+  prepareSelectAllBlobStatement (soci::session& ioSociSession,
+                                 soci::statement& ioSelectStatement) {
+    std::string oSerialisedPlaceStr;
   
     try {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select dts.iata_code as iata_code, dts.location_type as location_type,
-         dts.geoname_id as geoname_id,
-         icao_code, faa_code,
-         envelope_id, dts.name as utf_name, asciiname, latitude, longitude,
-         fclass, fcode, page_rank,
-         date(date_from) as date_from, date(date_until) as date_until,
-         comment,
-         country_code, cc2, country_name, continent_name,
-         admin1_code, admin1_UTF8_name, admin1_ASCII_name,
-         admin2_code, admin2_UTF8_name, admin2_ASCII_name,
-         admin3_code, admin4_code,
-         population, elevation, gtopo30,
-         time_zone, gmt_offset, dst_offset, raw_offset,
-         date(moddate) as moddate,
-         state_code, wiki_link,
-         alt.lang_code as alt_lang_code, alt.name as alt_name,
-         alt.specifiers as alt_spec,
-         city_iata_code, city_location_type, city_geoname_id,
-         city_UTF8_name, city_ASCII_name
-         from ori_por_public_details dts, ori_por_public_alt_names alt,
-              ori_por_public_served_cities cty
-         where dts.iata_code = alt.iata_code
-           and dts.location_type = alt.location_type
-           and dts.geoname_id = alt.geoname_id
-           and dts.iata_code = cty.iata_code
-           and dts.location_type = cty.location_type
-           and dts.geoname_id = cty.geoname_id
-         order by dts.iata_code, dts.location_type, dts.geoname_id
-         ;
+         select serialised_place from ori_por;
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select dts.iata_code as iata_code, "
-         << "  dts.location_type as location_type, "
-         << "  dts.geoname_id as geoname_id, "
-         << "  icao_code, faa_code, "
-         << "  envelope_id, dts.name as utf_name, asciiname, "
-         << "  latitude, longitude, fclass, fcode, "
-         << "  page_rank, "
-         << "  date(date_from) as date_from, date(date_until) as date_until, "
-         << "  comment, "
-         << "  country_code, cc2, country_name, continent_name, "
-         << "  admin1_code, admin1_UTF8_name, admin1_ASCII_name, "
-         << "  admin2_code, admin2_UTF8_name, admin2_ASCII_name, "
-         << "  admin3_code, admin4_code, "
-         << "  population, elevation, gtopo30, "
-         << "  time_zone, gmt_offset, dst_offset, raw_offset, "
-         << "  date(moddate) as moddate, "
-         << "  state_code, wiki_link, "
-         << "  alt.lang_code as alt_lang_code, alt.name as alt_name, "
-         << "  alt.specifiers as alt_spec, "
-         << "  city_iata_code, city_location_type, city_geoname_id, "
-         << "  city_UTF8_name, city_ASCII_name "
-         << "from ori_por_public_details dts, ori_por_public_alt_names alt, "
-         << "     ori_por_public_served_cities cty "
-         << "where dts.iata_code = alt.iata_code "
-         << "  and dts.location_type = alt.location_type "
-         << "  and dts.geoname_id = alt.geoname_id "
-         << "  and dts.iata_code = cty.iata_code "
-         << "  and dts.location_type = cty.location_type "
-         << "  and dts.geoname_id = cty.geoname_id "
-         << "order by dts.iata_code, dts.location_type, dts.geoname_id",
-         soci::into (ioPlace));
+         << "select serialised_place from ori_por",
+         soci::into (oSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from ori_por_public_xxx' SQL request: "
+      errorStr << "Error in the 'select serialised_place from ori_por' SQL request: "
                << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
+
+    //
+    return oSerialisedPlaceStr;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void DBManager::
-  prepareSelectFromCodeStatement (soci::session& ioSociSession,
-                                  soci::statement& ioSelectStatement,
-                                  Place& ioPlace) {
+  std::string DBManager::
+  prepareSelectBlobOnPlaceCodeStatement (soci::session& ioSociSession,
+                                         soci::statement& ioSelectStatement,
+                                         const IATACode_T& iIataCode) {
+    std::string oSerialisedPlaceStr;
   
     try {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select rpd.iata_code, xapian_docid, icao_code, 
-         is_geonames, geonameid, 
-         latitude, longitude, fclass, fcode, 
-         country_code, cc2, admin1, admin2, admin3, admin4, 
-         population, elevation, gtopo30, 
-         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
-         is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, wiki_link,
-         language_code, ascii_name, utf_name, 
-         alternate_name1, alternate_name2, alternate_name3, 
-         alternate_name4, alternate_name5, alternate_name6, 
-         alternate_name7, alternate_name8, alternate_name9, 
-         alternate_name10,
-         page_rank, por_type
-         from place_names as pn, place_details as rpd 
-         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
-         where rpd.iata_code = pn.iata_code
-         order by rpd.iata_code, icao_code, geonameid
+         select serialised_place from ori_por where iata_code = iIataCode;
       */
 
       ioSelectStatement =
         (ioSociSession.prepare
-         << "select rpd.iata_code, xapian_docid, icao_code, "
-         << "is_geonames, geonameid, "
-         << "latitude, longitude, fclass, fcode, "
-         << "country_code, cc2, admin1, admin2, admin3, admin4, "
-         << "population, elevation, gtopo30, "
-         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
-         << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, wiki_link, "
-         << "language_code, ascii_name, utf_name, "
-         << "alternate_name1, alternate_name2, alternate_name3, "
-         << "alternate_name4, alternate_name5, alternate_name6, "
-         << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10, "
-         << "page_rank, por_type "
-         << "from place_names as pn, place_details as rpd "
-         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
-         << "where rpd.iata_code = pn.iata_code "
-         << "order by rpd.iata_code, icao_code, geonameid", soci::into(ioPlace));
+         << "select serialised_place from ori_por "
+         << "where iata_code = :place_iata_code",
+         soci::into (oSerialisedPlaceStr),
+         soci::use (static_cast<std::string>(iIataCode)));
 
       // Execute the SQL query
       ioSelectStatement.execute();
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from place_details' SQL request: "
+      errorStr << "Error in the 'select serialised_place from ori_por' SQL request: "
                << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
-  }
 
-  // //////////////////////////////////////////////////////////////////////
-  void DBManager::
-  prepareSelectFromCoordStatement (soci::session& ioSociSession,
-                                   soci::statement& ioSelectStatement,
-                                   const double& iLatitude,
-                                   const double& iLongitude) {
-  
-    try {
-      
-      // Instanciate a SQL statement (no request is performed at that stage)
-      /**
-         select rpd.iata_code, xapian_docid, icao_code, 
-         is_geonames, geonameid, 
-         latitude, longitude, fclass, fcode, 
-         country_code, cc2, admin1, admin2, admin3, admin4, 
-         population, elevation, gtopo30, 
-         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
-         is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, wiki_link, 
-         language_code, ascii_name, utf_name, 
-         alternate_name1, alternate_name2, alternate_name3,
-         alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9,
-         alternate_name10,
-         page_rank, por_type
-         from place_names as pn, place_details as rpd 
-         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
-         where latitude >= :lower_latitude
-           and latitude <= :upper_latitude
-           and longitude >= :lower_longitude
-           and longitude <= :upper_longitude
-           and rpd.iata_code = pn.iata_code
-      */
-      Place& lPlace = FacPlace::instance().create();
-      const double K_ERROR = 2.0;
-      const double lLowerBoundLatitude = iLatitude - K_ERROR;
-      const double lUpperBoundLatitude = iLatitude + K_ERROR;
-      const double lLowerBoundLongitude = iLongitude - K_ERROR;
-      const double lUpperBoundLongitude = iLongitude + K_ERROR;
-      
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select rpd.iata_code, xapian_docid, icao_code, "
-         << "is_geonames, geonameid, "
-         << "latitude, longitude, fclass, fcode, "
-         << "country_code, cc2, admin1, admin2, admin3, admin4, "
-         << "population, elevation, gtopo30, "
-         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
-         << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, wiki_link, "
-         << "language_code, ascii_name, utf_name, "
-         << "alternate_name1, alternate_name2, alternate_name3, "
-         << "alternate_name4, alternate_name5, alternate_name6, "
-         << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10, "
-         << "page_rank, por_type "
-         << "from place_names as pn, place_details as rpd "
-         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
-         << "where latitude >= :lower_latitude "
-         << "  and latitude <= :upper_latitude "
-         << "  and longitude >= :lower_longitude "
-         << "  and longitude <= :upper_longitude "
-         << "  and rpd.iata_code = pn.iata_code",
-         soci::into (lPlace), soci::use (lLowerBoundLatitude),
-         soci::use (lUpperBoundLatitude), soci::use (lLowerBoundLongitude),
-         soci::use (lUpperBoundLongitude));
-
-      // Execute the SQL query
-      ioSelectStatement.execute();
-
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from place_details' SQL request: "
-               << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseException (errorStr.str());
-    }
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  void DBManager::
-  prepareSelectOnPlaceCodeStatement (soci::session& ioSociSession,
-                                     soci::statement& ioSelectStatement,
-                                     const std::string& iIataCode,
-                                     const std::string& iIcaoCode,
-                                     const GeonamesID_T& iGeonamesID,
-                                     Place& ioPlace) {
-  
-    try {
-    
-      // Instanciate a SQL statement (no request is performed at that stage)
-      /**
-         select rpd.iata_code, xapian_docid, icao_code, 
-         is_geonames, geonameid, 
-         latitude, longitude, fclass, fcode, 
-         country_code, cc2, admin1, admin2, admin3, admin4, 
-         population, elevation, gtopo30, 
-         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
-         is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, wiki_link, 
-         language_code, ascii_name, utf_name, 
-         alternate_name1, alternate_name2, alternate_name3,
-         alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9,
-         alternate_name10,
-         page_rank, por_type
-         from place_names as pn, place_details as rpd 
-         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
-         where rpd.iata_code = iIataCode
-           and rpd.icao_code = iIcaoCode
-           and rpd.geonameid = iGeonamesID
-           and rpd.iata_code = pn.iata_code 
-      */
-
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select rpd.iata_code, xapian_docid, icao_code, "
-         << "is_geonames, geonameid, "
-         << "latitude, longitude, fclass, fcode, "
-         << "country_code, cc2, admin1, admin2, admin3, admin4, "
-         << "population, elevation, gtopo30, "
-         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
-         << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, wiki_link, "
-         << "language_code, ascii_name, utf_name, "
-         << "alternate_name1, alternate_name2, alternate_name3, "
-         << "alternate_name4, alternate_name5, alternate_name6, "
-         << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10, "
-         << "page_rank, por_type "
-         << "from place_names as pn, place_details as rpd "
-         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
-         << "where rpd.iata_code = :place_iata_code "
-         << "  and rpd.icao_code = :place_icao_code "
-         << "  and rpd.geonameid = :place_geonameid "
-         << "  and rpd.iata_code = pn.iata_code",
-         soci::into (ioPlace), soci::use (iIataCode), soci::use (iIcaoCode),
-         soci::use (iGeonamesID));
-
-      // Execute the SQL query
-      ioSelectStatement.execute();
-
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error in the 'select * from place_details' SQL request: "
-               << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseException (errorStr.str());
-    }
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  void DBManager::
-  prepareSelectOnDocIDStatement (soci::session& ioSociSession,
-                                 soci::statement& ioSelectStatement,
-                                 const XapianDocID_T& iDocID,
-                                 Place& ioPlace) {
-  
-    try {
-    
-      // Instanciate a SQL statement (no request is performed at that stage)
-      /**
-         select rpd.iata_code, xapian_docid, icao_code, 
-         is_geonames, geonameid, 
-         latitude, longitude, fclass, fcode, 
-         country_code, cc2, admin1, admin2, admin3, admin4, 
-         population, elevation, gtopo30, 
-         timezone, gmt_offset, dst_offset, raw_offset, moddate, 
-         is_airport, is_commercial, 
-         city_code, state_code, region_code, location_type, wiki_link, 
-         language_code, ascii_name, utf_name, 
-         alternate_name1, alternate_name2, alternate_name3,
-         alternate_name4, alternate_name5, alternate_name6,
-         alternate_name7, alternate_name8, alternate_name9,
-         alternate_name10,
-         page_rank, por_type
-         from place_names as pn, place_details as rpd 
-         left join airport_pageranked pr on pr.iata_code = rpd.iata_code 
-         where rpd.xapian_docid = DocID
-           and rpd.iata_code = pn.iata_code
-           and rpd.iata_code = pr.iata_code
-      */
-
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select rpd.iata_code, xapian_docid, icao_code, "
-         << "is_geonames, geonameid, "
-         << "latitude, longitude, fclass, fcode, "
-         << "country_code, cc2, admin1, admin2, admin3, admin4, "
-         << "population, elevation, gtopo30, "
-         << "timezone, gmt_offset, dst_offset, raw_offset, moddate, "
-         << "is_airport, is_commercial, "
-         << "city_code, state_code, region_code, location_type, wiki_link, "
-         << "language_code, ascii_name, utf_name, "
-         << "alternate_name1, alternate_name2, alternate_name3, "
-         << "alternate_name4, alternate_name5, alternate_name6, "
-         << "alternate_name7, alternate_name8, alternate_name9, "
-         << "alternate_name10, "
-         << "page_rank, por_type "
-         << "from place_names as pn, place_details as rpd "
-         << "left join airport_pageranked pr on pr.iata_code = rpd.iata_code "
-         << "where rpd.xapian_docid = :xapian_docid "
-         << "  and rpd.iata_code = pn.iata_code "
-         << "  and rpd.iata_code = pr.iata_code",
-         soci::into (ioPlace), soci::use (iDocID));
-
-      // Execute the SQL query
-      ioSelectStatement.execute();
-
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error: " << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseException (errorStr.str());
-    }
+    //
+    return oSerialisedPlaceStr;
   }
 
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::iterateOnStatement (soci::statement& ioStatement,
-                                      Place& ioPlace) {
+                                      std::string& ioPlace) {
     bool hasStillData = false;
   
     try {
@@ -397,13 +103,75 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr << "Error when iterating on the SQL fetch: " << lException.what();
-      errorStr << ". The current place key is: " << ioPlace.describeKey()
-               << " (it may be mis-leading, though, if the key could not be retrieved).";
+      errorStr << ". The current place is: " << ioPlace;
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
 
     return hasStillData;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::insertPlaceInDB (soci::session& ioSociSession,
+                                   const Place& iPlace,
+                                   const std::string& iSerialisedPlaceStr) {
+  
+    try {
+    
+      // Begin a transaction on the database
+      ioSociSession.begin();
+
+      // Instanciate a SQL statement (no request is performed at that stage)
+      const LocationKey& lLocationKey = iPlace.getKey();
+      const std::string lPK (lLocationKey.toString());
+      const IATAType& lIataType = iPlace.getIataType();
+      const std::string lLocationType (lIataType.getTypeAsString());
+      const std::string lIataCode (iPlace.getIataCode());
+      const std::string lIcaoCode (iPlace.getIcaoCode());
+      const std::string lFaaCode (iPlace.getFaaCode());
+      const std::string lIsGeonames ((iPlace.isGeonames())?"Y":"N");
+      const std::string lGeonameID =
+        boost::lexical_cast<std::string> (iPlace.getGeonamesID());
+      const std::string lEnvID =
+        boost::lexical_cast<std::string> (iPlace.getEnvelopeID());
+      const std::string lDateFrom =
+        boost::gregorian::to_iso_extended_string (iPlace.getDateFrom());
+      const std::string lDateEnd =
+        boost::gregorian::to_iso_extended_string (iPlace.getDateEnd());
+      // DEBUG
+      std::ostringstream oStr;
+      oStr << "insert into ori_por values (" << lPK << ", ";
+      oStr << lLocationType << ", ";
+      oStr << lIataCode << ", " << lIcaoCode << ", " << lFaaCode << ", ";
+      oStr << lIsGeonames << ", " << lGeonameID << ", ";
+      oStr << lEnvID << ", " << lDateFrom << ", " << lDateEnd << ", ";
+      oStr << iSerialisedPlaceStr << ")";
+      OPENTREP_LOG_DEBUG ("Full SQL statement: '" << oStr.str() << "'");
+
+      ioSociSession << "insert into ori_por values (:pk, "
+                    << ":location_type, :iata_code, :icao_code, :faa_code, "
+                    << ":is_geonames, :geoname_id, "
+                    << ":envelope_id, :date_from, :date_until, "
+                    << ":serialised_place)",
+        soci::use (lPK), soci::use (lLocationType), soci::use (lIataCode),
+        soci::use (lIcaoCode), soci::use (lFaaCode),
+        soci::use (lIsGeonames), soci::use (lGeonameID),
+        soci::use (lEnvID), soci::use (lDateFrom), soci::use (lDateEnd),
+        soci::use (iSerialisedPlaceStr);
+      
+      // Commit the transaction on the database
+      ioSociSession.commit();
+        
+      // Debug
+      // OPENTREP_LOG_DEBUG ("[" << lDocID << "] " << iPlace);
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when updating " << iPlace.toString() << ": "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -445,76 +213,9 @@ namespace OPENTREP {
     }
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  bool DBManager::retrievePlace (soci::session& ioSociSession,
-                                 const LocationKey& iPlaceKey, Place& ioPlace) {
-    bool oHasRetrievedPlace = false;
-      
-    try {
-
-      // Prepare the SQL request corresponding to the select statement
-      soci::statement lSelectStatement (ioSociSession);
-      const std::string& lIataCode = iPlaceKey.getIataCode();
-      const IATAType& lIataType = iPlaceKey.getIataType();
-      const std::string& lIataTypeStr = lIataType.getTypeAsString();
-      const GeonamesID_T& lGeonamesID = iPlaceKey.getGeonamesID();
-      DBManager::prepareSelectOnPlaceCodeStatement (ioSociSession,
-                                                    lSelectStatement,
-                                                    lIataCode, lIataTypeStr,
-                                                    lGeonamesID, ioPlace);
-      /**
-       * Retrieve the details of the place, as well as the alternate
-       * names, most often in other languages (e.g., "ru", "zh").
-       */
-      bool hasStillData = true;
-      while (hasStillData == true) {
-        hasStillData = iterateOnStatement (lSelectStatement, ioPlace);
-
-        // It is enough to have (at least) one database retrieved row
-        if (hasStillData == true) {
-          oHasRetrievedPlace = true;
-        }
-
-        // Debug
-        OPENTREP_LOG_DEBUG ("[" << iPlaceKey << "] " << ioPlace);
-      }
-      
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error when trying to retrieve " << iPlaceKey
-               << " from the SQLite3 database: " << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseException (errorStr.str());
-    }
-
-    return oHasRetrievedPlace;
-  }
 
   // //////////////////////////////////////////////////////////////////////
-  bool DBManager::retrieveClosestPlaces (soci::session& ioSociSession,
-                                         const double& iLatitude,
-                                         const double& iLongitude,
-                                         PlaceOrderedList_T& ioPlaceList) {
-    bool oHasRetrievedPlace = false;
-      
-    try {
-
-      
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error when trying to retrieve the closest places for "
-               << iLatitude << " / " << iLongitude << ": " << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseException (errorStr.str());
-    }
-
-    return oHasRetrievedPlace;
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T DBManager::
-  buildSQLDB (const PORFilePath_T& iPORFilepath,
-              const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+  NbOfDBEntries_T DBManager::getAll(const SQLiteDBFilePath_T& iSQLiteDBFilePath){
     NbOfDBEntries_T oNbOfEntries = 0;
 
     try {
@@ -527,9 +228,9 @@ namespace OPENTREP {
 
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (lSociSession);
-      Place& lPlace = FacPlace::instance().create();
-      DBManager::prepareSelectAllStatement (lSociSession, lSelectStatement,
-                                            lPlace);
+      std::string lPlace =
+        DBManager::prepareSelectAllBlobStatement(lSociSession, lSelectStatement);
+
       /**
        * Retrieve the details of the place, as well as the alternate
        * names, most often in other languages (e.g., "ru", "zh").
@@ -543,8 +244,7 @@ namespace OPENTREP {
           ++oNbOfEntries;
 
           // Debug
-          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "][" << lPlace.getKey()
-                              << "] " << lPlace);
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
         }
       }
       
@@ -557,6 +257,80 @@ namespace OPENTREP {
     }
 
     return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  soci::session* DBManager::
+  buildSQLDB (const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+    soci::session* oSociSession_ptr = NULL;
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
+                        << "') will be cleared");
+
+    try {
+
+      // Re-create the SQLite3 directory
+      boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
+                                                 iSQLiteDBFilePath.end());
+      boost::filesystem::path lSQLiteDBParentPath =
+        lSQLiteDBFullPath.parent_path();
+      boost::filesystem::create_directories (lSQLiteDBParentPath);
+
+      // Check whether the just created directory exists and is a directory.
+      boost::filesystem::path lSQLiteDBFilename = lSQLiteDBFullPath.filename();
+      if (!(boost::filesystem::exists (lSQLiteDBParentPath)
+            && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
+        std::ostringstream oStr;
+        oStr << "The path to the SQLite3 database ('"
+             << lSQLiteDBParentPath<< "') does not exist or is not a directory.";
+        OPENTREP_LOG_ERROR (oStr.str());
+        throw FileNotFoundException (oStr.str());
+      }
+
+      // Create the SQLite3 database (file). As the directory has been fully
+      // cleaned, deleted and re-created, that SQLite3 database (file) is empty.
+      oSociSession_ptr = new soci::session();
+      assert (oSociSession_ptr != NULL);
+      soci::session& lSociSession = *oSociSession_ptr;
+      lSociSession.open (soci::sqlite3, iSQLiteDBFilePath);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
+                          << "') has been checked and open");
+
+      // Prepare the SQL request corresponding to the select statement
+      lSociSession << "drop table if exists ori_por;";
+      std::ostringstream lSqlCreateStringStr;
+      lSqlCreateStringStr << "create table ori_por (";
+      lSqlCreateStringStr << "pk varchar(20) NOT NULL, ";
+      lSqlCreateStringStr << "location_type varchar(4) default NULL, ";
+      lSqlCreateStringStr << "iata_code varchar(3) default NULL, ";
+      lSqlCreateStringStr << "icao_code varchar(4) default NULL, ";
+      lSqlCreateStringStr << "faa_code varchar(4) default NULL, ";
+      lSqlCreateStringStr << "is_geonames varchar(1) default NULL, ";
+      lSqlCreateStringStr << "geoname_id int(11) default NULL, ";
+      lSqlCreateStringStr << "envelope_id int(11) default NULL, ";
+      lSqlCreateStringStr << "date_from date default NULL, ";
+      lSqlCreateStringStr << "date_until date default NULL, ";
+      lSqlCreateStringStr << "serialised_place default NULL, ";
+      lSqlCreateStringStr << "primary key (pk)); ";
+      lSociSession << lSqlCreateStringStr.str();
+      lSociSession << "create index ori_por_iata_code on ori_por (iata_code);";
+      lSociSession << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
+      lSociSession << "create index ori_por_icao_code on ori_por (icao_code);";
+      lSociSession << "create index ori_por_geonameid on ori_por (geoname_id);";
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to create " << iSQLiteDBFilePath
+               << " SQLite3 database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    assert (oSociSession_ptr != NULL);
+    return oSociSession_ptr;
   }
 
 }
