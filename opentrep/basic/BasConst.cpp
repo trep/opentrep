@@ -22,6 +22,11 @@ namespace OPENTREP {
   DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH ("/tmp/opentrep/xapian_traveldb");
 
   /**
+   * Default boolean indicator for the SQLite3 database filling.
+   */
+  const bool DEFAULT_OPENTREP_SQLITE_DB_FILLING_INDICATOR (false);
+
+  /**
    * Default name and location for the SQLite3 database.
    */
   const std::string

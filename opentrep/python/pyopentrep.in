@@ -68,14 +68,17 @@ def handle_opt():
         searchString = ' '.join (args)
 
     # Options
-    xapianDBPath = "/tmp/opentrep/traveldb"
-    sqliteDBPath = xapianDBPath + "/ori_por_public.db"
+    xapianDBPath = "/tmp/opentrep/xapian_traveldb"
+    sqliteDBFill = False
+    sqliteDBPath = "/tmp/opentrep/sqlite_travel.db"
     for o, a in opts:
         if o in ("-f", "--format"):
             outputFormat = a
         elif o in ("-x", "--xapiandb"):
             xapianDBPath = a
-        elif o in ("-s", "--sqlitedb"):
+        elif o in ("-l", "--sqlitedbfill"):
+            sqliteDBFill = bool (a)
+        elif o in ("-s", "--sqlitedbpath"):
             sqliteDBPath = a
         elif o in ("-i", "--index"):
             command = "index"
@@ -87,7 +90,7 @@ def handle_opt():
             sys.exit()
         else:
             assert False, "Unhandled option"
-    return (command, outputFormat, xapianDBPath, sqliteDBPath, searchString, nbOfDraws)
+    return (command, outputFormat, xapianDBPath, sqliteDBFill, sqliteDBPath, searchString, nbOfDraws)
 
 # Parser helpers
 def getMain (locations):
@@ -417,12 +420,12 @@ def search (openTrepLibrary, searchString, outputFormat):
 # Main
 ############################
 if __name__ == '__main__':
-    command, outputFormat, xapianDBPath, sqliteDBPath, searchString, nbOfDraws = handle_opt()
+    command, outputFormat, xapianDBPath, sqliteDBFill, sqliteDBPath, searchString, nbOfDraws = handle_opt()
 
     # Initialise the OpenTrep C++ library
     import libpyopentrep
     openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init (xapianDBPath, sqliteDBPath, 'pyopentrep.log')
+    initOK = openTrepLibrary.init (xapianDBPath, sqliteDBFill, sqliteDBPath, 'pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         raise Exception (errorMsg)

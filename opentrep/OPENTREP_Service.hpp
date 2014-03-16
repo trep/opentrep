@@ -98,11 +98,12 @@ namespace OPENTREP {
      *  Constructor.
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
-     * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
+     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const TravelDBFilePath_T&,
-                      const SQLiteDBFilePath_T&);
+                      const FillSQLDB_T&, const SQLiteDBFilePath_T&);
 
     /**
      *  Constructor.
@@ -111,10 +112,12 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
-                      const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
+                      const TravelDBFilePath_T&,
+                      const FillSQLDB_T&, const SQLiteDBFilePath_T&);
 
     /** 
      * Destructor. 
@@ -138,10 +141,11 @@ namespace OPENTREP {
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     void init (std::ostream& ioLogStream, const TravelDBFilePath_T&,
-               const SQLiteDBFilePath_T&);
+               const FillSQLDB_T&, const SQLiteDBFilePath_T&);
 
     /**
      * Initialise.
@@ -150,10 +154,12 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
+     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     void init (std::ostream& ioLogStream, const PORFilePath_T&,
-               const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
+               const TravelDBFilePath_T&,
+               const FillSQLDB_T&, const SQLiteDBFilePath_T&);
 
     /**
      *  Finalise. 

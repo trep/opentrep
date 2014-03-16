@@ -17,6 +17,7 @@ namespace OPENTREP {
     : _world (NULL),
       _porFilePath (DEFAULT_OPENTREP_POR_FILEPATH),
       _travelDBFilePath (DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
+      _fillSQLDB (DEFAULT_OPENTREP_SQLITE_DB_FILLING_INDICATOR),
       _sqliteDBFilePath (DEFAULT_OPENTREP_SQLITE_DB_FILEPATH) {
     assert (false);
   }
@@ -24,21 +25,23 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
   OPENTREP_ServiceContext (const TravelDBFilePath_T& iTravelDBFilePath,
+                           const FillSQLDB_T& iFillSQLDB,
                            const SQLiteDBFilePath_T& iSQLiteDBFilePath)
     : _world (NULL),
       _porFilePath (DEFAULT_OPENTREP_POR_FILEPATH),
       _travelDBFilePath (iTravelDBFilePath),
-      _sqliteDBFilePath (iSQLiteDBFilePath) {
+      _fillSQLDB (iFillSQLDB), _sqliteDBFilePath (iSQLiteDBFilePath) {
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_ServiceContext::
   OPENTREP_ServiceContext (const PORFilePath_T& iPORFilePath,
                            const TravelDBFilePath_T& iTravelDBFilePath,
+                           const FillSQLDB_T& iFillSQLDB,
                            const SQLiteDBFilePath_T& iSQLiteDBFilePath)
     : _world (NULL), _porFilePath (iPORFilePath),
       _travelDBFilePath (iTravelDBFilePath),
-      _sqliteDBFilePath (iSQLiteDBFilePath) {
+      _fillSQLDB (iFillSQLDB), _sqliteDBFilePath (iSQLiteDBFilePath) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -53,11 +56,13 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   const std::string OPENTREP_ServiceContext::shortDisplay() const {
+    const std::string lFillDB (_fillSQLDB?"to be filled":"not to be filled");
     std::ostringstream oStr;
     oStr << "OPENTREP_ServiceContext: "
          << "file-path of the POR file: " << _porFilePath
          << "; Xapian database (directory of the index): " << _travelDBFilePath
-         << "; SQLite3 database file-path: " << _sqliteDBFilePath
+         << "; SQLite3 database (" << lFillDB
+         << ") file-path: " << _sqliteDBFilePath
          << std::endl;
     return oStr.str();
   }

@@ -118,7 +118,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (Xapian::WritableDatabase& ioDatabase,
-                    soci::session& ioSociSession,
+                    const FillSQLDB_T& iFillSQLDB, soci::session& ioSociSession,
                     std::istream& iPORFileStream,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
@@ -146,8 +146,10 @@ namespace OPENTREP {
         // Add the document, associated to the Place object, to the Xapian index
         IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
 
-        // Add the document to the SQLite3 database
-        DBManager::insertPlaceInDB (ioSociSession, lPlace);
+        // Add the document to the SQLite3 database, if required
+        if (iFillSQLDB == true) {
+          DBManager::insertPlaceInDB (ioSociSession, lPlace);
+        }
 
         // DEBUG
         /*
@@ -174,6 +176,7 @@ namespace OPENTREP {
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
                     const TravelDBFilePath_T& iTravelDBFilePath,
+                    const FillSQLDB_T& iFillSQLDB,
                     const SQLiteDBFilePath_T& iSQLiteDBFilePath,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
@@ -293,7 +296,7 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, lSociSession,
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, iFillSQLDB, lSociSession,
                                        bunzip2Filter, iTransliterator);
 
     } else if (lPORFileExt == ".gz") {
@@ -309,7 +312,7 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, lSociSession,
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, iFillSQLDB, lSociSession,
                                        gunzipFilter, iTransliterator);
 
     } else if (lPORFileExt == ".csv") {
@@ -319,7 +322,7 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, lSociSession,
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, iFillSQLDB, lSociSession,
                                        fileToBeParsed, iTransliterator);
 
     } else {

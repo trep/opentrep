@@ -296,6 +296,10 @@ int main (int argc, char* argv[]) {
   // Xapian database name (directory of the index)
   std::string lXapianDBNameStr;
 
+  // Whether or not the SQLite3 database should be filled
+  // at the same time as the Xapian database/index
+  bool doNotFillSQLDB (false);
+
   // SQLite3 database file-path
   std::string lSQLiteDBFilePathStr;
 
@@ -325,8 +329,9 @@ int main (int argc, char* argv[]) {
     // Initialise the context
     const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
     const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (lSQLiteDBFilePathStr);
-    OPENTREP::OPENTREP_Service opentrepService(logOutputFile,
-                                               lXapianDBName, lSQLiteDBFilePath);
+    OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBName,
+                                                doNotFillSQLDB,
+                                                lSQLiteDBFilePath);
 
     // Parse the query and retrieve the places from Xapian only
     const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);

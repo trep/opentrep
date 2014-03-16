@@ -614,7 +614,7 @@ namespace OPENTREP {
      * Wrapper around the search use case. 
      */
     bool init (const std::string& iTravelDBFilePath,
-               const std::string& iSQLiteDBFilePath,
+               const bool iFillSQLDB, const std::string& iSQLiteDBFilePath,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
@@ -646,7 +646,7 @@ namespace OPENTREP {
 
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
                                                  lTravelDBFilePath,
-                                                 lSQLiteDBFilePath);
+                                                 iFillSQLDB, lSQLiteDBFilePath);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;
