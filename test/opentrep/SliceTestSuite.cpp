@@ -83,9 +83,10 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
 
   // Initialise the context
   const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
+  const OPENTREP::FillSQLDB_T doNotFillSQLDB (false);
   const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (X_SQLITE_DB_FP);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath,
-                                              lSQLiteDBFilePath);
+                                              doNotFillSQLDB, lSQLiteDBFilePath);
   
   // A few sample strings
   const std::string lLax1Str = "los angeles";

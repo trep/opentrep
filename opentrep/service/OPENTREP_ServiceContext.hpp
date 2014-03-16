@@ -55,6 +55,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the SQLite3 database filling indicator.
+     */
+    const FillSQLDB_T& getFillSQLDB() const {
+      return _fillSQLDB;
+    }
+    
+    /**
      * Get the SQLite3 database file-path.
      */
     const SQLiteDBFilePath_T& getSQLiteDBFilePath() const {
@@ -92,6 +99,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the SQLite3 database filling indicator.
+     */
+    void setFillSQLDB (const FillSQLDB_T& iFillSQLDB) {
+      _fillSQLDB = iFillSQLDB;
+    }
+    
+    /**
      * Set the SQLite3 database file-path.
      */
     void setSQLiteDBFilePath (const std::string& iSQLiteDBFilePath) {
@@ -123,14 +137,25 @@ namespace OPENTREP {
     // /////// Construction / initialisation ////////
     /**
      * Main constructor for the search-related services.
+     *
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
+     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
-    OPENTREP_ServiceContext (const TravelDBFilePath_T&, const SQLiteDBFilePath_T&);
+    OPENTREP_ServiceContext (const TravelDBFilePath_T&,
+                             const FillSQLDB_T&, const SQLiteDBFilePath_T&);
 
     /**
      * Main constructor for the indexation-related services.
+     *
+     * @param const PORFilePath_T& File-path of the file of POR
+     *                             (points of reference).
+     * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
+     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
+     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      */
     OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&,
-                             const SQLiteDBFilePath_T&);
+                             const FillSQLDB_T&, const SQLiteDBFilePath_T&);
 
     /**
      * Default constructor.
@@ -164,6 +189,12 @@ namespace OPENTREP {
      * Xapian database (directory of the index).
      */
     TravelDBFilePath_T _travelDBFilePath;
+
+    /**
+     * Whether the SQLite3 database should be filled
+     * at the same time as the Xapian database/index.
+     */
+    FillSQLDB_T _fillSQLDB;
 
     /**
      * Read/write SQLite database file-path.

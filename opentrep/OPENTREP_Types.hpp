@@ -49,6 +49,12 @@ namespace OPENTREP {
       : std::string (iValue) { }
   };
 
+  /**
+   * Whether or not the SQLite3 database should be filled
+   * at the same time as the Xapian index.
+   */
+  typedef bool FillSQLDB_T;
+
   /** 
    * SQLite database file-path, corresponding to the (potentially relative)
    * directory name (on the filesystem) where SQLite stores its database.

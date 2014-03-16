@@ -145,6 +145,10 @@ int main (int argc, char* argv[]) {
   // Xapian database name (directory of the index)
   std::string lXapianDBNameStr;
 
+  // Whether or not the SQLite3 database should be filled
+  // at the same time as the Xapian database/index
+  bool doNotFillSQLDB (false);
+
   // SQLite3 database file-path
   std::string lSQLiteDBFilePathStr;
 
@@ -173,7 +177,8 @@ int main (int argc, char* argv[]) {
   const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
   const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (lSQLiteDBFilePathStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
-                                              lXapianDBName, lSQLiteDBFilePath);
+                                              lXapianDBName,
+                                              doNotFillSQLDB, lSQLiteDBFilePath);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =
