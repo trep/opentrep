@@ -316,19 +316,55 @@ namespace OPENTREP {
   };
 
   /**
-   * The connection fails with the MySQL database.
+   * The connection fails with the SQLite3 database.
    */
-  class SQLDatabaseConnectionImpossibleException : public SQLDatabaseException {
+  class SQLDatabaseImpossibleConnectionException : public SQLDatabaseException {
   public:
     /**
      * Constructor.
      */
-    SQLDatabaseConnectionImpossibleException (const std::string& iWhat)
+    SQLDatabaseImpossibleConnectionException (const std::string& iWhat)
       : SQLDatabaseException (iWhat) {}
   };
 
   /**
-   * Index issue.
+   * The SQLite3 database file cannot be created.
+   */
+  class SQLDatabaseFileCannotBeCreatedException : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseFileCannotBeCreatedException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
+   * SQLite3 database index creation issue.
+   */
+  class SQLDatabaseIndexCreationException : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseIndexCreationException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
+   * SQLite3 database table creation issue.
+   */
+  class SQLDatabaseTableCreationException : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseTableCreationException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
+   * Overall indexing issue.
    */
   class BuildIndexException : public RootException {
   public:
@@ -339,7 +375,7 @@ namespace OPENTREP {
   };
 
   /**
-   * Interpreter issue.
+   * Overall interpreter issue.
    */
   class InterpreterUseCaseException : public RootException {
   public:

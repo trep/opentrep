@@ -22,6 +22,118 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
+  soci::session* DBManager::
+  initSQLDBSession (const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+    soci::session* oSociSession_ptr = NULL;
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
+                        << "') will be cleared");
+
+    try {
+
+      // Re-create the SQLite3 directory, if needed
+      boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
+                                                 iSQLiteDBFilePath.end());
+      boost::filesystem::path lSQLiteDBParentPath =
+        lSQLiteDBFullPath.parent_path();
+      boost::filesystem::create_directories (lSQLiteDBParentPath);
+
+      // Check whether the just created directory exists and is a directory.
+      boost::filesystem::path lSQLiteDBFilename = lSQLiteDBFullPath.filename();
+      if (!(boost::filesystem::exists (lSQLiteDBParentPath)
+            && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
+        std::ostringstream oStr;
+        oStr << "Error. The path to the SQLite3 database directory ('"
+             << lSQLiteDBParentPath<< "') does not exist or is not a directory.";
+        OPENTREP_LOG_ERROR (oStr.str());
+        throw FileNotFoundException (oStr.str());
+      }
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to create " << iSQLiteDBFilePath
+               << " SQLite3 database file: " << lException.what();
+      errorStr << ". Check that the program has got write permission on the "
+               << "corresponding parent directories.";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseFileCannotBeCreatedException (errorStr.str());
+    }
+
+    try {
+
+      // Create the SQLite3 database (file). As the directory has been fully
+      // cleaned, deleted and re-created, that SQLite3 database (file) is empty.
+      oSociSession_ptr = new soci::session();
+      assert (oSociSession_ptr != NULL);
+      soci::session& lSociSession = *oSociSession_ptr;
+      lSociSession.open (soci::sqlite3, iSQLiteDBFilePath);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
+                          << "') has been checked and open");
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to connect to the '" << iSQLiteDBFilePath
+               << "' SQLite3 database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+    }
+
+    assert (oSociSession_ptr != NULL);
+    return oSociSession_ptr;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::createSQLDBTables (soci::session& ioSociSession) {
+    try {
+
+      ioSociSession << "drop table if exists ori_por;";
+      std::ostringstream lSQLTableCreationStr;
+      lSQLTableCreationStr << "create table ori_por (";
+      lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
+      lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
+      lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
+      lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
+      lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
+      lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
+      lSQLTableCreationStr << "geoname_id int(11) default NULL, ";
+      lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
+      lSQLTableCreationStr << "date_from date default NULL, ";
+      lSQLTableCreationStr << "date_until date default NULL, ";
+      lSQLTableCreationStr << "serialised_place default NULL, ";
+      lSQLTableCreationStr << "primary key (pk)); ";
+      ioSociSession << lSQLTableCreationStr.str();
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to create SQLite3 tables: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseTableCreationException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::createSQLDBIndexes (soci::session& ioSociSession) {
+    try {
+
+      ioSociSession << "create index ori_por_iata_code on ori_por (iata_code);";
+      ioSociSession << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
+      ioSociSession << "create index ori_por_icao_code on ori_por (icao_code);";
+      ioSociSession << "create index ori_por_geonameid on ori_por (geoname_id);";
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to create SQLite3 indexes: "
+               << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseIndexCreationException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   std::string DBManager::
   prepareSelectAllBlobStatement (soci::session& ioSociSession,
                                  soci::statement& ioSelectStatement) {
@@ -113,8 +225,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void DBManager::insertPlaceInDB (soci::session& ioSociSession,
-                                   const Place& iPlace,
-                                   const std::string& iSerialisedPlaceStr) {
+                                   const Place& iPlace) {
   
     try {
     
@@ -138,6 +249,7 @@ namespace OPENTREP {
         boost::gregorian::to_iso_extended_string (iPlace.getDateFrom());
       const std::string lDateEnd =
         boost::gregorian::to_iso_extended_string (iPlace.getDateEnd());
+      const std::string lRawDataString (iPlace.getRawDataString());
       // DEBUG
       /*
       std::ostringstream oStr;
@@ -146,7 +258,7 @@ namespace OPENTREP {
       oStr << lIataCode << ", " << lIcaoCode << ", " << lFaaCode << ", ";
       oStr << lIsGeonames << ", " << lGeonameID << ", ";
       oStr << lEnvID << ", " << lDateFrom << ", " << lDateEnd << ", ";
-      oStr << iSerialisedPlaceStr << ")";
+      oStr << lRawDataString << ")";
       OPENTREP_LOG_DEBUG ("Full SQL statement: '" << oStr.str() << "'");
       */
 
@@ -159,7 +271,7 @@ namespace OPENTREP {
         soci::use (lIcaoCode), soci::use (lFaaCode),
         soci::use (lIsGeonames), soci::use (lGeonameID),
         soci::use (lEnvID), soci::use (lDateFrom), soci::use (lDateEnd),
-        soci::use (iSerialisedPlaceStr);
+        soci::use (lRawDataString);
       
       // Commit the transaction on the database
       ioSociSession.commit();
@@ -215,23 +327,17 @@ namespace OPENTREP {
     }
   }
 
-
   // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T DBManager::getAll(const SQLiteDBFilePath_T& iSQLiteDBFilePath){
+  NbOfDBEntries_T DBManager::getAll (soci::session& ioSociSession) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
     try {
 
-      // Open the connection to the database
-      soci::session* lSociSession_ptr = new soci::session();
-      assert (lSociSession_ptr != NULL);
-      soci::session& lSociSession = *lSociSession_ptr;
-      lSociSession.open (soci::sqlite3, iSQLiteDBFilePath);
-
       // Prepare the SQL request corresponding to the select statement
-      soci::statement lSelectStatement (lSociSession);
+      soci::statement lSelectStatement (ioSociSession);
       std::string lPlace =
-        DBManager::prepareSelectAllBlobStatement(lSociSession, lSelectStatement);
+        DBManager::prepareSelectAllBlobStatement (ioSociSession,
+                                                  lSelectStatement);
 
       /**
        * Retrieve the details of the place, as well as the alternate
@@ -259,80 +365,6 @@ namespace OPENTREP {
     }
 
     return oNbOfEntries;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  soci::session* DBManager::
-  buildSQLDB (const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
-    soci::session* oSociSession_ptr = NULL;
-
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
-                        << "') will be cleared");
-
-    try {
-
-      // Re-create the SQLite3 directory, if needed
-      boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
-                                                 iSQLiteDBFilePath.end());
-      boost::filesystem::path lSQLiteDBParentPath =
-        lSQLiteDBFullPath.parent_path();
-      boost::filesystem::create_directories (lSQLiteDBParentPath);
-
-      // Check whether the just created directory exists and is a directory.
-      boost::filesystem::path lSQLiteDBFilename = lSQLiteDBFullPath.filename();
-      if (!(boost::filesystem::exists (lSQLiteDBParentPath)
-            && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
-        std::ostringstream oStr;
-        oStr << "The path to the SQLite3 database ('"
-             << lSQLiteDBParentPath<< "') does not exist or is not a directory.";
-        OPENTREP_LOG_ERROR (oStr.str());
-        throw FileNotFoundException (oStr.str());
-      }
-
-      // Create the SQLite3 database (file). As the directory has been fully
-      // cleaned, deleted and re-created, that SQLite3 database (file) is empty.
-      oSociSession_ptr = new soci::session();
-      assert (oSociSession_ptr != NULL);
-      soci::session& lSociSession = *oSociSession_ptr;
-      lSociSession.open (soci::sqlite3, iSQLiteDBFilePath);
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
-                          << "') has been checked and open");
-
-      // Prepare the SQL request corresponding to the select statement
-      lSociSession << "drop table if exists ori_por;";
-      std::ostringstream lSqlCreateStringStr;
-      lSqlCreateStringStr << "create table ori_por (";
-      lSqlCreateStringStr << "pk varchar(20) NOT NULL, ";
-      lSqlCreateStringStr << "location_type varchar(4) default NULL, ";
-      lSqlCreateStringStr << "iata_code varchar(3) default NULL, ";
-      lSqlCreateStringStr << "icao_code varchar(4) default NULL, ";
-      lSqlCreateStringStr << "faa_code varchar(4) default NULL, ";
-      lSqlCreateStringStr << "is_geonames varchar(1) default NULL, ";
-      lSqlCreateStringStr << "geoname_id int(11) default NULL, ";
-      lSqlCreateStringStr << "envelope_id int(11) default NULL, ";
-      lSqlCreateStringStr << "date_from date default NULL, ";
-      lSqlCreateStringStr << "date_until date default NULL, ";
-      lSqlCreateStringStr << "serialised_place default NULL, ";
-      lSqlCreateStringStr << "primary key (pk)); ";
-      lSociSession << lSqlCreateStringStr.str();
-      lSociSession << "create index ori_por_iata_code on ori_por (iata_code);";
-      lSociSession << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
-      lSociSession << "create index ori_por_icao_code on ori_por (icao_code);";
-      lSociSession << "create index ori_por_geonameid on ori_por (geoname_id);";
-
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error when trying to create " << iSQLiteDBFilePath
-               << " SQLite3 database: " << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseException (errorStr.str());
-    }
-
-    assert (oSociSession_ptr != NULL);
-    return oSociSession_ptr;
   }
 
 }

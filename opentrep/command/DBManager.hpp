@@ -23,18 +23,38 @@ namespace OPENTREP {
 
   /**
    * @brief Class building the Business Object Model (BOM) from data
-   *        retrieved from the database.
+   *        retrieved from a SQLite3 database.
    */
   class DBManager {
   public:
     /**
-     * Create an empty SQL database.
+     * Create a SQLite3 database.
+     *
+     * With SQLite3, a database is given by just a file-path. If the SQLite3
+     * database file was previously existing, it is deleted and re-created,
+     * empty.
      *
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      * @return soci::session* A pointer on the just created SQLite3 database
      *                        connection.
      */
-    static soci::session* buildSQLDB (const SQLiteDBFilePath_T&);
+    static soci::session* initSQLDBSession (const SQLiteDBFilePath_T&);
+
+    /**
+     * Create the database tables (e.g., 'ori_por' table).
+     *
+     * If tables were previously existing, they are deleted and re-created.
+     *
+     * @param soci::session& A reference on the SQLite3 database session.
+     */
+    static void createSQLDBTables (soci::session&);
+
+    /**
+     * Create the database indexes.
+     *
+     * @param soci::session& A reference on the SQLite3 database session.
+     */
+    static void createSQLDBIndexes (soci::session&);
 
     /**
      * Get all the rows of the SQLite3 database.
@@ -42,7 +62,7 @@ namespace OPENTREP {
      * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
      * @return NbOfDBEntries_T Number of documents of the SQLite3 DB.
      */
-    static NbOfDBEntries_T getAll (const SQLiteDBFilePath_T&);
+    static NbOfDBEntries_T getAll (soci::session&);
 
     /**
      * Insert into the SQLite3 database the document
@@ -50,10 +70,8 @@ namespace OPENTREP {
      *
      * @param soci::session& SOCI session handler.
      * @param const Place& The place to be inserted.
-     * @param const std::string& The serialised version of that place.
      */
-    static void insertPlaceInDB (soci::session&, const Place&,
-                                 const std::string& iSerialisedPlaceStr);
+    static void insertPlaceInDB (soci::session&, const Place&);
 
     /**
      * Update the Xapian document ID field of the database row

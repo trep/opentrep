@@ -7,6 +7,8 @@
 // Boost
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/ptime.hpp>
+// SOCI
+#include <soci/soci.h>
 // OpenTrep
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/basic/BasChronometer.hpp>
@@ -206,7 +208,19 @@ namespace OPENTREP {
     // Delegate the database creation to the dedicated command
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
-    DBManager::buildSQLDB (lSQLiteDBFilePath);
+
+    //
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLiteDBFilePath);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+
+    // Create the SQLite3 database tables
+    DBManager::createSQLDBTables (lSociSession);
+
+    // Create the SQLite3 database tables
+    DBManager::createSQLDBIndexes (lSociSession);
+
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
     // DEBUG
@@ -253,7 +267,7 @@ namespace OPENTREP {
       lBuildSearchIndexChronometer.elapsed();
       
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Built Xapian database (index): "
+    OPENTREP_LOG_DEBUG ("Built Xapian database/index and SQLite3 database/file: "
                         << lBuildSearchIndexMeasure << " - "
                         << lOPENTREP_ServiceContext.display());
 

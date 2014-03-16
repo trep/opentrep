@@ -16,7 +16,6 @@
 #include <boost/iostreams/filter/bzip2.hpp>
 // SOCI
 #include <soci/soci.h>
-#include <soci/sqlite3/soci-sqlite3.h>
 // OpenTrep
 #include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/basic/Utilities.hpp>
@@ -148,7 +147,7 @@ namespace OPENTREP {
         IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
 
         // Add the document to the SQLite3 database
-        DBManager::insertPlaceInDB (ioSociSession, lPlace, itReadLine);
+        DBManager::insertPlaceInDB (ioSociSession, lPlace);
 
         // DEBUG
         /*
@@ -242,9 +241,15 @@ namespace OPENTREP {
     /**
      *            2. SQLite3 Database Initialisation
      */
-    soci::session* lSociSession_ptr = DBManager::buildSQLDB (iSQLiteDBFilePath);
+    // Create the SQLite3 database file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (iSQLiteDBFilePath);
     assert (lSociSession_ptr != NULL);
     soci::session& lSociSession = *lSociSession_ptr;
+
+    // Create the SQLite3 database tables
+    DBManager::createSQLDBTables (lSociSession);
+
 
     /**
      *            3. List of POR (points of reference)
@@ -344,6 +349,11 @@ namespace OPENTREP {
      *       When called from within GDB, all is fine.
      */
     lXapianDatabase.close();
+
+
+    // Build the SQLite3 database indexes
+    DBManager::createSQLDBIndexes (lSociSession);
+
 
     return oNbOfEntries;
   }
