@@ -139,6 +139,7 @@ namespace OPENTREP {
       const std::string lDateEnd =
         boost::gregorian::to_iso_extended_string (iPlace.getDateEnd());
       // DEBUG
+      /*
       std::ostringstream oStr;
       oStr << "insert into ori_por values (" << lPK << ", ";
       oStr << lLocationType << ", ";
@@ -147,6 +148,7 @@ namespace OPENTREP {
       oStr << lEnvID << ", " << lDateFrom << ", " << lDateEnd << ", ";
       oStr << iSerialisedPlaceStr << ")";
       OPENTREP_LOG_DEBUG ("Full SQL statement: '" << oStr.str() << "'");
+      */
 
       ioSociSession << "insert into ori_por values (:pk, "
                     << ":location_type, :iata_code, :icao_code, :faa_code, "
