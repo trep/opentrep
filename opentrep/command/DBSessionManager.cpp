@@ -63,7 +63,7 @@ namespace OPENTREP {
                << lException.what() << std::endl;
       errorStr << "Database parameters used: " << iDBParams.toString();
       OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseConnectionImpossibleException (errorStr.str());
+      throw SQLDatabaseImpossibleConnectionException (errorStr.str());
     }
   }
   
