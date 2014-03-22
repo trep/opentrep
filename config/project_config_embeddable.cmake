@@ -358,6 +358,10 @@ macro (get_external_libs)
       get_curses (${_arg_version})
     endif (${_arg_lower} STREQUAL "curses")
 
+    if (${_arg_lower} STREQUAL "sqlite")
+      get_sqlite (${_arg_version})
+    endif (${_arg_lower} STREQUAL "sqlite")
+
     if (${_arg_lower} STREQUAL "mysql")
       get_mysql (${_arg_version})
     endif (${_arg_lower} STREQUAL "mysql")
@@ -819,6 +823,28 @@ macro (get_curses)
   endif (CURSES_FOUND)
 
 endmacro (get_curses)
+
+# ~~~~~~~~~~ SQLite3 ~~~~~~~~~
+macro (get_sqlite)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires SQLite3-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires SQLite3 without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  find_package (SQLite3 ${_required_version} REQUIRED)
+  if (SQLITE3_FOUND)
+
+    # Update the list of include directories for the project
+    include_directories (${SQLITE3_INCLUDE_DIR})
+
+    # Update the list of dependencies for the project
+    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SQLITE3_LIBRARIES})
+  endif (SQLITE3_FOUND)
+
+endmacro (get_sqlite)
 
 # ~~~~~~~~~~ MySQL ~~~~~~~~~
 macro (get_mysql)
@@ -2556,6 +2582,17 @@ macro (display_curses)
   endif (CURSES_FOUND)
 endmacro (display_curses)
 
+# SQLite3
+macro (display_sqlite)
+  if (SQLITE3_FOUND)
+    message (STATUS)
+    message (STATUS "* SQLite3:")
+    message (STATUS "  - SQLITE3_VERSION ................. : ${SQLITE3_VERSION}")
+    message (STATUS "  - SQLITE3_INCLUDE_DIR ............. : ${SQLITE3_INCLUDE_DIR}")
+    message (STATUS "  - SQLITE3_LIBRARIES ............... : ${SQLITE3_LIBRARIES}")
+  endif (SQLITE3_FOUND)
+endmacro (display_sqlite)
+
 # MySQL
 macro (display_mysql)
   if (MYSQL_FOUND)
@@ -2885,6 +2922,7 @@ macro (display_status)
   display_xapian ()
   display_readline ()
   display_curses ()
+  display_sqlite ()
   display_mysql ()
   display_soci ()
   display_stdair ()
