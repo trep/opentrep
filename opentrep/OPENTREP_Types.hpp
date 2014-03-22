@@ -49,6 +49,16 @@ namespace OPENTREP {
       : std::string (iValue) { }
   };
 
+  /** 
+   * SQL database type: MySQL ("mysql)), SQLite3 ("sqlite") or, the default,
+   * no database at all ("nodb").
+   */
+  struct SQLDBConnectionString_T : public std::string {
+  public:
+    explicit SQLDBConnectionString_T (const std::string& iValue)
+      : std::string (iValue) { }
+  };
+
   /**
    * Whether or not the SQLite3 database should be filled
    * at the same time as the Xapian index.

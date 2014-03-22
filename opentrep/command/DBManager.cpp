@@ -11,6 +11,7 @@
 // SOCI
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
+#include <soci/mysql/soci-mysql.h>
 // OpenTrep
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
@@ -23,18 +24,19 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   soci::session* DBManager::
-  initSQLDBSession (const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+  initSQLDBSession (const DBType& iDBType,
+                    const SQLDBConnectionString_T& iSQLDBConnectionString) {
     soci::session* oSociSession_ptr = NULL;
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
+    OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
                         << "') will be cleared");
 
     try {
 
       // Re-create the SQLite3 directory, if needed
-      boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
-                                                 iSQLiteDBFilePath.end());
+      boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnectionString.begin(),
+                                                 iSQLDBConnectionString.end());
       boost::filesystem::path lSQLiteDBParentPath =
         lSQLiteDBFullPath.parent_path();
       boost::filesystem::create_directories (lSQLiteDBParentPath);
@@ -52,8 +54,8 @@ namespace OPENTREP {
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to create " << iSQLiteDBFilePath
-               << " SQLite3 database file: " << lException.what();
+      errorStr << "Error when trying to create " << iSQLDBConnectionString
+               << " SQL database file: " << lException.what();
       errorStr << ". Check that the program has got write permission on the "
                << "corresponding parent directories.";
       OPENTREP_LOG_ERROR (errorStr.str());
@@ -62,21 +64,24 @@ namespace OPENTREP {
 
     try {
 
-      // Create the SQLite3 database (file). As the directory has been fully
-      // cleaned, deleted and re-created, that SQLite3 database (file) is empty.
+      // Create the SQL database (file). As the directory has been fully
+      // cleaned, deleted and re-created, that SQL database (file) is empty.
       oSociSession_ptr = new soci::session();
       assert (oSociSession_ptr != NULL);
       soci::session& lSociSession = *oSociSession_ptr;
-      lSociSession.open (soci::sqlite3, iSQLiteDBFilePath);
+      lSociSession.open (soci::sqlite3, iSQLDBConnectionString);
 
       // DEBUG
-      OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLiteDBFilePath
+      OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
                           << "') has been checked and open");
+      const std::string& lDBName = lSociSession.get_backend_name();
+      OPENTREP_LOG_DEBUG ("Database name: " << lDBName);
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to connect to the '" << iSQLiteDBFilePath
-               << "' SQLite3 database: " << lException.what();
+      errorStr << "Error when trying to connect to the '"
+               << iSQLDBConnectionString << "' SQL database: "
+               << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseImpossibleConnectionException (errorStr.str());
     }
@@ -88,6 +93,25 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void DBManager::createSQLDBTables (soci::session& ioSociSession) {
     try {
+
+      /**
+       * SQL DDL (Data Definition Language) queries:
+       * -------------------------------------------
+         drop table if exists ori_por;
+         create table ori_por (
+         pk varchar(20) NOT NULL,
+         location_type varchar(4) default NULL,
+         iata_code varchar(3) default NULL,
+         icao_code varchar(4) default NULL,
+         faa_code varchar(4) default NULL,
+         is_geonames varchar(1) default NULL,
+         geoname_id int(11) default NULL,
+         envelope_id int(11) default NULL,
+         date_from date default NULL,
+         date_until date default NULL,
+         serialised_place default NULL,
+         primary key (pk));
+       */
 
       ioSociSession << "drop table if exists ori_por;";
       std::ostringstream lSQLTableCreationStr;
@@ -117,7 +141,21 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void DBManager::createSQLDBIndexes (soci::session& ioSociSession) {
+    const std::string& lDBName = ioSociSession.get_backend_name();
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Database name: " << lDBName);
+
     try {
+
+      /**
+       * SQL DDL (Data Definition Language) queries for SQLite3:
+       * -------------------------------------------------------
+       create index ori_por_iata_code on ori_por (iata_code);
+       create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);
+       create index ori_por_icao_code on ori_por (icao_code);
+       create index ori_por_geonameid on ori_por (geoname_id);
+       */
 
       ioSociSession << "create index ori_por_iata_code on ori_por (iata_code);";
       ioSociSession << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
@@ -359,7 +397,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr << "Error when trying to retrieve " << oNbOfEntries
-               << "-th row from the SQLite3 database: " << lException.what();
+               << "-th row from the SQL database: " << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }

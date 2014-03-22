@@ -17,7 +17,7 @@ namespace treppb {
 namespace OPENTREP {
 
   /**
-   * @brief Enumeration of output types.
+   * @brief Enumeration of place/location types.
    */
   struct IATAType {
   public:
@@ -43,17 +43,17 @@ namespace OPENTREP {
     static const std::string& getLabel (const EN_IATAType&);
 
     /**
-     * Get the type value from parsing a single char (e.g., 'a', 'C', 'O')
+     * Get the type value from parsing a single character (e.g., 'a', 'C', 'O')
      */
     static EN_IATAType getType (const char);
 
     /**
-     * Get the label as a single char (e.g., 'a', 'C', 'O').
+     * Get the label as a single character (e.g., 'a', 'C', 'O').
      */
     static char getTypeLabel (const EN_IATAType&);
 
     /**
-     * Get the label as a string of a single char (e.g., "a", "C", "O").
+     * Get the label as a string of a single char string (e.g., "a", "C", "O").
      */
     static std::string getTypeLabelAsString (const EN_IATAType&);
 
@@ -73,7 +73,7 @@ namespace OPENTREP {
     EN_IATAType getType() const;
 
     /**
-     * Get the enumerated value as a short string (e.g., 'a', 'C', 'O').
+     * Get the enumerated value as a single character (e.g., 'a', 'C', 'O').
      */
     char getTypeAsChar() const;
     

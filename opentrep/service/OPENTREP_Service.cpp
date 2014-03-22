@@ -210,7 +210,7 @@ namespace OPENTREP {
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
 
-    // Retrieve the SQLite3 database file-path
+    // Retrieve the SQL database file-path
     const SQLiteDBFilePath_T& lSQLiteDBFilePath =
       lOPENTREP_ServiceContext.getSQLiteDBFilePath();
       
@@ -218,22 +218,24 @@ namespace OPENTREP {
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
 
-    //
+    // Create the SQL database file
+    const DBType lSQLDBType ("sqlite");
+    const SQLDBConnectionString_T lSQLDBConnectionString (lSQLiteDBFilePath);
     soci::session* lSociSession_ptr =
-      DBManager::initSQLDBSession (lSQLiteDBFilePath);
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
     soci::session& lSociSession = *lSociSession_ptr;
 
-    // Create the SQLite3 database tables
+    // Create the SQL database tables
     DBManager::createSQLDBTables (lSociSession);
 
-    // Create the SQLite3 database tables
+    // Create the SQL database tables
     DBManager::createSQLDBIndexes (lSociSession);
 
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Created the SQLite3 database: " << lDBCreationMeasure
+    OPENTREP_LOG_DEBUG ("Created the SQL database: " << lDBCreationMeasure
                         << " - " << lOPENTREP_ServiceContext.display());
 
     return oNbOfEntries;
@@ -257,7 +259,7 @@ namespace OPENTREP {
     const TravelDBFilePath_T& lTravelDBFilePath =
       lOPENTREP_ServiceContext.getTravelDBFilePath();
       
-    // Retrieve the SQLite3 database filling indicator
+    // Retrieve the SQL database filling indicator
     const FillSQLDB_T& lFillSQLDB = lOPENTREP_ServiceContext.getFillSQLDB();
       
     // Retrieve the SQLite3 database file-path

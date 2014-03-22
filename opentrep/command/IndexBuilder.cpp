@@ -242,15 +242,17 @@ namespace OPENTREP {
 
 
     /**
-     *            2. SQLite3 Database Initialisation
+     *            2. SQL Database Initialisation
      */
-    // Create the SQLite3 database file
+    // Create the SQL database file
+    const DBType lSQLDBType ("sqlite");
+    const SQLDBConnectionString_T lSQLDBConnectionString (iSQLiteDBFilePath);
     soci::session* lSociSession_ptr =
-      DBManager::initSQLDBSession (iSQLiteDBFilePath);
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
     soci::session& lSociSession = *lSociSession_ptr;
 
-    // Create the SQLite3 database tables
+    // Create the SQL database tables
     DBManager::createSQLDBTables (lSociSession);
 
 
@@ -354,7 +356,7 @@ namespace OPENTREP {
     lXapianDatabase.close();
 
 
-    // Build the SQLite3 database indexes
+    // Build the SQL database indexes
     DBManager::createSQLDBIndexes (lSociSession);
 
 

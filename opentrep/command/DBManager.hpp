@@ -7,6 +7,7 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/LocationKey.hpp>
+#include <opentrep/DBType.hpp>
 #include <opentrep/bom/PlaceList.hpp>
 
 // Forward declarations
@@ -34,11 +35,14 @@ namespace OPENTREP {
      * database file was previously existing, it is deleted and re-created,
      * empty.
      *
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
-     * @return soci::session* A pointer on the just created SQLite3 database
+     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const SQLDBConnectionString_T& Connection string for the SQL
+     *                                       database.
+     * @return soci::session* A pointer on the just created SQL database
      *                        connection.
      */
-    static soci::session* initSQLDBSession (const SQLiteDBFilePath_T&);
+    static soci::session* initSQLDBSession (const DBType&,
+                                            const SQLDBConnectionString_T&);
 
     /**
      * Create the database tables (e.g., 'ori_por' table).
@@ -57,15 +61,16 @@ namespace OPENTREP {
     static void createSQLDBIndexes (soci::session&);
 
     /**
-     * Get all the rows of the SQLite3 database.
+     * Get all the rows of the SQL database.
      *
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
-     * @return NbOfDBEntries_T Number of documents of the SQLite3 DB.
+     * @param const SQLDBConnectionString_T& Connection string to the SQL
+     *                                       database.
+     * @return NbOfDBEntries_T Number of documents of the SQL database.
      */
     static NbOfDBEntries_T getAll (soci::session&);
 
     /**
-     * Insert into the SQLite3 database the document
+     * Insert into the SQL database the document
      * corresponding to the given Place object.
      *
      * @param soci::session& SOCI session handler.
