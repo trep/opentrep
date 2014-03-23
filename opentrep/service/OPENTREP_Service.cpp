@@ -29,21 +29,21 @@ namespace OPENTREP {
   OPENTREP_Service::
   OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T& iPORFilepath,
                     const TravelDBFilePath_T& iTravelDBFilePath,
-                    const FillSQLDB_T& iFillSQLDB,
-                    const SQLiteDBFilePath_T& iSQLiteDBFilePath)
+                    const DBType& iSQLDBType,
+                    const SQLDBConnectionString_T& iSQLDBConnStr)
     : _opentrepServiceContext (NULL) {
     init (ioLogStream, iPORFilepath, iTravelDBFilePath,
-          iFillSQLDB, iSQLiteDBFilePath);
+          iSQLDBType, iSQLDBConnStr);
   }
 
   // //////////////////////////////////////////////////////////////////////
   OPENTREP_Service::
   OPENTREP_Service (std::ostream& ioLogStream,
                     const TravelDBFilePath_T& iTravelDBFilePath,
-                    const FillSQLDB_T& iFillSQLDB,
-                    const SQLiteDBFilePath_T& iSQLiteDBFilePath)
+                    const DBType& iSQLDBType,
+                    const SQLDBConnectionString_T& iSQLDBConnStr)
     : _opentrepServiceContext (NULL) {
-    init (ioLogStream, iTravelDBFilePath, iFillSQLDB, iSQLiteDBFilePath);
+    init (ioLogStream, iTravelDBFilePath, iSQLDBType, iSQLDBConnStr);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -71,16 +71,15 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void OPENTREP_Service::init (std::ostream& ioLogStream,
                                const TravelDBFilePath_T& iTravelDBFilePath,
-                               const FillSQLDB_T& iFillSQLDB,
-                               const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+                               const DBType& iSQLDBType,
+                               const SQLDBConnectionString_T& iSQLDBConnStr) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
     // Initialise the context
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
       FacOpenTrepServiceContext::instance().create (iTravelDBFilePath,
-                                                    iFillSQLDB,
-                                                    iSQLiteDBFilePath);
+                                                    iSQLDBType, iSQLDBConnStr);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
@@ -92,8 +91,8 @@ namespace OPENTREP {
   void OPENTREP_Service::init (std::ostream& ioLogStream,
                                const PORFilePath_T& iPORFilepath,
                                const TravelDBFilePath_T& iTravelDBFilePath,
-                               const FillSQLDB_T& iFillSQLDB,
-                               const SQLiteDBFilePath_T& iSQLiteDBFilePath) {
+                               const DBType& iSQLDBType,
+                               const SQLDBConnectionString_T& iSQLDBConnStr) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
@@ -101,8 +100,7 @@ namespace OPENTREP {
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
       FacOpenTrepServiceContext::instance().create (iPORFilepath,
                                                     iTravelDBFilePath,
-                                                    iFillSQLDB,
-                                                    iSQLiteDBFilePath);
+                                                    iSQLDBType, iSQLDBConnStr);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
@@ -130,11 +128,12 @@ namespace OPENTREP {
     const TravelDBFilePath_T& lTravelDBFilePath =
       lOPENTREP_ServiceContext.getTravelDBFilePath();
       
-    // Retrieve the SQLite3 database file-path
-    const SQLiteDBFilePath_T& lSQLiteDBFilePath =
-      lOPENTREP_ServiceContext.getSQLiteDBFilePath();
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
       
-    const DBFilePathPair_T lDBFilePathPair(lTravelDBFilePath, lSQLiteDBFilePath);
+    const DBFilePathPair_T lDBFilePathPair (lTravelDBFilePath,
+                                            lSQLDBConnectionString);
     FilePathSet_T oFilePathSet (lPORFilePath, lDBFilePathPair);
     return oFilePathSet;
   }
@@ -210,17 +209,18 @@ namespace OPENTREP {
     assert (_opentrepServiceContext != NULL);
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
 
-    // Retrieve the SQL database file-path
-    const SQLiteDBFilePath_T& lSQLiteDBFilePath =
-      lOPENTREP_ServiceContext.getSQLiteDBFilePath();
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
       
     // Delegate the database creation to the dedicated command
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
 
     // Create the SQL database file
-    const DBType lSQLDBType ("sqlite");
-    const SQLDBConnectionString_T lSQLDBConnectionString (lSQLiteDBFilePath);
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
@@ -259,12 +259,12 @@ namespace OPENTREP {
     const TravelDBFilePath_T& lTravelDBFilePath =
       lOPENTREP_ServiceContext.getTravelDBFilePath();
       
-    // Retrieve the SQL database filling indicator
-    const FillSQLDB_T& lFillSQLDB = lOPENTREP_ServiceContext.getFillSQLDB();
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
       
-    // Retrieve the SQLite3 database file-path
-    const SQLiteDBFilePath_T& lSQLiteDBFilePath =
-      lOPENTREP_ServiceContext.getSQLiteDBFilePath();
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
       
     // Retrieve the Unicode transliterator
     const OTransliterator& lTransliterator =
@@ -275,13 +275,14 @@ namespace OPENTREP {
     lBuildSearchIndexChronometer.start();
     oNbOfEntries = IndexBuilder::buildSearchIndex (lPORFilePath,
                                                    lTravelDBFilePath,
-                                                   lFillSQLDB, lSQLiteDBFilePath,
+                                                   lSQLDBType,
+                                                   lSQLDBConnectionString,
                                                    lTransliterator);
     const double lBuildSearchIndexMeasure =
       lBuildSearchIndexChronometer.elapsed();
       
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Built Xapian database/index and SQLite3 database/file: "
+    OPENTREP_LOG_DEBUG ("Built Xapian database/index and SQL database: "
                         << lBuildSearchIndexMeasure << " - "
                         << lOPENTREP_ServiceContext.display());
 

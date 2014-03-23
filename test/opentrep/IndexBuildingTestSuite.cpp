@@ -58,9 +58,9 @@ const std::string K_POR_FILEPATH (OPENTREP_POR_DATA_DIR
 const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
 
 /**
- * SQlite3 database file-path.
+ * SQL database connection string.
  */
-const std::string X_SQLITE_DB_FP ("/tmp/opentrep/test_traveldb/ori_por_public.db");
+const std::string X_SQL_DB_STR ("");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -88,11 +88,11 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   // Initialise the context
   const OPENTREP::PORFilePath_T lPORFilePath (K_POR_FILEPATH);
   const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
-  const OPENTREP::FillSQLDB_T doNotFillSQLDB (false);
-  const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (X_SQLITE_DB_FP);
+  const OPENTREP::DBType lDBType (OPENTREP::DBType::NODB);
+  const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (X_SQL_DB_STR);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilePath,
                                               lTravelDBFilePath,
-                                              doNotFillSQLDB, lSQLiteDBFilePath);
+                                              lDBType, lSQLDBConnStr);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;

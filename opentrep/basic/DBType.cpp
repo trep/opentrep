@@ -64,6 +64,8 @@ namespace OPENTREP {
       _type = SQLITE3;
     } else if (iTypeStr == "mysql") {
       _type = MYSQL;
+    } else if (iTypeStr == "nodb") {
+      _type = NODB;
     } else {
       _type = LAST_VALUE;
     }

@@ -29,111 +29,212 @@ namespace OPENTREP {
     soci::session* oSociSession_ptr = NULL;
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
-                        << "') will be cleared");
+    OPENTREP_LOG_DEBUG ("SQL database type: " << iDBType.describe());
+    if (!(iDBType == DBType::NODB)) {
+      OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
+                          << "') will be cleared");
+    }
 
-    try {
+    if (iDBType == DBType::SQLITE3) {
 
-      // Re-create the SQLite3 directory, if needed
-      boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnectionString.begin(),
-                                                 iSQLDBConnectionString.end());
-      boost::filesystem::path lSQLiteDBParentPath =
-        lSQLiteDBFullPath.parent_path();
-      boost::filesystem::create_directories (lSQLiteDBParentPath);
+      try {
 
-      // Check whether the just created directory exists and is a directory.
-      boost::filesystem::path lSQLiteDBFilename = lSQLiteDBFullPath.filename();
-      if (!(boost::filesystem::exists (lSQLiteDBParentPath)
-            && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
-        std::ostringstream oStr;
-        oStr << "Error. The path to the SQLite3 database directory ('"
-             << lSQLiteDBParentPath<< "') does not exist or is not a directory.";
-        OPENTREP_LOG_ERROR (oStr.str());
-        throw FileNotFoundException (oStr.str());
+        // Re-create the SQLite3 directory, if needed
+        boost::filesystem::path lSQLiteDBFullPath(iSQLDBConnectionString.begin(),
+                                                  iSQLDBConnectionString.end());
+        boost::filesystem::path lSQLiteDBParentPath =
+          lSQLiteDBFullPath.parent_path();
+        boost::filesystem::create_directories (lSQLiteDBParentPath);
+
+        // Check whether the just created directory exists and is a directory.
+        boost::filesystem::path lSQLiteDBFilename = lSQLiteDBFullPath.filename();
+        if (!(boost::filesystem::exists (lSQLiteDBParentPath)
+              && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
+          std::ostringstream oStr;
+          oStr << "Error. The path to the SQLite3 database directory ('"
+               << lSQLiteDBParentPath
+               << "') does not exist or is not a directory.";
+          OPENTREP_LOG_ERROR (oStr.str());
+          throw FileNotFoundException (oStr.str());
+        }
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create " << iSQLDBConnectionString
+                 << " SQL database file: " << lException.what();
+        errorStr << ". Check that the program has got write permission on the "
+                 << "corresponding parent directories.";
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseFileCannotBeCreatedException (errorStr.str());
       }
 
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error when trying to create " << iSQLDBConnectionString
-               << " SQL database file: " << lException.what();
-      errorStr << ". Check that the program has got write permission on the "
-               << "corresponding parent directories.";
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseFileCannotBeCreatedException (errorStr.str());
-    }
+      try {
 
-    try {
+        // Create the SQL database (file). As the directory has been fully
+        // cleaned, deleted and re-created, that SQL database (file) is empty.
+        oSociSession_ptr = new soci::session();
+        assert (oSociSession_ptr != NULL);
+        soci::session& lSociSession = *oSociSession_ptr;
+        lSociSession.open (soci::sqlite3, iSQLDBConnectionString);
 
-      // Create the SQL database (file). As the directory has been fully
-      // cleaned, deleted and re-created, that SQL database (file) is empty.
-      oSociSession_ptr = new soci::session();
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
+                            << "') has been checked and open");
+        const std::string& lDBName = lSociSession.get_backend_name();
+        OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to connect to the '"
+                 << iSQLDBConnectionString << "' SQL database: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      }
+
+      // The SQLite3 connection is assumed to have been successful
       assert (oSociSession_ptr != NULL);
-      soci::session& lSociSession = *oSociSession_ptr;
-      lSociSession.open (soci::sqlite3, iSQLDBConnectionString);
 
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
-                          << "') has been checked and open");
-      const std::string& lDBName = lSociSession.get_backend_name();
-      OPENTREP_LOG_DEBUG ("Database name: " << lDBName);
+    } else if (iDBType == DBType::MYSQL) {
 
-    } catch (std::exception const& lException) {
-      std::ostringstream errorStr;
-      errorStr << "Error when trying to connect to the '"
-               << iSQLDBConnectionString << "' SQL database: "
-               << lException.what();
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      try {
+
+        // Create the SQL database tables.
+        oSociSession_ptr = new soci::session();
+        assert (oSociSession_ptr != NULL);
+        soci::session& lSociSession = *oSociSession_ptr;
+        lSociSession.open (soci::mysql, iSQLDBConnectionString);
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
+                            << "') has been checked and open");
+        const std::string& lDBName = lSociSession.get_backend_name();
+        OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to connect to the '"
+                 << iSQLDBConnectionString << "' SQL database: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      }
+
+      // The MySQL/MariaDB connection is assumed to have been successful
+      assert (oSociSession_ptr != NULL);
+
+    } else {
+      // No connection will be made
     }
 
-    assert (oSociSession_ptr != NULL);
     return oSociSession_ptr;
   }
 
   // //////////////////////////////////////////////////////////////////////
   void DBManager::createSQLDBTables (soci::session& ioSociSession) {
-    try {
+    const std::string& lDBName = ioSociSession.get_backend_name();
 
-      /**
-       * SQL DDL (Data Definition Language) queries:
-       * -------------------------------------------
-         drop table if exists ori_por;
-         create table ori_por (
-         pk varchar(20) NOT NULL,
-         location_type varchar(4) default NULL,
-         iata_code varchar(3) default NULL,
-         icao_code varchar(4) default NULL,
-         faa_code varchar(4) default NULL,
-         is_geonames varchar(1) default NULL,
-         geoname_id int(11) default NULL,
-         envelope_id int(11) default NULL,
-         date_from date default NULL,
-         date_until date default NULL,
-         serialised_place default NULL,
-         primary key (pk));
-       */
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
 
-      ioSociSession << "drop table if exists ori_por;";
-      std::ostringstream lSQLTableCreationStr;
-      lSQLTableCreationStr << "create table ori_por (";
-      lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
-      lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
-      lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
-      lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
-      lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
-      lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
-      lSQLTableCreationStr << "geoname_id int(11) default NULL, ";
-      lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
-      lSQLTableCreationStr << "date_from date default NULL, ";
-      lSQLTableCreationStr << "date_until date default NULL, ";
-      lSQLTableCreationStr << "serialised_place default NULL, ";
-      lSQLTableCreationStr << "primary key (pk)); ";
-      ioSociSession << lSQLTableCreationStr.str();
+    if (lDBName == "sqlite3") {
 
-    } catch (std::exception const& lException) {
+      try {
+
+        /**
+         * SQL DDL (Data Definition Language) queries:
+         * -------------------------------------------
+           drop table if exists ori_por;
+           create table ori_por (
+           pk varchar(20) NOT NULL,
+           location_type varchar(4) default NULL,
+           iata_code varchar(3) default NULL,
+           icao_code varchar(4) default NULL,
+           faa_code varchar(4) default NULL,
+           is_geonames varchar(1) default NULL,
+           geoname_id int(11) default NULL,
+           envelope_id int(11) default NULL,
+           date_from date default NULL,
+           date_until date default NULL,
+           serialised_place varchar(8000) default NULL,
+           primary key (pk));
+        */
+
+        ioSociSession << "drop table if exists ori_por;";
+        std::ostringstream lSQLTableCreationStr;
+        lSQLTableCreationStr << "create table ori_por (";
+        lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
+        lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
+        lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
+        lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
+        lSQLTableCreationStr << "geoname_id int(11) default NULL, ";
+        lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
+        lSQLTableCreationStr << "date_from date default NULL, ";
+        lSQLTableCreationStr << "date_until date default NULL, ";
+        lSQLTableCreationStr << "serialised_place varchar(8000) default NULL, ";
+        lSQLTableCreationStr << "primary key (pk)); ";
+        ioSociSession << lSQLTableCreationStr.str();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create SQLite3 tables: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseTableCreationException (errorStr.str());
+      }
+
+    } else if (lDBName == "mysql") {
+
+      try {
+
+        /**
+         * SQL DDL (Data Definition Language) queries:
+         * -------------------------------------------
+           drop table if exists ori_por;
+           create table ori_por (
+           pk varchar(20) NOT NULL,
+           location_type varchar(4) default NULL,
+           iata_code varchar(3) default NULL,
+           icao_code varchar(4) default NULL,
+           faa_code varchar(4) default NULL,
+           is_geonames varchar(1) default NULL,
+           geoname_id int(11) default NULL,
+           envelope_id int(11) default NULL,
+           date_from date default NULL,
+           date_until date default NULL,
+           serialised_place varchar(8000) default NULL);
+        */
+
+        ioSociSession << "drop table if exists ori_por;";
+        std::ostringstream lSQLTableCreationStr;
+        lSQLTableCreationStr << "create table ori_por (";
+        lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
+        lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
+        lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
+        lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
+        lSQLTableCreationStr << "geoname_id int(11) default NULL, ";
+        lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
+        lSQLTableCreationStr << "date_from date default NULL, ";
+        lSQLTableCreationStr << "date_until date default NULL, ";
+        lSQLTableCreationStr << "serialised_place varchar(8000) default NULL); ";
+        ioSociSession << lSQLTableCreationStr.str();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create MySQL/MariaDB tables: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseTableCreationException (errorStr.str());
+      }
+
+    } else {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to create SQLite3 tables: "
-               << lException.what();
+      errorStr << "Error: the '" << lDBName
+               << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseTableCreationException (errorStr.str());
     }
@@ -144,30 +245,76 @@ namespace OPENTREP {
     const std::string& lDBName = ioSociSession.get_backend_name();
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Database name: " << lDBName);
+    OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
 
-    try {
+    if (lDBName == "sqlite3") {
 
-      /**
-       * SQL DDL (Data Definition Language) queries for SQLite3:
-       * -------------------------------------------------------
-       create index ori_por_iata_code on ori_por (iata_code);
-       create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);
-       create index ori_por_icao_code on ori_por (icao_code);
-       create index ori_por_geonameid on ori_por (geoname_id);
-       */
+      try {
 
-      ioSociSession << "create index ori_por_iata_code on ori_por (iata_code);";
-      ioSociSession << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
-      ioSociSession << "create index ori_por_icao_code on ori_por (icao_code);";
-      ioSociSession << "create index ori_por_geonameid on ori_por (geoname_id);";
+        /**
+         * SQL DDL (Data Definition Language) queries for SQLite3:
+         * -------------------------------------------------------
+         create index ori_por_iata_code on ori_por (iata_code);
+         create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);
+         create index ori_por_icao_code on ori_por (icao_code);
+         create index ori_por_geonameid on ori_por (geoname_id);
+        */
 
-    } catch (std::exception const& lException) {
+        ioSociSession
+          << "create index ori_por_iata_code on ori_por (iata_code);";
+        ioSociSession
+          << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
+        ioSociSession
+          << "create index ori_por_icao_code on ori_por (icao_code);";
+        ioSociSession
+          << "create index ori_por_geonameid on ori_por (geoname_id);";
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create SQLite3 indexes: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseIndexCreationException (errorStr.str());
+      }
+
+    } else if (lDBName == "mysql") {
+
+      try {
+
+        /**
+         * SQL DDL (Data Definition Language) queries for MySQLMariaDB:
+         * ------------------------------------------------------------
+         alter table ori_por add primary key (pk);
+         alter table ori_por add index ori_por_iata_code (iata_code asc);
+         alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);
+         alter table ori_por add index ori_por_icao_code (icao_code asc);
+         alter table ori_por add index ori_por_geonameid (geoname_id asc);
+        */
+
+        ioSociSession << "alter table ori_por add primary key (pk);";
+        ioSociSession
+          << "alter table ori_por add index ori_por_iata_code (iata_code asc);";
+        ioSociSession
+          << "alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);";
+        ioSociSession
+          << "alter table ori_por add index ori_por_icao_code (icao_code asc);";
+        ioSociSession
+          << "alter table ori_por add index ori_por_geonameid (geoname_id asc);";
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create SQLite3 indexes: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseIndexCreationException (errorStr.str());
+      }
+
+    } else {
       std::ostringstream errorStr;
-      errorStr << "Error when trying to create SQLite3 indexes: "
-               << lException.what();
+      errorStr << "Error: the '" << lDBName
+               << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseIndexCreationException (errorStr.str());
+      throw SQLDatabaseTableCreationException (errorStr.str());
     }
   }
 

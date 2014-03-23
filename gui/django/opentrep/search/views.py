@@ -63,9 +63,10 @@ def get_local_local_flight_duration_hr (place1, place2):
 def initOpenTrep():
   # Initialise the OpenTrep C++ library
   xapianDBPath = "/tmp/opentrep/traveldb"
-  sqliteDBPath = xapianDBPath + "/ori_por_public.db"
+  sqlDBType = "nodb"
+  sqlDBConnStr = "/tmp/opentrep/sqlite/ori_por_public.db"
   openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-  initOK = openTrepLibrary.init (xapianDBPath, sqliteDBPath,
+  initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
                                  '/tmp/opentrep/pyopentrep.log')
   return initOK, openTrepLibrary
 

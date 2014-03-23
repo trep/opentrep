@@ -69,6 +69,7 @@ endmacro (set_project_versions)
 #  * INSTALL_LIB_DIR     - Installation directory for the libraries
 #  * INSTALL_PY_LIB_DIR  - Installation directory for the Python libraries
 #  * INSTALL_BIN_DIR     - Installation directory for the binaries
+#  * INSTALL_LIBEXEC_DIR - Installation directory for the internal executables
 #  * INSTALL_INCLUDE_DIR - Installation directory for the header files
 #  * INSTALL_DATA_DIR    - Installation directory for the data files
 #  * INSTALL_SAMPLE_DIR  - Installation directory for the (CSV) sample files
@@ -115,6 +116,8 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
   set (INSTALL_PY_LIB_DIR ${LIBDIR}/python${PYTHONLIBS_VERSION}/${PROJECT_NAME}
 	CACHE PATH "Installation directory for Python libraries")
   set (INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+  set (INSTALL_LIBEXEC_DIR CACHE PATH
+	"Installation directory for internal executables")
   set (INSTALL_INCLUDE_DIR include CACHE PATH
     "Installation directory for header files")
   set (INSTALL_DATA_DIR share CACHE PATH "Installation directory for data files")
@@ -126,7 +129,7 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
   option (RUN_GCOV "Set to OFF to skip code coverage" ${_run_gcov})
 
   # Make relative paths absolute (needed later on)
-  foreach (_path_type LIB PY_LIB BIN INCLUDE DATA SAMPLE)
+  foreach (_path_type LIB PY_LIB BIN LIBEXEC INCLUDE DATA SAMPLE)
     set (var INSTALL_${_path_type}_DIR)
     if (NOT IS_ABSOLUTE "${${var}}")
       set (${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
@@ -2413,6 +2416,7 @@ macro (install_dev_helper_files)
   set (${PACKAGE_NAME}_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}")
   set (${PACKAGE_NAME}_BIN_DIR "${INSTALL_BIN_DIR}")
   set (${PACKAGE_NAME}_LIB_DIR "${INSTALL_LIB_DIR}")
+  set (${PACKAGE_NAME}_LIBEXEC_DIR "${INSTALL_LIBEXEC_DIR}")
   set (${PACKAGE_NAME}_PY_LIB_DIR "${INSTALL_PY_LIB_DIR}")
   set (${PACKAGE_NAME}_SAMPLE_DIR "${INSTALL_SAMPLE_DIR}")
   set (${PACKAGE_NAME}_CMAKE_DIR "${LIB_DEPENDENCY_EXPORT_PATH}")
@@ -2889,6 +2893,7 @@ macro (display_status)
   message (STATUS "INSTALL_LIB_DIR ................... : ${INSTALL_LIB_DIR}")
   message (STATUS "INSTALL_PY_LIB_DIR ................ : ${INSTALL_PY_LIB_DIR}")
   message (STATUS "INSTALL_BIN_DIR ................... : ${INSTALL_BIN_DIR}")
+  message (STATUS "INSTALL_LIBEXEC_DIR ............... : ${INSTALL_LIBEXEC_DIR}")
   message (STATUS "CMAKE_INSTALL_RPATH ............... : ${CMAKE_INSTALL_RPATH}")
   message (STATUS "CMAKE_INSTALL_RPATH_USE_LINK_PATH . : ${CMAKE_INSTALL_RPATH_USE_LINK_PATH}")
   message (STATUS "INSTALL_INCLUDE_DIR ............... : ${INSTALL_INCLUDE_DIR}")

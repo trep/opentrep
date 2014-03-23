@@ -111,7 +111,7 @@ Checking that the Python module works:
 PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python/opentrep/ \
  python -c "import libpyopentrep; \
  openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
- initOK = openTrepLibrary.init ('/tmp/opentrep/traveldb', '', 'pyopentrep.log');\
+ initOK = openTrepLibrary.init ('/tmp/opentrep/traveldb', 'nodb', '', 'pyopentrep.log'); \
  print openTrepLibrary.search ('S', 'los las')"
 
 Running the Django-based application server:
