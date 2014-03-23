@@ -69,6 +69,7 @@ endmacro (set_project_versions)
 #  * INSTALL_LIB_DIR     - Installation directory for the libraries
 #  * INSTALL_PY_LIB_DIR  - Installation directory for the Python libraries
 #  * INSTALL_BIN_DIR     - Installation directory for the binaries
+#  * INSTALL_LIBEXEC_DIR - Installation directory for the internal executables
 #  * INSTALL_INCLUDE_DIR - Installation directory for the header files
 #  * INSTALL_DATA_DIR    - Installation directory for the data files
 #  * INSTALL_SAMPLE_DIR  - Installation directory for the (CSV) sample files
@@ -115,6 +116,8 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
   set (INSTALL_PY_LIB_DIR ${LIBDIR}/python${PYTHONLIBS_VERSION}/${PROJECT_NAME}
 	CACHE PATH "Installation directory for Python libraries")
   set (INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+  set (INSTALL_LIBEXEC_DIR CACHE PATH
+	"Installation directory for internal executables")
   set (INSTALL_INCLUDE_DIR include CACHE PATH
     "Installation directory for header files")
   set (INSTALL_DATA_DIR share CACHE PATH "Installation directory for data files")
@@ -126,7 +129,7 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
   option (RUN_GCOV "Set to OFF to skip code coverage" ${_run_gcov})
 
   # Make relative paths absolute (needed later on)
-  foreach (_path_type LIB PY_LIB BIN INCLUDE DATA SAMPLE)
+  foreach (_path_type LIB PY_LIB BIN LIBEXEC INCLUDE DATA SAMPLE)
     set (var INSTALL_${_path_type}_DIR)
     if (NOT IS_ABSOLUTE "${${var}}")
       set (${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
@@ -357,6 +360,10 @@ macro (get_external_libs)
     if (${_arg_lower} STREQUAL "curses")
       get_curses (${_arg_version})
     endif (${_arg_lower} STREQUAL "curses")
+
+    if (${_arg_lower} STREQUAL "sqlite")
+      get_sqlite (${_arg_version})
+    endif (${_arg_lower} STREQUAL "sqlite")
 
     if (${_arg_lower} STREQUAL "mysql")
       get_mysql (${_arg_version})
@@ -819,6 +826,28 @@ macro (get_curses)
   endif (CURSES_FOUND)
 
 endmacro (get_curses)
+
+# ~~~~~~~~~~ SQLite3 ~~~~~~~~~
+macro (get_sqlite)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires SQLite3-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires SQLite3 without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  find_package (SQLite3 ${_required_version} REQUIRED)
+  if (SQLITE3_FOUND)
+
+    # Update the list of include directories for the project
+    include_directories (${SQLITE3_INCLUDE_DIR})
+
+    # Update the list of dependencies for the project
+    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SQLITE3_LIBRARIES})
+  endif (SQLITE3_FOUND)
+
+endmacro (get_sqlite)
 
 # ~~~~~~~~~~ MySQL ~~~~~~~~~
 macro (get_mysql)
@@ -2387,6 +2416,7 @@ macro (install_dev_helper_files)
   set (${PACKAGE_NAME}_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}")
   set (${PACKAGE_NAME}_BIN_DIR "${INSTALL_BIN_DIR}")
   set (${PACKAGE_NAME}_LIB_DIR "${INSTALL_LIB_DIR}")
+  set (${PACKAGE_NAME}_LIBEXEC_DIR "${INSTALL_LIBEXEC_DIR}")
   set (${PACKAGE_NAME}_PY_LIB_DIR "${INSTALL_PY_LIB_DIR}")
   set (${PACKAGE_NAME}_SAMPLE_DIR "${INSTALL_SAMPLE_DIR}")
   set (${PACKAGE_NAME}_CMAKE_DIR "${LIB_DEPENDENCY_EXPORT_PATH}")
@@ -2555,6 +2585,17 @@ macro (display_curses)
     message (STATUS "  - CURSES_LIBRARY .............. : ${CURSES_LIBRARY}")
   endif (CURSES_FOUND)
 endmacro (display_curses)
+
+# SQLite3
+macro (display_sqlite)
+  if (SQLITE3_FOUND)
+    message (STATUS)
+    message (STATUS "* SQLite3:")
+    message (STATUS "  - SQLITE3_VERSION ................. : ${SQLITE3_VERSION}")
+    message (STATUS "  - SQLITE3_INCLUDE_DIR ............. : ${SQLITE3_INCLUDE_DIR}")
+    message (STATUS "  - SQLITE3_LIBRARIES ............... : ${SQLITE3_LIBRARIES}")
+  endif (SQLITE3_FOUND)
+endmacro (display_sqlite)
 
 # MySQL
 macro (display_mysql)
@@ -2852,6 +2893,7 @@ macro (display_status)
   message (STATUS "INSTALL_LIB_DIR ................... : ${INSTALL_LIB_DIR}")
   message (STATUS "INSTALL_PY_LIB_DIR ................ : ${INSTALL_PY_LIB_DIR}")
   message (STATUS "INSTALL_BIN_DIR ................... : ${INSTALL_BIN_DIR}")
+  message (STATUS "INSTALL_LIBEXEC_DIR ............... : ${INSTALL_LIBEXEC_DIR}")
   message (STATUS "CMAKE_INSTALL_RPATH ............... : ${CMAKE_INSTALL_RPATH}")
   message (STATUS "CMAKE_INSTALL_RPATH_USE_LINK_PATH . : ${CMAKE_INSTALL_RPATH_USE_LINK_PATH}")
   message (STATUS "INSTALL_INCLUDE_DIR ............... : ${INSTALL_INCLUDE_DIR}")
@@ -2885,6 +2927,7 @@ macro (display_status)
   display_xapian ()
   display_readline ()
   display_curses ()
+  display_sqlite ()
   display_mysql ()
   display_soci ()
   display_stdair ()

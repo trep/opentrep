@@ -39,6 +39,25 @@ namespace OPENTREP {
   extern const bool DEFAULT_OPENTREP_SQLITE_DB_FILLING_INDICATOR;
 
   /**
+   * Default type for the SQL database (e.g., "nodb", i.e., no SQL database).
+   */
+  extern const std::string DEFAULT_OPENTREP_SQL_DB_TYPE;
+
+  /**
+   * Default connection string for the MySQL/MariaDB database.
+   *
+   * Usually, the default parameters are
+   * <ul>
+   *   <li>Database user name: <tt>trep</tt></li>
+   *   <li>Database user password: <tt>trep</tt></li>
+   *   <li>Database name: <tt>trep_trep</tt></li>
+   *   <li>Server hostname: <tt>localhost</tt></li>
+   *   <li>Server port: <tt>3306</tt></li>
+   * </ul>
+   */
+  extern const std::string DEFAULT_OPENTREP_MYSQL_CONN_STRING;
+
+  /**
    * Default name and location for the SQLite3 database.
    *
    * Usually, the default file-path on Linux/Unix is

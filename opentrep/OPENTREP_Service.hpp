@@ -9,6 +9,7 @@
 #include <string>
 // OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/DBType.hpp>
 #include <opentrep/LocationList.hpp>
 #include <opentrep/DistanceErrorRule.hpp>
 
@@ -83,11 +84,11 @@ namespace OPENTREP {
      *                                         (points of reference).
      *                   std::pair<const TravelDBFilePath_T, File-path of the
      *                                                       Xapian database.
-     *                             const SQLiteDBFilePath_T> > File-path of the
-     *                                                         SQLite3 database.
+     *                             const SQLDBConnectionString_T> > Connection
+     *                                                      string of the SQL DB.
      */
     typedef std::pair<const TravelDBFilePath_T,
-                      const SQLiteDBFilePath_T> DBFilePathPair_T;
+                      const SQLDBConnectionString_T> DBFilePathPair_T;
     typedef std::pair<const PORFilePath_T, const DBFilePathPair_T> FilePathSet_T;
     FilePathSet_T getFilePaths() const;
 
@@ -99,11 +100,11 @@ namespace OPENTREP {
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const TravelDBFilePath_T&,
-                      const FillSQLDB_T&, const SQLiteDBFilePath_T&);
+                      const DBType&, const SQLDBConnectionString_T&);
 
     /**
      *  Constructor.
@@ -112,12 +113,12 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
                       const TravelDBFilePath_T&,
-                      const FillSQLDB_T&, const SQLiteDBFilePath_T&);
+                      const DBType&, const SQLDBConnectionString_T&);
 
     /** 
      * Destructor. 
@@ -141,11 +142,11 @@ namespace OPENTREP {
      *
      * @param std::ostream& Output log stream (for instance, std::cout).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      */
     void init (std::ostream& ioLogStream, const TravelDBFilePath_T&,
-               const FillSQLDB_T&, const SQLiteDBFilePath_T&);
+               const DBType&, const SQLDBConnectionString_T&);
 
     /**
      * Initialise.
@@ -154,12 +155,12 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      */
     void init (std::ostream& ioLogStream, const PORFilePath_T&,
                const TravelDBFilePath_T&,
-               const FillSQLDB_T&, const SQLiteDBFilePath_T&);
+               const DBType&, const SQLDBConnectionString_T&);
 
     /**
      *  Finalise. 

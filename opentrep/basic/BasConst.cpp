@@ -27,6 +27,17 @@ namespace OPENTREP {
   const bool DEFAULT_OPENTREP_SQLITE_DB_FILLING_INDICATOR (false);
 
   /**
+   * Default type for the SQL database (e.g., "nodb", i.e., no SQL database).
+   */
+  const std::string DEFAULT_OPENTREP_SQL_DB_TYPE ("nodb");
+
+  /**
+   * Default connection string for the MySQL/MariaDB database.
+   */
+  const std::string
+  DEFAULT_OPENTREP_MYSQL_CONN_STRING ("db=trep_trep user=trep password=trep");
+
+  /**
    * Default name and location for the SQLite3 database.
    */
   const std::string
@@ -35,9 +46,9 @@ namespace OPENTREP {
   /**
    * Default name and location for the MySQL database (if existing).
    */
-  const std::string DEFAULT_OPENTREP_MYSQL_DB_USER ("geo");
-  const std::string DEFAULT_OPENTREP_MYSQL_DB_PASSWD ("geo");
-  const std::string DEFAULT_OPENTREP_MYSQL_DB_DBNAME ("geo_ori");
+  const std::string DEFAULT_OPENTREP_MYSQL_DB_USER ("trep");
+  const std::string DEFAULT_OPENTREP_MYSQL_DB_PASSWD ("trep");
+  const std::string DEFAULT_OPENTREP_MYSQL_DB_DBNAME ("trep_trep");
   const std::string DEFAULT_OPENTREP_MYSQL_DB_HOST ("localhost");
   const std::string DEFAULT_OPENTREP_MYSQL_DB_PORT ("3306");
 

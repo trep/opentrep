@@ -118,7 +118,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (Xapian::WritableDatabase& ioDatabase,
-                    const FillSQLDB_T& iFillSQLDB, soci::session& ioSociSession,
+                    const DBType& iSQLDBType, soci::session* ioSociSessionPtr,
                     std::istream& iPORFileStream,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
@@ -146,9 +146,9 @@ namespace OPENTREP {
         // Add the document, associated to the Place object, to the Xapian index
         IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
 
-        // Add the document to the SQLite3 database, if required
-        if (iFillSQLDB == true) {
-          DBManager::insertPlaceInDB (ioSociSession, lPlace);
+        // Add the document to the SQL database, if required
+        if (ioSociSessionPtr != NULL) {
+          DBManager::insertPlaceInDB (*ioSociSessionPtr, lPlace);
         }
 
         // DEBUG
@@ -176,8 +176,8 @@ namespace OPENTREP {
   NbOfDBEntries_T IndexBuilder::
   buildSearchIndex (const PORFilePath_T& iPORFilePath,
                     const TravelDBFilePath_T& iTravelDBFilePath,
-                    const FillSQLDB_T& iFillSQLDB,
-                    const SQLiteDBFilePath_T& iSQLiteDBFilePath,
+                    const DBType& iSQLDBType,
+                    const SQLDBConnectionString_T& iSQLDBConnStr,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
@@ -193,8 +193,8 @@ namespace OPENTREP {
     boost::filesystem::remove_all (lTravelDBFilePath);
 
     // SQLite3 file
-    boost::filesystem::path lSQLiteDBFullPath (iSQLiteDBFilePath.begin(),
-                                               iSQLiteDBFilePath.end());
+    boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
+                                               iSQLDBConnStr.end());
     // DEBUG
     OPENTREP_LOG_DEBUG ("The SQLite database file ('" << lSQLiteDBFullPath
                         << "') will be cleared");
@@ -242,16 +242,16 @@ namespace OPENTREP {
 
 
     /**
-     *            2. SQLite3 Database Initialisation
+     *            2. SQL Database Initialisation
      */
-    // Create the SQLite3 database file
+    // Create the SQL database file
     soci::session* lSociSession_ptr =
-      DBManager::initSQLDBSession (iSQLiteDBFilePath);
-    assert (lSociSession_ptr != NULL);
-    soci::session& lSociSession = *lSociSession_ptr;
+      DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
 
-    // Create the SQLite3 database tables
-    DBManager::createSQLDBTables (lSociSession);
+    // Create the SQL database tables, if needed
+    if (lSociSession_ptr != NULL) {
+      DBManager::createSQLDBTables (*lSociSession_ptr);
+    }
 
 
     /**
@@ -296,7 +296,8 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, iFillSQLDB, lSociSession,
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
+                                       lSociSession_ptr,
                                        bunzip2Filter, iTransliterator);
 
     } else if (lPORFileExt == ".gz") {
@@ -312,7 +313,8 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, iFillSQLDB, lSociSession,
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
+                                       lSociSession_ptr,
                                        gunzipFilter, iTransliterator);
 
     } else if (lPORFileExt == ".csv") {
@@ -322,7 +324,8 @@ namespace OPENTREP {
 
       // Browse the input POR (point of reference) data file,
       // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, iFillSQLDB, lSociSession,
+      oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
+                                       lSociSession_ptr,
                                        fileToBeParsed, iTransliterator);
 
     } else {
@@ -353,9 +356,10 @@ namespace OPENTREP {
      */
     lXapianDatabase.close();
 
-
-    // Build the SQLite3 database indexes
-    DBManager::createSQLDBIndexes (lSociSession);
+    // Build the SQL database indexes, if needed
+    if (lSociSession_ptr != NULL) {
+      DBManager::createSQLDBIndexes (*lSociSession_ptr);
+    }
 
 
     return oNbOfEntries;

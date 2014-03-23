@@ -15,7 +15,7 @@ namespace Xapian {
   class WritableDatabase;
 }
 
-// SOCI (for SQLite3)
+// SOCI (for SQL database)
 namespace soci {
   class session;
   class statement;
@@ -48,13 +48,13 @@ namespace OPENTREP {
      * Build Xapian database.
      *
      * @param Xapian::WritableDatabase& Xapian database.
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param soci::session& SOCI session handler.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param soci::session* SOCI session handler (can be NULL; see above).
      * @param std::ifstream& File stream for the POR data file.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (Xapian::WritableDatabase&,
-                                             const FillSQLDB_T&, soci::session&,
+                                             const DBType&, soci::session*,
                                              std::istream& iPORFileStream,
                                              const OTransliterator&);
 
@@ -63,14 +63,14 @@ namespace OPENTREP {
      *
      * @param const PORFilePath_T& File-path of the POR file.
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
                                              const TravelDBFilePath_T&,
-                                             const FillSQLDB_T&,
-                                             const SQLiteDBFilePath_T&,
+                                             const DBType&,
+                                             const SQLDBConnectionString_T&,
                                              const OTransliterator&);
 
   private:

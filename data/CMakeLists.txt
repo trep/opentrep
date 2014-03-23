@@ -38,3 +38,7 @@ install (DIRECTORY ${por_data_DIR} DESTINATION ${OPENTREP_DATA_ROOT_DIR}
   FILES_MATCHING PATTERN "*.db")
 install (DIRECTORY ${por_data_DIR} DESTINATION ${OPENTREP_DATA_ROOT_DIR}
   FILES_MATCHING PATTERN "*.db.bz2")
+
+##
+# Installing database scripts
+module_script_add (por/opentrep_create_db_user.sh)

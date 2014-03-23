@@ -4,6 +4,7 @@
 #  OPENTREP_BINARY_DIRS  - binary directories for OpenTrep
 #  OPENTREP_INCLUDE_DIRS - include directories for OpenTrep
 #  OPENTREP_LIBRARY_DIRS - library directories for OpenTrep (normally not used!)
+#  OPENTREP_LIBEXEC_DIR  - internal exec directory for OpenTrep
 #  OPENTREP_LIBRARIES    - libraries to link against
 #  OPENTREP_EXECUTABLES  - the OpenTrep binaries/executables
 
@@ -12,6 +13,7 @@ set (OPENTREP_VERSION "@PACKAGE_VERSION@")
 set (OPENTREP_BINARY_DIRS "@OPENTREP_BIN_DIR@")
 set (OPENTREP_INCLUDE_DIRS "@OPENTREP_INCLUDE_DIRS@")
 set (OPENTREP_LIBRARY_DIRS "@OPENTREP_LIB_DIR@:@OPENTREP_PY_LIB_DIR@")
+set (OPENTREP_LIBEXEC_DIR "@OPENTREP_LIBEXEC_DIR@")
 
 # Library dependencies for OpenTrep (contains definitions for the OpenTrep
 # IMPORTED targets)

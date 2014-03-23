@@ -103,19 +103,19 @@ namespace OPENTREP {
         const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
           lFilePathSet.second;
         const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
-        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
+        const SQLDBConnectionString_T& lSQLDBConnStr = lDBFilePathPair.second;
 
         // Dump the results into the output string
         oPythonLogStr << lPORFilePath << ";" << lTravelDBFilePath
-                      << ";" << lSQLiteDBFilePath;
+                      << ";" << lSQLDBConnStr;
 
         // DEBUG
         *_logOutputStream << "ORI-maintained list of POR: '" << lPORFilePath
                           << "'" << std::endl;
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath << "'" << std::endl;
-        *_logOutputStream << "SQLite3 database: '"
-                          << lSQLiteDBFilePath << "'" << std::endl;
+        *_logOutputStream << "SQL database connection string: '"
+                          << lSQLDBConnStr << "'" << std::endl;
 
       } catch (const RootException& eOpenTrepError) {
         *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()
@@ -168,16 +168,15 @@ namespace OPENTREP {
         const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
           lFilePathSet.second;
         const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
-        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
+        const SQLDBConnectionString_T& lSQLDBConnStr = lDBFilePathPair.second;
 
-        
         // DEBUG
         *_logOutputStream << "ORI-maintained list of POR: '" << lPORFilePath
                           << "'" << std::endl;
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath << "'" << std::endl;
-        *_logOutputStream << "SQLite3 database: '"
-                          << lSQLiteDBFilePath << "'" << std::endl;
+        *_logOutputStream << "SQL database connection string: '"
+                          << lSQLDBConnStr << "'" << std::endl;
 
         // Launch the indexation by Xapian of the ORI-maintained list of POR
         const NbOfDBEntries_T lNbOfEntries= _opentrepService->buildSearchIndex();
@@ -245,13 +244,13 @@ namespace OPENTREP {
         const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
           lFilePathSet.second;
         const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
-        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
+        const SQLDBConnectionString_T& lSQLDBConnStr = lDBFilePathPair.second;
 
         // DEBUG
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath
-                          << "' - SQLite3 database: '"
-                          << lSQLiteDBFilePath
+                          << "' - SQL database connection string: '"
+                          << lSQLDBConnStr
                           << "' - ORI-maintained list of POR: '"
                           << lPORFilePath << "'" << std::endl;
 
@@ -445,13 +444,13 @@ namespace OPENTREP {
         const OPENTREP_Service::DBFilePathPair_T& lDBFilePathPair =
           lFilePathSet.second;
         const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
-        const SQLiteDBFilePath_T& lSQLiteDBFilePath = lDBFilePathPair.second;
+        const SQLDBConnectionString_T& lSQLDBConnStr = lDBFilePathPair.second;
 
         // DEBUG
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath
-                          << "' - SQLite3 database: '"
-                          << lSQLiteDBFilePath
+                          << "' - SQL database connection string: '"
+                          << lSQLDBConnStr
                           << "' - ORI-maintained list of POR: '"
                           << lPORFilePath << "'" << std::endl;
 
@@ -614,7 +613,8 @@ namespace OPENTREP {
      * Wrapper around the search use case. 
      */
     bool init (const std::string& iTravelDBFilePath,
-               const bool iFillSQLDB, const std::string& iSQLiteDBFilePath,
+               const std::string& iSQLDBTypeStr,
+               const std::string& iSQLDBConnStr,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
@@ -642,11 +642,12 @@ namespace OPENTREP {
         
         // Initialise the context
         const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (iTravelDBFilePath);
-        const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (iSQLiteDBFilePath);
+        const OPENTREP::DBType lSQLDBType (iSQLDBTypeStr);
+        const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
 
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
                                                  lTravelDBFilePath,
-                                                 iFillSQLDB, lSQLiteDBFilePath);
+                                                 lSQLDBType, lSQLDBConnStr);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;

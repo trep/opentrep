@@ -7,6 +7,7 @@ prefix=@prefix@
 exec_prefix=${prefix}
 #libdir=@libdir@
 libdir=`pkg-config --variable=libdir ${package_name}`
+libexecdir=`pkg-config --variable=libexecdir ${package_name}`
 includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
@@ -52,6 +53,14 @@ while test $# -gt 0; do
 
     --prefix)
       echo $prefix
+      ;;
+
+    --libdir)
+      echo $libdir
+      ;;
+
+    --libexecdir)
+      echo $libexecdir
       ;;
 
     --version)

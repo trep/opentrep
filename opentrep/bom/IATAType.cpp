@@ -57,8 +57,8 @@ namespace OPENTREP {
     if (oType == LAST_VALUE) {
       const std::string& lLabels = describeLabels();
       std::ostringstream oMessage;
-      oMessage << "The output type '" << iTypeChar
-               << "' is not known. Known output types: " << lLabels;
+      oMessage << "The place type '" << iTypeChar
+               << "' is not known. Known place types: " << lLabels;
       throw CodeConversionException (oMessage.str());
     }
 
@@ -103,8 +103,8 @@ namespace OPENTREP {
     if (_type == LAST_VALUE) {
       const std::string& lLabels = describeLabels();
       std::ostringstream oMessage;
-      oMessage << "The output type '" << iTypeStr
-               << "' is not known. Known output types: " << lLabels;
+      oMessage << "The place type '" << iTypeStr
+               << "' is not known. Known place types: " << lLabels;
       throw CodeConversionException (oMessage.str());
     }
   }

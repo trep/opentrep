@@ -54,9 +54,9 @@ struct UnitTestConfig {
 const std::string X_XAPIAN_DB_FP (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
 
 /**
- * SQlite3 database file-path.
+ * SQL database connection string.
  */
-const std::string X_SQLITE_DB_FP (OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH);
+const std::string X_SQL_DB_STR ("");
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -83,10 +83,10 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
 
   // Initialise the context
   const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
-  const OPENTREP::FillSQLDB_T doNotFillSQLDB (false);
-  const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (X_SQLITE_DB_FP);
+  const OPENTREP::DBType lDBType (OPENTREP::DBType::NODB);
+  const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (X_SQL_DB_STR);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath,
-                                              doNotFillSQLDB, lSQLiteDBFilePath);
+                                              lDBType, lSQLDBConnStr);
   
   // A few sample strings
   const std::string lLax1Str = "los angeles";

@@ -16,19 +16,13 @@ create table ori_por (
  envelope_id int(11) default NULL,
  date_from date default NULL,
  date_until date default NULL,
- serialised_place default NULL,
+ serialised_place varchar(8000) default NULL,
  primary key (pk)
 );
 
 --
--- MySQL load statement
---
--- load data local infile 'ori_por_public.csv' replace into table ori_por
--- character set utf8 columns terminated by '^' ignore 1 lines;
-
-
---
--- SQLite3 load statement
+-- SQLite3 standard load statement (however, there is no correspondance
+-- between the table and CSV file formats)
 --
 -- delete from ori_por;
 -- .separator '^'
@@ -38,20 +32,7 @@ create table ori_por (
 --
 -- Indexes
 --
---
--- SQLite
---
 create index ori_por_iata_code on ori_por (iata_code);
 create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);
 create index ori_por_icao_code on ori_por (icao_code);
 create index ori_por_geonameid on ori_por (geoname_id);
-
-
---
--- MySQL
---
--- alter table ori_por add primary key (pk);
--- alter table ori_por add index ori_por_iata_code (iata_code asc);
--- alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);
--- alter table ori_por add index ori_por_icao_code (icao_code asc);
--- alter table ori_por add index ori_por_geonameid (geoname_id asc);

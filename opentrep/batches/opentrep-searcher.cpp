@@ -103,7 +103,8 @@ int readConfiguration (int argc, char* argv[],
                        unsigned short& ioSpellingErrorDistance, 
                        std::string& ioQueryString,
                        std::string& ioXapianDBFilepath,
-                       std::string& ioSQLiteDBFilepath,
+                       std::string& ioSQLDBTypeString,
+                       std::string& ioSQLDBConnectionString,
                        std::string& ioLogFilename,
                        unsigned short& ioSearchType) {
 
@@ -133,9 +134,12 @@ int readConfiguration (int argc, char* argv[],
     ("xapiandb,d",
      boost::program_options::value< std::string >(&ioXapianDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
-    ("sqlite,s",
-     boost::program_options::value< std::string >(&ioSQLiteDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
-     "SQLite3 database filepath (e.g., ~/tmp/opentrep/sqlite_travel.db)")
+    ("sqldbtype,y",
+     boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
+     "SQL database type (e.g., nodb, i.e., no SQL database)")
+    ("sqldbconx,s",
+     boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
@@ -198,9 +202,15 @@ int readConfiguration (int argc, char* argv[],
               << std::endl;
   }
 
-  if (vm.count ("sqlitedb")) {
-    ioSQLiteDBFilepath = vm["sqlitedb"].as< std::string >();
-    std::cout << "SQLite3 database filepath is: " << ioSQLiteDBFilepath
+  if (vm.count ("sqldbtype")) {
+    ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
+    std::cout << "SQL database connection string is: " << ioSQLDBTypeString
+              << std::endl;
+  }
+
+  if (vm.count ("sqldbconx")) {
+    ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
+    std::cout << "SQL database connection string is: " << ioSQLDBConnectionString
               << std::endl;
   }
 
@@ -296,23 +306,22 @@ int main (int argc, char* argv[]) {
   // Xapian database name (directory of the index)
   std::string lXapianDBNameStr;
 
-  // Whether or not the SQLite3 database should be filled
-  // at the same time as the Xapian database/index
-  bool doNotFillSQLDB (false);
-
-  // SQLite3 database file-path
-  std::string lSQLiteDBFilePathStr;
-
   // Type of search
   unsigned short lSearchType;
       
   // Xapian spelling error distance
   unsigned short lSpellingErrorDistance;
 
+  // SQL database type
+  std::string lSQLDBTypeStr;
+
+  // SQL database connection string
+  std::string lSQLDBConnectionStr;
+
   // Call the command-line option parser
   const int lOptionParserStatus = 
     readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
-                       lXapianDBNameStr, lSQLiteDBFilePathStr,
+                       lXapianDBNameStr, lSQLDBTypeStr, lSQLDBConnectionStr,
                        lLogFilename, lSearchType);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
@@ -328,10 +337,10 @@ int main (int argc, char* argv[]) {
   if (lSearchType == 0) {
     // Initialise the context
     const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
-    const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (lSQLiteDBFilePathStr);
+    const OPENTREP::DBType lDBType (lSQLDBTypeStr);
+    const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
     OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBName,
-                                                doNotFillSQLDB,
-                                                lSQLiteDBFilePath);
+                                                lDBType, lSQLDBConnStr);
 
     // Parse the query and retrieve the places from Xapian only
     const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);

@@ -30,7 +30,8 @@ def usage (script_name):
     print "  -i, --index     : performs the indexation with Xapian"
     print "  -g, --generate= : randomly draws the documents from Xapian"
     print "  -x, --xapiandb= : specifies the path to the Xapian DB (index)"
-    print "  -s, --sqlitedb= : specifies the path to the SQLite3 DB"
+    print "  -t, --sqldbtype=: specifies the type of SQL DB (noDB, sqlite, mysql)"
+    print "  -s, --sqldbconx=: specifies the connection string for the SQL DB"
     print "  -f, --format=   : format of the output: Short (S, default),"
     print "                    Full (F), raw JSON (J), "
     print "                    Interpretation from JSON (I) or from Protobuf (P)"
@@ -44,8 +45,8 @@ def str2bool (v):
 def handle_opt():
     try:
         opts, args = getopt.getopt (sys.argv[1:], "hif:x:s:g:",
-                        ["help", "index", "format=", "xapiandb=", "sqlitedb=",
-                         "generate="])
+                        ["help", "index", "format=", "xapiandb=", "sqldbtype=",
+                         "sqldbconx=", "generate="])
     except getopt.GetoptError, err:
         # Print help information and exit. It will print something like
         # "option -a not recognized"
@@ -69,17 +70,17 @@ def handle_opt():
 
     # Options
     xapianDBPath = "/tmp/opentrep/xapian_traveldb"
-    sqliteDBFill = False
-    sqliteDBPath = "/tmp/opentrep/sqlite_travel.db"
+    sqlDBType = "nodb"
+    sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
     for o, a in opts:
         if o in ("-f", "--format"):
             outputFormat = a
         elif o in ("-x", "--xapiandb"):
             xapianDBPath = a
-        elif o in ("-l", "--sqlitedbfill"):
-            sqliteDBFill = bool (a)
-        elif o in ("-s", "--sqlitedbpath"):
-            sqliteDBPath = a
+        elif o in ("-l", "--sqldbtype"):
+            sqlDBType = a
+        elif o in ("-s", "--sqldbconx"):
+            sqlDBConnStr = a
         elif o in ("-i", "--index"):
             command = "index"
         elif o in ("-g", "--generate"):
@@ -90,7 +91,7 @@ def handle_opt():
             sys.exit()
         else:
             assert False, "Unhandled option"
-    return (command, outputFormat, xapianDBPath, sqliteDBFill, sqliteDBPath, searchString, nbOfDraws)
+    return (command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, searchString, nbOfDraws)
 
 # Parser helpers
 def getMain (locations):
@@ -420,12 +421,12 @@ def search (openTrepLibrary, searchString, outputFormat):
 # Main
 ############################
 if __name__ == '__main__':
-    command, outputFormat, xapianDBPath, sqliteDBFill, sqliteDBPath, searchString, nbOfDraws = handle_opt()
+    command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, searchString, nbOfDraws = handle_opt()
 
     # Initialise the OpenTrep C++ library
     import libpyopentrep
     openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init (xapianDBPath, sqliteDBFill, sqliteDBPath, 'pyopentrep.log')
+    initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr, 'pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         raise Exception (errorMsg)

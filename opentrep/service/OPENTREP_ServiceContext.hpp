@@ -8,6 +8,7 @@
 #include <string>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/DBType.hpp>
 #include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/service/ServiceAbstract.hpp>
 
@@ -55,17 +56,17 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the SQLite3 database filling indicator.
+     * Get the SQL database type.
      */
-    const FillSQLDB_T& getFillSQLDB() const {
-      return _fillSQLDB;
+    const DBType& getSQLDBType() const {
+      return _sqlDBType;
     }
     
     /**
-     * Get the SQLite3 database file-path.
+     * Get the SQL database connection string.
      */
-    const SQLiteDBFilePath_T& getSQLiteDBFilePath() const {
-      return _sqliteDBFilePath;
+    const SQLDBConnectionString_T& getSQLDBConnectionString() const {
+      return _sqlDBConnectionString;
     }
     
     /**
@@ -99,17 +100,17 @@ namespace OPENTREP {
     }
 
     /**
-     * Set the SQLite3 database filling indicator.
+     * Set the SQL database type.
      */
-    void setFillSQLDB (const FillSQLDB_T& iFillSQLDB) {
-      _fillSQLDB = iFillSQLDB;
+    void setSQLDBType (const DBType& iDBType) {
+      _sqlDBType = iDBType;
     }
     
     /**
-     * Set the SQLite3 database file-path.
+     * Set the SQL database connection string.
      */
-    void setSQLiteDBFilePath (const std::string& iSQLiteDBFilePath) {
-      _sqliteDBFilePath = SQLiteDBFilePath_T (iSQLiteDBFilePath);
+    void setSQLDBConnectionString(const SQLDBConnectionString_T& iSQLDBConnStr) {
+      _sqlDBConnectionString = SQLDBConnectionString_T (iSQLDBConnStr);
     }
     
     /**
@@ -139,11 +140,11 @@ namespace OPENTREP {
      * Main constructor for the search-related services.
      *
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      */
     OPENTREP_ServiceContext (const TravelDBFilePath_T&,
-                             const FillSQLDB_T&, const SQLiteDBFilePath_T&);
+                             const DBType&, const SQLDBConnectionString_T&);
 
     /**
      * Main constructor for the indexation-related services.
@@ -151,11 +152,11 @@ namespace OPENTREP {
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
-     * @param const FillSQLDB_T& Whether the SQLite3 database should be filled.
-     * @param const SQLiteDBFilePath_T& File-path of the SQLite3 database.
+     * @param const DBType& SQL database type (can be no database at all).
+     * @param const SQLDBConnectionString_T& SQL DB connection string.
      */
     OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&,
-                             const FillSQLDB_T&, const SQLiteDBFilePath_T&);
+                             const DBType&, const SQLDBConnectionString_T&);
 
     /**
      * Default constructor.
@@ -191,21 +192,23 @@ namespace OPENTREP {
     TravelDBFilePath_T _travelDBFilePath;
 
     /**
-     * Whether the SQLite3 database should be filled
-     * at the same time as the Xapian database/index.
+     * Type of the SQL database (NODB means that no SQL database should be used).
      */
-    FillSQLDB_T _fillSQLDB;
+    DBType _sqlDBType;
 
     /**
-     * Read/write SQLite database file-path.
+     * Connection string for the SQL database.
      *
-     * OpenTREP is delivered with a SQLite3 database. That latter is read-only,
-     * as it is potentially delivered in a read-only directory on standard
-     * platforms (e.g., thanks to RPM on RedHat-derived Linux platforms).
-     * A read-write copy is then needed to for local changes (addition,
-     * deletion and updates of the POR).
+     * For now, there is a choice among:
+     * <ul>
+     *  <li>No SQL database</li>
+     *  <li>SQLite3 database. The connection string then consists
+     *      of the corresponding file-path</li>
+     *  <li>MySQL/MariaDB database. The connection string then consists
+     *      of the database parameters (db name, db user, db password)</li>
+     * </ul>
      */
-    SQLiteDBFilePath_T _sqliteDBFilePath;
+    SQLDBConnectionString_T _sqlDBConnectionString;
 
     /**
      * Unicode transliterator.

@@ -34,7 +34,8 @@ const int K_OPENTREP_EARLY_RETURN_STATUS = 99;
 int readConfiguration (int argc, char* argv[], 
                        std::string& ioPORFilepath, 
                        std::string& ioXapianDBFilepath,
-                       std::string& ioSQLiteDBFilepath,
+                       std::string& ioSQLDBTypeString,
+                       std::string& ioSQLDBConnectionString,
                        std::string& ioLogFilename) {
 
   // Declare a group of options that will be allowed only on command line
@@ -54,9 +55,12 @@ int readConfiguration (int argc, char* argv[],
     ("xapiandb,d",
      boost::program_options::value< std::string >(&ioXapianDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
-    ("sqlite,s",
-     boost::program_options::value< std::string >(&ioSQLiteDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
-     "SQLite3 database filepath (e.g., ~/tmp/opentrep/sqlite_travel.db)")
+    ("sqldbtype,t",
+     boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
+     "SQL database type (e.g., nodb, i.e., no SQL database)")
+    ("sqldbconx,s",
+     boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
@@ -118,9 +122,15 @@ int readConfiguration (int argc, char* argv[],
               << std::endl;
   }
 
-  if (vm.count ("sqlitedb")) {
-    ioSQLiteDBFilepath = vm["sqlitedb"].as< std::string >();
-    std::cout << "SQLite3 database filepath is: " << ioSQLiteDBFilepath
+  if (vm.count ("sqldbtype")) {
+    ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
+    std::cout << "SQL database connection string is: " << ioSQLDBTypeString
+              << std::endl;
+  }
+
+  if (vm.count ("sqldbconx")) {
+    ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
+    std::cout << "SQL database connection string is: " << ioSQLDBConnectionString
               << std::endl;
   }
 
@@ -145,17 +155,16 @@ int main (int argc, char* argv[]) {
   // Xapian database name (directory of the index)
   std::string lXapianDBNameStr;
 
-  // Whether or not the SQLite3 database should be filled
-  // at the same time as the Xapian database/index
-  bool lFillSQLDB (true);
+  // SQL database type
+  std::string lSQLDBTypeStr;
 
-  // SQLite3 database file-path
-  std::string lSQLiteDBFilePathStr;
+  // SQL database connection string
+  std::string lSQLDBConnectionStr;
 
   // Call the command-line option parser
   const int lOptionParserStatus =
-    readConfiguration (argc, argv, lPORFilepathStr,
-                       lXapianDBNameStr, lSQLiteDBFilePathStr, lLogFilename);
+    readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
+                       lSQLDBTypeStr, lSQLDBConnectionStr, lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -175,10 +184,11 @@ int main (int argc, char* argv[]) {
   // Initialise the context
   const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
   const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
-  const OPENTREP::SQLiteDBFilePath_T lSQLiteDBFilePath (lSQLiteDBFilePathStr);
+  const OPENTREP::DBType lDBType (lSQLDBTypeStr);
+  const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
                                               lXapianDBName,
-                                              lFillSQLDB, lSQLiteDBFilePath);
+                                              lDBType, lSQLDBConnStr);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries = opentrepService.buildSQLDB();
