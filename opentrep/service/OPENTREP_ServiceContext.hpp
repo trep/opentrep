@@ -109,7 +109,7 @@ namespace OPENTREP {
     /**
      * Set the SQL database connection string.
      */
-    void setSQLDBConnectionString(const SQLDBConnectionString_T& iSQLDBConnStr) {
+    void setSQLDBConnectionString(const std::string& iSQLDBConnStr) {
       _sqlDBConnectionString = SQLDBConnectionString_T (iSQLDBConnStr);
     }
     

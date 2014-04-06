@@ -1,10 +1,10 @@
 /*!
 \page opentrep-dbmgr
-      Command-line utility to manage the SQLite3 database
+      Interactive command-line utility to manage the SQL database (SQLite3 or MySQL)
 
 \section sec_synopsis SYNOPSIS
 
-<b>opentrep-dbmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-p|--porfile <POR-file-path>] [-d|--database <Xapian-travel-database-path>] [-s|--sqlite <SQLite-database-path>] [-l|--log <path-to-output-log-file>]</tt>
+<b>opentrep-dbmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-p|--porfile <POR-file-path>] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-l|--log <path-to-output-log-file>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -29,14 +29,19 @@
 	may be found in the OpenTravelData project on GitHub:
 	http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
 
- \b -d, \b --database <Xapian-travel-database-path><br>
+ \b -d, \b --xapiandb <Xapian-travel-database-path><br>
     Path (directory) to the Xapian travel database.
 	The indexer creates, or overwrites it when it already exists,
 	the Xapian database. It materialises as a collection of data files
 	within a directory usually named 'traveldb'.
 
- \b -s, \b --sqlite <SQLite-database-path><br>
-    Path (directory) to the SQLite database.
+ \b -t, \b --sqldbtype <SQL-database-type><br>
+    SQL database type, e.g., nosql (no SQL database), sqlite, mysql
+
+ \b -s, \b --sqldbconx <SQL-database-connection-string><br>
+    SQL database connection string, e.g.,
+    ~/tmp/opentrep/sqlite_travel.db (for SQLite3),
+    "db=trep_trep user=trep password=trep" (for MySQL)
 
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.
@@ -44,6 +49,16 @@
 
 See the output of the <tt>`opentrep-dbmgr --help'</tt> command for default options.
 
+Once the program is launched, just type the 'help' command to get the full list
+of all the possible commands and their parameters.
+Note that that program features the auto-completion of commands.
+
+\section sec_examples EXAMPLES
+ \b With SQLite3<br>
+  opentrep-dbmgr -t sqlite -s /tmp/opentrep/sqlite_travel.db
+
+ \b With MySQL<br>
+  opentrep-dbmgr -t mysql -s "db=trep_trep user=trep password=trep"
 
 \section sec_see_also SEE ALSO
 \b opentrep-indexer(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
