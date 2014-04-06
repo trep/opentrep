@@ -305,7 +305,7 @@ namespace OPENTREP {
   };
 
   /**
-   * MySQL Database root exception.
+   * SQL Database root exception.
    */
   class SQLDatabaseException : public RootException {
   public:
@@ -316,7 +316,7 @@ namespace OPENTREP {
   };
 
   /**
-   * The connection fails with the SQLite3 database.
+   * The connection fails with the MySQL database.
    */
   class SQLDatabaseImpossibleConnectionException : public SQLDatabaseException {
   public:
@@ -340,7 +340,19 @@ namespace OPENTREP {
   };
 
   /**
-   * SQLite3 database index creation issue.
+   * The given entry cannot be found in the database.
+   */
+  class SQLDatabaseElementNotFoundException : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseElementNotFoundException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
+   * SQL database index creation issue.
    */
   class SQLDatabaseIndexCreationException : public SQLDatabaseException {
   public:
@@ -352,7 +364,7 @@ namespace OPENTREP {
   };
 
   /**
-   * SQLite3 database table creation issue.
+   * SQL database table creation issue.
    */
   class SQLDatabaseTableCreationException : public SQLDatabaseException {
   public:

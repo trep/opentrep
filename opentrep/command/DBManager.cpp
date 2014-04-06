@@ -15,6 +15,7 @@
 // OpenTrep
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
+#include <opentrep/bom/Result.hpp>
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/dbadaptor/DbaPlace.hpp>
 #include <opentrep/command/DBManager.hpp>
@@ -106,8 +107,8 @@ namespace OPENTREP {
         lSociSession.open (soci::mysql, iSQLDBConnectionString);
 
         // DEBUG
-        OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
-                            << "') has been checked and open");
+        OPENTREP_LOG_DEBUG ("The SQL database ('" << iSQLDBConnectionString
+                            << "') is accessible");
         const std::string& lDBName = lSociSession.get_backend_name();
         OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
 
@@ -128,6 +129,82 @@ namespace OPENTREP {
     }
 
     return oSociSession_ptr;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::createSQLDBUser (soci::session& ioSociSession) {
+    const std::string& lDBName = ioSociSession.get_backend_name();
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
+
+    if (lDBName == "mysql") {
+
+      try {
+
+        /**
+         * SQL DDL (Data Definition Language) queries:
+         * -------------------------------------------
+         grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+         ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* 
+         to 'trep'@'localhost' identified by 'trep';
+
+         grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+         ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* 
+         to 'trep'@'%' identified by 'trep';
+
+         flush privileges;
+
+         drop database if exists trep_trep;
+         create database if not exists trep_trep
+           default character set utf8
+           collate utf8_unicode_ci;
+        */
+
+        //
+        std::ostringstream lSQLGrantTrepLocalStr;
+        lSQLGrantTrepLocalStr
+          << "grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX,";
+        lSQLGrantTrepLocalStr
+          << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
+        lSQLGrantTrepLocalStr
+          << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
+        lSQLGrantTrepLocalStr << " to 'trep'@'localhost' identified by 'trep';";
+        ioSociSession << lSQLGrantTrepLocalStr.str();
+        //
+        std::ostringstream lSQLGrantTrepAllStr;
+        lSQLGrantTrepAllStr
+          << "grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX,";
+        lSQLGrantTrepAllStr
+          << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
+        lSQLGrantTrepAllStr << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
+        lSQLGrantTrepAllStr << " to 'trep'@'%' identified by 'trep';";
+        ioSociSession << lSQLGrantTrepAllStr.str();
+        //
+        std::ostringstream lSQLFlushPrivilegesStr;
+        lSQLFlushPrivilegesStr << "flush privileges;";
+        ioSociSession << lSQLFlushPrivilegesStr.str();
+        //
+        std::ostringstream lSQLDropDBStr;
+        lSQLDropDBStr << "drop database if exists trep_trep;";
+        ioSociSession << lSQLDropDBStr.str();
+        //
+        std::ostringstream lSQLCreateDBStr;
+        lSQLCreateDBStr << "create database if not exists trep_trep";
+        lSQLCreateDBStr << " default character set utf8";
+        lSQLCreateDBStr << " collate utf8_unicode_ci;";
+        ioSociSession << lSQLCreateDBStr.str();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create MySQL/MariaDB tables: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseTableCreationException (errorStr.str());
+      }
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -341,8 +418,9 @@ namespace OPENTREP {
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select serialised_place from ori_por' SQL request: "
-               << lException.what();
+      errorStr
+        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
@@ -352,10 +430,11 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string DBManager::
-  prepareSelectBlobOnPlaceCodeStatement (soci::session& ioSociSession,
-                                         soci::statement& ioSelectStatement,
-                                         const IATACode_T& iIataCode) {
+  void DBManager::
+  prepareSelectBlobOnIataCodeStatement (soci::session& ioSociSession,
+                                        soci::statement& ioSelectStatement,
+                                        const IATACode_T& iIataCode,
+                                        std::string& ioSerialisedPlaceStr) {
     std::string oSerialisedPlaceStr;
   
     try {
@@ -369,7 +448,7 @@ namespace OPENTREP {
         (ioSociSession.prepare
          << "select serialised_place from ori_por "
          << "where iata_code = :place_iata_code",
-         soci::into (oSerialisedPlaceStr),
+         soci::into (ioSerialisedPlaceStr),
          soci::use (static_cast<std::string>(iIataCode)));
 
       // Execute the SQL query
@@ -377,19 +456,122 @@ namespace OPENTREP {
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
-      errorStr << "Error in the 'select serialised_place from ori_por' SQL request: "
-               << lException.what();
+      errorStr
+        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
+  }
 
-    //
-    return oSerialisedPlaceStr;
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::
+  prepareSelectBlobOnIcaoCodeStatement (soci::session& ioSociSession,
+                                        soci::statement& ioSelectStatement,
+                                        const ICAOCode_T& iIcaoCode,
+                                        std::string& ioSerialisedPlaceStr) {
+    std::string oSerialisedPlaceStr;
+  
+    try {
+    
+      // Instanciate a SQL statement (no request is performed at that stage)
+      /**
+         select serialised_place from ori_por where iata_code = iIataCode;
+      */
+
+      ioSelectStatement =
+        (ioSociSession.prepare
+         << "select serialised_place from ori_por "
+         << "where icao_code = :place_icao_code",
+         soci::into (ioSerialisedPlaceStr),
+         soci::use (static_cast<std::string>(iIcaoCode)));
+
+      // Execute the SQL query
+      ioSelectStatement.execute();
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr
+        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::
+  prepareSelectBlobOnFaaCodeStatement (soci::session& ioSociSession,
+                                       soci::statement& ioSelectStatement,
+                                       const FAACode_T& iFaaCode,
+                                       std::string& ioSerialisedPlaceStr) {
+    std::string oSerialisedPlaceStr;
+  
+    try {
+    
+      // Instanciate a SQL statement (no request is performed at that stage)
+      /**
+         select serialised_place from ori_por where iata_code = iIataCode;
+      */
+
+      ioSelectStatement =
+        (ioSociSession.prepare
+         << "select serialised_place from ori_por "
+         << "where faa_code = :place_faa_code",
+         soci::into (ioSerialisedPlaceStr),
+         soci::use (static_cast<std::string>(iFaaCode)));
+
+      // Execute the SQL query
+      ioSelectStatement.execute();
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr
+        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::
+  prepareSelectBlobOnPlaceGeoIDStatement (soci::session& ioSociSession,
+                                          soci::statement& ioSelectStatement,
+                                          const GeonamesID_T& iGeonameID,
+                                          std::string& ioSerialisedPlaceStr) {
+    std::string oSerialisedPlaceStr;
+  
+    try {
+    
+      // Instanciate a SQL statement (no request is performed at that stage)
+      /**
+         select serialised_place from ori_por where iata_code = iIataCode;
+      */
+
+      ioSelectStatement =
+        (ioSociSession.prepare
+         << "select serialised_place from ori_por "
+         << "where geoname_id = :place_geoname_id",
+         soci::into (ioSerialisedPlaceStr),
+         soci::use (iGeonameID));
+
+      // Execute the SQL query
+      ioSelectStatement.execute();
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr
+        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::iterateOnStatement (soci::statement& ioStatement,
-                                      std::string& ioPlace) {
+                                      const std::string& iSerialisedPlaceStr) {
     bool hasStillData = false;
   
     try {
@@ -400,7 +582,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr << "Error when iterating on the SQL fetch: " << lException.what();
-      errorStr << ". The current place is: " << ioPlace;
+      errorStr << ". The current place is: " << iSerialisedPlaceStr;
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
@@ -513,7 +695,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T DBManager::getAll (soci::session& ioSociSession) {
+  NbOfDBEntries_T DBManager::displayAll (soci::session& ioSociSession) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
     try {
@@ -549,6 +731,222 @@ namespace OPENTREP {
       throw SQLDatabaseException (errorStr.str());
     }
 
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::getPORByIATACode (soci::session& ioSociSession,
+                                               const IATACode_T& iIataCode,
+                                               LocationList_T& ioLocationList) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      // Prepare the SQL request corresponding to the select statement
+      soci::statement lSelectStatement (ioSociSession);
+      std::string lPlaceRawDataString;
+      DBManager::prepareSelectBlobOnIataCodeStatement (ioSociSession,
+                                                       lSelectStatement,
+                                                       iIataCode,
+                                                       lPlaceRawDataString);
+
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement,
+                                           lPlaceRawDataString);
+
+        if (hasStillData == true) {
+          //
+          ++oNbOfEntries;
+
+          // Parse the POR details and create the corresponding
+          // Location structure
+          const RawDataString_T lPlaceRawData (lPlaceRawDataString);
+          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+
+          // Add the new found location to the list
+          ioLocationList.push_back (lLocation);
+
+          // Debug
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
+        }
+      }
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve a POR for " << iIataCode
+               << " from the SQL database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    //
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::getPORByICAOCode (soci::session& ioSociSession,
+                                               const ICAOCode_T& iIcaoCode,
+                                               LocationList_T& ioLocationList) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      // Prepare the SQL request corresponding to the select statement
+      soci::statement lSelectStatement (ioSociSession);
+      std::string lPlaceRawDataString;
+      DBManager::prepareSelectBlobOnIcaoCodeStatement (ioSociSession,
+                                                       lSelectStatement,
+                                                       iIcaoCode,
+                                                       lPlaceRawDataString);
+
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement,
+                                           lPlaceRawDataString);
+
+        if (hasStillData == true) {
+          //
+          ++oNbOfEntries;
+
+          // Parse the POR details and create the corresponding
+          // Location structure
+          const RawDataString_T lPlaceRawData (lPlaceRawDataString);
+          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+
+          // Add the new found location to the list
+          ioLocationList.push_back (lLocation);
+
+          // Debug
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
+        }
+      }
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve a POR for " << iIcaoCode
+               << " from the SQL database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    //
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::getPORByFAACode (soci::session& ioSociSession,
+                                              const FAACode_T& iFaaCode,
+                                              LocationList_T& ioLocationList) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      // Prepare the SQL request corresponding to the select statement
+      soci::statement lSelectStatement (ioSociSession);
+      std::string lPlaceRawDataString;
+      DBManager::prepareSelectBlobOnFaaCodeStatement (ioSociSession,
+                                                      lSelectStatement,
+                                                      iFaaCode,
+                                                      lPlaceRawDataString);
+
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement,
+                                           lPlaceRawDataString);
+
+        if (hasStillData == true) {
+          //
+          ++oNbOfEntries;
+
+          // Parse the POR details and create the corresponding
+          // Location structure
+          const RawDataString_T lPlaceRawData (lPlaceRawDataString);
+          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+
+          // Add the new found location to the list
+          ioLocationList.push_back (lLocation);
+
+          // Debug
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
+        }
+      }
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve a POR for " << iFaaCode
+               << " from the SQL database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    //
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::getPORByGeonameID (soci::session& ioSociSession,
+                                                const GeonamesID_T& iGeonameID,
+                                                LocationList_T& ioLocationList) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      // Prepare the SQL request corresponding to the select statement
+      soci::statement lSelectStatement (ioSociSession);
+      std::string lPlaceRawDataString;
+      DBManager::prepareSelectBlobOnPlaceGeoIDStatement (ioSociSession,
+                                                         lSelectStatement,
+                                                         iGeonameID,
+                                                         lPlaceRawDataString);
+
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement,
+                                           lPlaceRawDataString);
+
+        if (hasStillData == true) {
+          //
+          ++oNbOfEntries;
+
+          // Parse the POR details and create the corresponding
+          // Location structure
+          const RawDataString_T lPlaceRawData (lPlaceRawDataString);
+          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+
+          // Add the new found location to the list
+          ioLocationList.push_back (lLocation);
+
+          // Debug
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
+        }
+      }
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve a POR for " << iGeonameID
+               << " from the SQL database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    //
     return oNbOfEntries;
   }
 

@@ -67,6 +67,7 @@ but names may vary according to distributions):
   * python-devel / python-dev
   * gettext-devel / gettext-dev
   * sqlite3-devel / libsqlite3-dev
+  * readline-devel / readline-dev
   * doxygen
   * tetex-latex (optional)
   * rpm-build (optional)

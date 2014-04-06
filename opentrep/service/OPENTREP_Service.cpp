@@ -199,9 +199,62 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T OPENTREP_Service::buildSQLDB() {
-    NbOfDBEntries_T oNbOfEntries = 0;
-    
+  void OPENTREP_Service::createSQLDBUser() {
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database creation to the dedicated command
+    BasChronometer lDBCreationChronometer;
+    lDBCreationChronometer.start();
+
+    // Create the SQL database file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+
+    // Create the SQL database user ('trep' on MySQL database)
+    // and database ('trep_trep' on MySQL database)
+    DBManager::createSQLDBUser (lSociSession);
+
+    const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Created the SQL database: " << lDBCreationMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OPENTREP_Service::
+  setSQLDBConnectString (const SQLDBConnectionString_T& iSQLDBConnectionString) {
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Set the SQL database connection string
+    lOPENTREP_ServiceContext.setSQLDBConnectionString (iSQLDBConnectionString);
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Reset of the SQL database connection string: "
+                        << lOPENTREP_ServiceContext.display());
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OPENTREP_Service::buildSQLDB() {
     if (_opentrepServiceContext == NULL) {
       throw NonInitialisedServiceException ("The OpenTREP service has not been"
                                             " initialised");
@@ -237,8 +290,182 @@ namespace OPENTREP {
     // DEBUG
     OPENTREP_LOG_DEBUG ("Created the SQL database: " << lDBCreationMeasure
                         << " - " << lOPENTREP_ServiceContext.display());
+  }
 
-    return oNbOfEntries;
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T OPENTREP_Service::
+  listByIataCode (const IATACode_T& iIataCode,
+                  LocationList_T& ioLocationList) {
+    NbOfMatches_T nbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database look up to the dedicated command
+    BasChronometer lDBListChronometer;
+    lDBListChronometer.start();
+
+    // Create the SQL database file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+      
+    // Get the list of POR corresponding to the given IATA code
+    nbOfMatches =
+      DBManager::getPORByIATACode (lSociSession, iIataCode, ioLocationList);
+
+    const double lDBListMeasure = lDBListChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Look up in the SQL database: " << lDBListMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+
+    //
+    return nbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T OPENTREP_Service::
+  listByIcaoCode (const ICAOCode_T& iIcaoCode,
+                  LocationList_T& ioLocationList) {
+    NbOfMatches_T nbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database look up to the dedicated command
+    BasChronometer lDBListChronometer;
+    lDBListChronometer.start();
+
+    // Create the SQL database file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+      
+    // Get the list of POR corresponding to the given ICAO code
+    nbOfMatches =
+      DBManager::getPORByICAOCode (lSociSession, iIcaoCode, ioLocationList);
+
+    const double lDBListMeasure = lDBListChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Look up in the SQL database: " << lDBListMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+
+    //
+    return nbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T OPENTREP_Service::
+  listByFaaCode (const FAACode_T& iFaaCode,
+                 LocationList_T& ioLocationList) {
+    NbOfMatches_T nbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database look up to the dedicated command
+    BasChronometer lDBListChronometer;
+    lDBListChronometer.start();
+
+    // Create the SQL database file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+      
+    // Get the list of POR corresponding to the given FAA code
+    nbOfMatches =
+      DBManager::getPORByFAACode (lSociSession, iFaaCode, ioLocationList);
+
+    const double lDBListMeasure = lDBListChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Look up in the SQL database: " << lDBListMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+
+    //
+    return nbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T OPENTREP_Service::
+  listByGeonameID (const GeonamesID_T& iGeonameID,
+                   LocationList_T& ioLocationList) {
+    NbOfMatches_T nbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database look up to the dedicated command
+    BasChronometer lDBListChronometer;
+    lDBListChronometer.start();
+
+    // Create the SQL database file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+      
+    // Get the list of POR corresponding to the given Geoname ID
+    nbOfMatches =
+      DBManager::getPORByGeonameID (lSociSession, iGeonameID, ioLocationList);
+
+    const double lDBListMeasure = lDBListChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Look up in the SQL database: " << lDBListMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+
+    //
+    return nbOfMatches;
   }
 
   // //////////////////////////////////////////////////////////////////////
