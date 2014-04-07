@@ -23,6 +23,7 @@
 #include <opentrep/bom/WordCombinationHolder.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
+#include <opentrep/bom/PORFileHelper.hpp>
 #include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/command/DBManager.hpp>
@@ -192,15 +193,6 @@ namespace OPENTREP {
                         << "') will be cleared");
     boost::filesystem::remove_all (lTravelDBFilePath);
 
-    // SQLite3 file
-    boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
-                                               iSQLDBConnStr.end());
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("The SQLite database file ('" << lSQLiteDBFullPath
-                        << "') will be cleared");
-    boost::filesystem::remove_all (lSQLiteDBFullPath);
-
-
     /**
      *            1. Xapian Database Initialisation
      */
@@ -212,7 +204,7 @@ namespace OPENTREP {
           && boost::filesystem::is_directory (lTravelDBFilePath))) {
       std::ostringstream oStr;
       oStr << "The file-path to the Xapian database/index ('"
-           << iPORFilePath << "') does not exist or is not a directory.";
+           << lTravelDBFilePath << "') does not exist or is not a directory.";
       OPENTREP_LOG_ERROR (oStr.str());
       throw FileNotFoundException (oStr.str());
     }
@@ -242,16 +234,11 @@ namespace OPENTREP {
 
 
     /**
-     *            2. SQL Database Initialisation
+     *            2. Connection to the SQL Database
      */
-    // Create the SQL database file
+    // Connect to the SQL database/file
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
-
-    // Create the SQL database tables, if needed
-    if (lSociSession_ptr != NULL) {
-      DBManager::createSQLDBTables (*lSociSession_ptr);
-    }
 
 
     /**
@@ -262,84 +249,16 @@ namespace OPENTREP {
     // DEBUG
     OPENTREP_LOG_DEBUG ("Parsing POR input file: " << iPORFilePath);
 
-    // Check whether the file to be parsed exists and is readable.
-    boost::filesystem::path lPORFilePath (iPORFilePath.begin(),
-                                          iPORFilePath.end());
-    if (!(boost::filesystem::exists (lPORFilePath)
-          && boost::filesystem::is_regular_file (lPORFilePath))) {
-      OPENTREP_LOG_ERROR ("The POR file " << iPORFilePath
-                          << " does not exist or cannot be open." << std::endl);
+    // Get a reference on the file stream corresponding to the POR file.
+    const PORFileHelper lPORFileHelper (iPORFilePath);
+    std::istream& lPORFileStream = lPORFileHelper.getFileStreamRef();
 
-      throw FileNotFoundException ("The POR file " + iPORFilePath
-                                   + " does not exist or cannot be read");
-    }
-
-    /**
-     * Check whether the data file is compressed.
-     *
-     * Note: that check is not very robust, as it is based on the
-     * file extension. A more robust approach would be to extract
-     * the magic number (first 4 bytes).
-     */
-    const boost::filesystem::path& lPORFileExtPath = lPORFilePath.extension();
-    const std::string& lPORFileExt = lPORFileExtPath.string();
-    if (lPORFileExt == ".bz2") {
-      // Open the file
-      boost::iostreams::file_source cprdFileToBeParsed (iPORFilePath,
-                                                        std::ios_base::in
-                                                        | std::ios_base::binary);
-
-      // Uncompress the file with the BZ2 library and its Boost wrapper
-      boost::iostreams::filtering_istream bunzip2Filter;
-      bunzip2Filter.push (boost::iostreams::bzip2_decompressor());
-      bunzip2Filter.push (cprdFileToBeParsed);
-
-      // Browse the input POR (point of reference) data file,
-      // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
-                                       lSociSession_ptr,
-                                       bunzip2Filter, iTransliterator);
-
-    } else if (lPORFileExt == ".gz") {
-      // Open the file
-      boost::iostreams::file_source cprdFileToBeParsed (iPORFilePath,
-                                                        std::ios_base::in
-                                                        | std::ios_base::binary);
-
-      // Uncompress the file with the BZ2 library and its Boost wrapper
-      boost::iostreams::filtering_istream gunzipFilter;
-      gunzipFilter.push (boost::iostreams::gzip_decompressor());
-      gunzipFilter.push (cprdFileToBeParsed);
-
-      // Browse the input POR (point of reference) data file,
-      // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
-                                       lSociSession_ptr,
-                                       gunzipFilter, iTransliterator);
-
-    } else if (lPORFileExt == ".csv") {
-      // Open the file
-      boost::filesystem::ifstream fileToBeParsed (iPORFilePath,
-                                                  std::ios_base::in);
-
-      // Browse the input POR (point of reference) data file,
-      // and parse every of its rows
-      oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
-                                       lSociSession_ptr,
-                                       fileToBeParsed, iTransliterator);
-
-    } else {
-      //
-      OPENTREP_LOG_ERROR ("The POR file " << iPORFilePath
-                          << " has got an unknown extension ('" << lPORFileExt
-                          << "'). Recognised extensions: .csv, .bz2, .gz"
-                          << std::endl);
-
-      throw FileExtensionUnknownException ("The POR file " + iPORFilePath
-                                           + " has got an unknown extension ('"
-                                           + lPORFileExt + "'). Recognised "
-                                           + "extensions: .csv, .bz2, .gz");
-    }
+    // Browse the input POR (point of reference) data file,
+    // parse every of its rows, and put the result in the Xapian database/index
+    // and, if needed, within the SQL database.
+    oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
+                                     lSociSession_ptr,
+                                     lPORFileStream, iTransliterator);
 
     // Commit the pending modifications on the Xapian database (index)
     lXapianDatabase.commit_transaction();
@@ -355,11 +274,6 @@ namespace OPENTREP {
      *       When called from within GDB, all is fine.
      */
     lXapianDatabase.close();
-
-    // Build the SQL database indexes, if needed
-    if (lSociSession_ptr != NULL) {
-      DBManager::createSQLDBIndexes (*lSociSession_ptr);
-    }
 
 
     return oNbOfEntries;

@@ -61,9 +61,13 @@ namespace OPENTREP {
      *
      * If tables were previously existing, they are deleted and re-created.
      *
-     * @param soci::session& A reference on the SQL database session.
+     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const SQLDBConnectionString_T& Connection string for the SQL
+     *                                       database.
+     * @return bool Whether or not the creation of the SQL database user
+     *              and DB was successful.
      */
-    static void createSQLDBUser (soci::session&);
+    static bool createSQLDBUser (const DBType&, const SQLDBConnectionString_T&);
 
     /**
      * Create the database tables (e.g., 'ori_por' table).
@@ -82,9 +86,29 @@ namespace OPENTREP {
     static void createSQLDBIndexes (soci::session&);
 
     /**
+     * Retrieve the number of POR (points of reference) within the SQL database.
+     *
+     * @return NbOfDBEntries_T Number of documents of the SQL database.
+     */
+    static NbOfDBEntries_T displayCount (soci::session&);
+
+    /**
+     * Insert all the POR (points of reference) of the given POR file
+     * into the SQL database.
+     *
+     * @param const PORFilePath_T& File-path of the POR file.
+     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const SQLDBConnectionString_T& Connection string for the SQL
+     *                                       database.
+     * @return NbOfDBEntries_T Number of documents of the POR file.
+     */
+    static NbOfDBEntries_T fillInFromPORFile (const PORFilePath_T&,
+                                              const DBType&,
+                                              const SQLDBConnectionString_T&);
+
+    /**
      * Dump all the POR (points of reference) of the SQL database.
      *
-     * @param const SQLDBConnectionString_T& Connection string to the SQL DB.
      * @return NbOfDBEntries_T Number of documents of the SQL database.
      */
     static NbOfDBEntries_T displayAll (soci::session&);

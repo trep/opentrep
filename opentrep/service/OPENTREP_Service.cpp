@@ -199,7 +199,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OPENTREP_Service::createSQLDBUser() {
+  bool OPENTREP_Service::createSQLDBUser() {
+    bool oCreationSuccessful = true;
+
     if (_opentrepServiceContext == NULL) {
       throw NonInitialisedServiceException ("The OpenTREP service has not been"
                                             " initialised");
@@ -218,21 +220,18 @@ namespace OPENTREP {
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
 
-    // Create the SQL database file
-    soci::session* lSociSession_ptr =
-      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
-    assert (lSociSession_ptr != NULL);
-    soci::session& lSociSession = *lSociSession_ptr;
-
     // Create the SQL database user ('trep' on MySQL database)
     // and database ('trep_trep' on MySQL database)
-    DBManager::createSQLDBUser (lSociSession);
+    oCreationSuccessful =
+      DBManager::createSQLDBUser (lSQLDBType, lSQLDBConnectionString);
 
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
     // DEBUG
     OPENTREP_LOG_DEBUG ("Created the SQL database: " << lDBCreationMeasure
                         << " - " << lOPENTREP_ServiceContext.display());
+
+    return oCreationSuccessful;
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -254,7 +253,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OPENTREP_Service::buildSQLDB() {
+  void OPENTREP_Service::createSQLDBTables() {
     if (_opentrepServiceContext == NULL) {
       throw NonInitialisedServiceException ("The OpenTREP service has not been"
                                             " initialised");
@@ -273,7 +272,7 @@ namespace OPENTREP {
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
 
-    // Create the SQL database file
+    // Connect to the SQLite3/MySQL database
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
@@ -282,14 +281,89 @@ namespace OPENTREP {
     // Create the SQL database tables
     DBManager::createSQLDBTables (lSociSession);
 
+    const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Created the SQL database tables: " << lDBCreationMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void OPENTREP_Service::createSQLDBIndexes() {
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database creation to the dedicated command
+    BasChronometer lDBCreationChronometer;
+    lDBCreationChronometer.start();
+
+    // Connect to the SQLite3/MySQL database
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+
     // Create the SQL database tables
     DBManager::createSQLDBIndexes (lSociSession);
 
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Created the SQL database: " << lDBCreationMeasure
+    OPENTREP_LOG_DEBUG ("Created the SQL database indexes: "
+                        << lDBCreationMeasure << " - "
+                        << lOPENTREP_ServiceContext.display());
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T OPENTREP_Service::getNbOfPORFromDB() {
+    NbOfDBEntries_T nbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database look up to the dedicated command
+    BasChronometer lDBListChronometer;
+    lDBListChronometer.start();
+
+    // Connect to the SQLite3/MySQL database
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+      
+    // Get the number of POR stored within the SQLite3/MySQL database
+    nbOfMatches = DBManager::displayCount (lSociSession);
+
+    const double lDBListMeasure = lDBListChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Look up in the SQL database: " << lDBListMeasure
                         << " - " << lOPENTREP_ServiceContext.display());
+
+    //
+    return nbOfMatches;
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -316,7 +390,7 @@ namespace OPENTREP {
     BasChronometer lDBListChronometer;
     lDBListChronometer.start();
 
-    // Create the SQL database file
+    // Connect to the SQLite3/MySQL database
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
@@ -360,7 +434,7 @@ namespace OPENTREP {
     BasChronometer lDBListChronometer;
     lDBListChronometer.start();
 
-    // Create the SQL database file
+    // Connect to the SQLite3/MySQL database
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
@@ -404,7 +478,7 @@ namespace OPENTREP {
     BasChronometer lDBListChronometer;
     lDBListChronometer.start();
 
-    // Create the SQL database file
+    // Connect to the SQLite3/MySQL database
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
@@ -448,7 +522,7 @@ namespace OPENTREP {
     BasChronometer lDBListChronometer;
     lDBListChronometer.start();
 
-    // Create the SQL database file
+    // Connect to the SQLite3/MySQL database
     soci::session* lSociSession_ptr =
       DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
     assert (lSociSession_ptr != NULL);
@@ -468,6 +542,44 @@ namespace OPENTREP {
     return nbOfMatches;
   }
 
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T OPENTREP_Service::fillInFromPORFile() {
+    NbOfDBEntries_T oNbOfEntries = 0;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the file-path of the POR (points of reference) file
+    const PORFilePath_T& lPORFilePath= lOPENTREP_ServiceContext.getPORFilePath();
+      
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the index building to the dedicated command
+    BasChronometer lBuildSearchIndexChronometer;
+    lBuildSearchIndexChronometer.start();
+    oNbOfEntries =
+      DBManager::fillInFromPORFile (lPORFilePath,
+                                    lSQLDBType, lSQLDBConnectionString);
+    const double lBuildSearchIndexMeasure =
+      lBuildSearchIndexChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Filled in the SQL database: "
+                        << lBuildSearchIndexMeasure << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oNbOfEntries;
+  }
+  
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T OPENTREP_Service::buildSearchIndex() {
     NbOfDBEntries_T oNbOfEntries = 0;
