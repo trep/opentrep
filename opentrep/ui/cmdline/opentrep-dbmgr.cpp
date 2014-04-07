@@ -49,14 +49,17 @@ struct Command_T {
     NOP = 0,
     QUIT,
     HELP,
+    TUTORIAL,
     CREATE_USER,
     RESET_CONNECTION_STRING,
-    CREATE_DB,
-    INDEX_POR_FILE,
+    CREATE_TABLES,
+    CREATE_INDEXES,
+    FILL_FROM_POR_FILE,
     LIST_BY_IATA,
     LIST_BY_ICAO,
     LIST_BY_FAA,
     LIST_BY_GEONAMEID,
+    LIST_NB,
     LIST_ALL,
     LIST_CONT,
     LAST_VALUE
@@ -195,14 +198,17 @@ void initReadline (swift::SReadline& ioInputReader) {
   // - "identifiers"
   // - special identifier %file - means to perform a file name completion
   Completers.push_back ("help");
+  Completers.push_back ("tutorial");
   Completers.push_back ("create_user");
   Completers.push_back ("reset_connection_string %connection_string");
-  Completers.push_back ("create_db");
-  Completers.push_back ("index_por_file");
+  Completers.push_back ("create_tables");
+  Completers.push_back ("create_indexes");
+  Completers.push_back ("fill_from_por_file");
   Completers.push_back ("list_by_iata %iata_code");
   Completers.push_back ("list_by_icao %icao_code");
   Completers.push_back ("list_by_faa %faa_code");
   Completers.push_back ("list_by_geonameid %geoname_id");
+  Completers.push_back ("list_nb");
   Completers.push_back ("list_all");
   Completers.push_back ("list_cont");
   Completers.push_back ("quit");
@@ -224,17 +230,23 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
     if (lCommand == "help") {
       oCommandType = Command_T::HELP;
 
+    } else if (lCommand == "tutorial") {
+      oCommandType = Command_T::TUTORIAL;
+    
     } else if (lCommand == "create_user") {
       oCommandType = Command_T::CREATE_USER;
     
     } else if (lCommand == "reset_connection_string") {
       oCommandType = Command_T::RESET_CONNECTION_STRING;
 
-    } else if (lCommand == "create_db") {
-      oCommandType = Command_T::CREATE_DB;
+    } else if (lCommand == "create_tables") {
+      oCommandType = Command_T::CREATE_TABLES;
 
-    } else if (lCommand == "index_por_file") {
-      oCommandType = Command_T::INDEX_POR_FILE;
+    } else if (lCommand == "create_indexes") {
+      oCommandType = Command_T::CREATE_INDEXES;
+
+    } else if (lCommand == "fill_from_por_file") {
+      oCommandType = Command_T::FILL_FROM_POR_FILE;
 
     } else if (lCommand == "list_by_iata") {
       oCommandType = Command_T::LIST_BY_IATA;
@@ -247,6 +259,9 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "list_by_geonameid") {
       oCommandType = Command_T::LIST_BY_GEONAMEID;
+
+    } else if (lCommand == "list_nb") {
+      oCommandType = Command_T::LIST_NB;
 
     } else if (lCommand == "list_all") {
       oCommandType = Command_T::LIST_ALL;
@@ -495,41 +510,87 @@ int main (int argc, char* argv[]) {
     case Command_T::HELP: {
       std::cout << std::endl;
       std::cout << "Commands: " << std::endl;
-      std::cout << " help" << "\t\t\t" << "Display this help" << std::endl;
-      std::cout << " quit" << "\t\t\t" << "Quit the application" << std::endl;
-      std::cout << " create_user" << "\t\t"
-                << "Create the trep user on MySQL."
-                << " Administrative rights are required." << std::endl;
-      std::cout << " reset_connection_string" << "\t\t"
+      std::cout << " help" << "\t\t\t\t" << "Display this help" << std::endl;
+      std::cout << " tutorial" << "\t\t\t" << "Display examples" << std::endl;
+      std::cout << " quit" << "\t\t\t\t" << "Quit the application" << std::endl;
+      std::cout << " create_user" << "\t\t\t"
+                << "On MySQL, create the 'trep' user and the 'trep_trep' database."
+                << " MySQL administrative rights are required." << std::endl;
+      std::cout << " reset_connection_string" << "\t"
                 << "Reset/update the connection string to a MySQL database."
                 << " The connection string must be given"
                 << std::endl;
-      std::cout << " create_db" << "\t\t"
-                << "Create/reset the SQLie3/MySQL database (named trep_trep on MySQL)"
+      std::cout << " create_tables" << "\t\t\t"
+                << "Create/reset the SQLite3/MySQL tables"
                 << std::endl;
-      std::cout << " index_por_file" << "\t\t"
-                << "Parse the file of POR and fill-in the SQL database ori_por table" << std::endl;
-      std::cout << " list_all" << "\t\t"
+      std::cout << " create_indexes" << "\t\t\t"
+                << "Create/reset the SQLite3/MySQL indexes"
+                << std::endl;
+      std::cout << " fill_from_por_file" << "\t\t"
+                << "Parse the file of POR and fill-in the SQL database ori_por table."
+                << std::endl << "\t\t\t\t"
+                << "Note that, as that command takes minutes, the connection to the SQL database may be lost and the program will exit abnormally."
+                << std::endl << "\t\t\t\t"
+                << "In that latter case, just re-execute the program and check how far the indexation went by executing the following command."
+                << std::endl;
+      std::cout << " list_nb" << "\t\t\t"
+                << "Display the number of the entries of the database."
+                << std::endl;
+      std::cout << " list_all" << "\t\t\t"
                 << "List all the entries of the database, page by page."
                 << "Type the 'list_cont' command for a page down" << std::endl;
-      std::cout << " list_by_iata" << "\t\t"
+      std::cout << " list_by_iata" << "\t\t\t"
                 << "List all the entries for a given IATA code"
                 << std::endl;
-      std::cout << " list_by_icao" << "\t\t"
+      std::cout << " list_by_icao" << "\t\t\t"
                 << "List all the entries for a given ICAO code"
                 << std::endl;
-      std::cout << " list_by_faa" << "\t\t"
+      std::cout << " list_by_faa" << "\t\t\t"
                 << "List all the entries for a given FAA code"
                 << std::endl;
-      std::cout << " list_by_geonameid" << "\t"
+      std::cout << " list_by_geonameid" << "\t\t"
                 << "List all the entries for a given Geoname ID"
                 << std::endl;
       std::cout << std::endl;
       break;
     }
  
+      // /////////////////////////// Help with Examples //////////////////////
+    case Command_T::TUTORIAL: {
+      std::cout << std::endl;
+      std::cout << "Typical succession of Commands: " << std::endl;
+      std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
+                << std::endl;
+      std::cout << " create_user" << std::endl;
+      std::cout <<" reset_connection_string db=trep_trep user=trep password=trep"
+                << std::endl;
+      std::cout << " create_tables" << std::endl;
+      std::cout << " fill_from_por_file" << std::endl;
+      std::cout << " create_indexes" << std::endl;
+      std::cout << " list_nb" << std::endl;
+      std::cout << " list_by_iata nce" << std::endl;
+      std::cout << " list_by_icao lfmn" << std::endl;
+      std::cout << " list_by_faa afm" << std::endl;
+      std::cout << " list_by_geonameid 6299418" << std::endl;
+      std::cout << std::endl;
+      break;
+    }
+ 
       // ////////////////////////////// Quit ////////////////////////
     case Command_T::QUIT: {
+      break;
+    }
+
+      // ////////////////////////////// List Number /////////////////////////
+    case Command_T::LIST_NB: {
+      // Call the underlying OpenTREP service
+      const OPENTREP::NbOfMatches_T nbOfMatches =
+        opentrepService.getNbOfPORFromDB();
+
+      //
+      std::cout << nbOfMatches << " (geographical) location(s) have been found."
+                << std::endl;
+
       break;
     }
 
@@ -559,6 +620,7 @@ int main (int argc, char* argv[]) {
           const OPENTREP::Location& lLocation = *itLocation;
           std::cout << " [" << idx << "]: " << lLocation.toString() << std::endl;
         }
+
       } else {
         std::cout << "List of unmatched words:" << std::endl;
         std::cout << " [" << 1 << "]: " << lIataCodeStr << std::endl;
@@ -596,6 +658,7 @@ int main (int argc, char* argv[]) {
           const OPENTREP::Location& lLocation = *itLocation;
           std::cout << " [" << idx << "]: " << lLocation << std::endl;
         }
+
       } else {
         std::cout << "List of unmatched words:" << std::endl;
         std::cout << " [" << 1 << "]: " << lIataCodeStr << std::endl;
@@ -633,6 +696,7 @@ int main (int argc, char* argv[]) {
           const OPENTREP::Location& lLocation = *itLocation;
           std::cout << " [" << idx << "]: " << lLocation << std::endl;
         }
+
       } else {
         std::cout << "List of unmatched words:" << std::endl;
         std::cout << " [" << 1 << "]: " << lIcaoCodeStr << std::endl;
@@ -670,6 +734,7 @@ int main (int argc, char* argv[]) {
           const OPENTREP::Location& lLocation = *itLocation;
           std::cout << " [" << idx << "]: " << lLocation << std::endl;
         }
+
       } else {
         std::cout << "List of unmatched words:" << std::endl;
         std::cout << " [" << 1 << "]: " << lFaaCodeStr << std::endl;
@@ -720,6 +785,7 @@ int main (int argc, char* argv[]) {
           const OPENTREP::Location& lLocation = *itLocation;
           std::cout << " [" << idx << "]: " << lLocation << std::endl;
         }
+
       } else {
         std::cout << "List of unmatched items:" << std::endl;
         std::cout << " [" << 1 << "]: " << lGeonameIDStr << std::endl;
@@ -736,11 +802,13 @@ int main (int argc, char* argv[]) {
     
       // On MySQL, create the 'trep' user and 'trep_trep' database.
       // On other database types, do nothing.
-      opentrepService.createSQLDBUser();
+      const bool lCreationSuccessful = opentrepService.createSQLDBUser();
 
-      //
-      std::cout << "The 'trep' user and 'trep_trep' database have been created"
-                << std::endl;
+      // Reporting
+      if (lCreationSuccessful == true) {
+        std::cout << "The 'trep' user and 'trep_trep' database have been created"
+                  << std::endl;
+      }
 
       break;
     }
@@ -765,24 +833,40 @@ int main (int argc, char* argv[]) {
       break;
     }
 
-      // ///////////////////////// Database Creation /////////////////////////
-    case Command_T::CREATE_DB: {
+      // ///////////////////////// Tables Creation /////////////////////////
+    case Command_T::CREATE_TABLES: {
       //
       std::cout << "Creating/resetting the " << lDBType.describe()
-                << " database" << std::endl;
+                << " database tables" << std::endl;
     
-      // Create/reset the SQLite3/MySQL database
-      opentrepService.buildSQLDB();
+      // Create/reset the SQLite3/MySQL tables
+      opentrepService.createSQLDBTables();
 
       //
       std::cout << "The " << lDBType.describe()
-                << " database has been created/resetted" << std::endl;
+                << " tables has been created/resetted" << std::endl;
+
+      break;
+    }
+
+      // ///////////////////////// Indexes Creation /////////////////////////
+    case Command_T::CREATE_INDEXES: {
+      //
+      std::cout << "Creating/resetting the " << lDBType.describe()
+                << " database indexes" << std::endl;
+    
+      // Create/reset the SQLite3/MySQL indexes
+      opentrepService.createSQLDBIndexes();
+
+      //
+      std::cout << "The " << lDBType.describe()
+                << " indexes has been created/resetted" << std::endl;
 
       break;
     }
 
       // ///////////////////////// POR File Indexing /////////////////////////
-    case Command_T::INDEX_POR_FILE: {
+    case Command_T::FILL_FROM_POR_FILE: {
       //
       std::cout << "Indexing the POR file and filling in the SQL database may "
                 << "take a few minutes on some architectures "
@@ -791,7 +875,7 @@ int main (int argc, char* argv[]) {
     
       // Launch the indexation
       const OPENTREP::NbOfDBEntries_T lNbOfEntries =
-        opentrepService.buildSearchIndex();
+        opentrepService.fillInFromPORFile();
 
       //
       std::cout << lNbOfEntries << " entries have been processed" << std::endl;

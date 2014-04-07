@@ -352,14 +352,14 @@ namespace OPENTREP {
   };
 
   /**
-   * SQL database index creation issue.
+   * SQL database user creation issue.
    */
-  class SQLDatabaseIndexCreationException : public SQLDatabaseException {
+  class SQLDatabaseUserCreationException : public SQLDatabaseException {
   public:
     /**
      * Constructor.
      */
-    SQLDatabaseIndexCreationException (const std::string& iWhat)
+    SQLDatabaseUserCreationException (const std::string& iWhat)
       : SQLDatabaseException (iWhat) {}
   };
 
@@ -372,6 +372,18 @@ namespace OPENTREP {
      * Constructor.
      */
     SQLDatabaseTableCreationException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
+   * SQL database index creation issue.
+   */
+  class SQLDatabaseIndexCreationException : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseIndexCreationException (const std::string& iWhat)
       : SQLDatabaseException (iWhat) {}
   };
 

@@ -16,6 +16,8 @@
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/Result.hpp>
+#include <opentrep/bom/PORFileHelper.hpp>
+#include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/dbadaptor/DbaPlace.hpp>
 #include <opentrep/command/DBManager.hpp>
@@ -26,14 +28,106 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   soci::session* DBManager::
   initSQLDBSession (const DBType& iDBType,
-                    const SQLDBConnectionString_T& iSQLDBConnectionString) {
+                    const SQLDBConnectionString_T& iSQLDBConnStr) {
     soci::session* oSociSession_ptr = NULL;
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("SQL database type: " << iDBType.describe());
     if (!(iDBType == DBType::NODB)) {
-      OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
-                          << "') will be cleared");
+      OPENTREP_LOG_DEBUG ("Connecting to the " << iDBType.describe()
+                          << " SQL database/file ('" << iSQLDBConnStr << "')");
+    }
+
+    if (iDBType == DBType::SQLITE3) {
+
+      // Re-create the SQLite3 directory, if needed
+      boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
+                                                 iSQLDBConnStr.end());
+      boost::filesystem::path lSQLiteDBParentPath =
+        lSQLiteDBFullPath.parent_path();
+
+      // Check whether the directory exists and is a directory.
+      boost::filesystem::path lSQLiteDBFilename = lSQLiteDBFullPath.filename();
+      if (!(boost::filesystem::exists (lSQLiteDBParentPath)
+            && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
+        std::ostringstream oStr;
+        oStr << "Error. The path to the SQLite3 database directory ('"
+             << lSQLiteDBParentPath
+             << "') does not exist or is not a directory.";
+        OPENTREP_LOG_ERROR (oStr.str());
+        throw FileNotFoundException (oStr.str());
+      }
+
+      try {
+
+        // Connect to the SQL database.
+        oSociSession_ptr = new soci::session();
+        assert (oSociSession_ptr != NULL);
+        soci::session& lSociSession = *oSociSession_ptr;
+        lSociSession.open (soci::sqlite3, iSQLDBConnStr);
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The SQLite3 database/file ('" << iSQLDBConnStr
+                            << "') has been checked and open");
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to connect to the '" << iSQLDBConnStr
+                 << "' SQLite3 database: " << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      }
+
+      // The SQLite3 connection is assumed to have been successful
+      assert (oSociSession_ptr != NULL);
+
+    } else if (iDBType == DBType::MYSQL) {
+
+      try {
+
+        // Connect to the SQL database.
+        oSociSession_ptr = new soci::session();
+        assert (oSociSession_ptr != NULL);
+        soci::session& lSociSession = *oSociSession_ptr;
+        lSociSession.open (soci::mysql, iSQLDBConnStr);
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The " << iDBType.describe() << " database "
+                            << " is accessible");
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to connect to the '" << iSQLDBConnStr
+                 << "' MySQL/MariaDB database: " << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      }
+
+      // The MySQL/MariaDB connection is assumed to have been successful
+      assert (oSociSession_ptr != NULL);
+
+    } else if (iDBType == DBType::NODB) {
+      // Do nothing
+
+    } else {
+      std::ostringstream errorStr;
+      errorStr << "Error: the '" << iDBType.describe()
+               << "' SQL database type is not supported";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseTableCreationException (errorStr.str());
+    }
+
+    return oSociSession_ptr;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool DBManager::
+  createSQLDBUser (const DBType& iDBType,
+                   const SQLDBConnectionString_T& iSQLDBConnStr) {
+    bool oCreationSuccessful = true;
+
+    // DEBUG
+    if (iDBType == DBType::MYSQL) {
+      OPENTREP_LOG_DEBUG ("The MySQL/MariaDB database user will be created/reset");
     }
 
     if (iDBType == DBType::SQLITE3) {
@@ -41,10 +135,19 @@ namespace OPENTREP {
       try {
 
         // Re-create the SQLite3 directory, if needed
-        boost::filesystem::path lSQLiteDBFullPath(iSQLDBConnectionString.begin(),
-                                                  iSQLDBConnectionString.end());
+        boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
+                                                   iSQLDBConnStr.end());
         boost::filesystem::path lSQLiteDBParentPath =
           lSQLiteDBFullPath.parent_path();
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The SQLite database file ('" << lSQLiteDBFullPath
+                            << "') will be cleared and re-created");
+
+        // Delete the SQL database/file and its directory
+        boost::filesystem::remove_all (lSQLiteDBFullPath);
+
+        // Re-create the SQLite3 directory
         boost::filesystem::create_directories (lSQLiteDBParentPath);
 
         // Check whether the just created directory exists and is a directory.
@@ -61,86 +164,27 @@ namespace OPENTREP {
 
       } catch (std::exception const& lException) {
         std::ostringstream errorStr;
-        errorStr << "Error when trying to create " << iSQLDBConnectionString
-                 << " SQL database file: " << lException.what();
+        errorStr << "Error when trying to create " << iSQLDBConnStr
+                 << " SQLite3 database file: " << lException.what();
         errorStr << ". Check that the program has got write permission on the "
                  << "corresponding parent directories.";
         OPENTREP_LOG_ERROR (errorStr.str());
         throw SQLDatabaseFileCannotBeCreatedException (errorStr.str());
       }
-
-      try {
-
-        // Create the SQL database (file). As the directory has been fully
-        // cleaned, deleted and re-created, that SQL database (file) is empty.
-        oSociSession_ptr = new soci::session();
-        assert (oSociSession_ptr != NULL);
-        soci::session& lSociSession = *oSociSession_ptr;
-        lSociSession.open (soci::sqlite3, iSQLDBConnectionString);
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("The SQL database/file ('" << iSQLDBConnectionString
-                            << "') has been checked and open");
-        const std::string& lDBName = lSociSession.get_backend_name();
-        OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
-
-      } catch (std::exception const& lException) {
-        std::ostringstream errorStr;
-        errorStr << "Error when trying to connect to the '"
-                 << iSQLDBConnectionString << "' SQL database: "
-                 << lException.what();
-        OPENTREP_LOG_ERROR (errorStr.str());
-        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
-      }
-
-      // The SQLite3 connection is assumed to have been successful
-      assert (oSociSession_ptr != NULL);
-
+      
     } else if (iDBType == DBType::MYSQL) {
 
       try {
 
-        // Create the SQL database tables.
-        oSociSession_ptr = new soci::session();
-        assert (oSociSession_ptr != NULL);
-        soci::session& lSociSession = *oSociSession_ptr;
-        lSociSession.open (soci::mysql, iSQLDBConnectionString);
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("The SQL database ('" << iSQLDBConnectionString
-                            << "') is accessible");
-        const std::string& lDBName = lSociSession.get_backend_name();
-        OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
-
-      } catch (std::exception const& lException) {
-        std::ostringstream errorStr;
-        errorStr << "Error when trying to connect to the '"
-                 << iSQLDBConnectionString << "' SQL database: "
-                 << lException.what();
-        OPENTREP_LOG_ERROR (errorStr.str());
-        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
-      }
-
-      // The MySQL/MariaDB connection is assumed to have been successful
-      assert (oSociSession_ptr != NULL);
-
-    } else {
-      // No connection will be made
-    }
-
-    return oSociSession_ptr;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  void DBManager::createSQLDBUser (soci::session& ioSociSession) {
-    const std::string& lDBName = ioSociSession.get_backend_name();
-
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
-
-    if (lDBName == "mysql") {
-
-      try {
+        // Connect to the SQL database/file
+        soci::session* lSociSession_ptr = initSQLDBSession (iDBType,
+                                                            iSQLDBConnStr);
+        if (lSociSession_ptr == NULL) {
+          oCreationSuccessful = false;
+          return oCreationSuccessful;
+        }
+        assert (lSociSession_ptr != NULL);
+        soci::session& lSociSession = *lSociSession_ptr;
 
         /**
          * SQL DDL (Data Definition Language) queries:
@@ -172,7 +216,7 @@ namespace OPENTREP {
         lSQLGrantTrepLocalStr
           << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
         lSQLGrantTrepLocalStr << " to 'trep'@'localhost' identified by 'trep';";
-        ioSociSession << lSQLGrantTrepLocalStr.str();
+        lSociSession << lSQLGrantTrepLocalStr.str();
         //
         std::ostringstream lSQLGrantTrepAllStr;
         lSQLGrantTrepAllStr
@@ -181,40 +225,58 @@ namespace OPENTREP {
           << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
         lSQLGrantTrepAllStr << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
         lSQLGrantTrepAllStr << " to 'trep'@'%' identified by 'trep';";
-        ioSociSession << lSQLGrantTrepAllStr.str();
+        lSociSession << lSQLGrantTrepAllStr.str();
         //
         std::ostringstream lSQLFlushPrivilegesStr;
         lSQLFlushPrivilegesStr << "flush privileges;";
-        ioSociSession << lSQLFlushPrivilegesStr.str();
+        lSociSession << lSQLFlushPrivilegesStr.str();
         //
         std::ostringstream lSQLDropDBStr;
         lSQLDropDBStr << "drop database if exists trep_trep;";
-        ioSociSession << lSQLDropDBStr.str();
+        lSociSession << lSQLDropDBStr.str();
         //
         std::ostringstream lSQLCreateDBStr;
         lSQLCreateDBStr << "create database if not exists trep_trep";
         lSQLCreateDBStr << " default character set utf8";
         lSQLCreateDBStr << " collate utf8_unicode_ci;";
-        ioSociSession << lSQLCreateDBStr.str();
+        lSociSession << lSQLCreateDBStr.str();
+
+      } catch (soci::mysql_soci_error const& lSociException) {
+        oCreationSuccessful = false;
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create MySQL/MariaDB 'trep' user "
+                 << "and 'trep_trep' database: " << lSociException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        std::cerr << errorStr.str() << std::endl;
 
       } catch (std::exception const& lException) {
+        oCreationSuccessful = false;
         std::ostringstream errorStr;
-        errorStr << "Error when trying to create MySQL/MariaDB tables: "
-                 << lException.what();
+        errorStr << "Error when trying to create MySQL/MariaDB 'trep' user "
+                 << "and 'trep_trep' database: " << lException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
-        throw SQLDatabaseTableCreationException (errorStr.str());
+        throw SQLDatabaseUserCreationException (errorStr.str());
       }
+
+    } else if (iDBType == DBType::NODB || iDBType == DBType::SQLITE3) {
+      // Do nothing
     }
+
+    return oCreationSuccessful;
   }
 
   // //////////////////////////////////////////////////////////////////////
   void DBManager::createSQLDBTables (soci::session& ioSociSession) {
     const std::string& lDBName = ioSociSession.get_backend_name();
+    const DBType lDBType (lDBName);
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
+    if (!(lDBType == DBType::NODB)) {
+      OPENTREP_LOG_DEBUG ("The tables of the " << lDBType.describe()
+                          << " SQL database/file will be created/reset");
+    }
 
-    if (lDBName == "sqlite3") {
+    if (lDBType == DBType::SQLITE3) {
 
       try {
 
@@ -262,7 +324,7 @@ namespace OPENTREP {
         throw SQLDatabaseTableCreationException (errorStr.str());
       }
 
-    } else if (lDBName == "mysql") {
+    } else if (lDBType == DBType::MYSQL) {
 
       try {
 
@@ -308,6 +370,9 @@ namespace OPENTREP {
         throw SQLDatabaseTableCreationException (errorStr.str());
       }
 
+    } else if (lDBType == DBType::NODB) {
+      // Do nothing
+
     } else {
       std::ostringstream errorStr;
       errorStr << "Error: the '" << lDBName
@@ -320,11 +385,15 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void DBManager::createSQLDBIndexes (soci::session& ioSociSession) {
     const std::string& lDBName = ioSociSession.get_backend_name();
+    const DBType lDBType (lDBName);
 
     // DEBUG
-    OPENTREP_LOG_DEBUG ("SQL database type: " << lDBName);
+    if (!(lDBType == DBType::NODB)) {
+      OPENTREP_LOG_DEBUG ("The indexes of the " << lDBType.describe()
+                          << " SQL database/file will be created/reset");
+    }
 
-    if (lDBName == "sqlite3") {
+    if (lDBType == DBType::SQLITE3) {
 
       try {
 
@@ -354,21 +423,23 @@ namespace OPENTREP {
         throw SQLDatabaseIndexCreationException (errorStr.str());
       }
 
-    } else if (lDBName == "mysql") {
+    } else if (lDBType == DBType::MYSQL) {
 
       try {
 
         /**
          * SQL DDL (Data Definition Language) queries for MySQLMariaDB:
          * ------------------------------------------------------------
-         alter table ori_por add primary key (pk);
+         -- alter table ori_por add primary key (pk);
+         alter table ori_por add unique index ori_por_pk (pk asc);
          alter table ori_por add index ori_por_iata_code (iata_code asc);
          alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);
          alter table ori_por add index ori_por_icao_code (icao_code asc);
          alter table ori_por add index ori_por_geonameid (geoname_id asc);
         */
 
-        ioSociSession << "alter table ori_por add primary key (pk);";
+        ioSociSession
+          << "alter table ori_por add unique index ori_por_pk (pk asc);";
         ioSociSession
           << "alter table ori_por add index ori_por_iata_code (iata_code asc);";
         ioSociSession
@@ -380,18 +451,21 @@ namespace OPENTREP {
 
       } catch (std::exception const& lException) {
         std::ostringstream errorStr;
-        errorStr << "Error when trying to create SQLite3 indexes: "
+        errorStr << "Error when trying to create MySQL/MariaDB indexes: "
                  << lException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         throw SQLDatabaseIndexCreationException (errorStr.str());
       }
+
+    } else if (lDBType == DBType::NODB) {
+      // Do nothing
 
     } else {
       std::ostringstream errorStr;
       errorStr << "Error: the '" << lDBName
                << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseTableCreationException (errorStr.str());
+      throw SQLDatabaseIndexCreationException (errorStr.str());
     }
   }
 
@@ -692,6 +766,107 @@ namespace OPENTREP {
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
     }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::displayCount (soci::session& ioSociSession) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      /**
+       * SQL DDL (Data Definition Language) queries for SQLite3:
+       * -------------------------------------------------------
+       select count(1) from ori_por;
+      */
+
+      ioSociSession << "select count(1) from ori_por;", soci::into(oNbOfEntries);
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr
+        << "Error when trying to count the number of rows in the ori_por table: "
+        << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseIndexCreationException (errorStr.str());
+    }
+
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::
+  fillInFromPORFile (const PORFilePath_T& iPORFilePath, const DBType& iDBType,
+                     const SQLDBConnectionString_T& iSQLDBConnStr) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    // DEBUG
+    if (!(iDBType == DBType::NODB)) {
+      OPENTREP_LOG_DEBUG ("The " << iDBType.describe() << " SQL database/file "
+                          << "will be filled thanks to the POR "
+                          << "(points of reference) file");
+    }
+
+    // Connect to the SQL database/file
+    soci::session* lSociSession_ptr = initSQLDBSession (iDBType, iSQLDBConnStr);
+    if (lSociSession_ptr == NULL) {
+      return oNbOfEntries;
+    }
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+
+    // Get a reference on the file stream corresponding to the POR file.
+    const PORFileHelper lPORFileHelper (iPORFilePath);
+    std::istream& lPORFileStream = lPORFileHelper.getFileStreamRef();
+
+    // Open the file to be parsed
+    Place& lPlace = FacPlace::instance().create();
+    std::string itReadLine;
+    while (std::getline (lPORFileStream, itReadLine)) {
+      // Initialise the parser
+      PORStringParser lStringParser (itReadLine);
+
+      // Parse the string
+      const Location& lLocation = lStringParser.generateLocation();
+      //const LocationKey& lLocationKey = lLocation.getKey();
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+
+      // When the line/string was relevant, create a BOM instance from
+      // the Location structure.
+      if (!(lLocation.getCommonName() == "NotAvailable")) {
+        // Fill the Place object with the Location structure.
+        lPlace.setLocation (lLocation);
+
+        // Add the document to the SQL database
+        insertPlaceInDB (lSociSession, lPlace);
+
+        // DEBUG
+        /*
+        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
+                            << ", Place: " << lPlace);
+        */
+
+        // Iteration
+        ++oNbOfEntries;
+
+        // Progress status
+        if (oNbOfEntries % 1000 == 0) {
+          std::cout << "Number of records inserted into the DB: "
+                    << oNbOfEntries << std::endl;
+        }
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+
+        // Reset for next turn
+        lPlace.resetMatrix();
+        lPlace.resetIndexSets();
+      }
+    }
+
+    return oNbOfEntries;
   }
 
   // //////////////////////////////////////////////////////////////////////

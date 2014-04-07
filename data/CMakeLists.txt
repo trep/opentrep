@@ -41,4 +41,4 @@ install (DIRECTORY ${por_data_DIR} DESTINATION ${OPENTREP_DATA_ROOT_DIR}
 
 ##
 # Installing database scripts
-module_script_add (por/opentrep_create_db_user.sh)
+# module_script_add (por/opentrep_create_db_user.sh)

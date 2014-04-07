@@ -90,8 +90,11 @@ namespace OPENTREP {
      * Create the SQL database user ('trep' on MySQL) and database ('trep_trep'
      * on MySQL). That method has no effect on other database types (e.g.,
      * nosql, sqlite).
+     *
+     * @return bool Whether or not the creation of the SQL database user
+     *              and DB was successful.
      */
-    void createSQLDBUser();
+    bool createSQLDBUser();
 
     /**
      * Update the connection string.
@@ -108,14 +111,34 @@ namespace OPENTREP {
     void setSQLDBConnectString (const SQLDBConnectionString_T&);
 
     /**
-     * Build the SQL database from the file with the ORI-maintained list
-     * of POR (points of reference).
+     * Create the SQL database tables and leave them empty.
      *
      * The SQL database may be one of SQLite3, MySQL, PostgreSQL. That latter
      * is not yet supported (patches are welcome on
      * http://github.com/trep/opentrep/issues).
      */
-    void buildSQLDB();
+    void createSQLDBTables();
+
+    /**
+     * Create the SQL database indexes.
+     */
+    void createSQLDBIndexes();
+
+    /**
+     * Insert all the POR (points of reference) into the SQL database from
+     * the file with the ORI-maintained list of POR (points of reference).
+     *
+     * @return NbOfDBEntries_T Number of documents of the file (stream).
+     */
+    NbOfDBEntries_T fillInFromPORFile();
+
+    /**
+     * Retrieve the number of POR (points of reference)
+     * within the SQL database.
+     *
+     * @return NbOfDBEntries_T Number of POR in the SQL database. 
+     */
+    NbOfDBEntries_T getNbOfPORFromDB();
 
     /**
      * List all the POR (points of reference) corresponding
