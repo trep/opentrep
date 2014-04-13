@@ -1,6 +1,5 @@
-// C
-#include <assert.h>
 // STL
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -12,23 +11,23 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 // Boost Spirit (Parsing)
-#define BOOST_SPIRIT_DEBUG
-#include <boost/spirit/core.hpp>
-#include <boost/spirit/attribute.hpp>
-#include <boost/spirit/utility/functor_parser.hpp>
-#include <boost/spirit/utility/loops.hpp>
-#include <boost/spirit/utility/chset.hpp>
-#include <boost/spirit/utility/confix.hpp>
-#include <boost/spirit/iterator/file_iterator.hpp>
-#include <boost/spirit/actor/push_back_actor.hpp>
-#include <boost/spirit/actor/assign_actor.hpp>
+//#define BOOST_SPIRIT_DEBUG
+#include <boost/spirit/home/classic/core.hpp>
+#include <boost/spirit/home/classic/attribute.hpp>
+#include <boost/spirit/home/classic/utility/functor_parser.hpp>
+#include <boost/spirit/home/classic/utility/loops.hpp>
+#include <boost/spirit/home/classic/utility/chset.hpp>
+#include <boost/spirit/home/classic/utility/confix.hpp>
+#include <boost/spirit/home/classic/iterator/file_iterator.hpp>
+#include <boost/spirit/home/classic/actor/push_back_actor.hpp>
+#include <boost/spirit/home/classic/actor/assign_actor.hpp>
 
 // Type definitions
 typedef char char_t;
 typedef char const* iterator_t;
-//typedef boost::spirit::file_iterator<char_t> iterator_t;
-typedef boost::spirit::scanner<iterator_t> scanner_t;
-typedef boost::spirit::rule<scanner_t> rule_t;
+//typedef boost::spirit::classic::file_iterator<char_t> iterator_t;
+typedef boost::spirit::classic::scanner<iterator_t> scanner_t;
+typedef boost::spirit::classic::rule<scanner_t> rule_t;
 
 /** Place. */
 struct Place_T {
@@ -321,19 +320,19 @@ namespace {
 
 // /////////// Utilities /////////////
 /** 1-digit-integer parser */
-boost::spirit::int_parser<unsigned int, 10, 1, 1> int1_p;
+boost::spirit::classic::int_parser<unsigned int, 10, 1, 1> int1_p;
 /** 1-digit-integer parser */
-boost::spirit::uint_parser<unsigned int, 10, 1, 1> uint1_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 1, 1> uint1_p;
 /** Up-to-2-digit-integer parser */
-boost::spirit::uint_parser<unsigned int, 10, 1, 2> uint1_2_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 1, 2> uint1_2_p;
 /** 2-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 2, 2> uint2_p;
+boost::spirit::classic::uint_parser<int, 10, 2, 2> uint2_p;
 /** Up-to-4-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 2, 4> uint2_4_p;
+boost::spirit::classic::uint_parser<int, 10, 2, 4> uint2_4_p;
 /** 4-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 4, 4> uint4_p;
+boost::spirit::classic::uint_parser<int, 10, 4, 4> uint4_p;
 /** Up-to-4-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 1, 4> uint1_4_p;
+boost::spirit::classic::uint_parser<int, 10, 1, 4> uint1_4_p;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -366,11 +365,11 @@ boost::spirit::uint_parser<int, 10, 1, 4> uint1_4_p;
        pet_description    ::= 'dog' | 'dogs' | 'cat' | 'cats'
     */
 
-using namespace boost::spirit;
+using namespace boost::spirit::classic;
 
 /** Grammar for the search string parser. */
 struct SearchStringParser : 
-  public boost::spirit::grammar<SearchStringParser> {
+  public boost::spirit::classic::grammar<SearchStringParser> {
 
   SearchStringParser (SearchString_T& ioSearchString) 
   : _searchString (ioSearchString) {
@@ -401,9 +400,9 @@ struct SearchStringParser :
       
       date =
         ( month | day )
-        >> boost::spirit::chset_p("/-")
+        >> boost::spirit::classic::chset_p("/-")
         >> ( day | month )
-        >> ! ( boost::spirit::chset_p("/-")
+        >> ! ( boost::spirit::classic::chset_p("/-")
                >> year )
         ;
 
@@ -421,7 +420,7 @@ struct SearchStringParser :
         ;
 
       preferred_airlines =
-        !(boost::spirit::sign_p)[store_airline_sign(self._searchString)]
+        !(boost::spirit::classic::sign_p)[store_airline_sign(self._searchString)]
         >> airline_code | airline_name
         ;
 
@@ -478,13 +477,13 @@ struct SearchStringParser :
       BOOST_SPIRIT_DEBUG_NODE (passenger_pet_type);
     }
     
-    boost::spirit::rule<ScannerT> search_string, places, place_element,
+    boost::spirit::classic::rule<ScannerT> search_string, places, place_element,
        dates, date, month, day, year,
        preferred_airlines, airline_code, airline_name,
        passengers, passenger_number, passenger_type, passenger_adult_type,
        passenger_child_type, passenger_pet_type;
 
-    boost::spirit::rule<ScannerT> const& start() const { return search_string; }
+    boost::spirit::classic::rule<ScannerT> const& start() const { return search_string; }
   };
 
   SearchString_T& _searchString;
@@ -501,9 +500,9 @@ bool parseSearchString (std::ostream& oStream,
 
   // Instantiate the structure that will hold the result of the parsing.
   SearchStringParser lSearchStringParser (ioSearchStringStruct);
-  boost::spirit::parse_info<iterator_t> info =
-    boost::spirit::parse (lStringIterator, lSearchStringParser, 
-                          boost::spirit::space_p);
+  boost::spirit::classic::parse_info<iterator_t> info =
+    boost::spirit::classic::parse (lStringIterator, lSearchStringParser, 
+                                   boost::spirit::classic::space_p);
   
   oStream << "-------------------------" << std::endl;
   
@@ -536,6 +535,10 @@ int main (int argc, char* argv[]) {
     bool hasBeenParsingSuccessful = parseSearchString (std::cout,
                                                        lSearchString1,
                                                        lSearchStringStruct1);
+    if (hasBeenParsingSuccessful == false) {
+      std::cerr << "Error when parsing " << lSearchString1 << std::endl;
+      return -1;
+    }
 
     // Parse the search string
     SearchString_T lSearchStringStruct2;

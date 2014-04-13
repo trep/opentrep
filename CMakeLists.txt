@@ -116,6 +116,7 @@ init_test ()
 add_test_suite (${PROJECT_NAME})
 add_test_suite (protobuf)
 add_test_suite (i18n)
+add_test_suite (parsers)
 
 
 #######################################
