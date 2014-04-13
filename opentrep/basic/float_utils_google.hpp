@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Authors: wan@google.com (Zhanyong Wan), eefacm@gmail.com (Sean Mcafee)
+// License: MIT
 //
 // The Google C++ Testing Framework (Google Test)
 
