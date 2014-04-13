@@ -1,10 +1,29 @@
 
+* 2014-04-13:
+- Version 0.6.1
+- Re-wrote the SQL database layer. A new program, namely
+  opentrep-dbmgr, to create, update and query the SQL
+  database (which can be SQLite3 or MySQL/MariaDB).
+  There is still some work to do to use the SQL database
+  when only codes are detected within the search string.
+- Issue #6 (http://github.com/trep/opentrep/issues/6):
+  Many POR are also indexed with collateral types.
+  For instance, air bases are also indexed as airports.
+- Issue #7 (http://github.com/trep/opentrep/issues/7):
+  The punctuation characters are removed. Note that,
+  as the Unicode normalisation procedure is used,
+  there is still an issue when called from Django
+  (for reasons unknown yet).
+- Issues #4 (http://github.com/trep/opentrep/issues/4)
+  and #8 (http://github.com/trep/opentrep/issues/8):
+  Fixed the ORI POR data file
+  (http://github.com/opentraveldata/optd/refdata/ORI).
 * 2014-02-01:
 - Version 0.6.0
 - Issue #1 (http://github.com/trep/opentrep/issues/1):
   The search algorithm is now modular.
-- Issues #3 (https://github.com/trep/opentrep/issues/3)
-  and #5 (https://github.com/trep/opentrep/issues/5):
+- Issues #3 (http://github.com/trep/opentrep/issues/3)
+  and #5 (http://github.com/trep/opentrep/issues/5):
   POR are now indexed with their associated PageRank value
   (equal to 0.1% when there is no PageRank vallue).
 - Latest ORI POR data:

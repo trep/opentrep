@@ -1,4 +1,23 @@
 
+	* Sun Apr 13 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.1
+	Re-wrote the SQL database layer. A new program, namely
+	opentrep-dbmgr, to create, update and query the SQL
+	database (which can be SQLite3 or MySQL/MariaDB).
+	There is still some work to do to use the SQL database
+	when only codes are detected within the search string.
+	- Issue #6 (http://github.com/trep/opentrep/issues/6):
+		Many POR are also indexed with collateral types.
+		For instance, air bases are also indexed as airports.
+	- Issue #7 (http://github.com/trep/opentrep/issues/7):
+		The punctuation characters are removed. Note that,
+		as the Unicode normalisation procedure is used,
+		there is still an issue when called from Django
+		(for reasons unknown yet).
+	- Issues #4 (http://github.com/trep/opentrep/issues/4)
+		and #8 (http://github.com/trep/opentrep/issues/8):
+		Fixed the ORI POR data file
+		(http://github.com/opentraveldata/optd/refdata/ORI).					  
+
 	* Sun Feb 02 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.0
 	- Issue #1 (http://github.com/trep/opentrep/issues/1):
 	The search algorithm is now modular.
