@@ -1,6 +1,5 @@
-// C
-#include <assert.h>
 // STL
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -13,22 +12,32 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 // Boost Spirit (Parsing)
 //#define BOOST_SPIRIT_DEBUG
-#include <boost/spirit/core.hpp>
-#include <boost/spirit/attribute.hpp>
-#include <boost/spirit/utility/functor_parser.hpp>
-#include <boost/spirit/utility/loops.hpp>
-#include <boost/spirit/utility/chset.hpp>
-#include <boost/spirit/utility/confix.hpp>
-#include <boost/spirit/iterator/file_iterator.hpp>
-#include <boost/spirit/actor/push_back_actor.hpp>
-#include <boost/spirit/actor/assign_actor.hpp>
+#include <boost/spirit/home/classic/core.hpp>
+#include <boost/spirit/home/classic/attribute.hpp>
+#include <boost/spirit/home/classic/utility/functor_parser.hpp>
+#include <boost/spirit/home/classic/utility/loops.hpp>
+#include <boost/spirit/home/classic/utility/chset.hpp>
+#include <boost/spirit/home/classic/utility/confix.hpp>
+#include <boost/spirit/home/classic/iterator/file_iterator.hpp>
+#include <boost/spirit/home/classic/actor/push_back_actor.hpp>
+#include <boost/spirit/home/classic/actor/assign_actor.hpp>
+// OpenTREP
+#include <opentrep/config/opentrep-paths.hpp>
+
+// //////////// Constants for the tests ///////////////
+/**
+ * File-path of the POR (points of reference) file.
+ */
+const std::string K_POR_FILEPATH (OPENTREP_POR_DATA_DIR
+                                  "/test_world_schedule.csv");
+
 
 // Type definitions
 typedef char char_t;
 //typedef char const* iterator_t;
-typedef boost::spirit::file_iterator<char_t> iterator_t;
-typedef boost::spirit::scanner<iterator_t> scanner_t;
-typedef boost::spirit::rule<scanner_t> rule_t;
+typedef boost::spirit::classic::file_iterator<char_t> iterator_t;
+typedef boost::spirit::classic::scanner<iterator_t> scanner_t;
+typedef boost::spirit::classic::rule<scanner_t> rule_t;
 
 /** LegCabin-Details. */
 struct Cabin_T {
@@ -652,13 +661,13 @@ namespace {
 
 // /////////// Utilities /////////////
 /** 1-digit-integer parser */
-boost::spirit::int_parser<unsigned int, 10, 1, 1> int1_p;
+boost::spirit::classic::int_parser<unsigned int, 10, 1, 1> int1_p;
 /** 2-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 2, 2> uint2_p;
+boost::spirit::classic::uint_parser<int, 10, 2, 2> uint2_p;
 /** 4-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 4, 4> uint4_p;
+boost::spirit::classic::uint_parser<int, 10, 4, 4> uint4_p;
 /** Up-to-4-digit-integer parser */
-boost::spirit::uint_parser<int, 10, 1, 4> uint1_4_p;
+boost::spirit::classic::uint_parser<int, 10, 1, 4> uint1_4_p;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -706,11 +715,11 @@ boost::spirit::uint_parser<int, 10, 1, 4> uint1_4_p;
          EndOfFlight         ::= ';'
     */
 
-using namespace boost::spirit;
+using namespace boost::spirit::classic;
 
 /** Grammar for the Flight-Period parser. */
 struct FlightPeriodParser : 
-  public boost::spirit::grammar<FlightPeriodParser> {
+  public boost::spirit::classic::grammar<FlightPeriodParser> {
 
   FlightPeriodParser (FlightPeriod_T& ioFlightPeriod) 
   : _flightPeriod (ioFlightPeriod) {
@@ -720,8 +729,8 @@ struct FlightPeriodParser :
   struct definition {
     definition (FlightPeriodParser const& self) {
 
-      flight_period_list = *( boost::spirit::comment_p("//")
-                              | boost::spirit::comment_p("/*", "*/")
+      flight_period_list = *( boost::spirit::classic::comment_p("//")
+                              | boost::spirit::classic::comment_p("/*", "*/")
                               | flight_period )
         ;
       
@@ -732,7 +741,7 @@ struct FlightPeriodParser :
         ;
 
       flight_period_end =
-        boost::spirit::ch_p(';')
+        boost::spirit::classic::ch_p(';')
         ;
       
       flight_key = airline_code
@@ -785,12 +794,12 @@ struct FlightPeriodParser :
         ;
 
       date_offset =
-        boost::spirit::ch_p('/')
-        >> (int1_p)[boost::spirit::assign_a(self._flightPeriod._dateOffSet)]
+        boost::spirit::classic::ch_p('/')
+        >> (int1_p)[boost::spirit::classic::assign_a(self._flightPeriod._dateOffSet)]
         ;          
         
       cabin_details = (chset_p("A-Z"))[store_cabin_code(self._flightPeriod)]
-        >> ';' >> (boost::spirit::ureal_p)[store_capacity(self._flightPeriod)]
+        >> ';' >> (boost::spirit::classic::ureal_p)[store_capacity(self._flightPeriod)]
         ;
 
       segment_key =
@@ -804,12 +813,12 @@ struct FlightPeriodParser :
         ;
 
       general_segments =
-        boost::spirit::ch_p('0')[store_segment_specificity(self._flightPeriod)]
+        boost::spirit::classic::ch_p('0')[store_segment_specificity(self._flightPeriod)]
         >> +(';' >> segment_cabin_details)
         ;
 
       specific_segments =
-        boost::spirit::ch_p('1')[store_segment_specificity(self._flightPeriod)]
+        boost::spirit::classic::ch_p('1')[store_segment_specificity(self._flightPeriod)]
         >> +(';' >> segment_key >> full_segment_cabin_details)
         ;
       
@@ -844,13 +853,13 @@ struct FlightPeriodParser :
       BOOST_SPIRIT_DEBUG_NODE (segment_cabin_details);
     }
     
-    boost::spirit::rule<ScannerT> flight_period_list, flight_period,
+    boost::spirit::classic::rule<ScannerT> flight_period_list, flight_period,
       flight_period_end, flight_key, airline_code, flight_number,
       date, dow, leg, leg_key, leg_details, time, date_offset, cabin_details,
       segment, segment_key, general_segments, specific_segments,
       full_segment_cabin_details, segment_cabin_details;
 
-    boost::spirit::rule<ScannerT> const& start() const { return flight_period_list; }
+    boost::spirit::classic::rule<ScannerT> const& start() const { return flight_period_list; }
   };
 
   FlightPeriod_T& _flightPeriod;
@@ -861,7 +870,7 @@ int main (int argc, char* argv[]) {
   try {
     
     // File to be parsed
-    std::string lFilename ("world_schedule.csv");
+    std::string lFilename (K_POR_FILEPATH);
     
     // Read the command-line parameters
     if (argc >= 1 && argv[1] != NULL) {
@@ -873,6 +882,7 @@ int main (int argc, char* argv[]) {
     iterator_t lFileIterator (lFilename);
     if (!lFileIterator) {
       std::cerr << "The file " << lFilename << " can not be open." << std::endl;
+      return -1;
     }
 
     // Create an EOF iterator
@@ -881,10 +891,10 @@ int main (int argc, char* argv[]) {
     // Instantiate the structure that will hold the result of the parsing.
     FlightPeriod_T lFlightPeriod;
     FlightPeriodParser lFlightPeriodParser (lFlightPeriod);
-    boost::spirit::parse_info<iterator_t> info =
-      boost::spirit::parse (lFileIterator, lFileIteratorEnd,
+    boost::spirit::classic::parse_info<iterator_t> info =
+      boost::spirit::classic::parse (lFileIterator, lFileIteratorEnd,
                             lFlightPeriodParser, 
-                            boost::spirit::space_p);
+                            boost::spirit::classic::space_p);
 
     // DEBUG
     std::cout << "Flight Period:" << std::endl;
