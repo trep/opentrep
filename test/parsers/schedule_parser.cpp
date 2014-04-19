@@ -663,11 +663,11 @@ namespace {
 /** 1-digit-integer parser */
 boost::spirit::classic::int_parser<unsigned int, 10, 1, 1> int1_p;
 /** 2-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 2, 2> uint2_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 2, 2> uint2_p;
 /** 4-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 4, 4> uint4_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 4, 4> uint4_p;
 /** Up-to-4-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 1, 4> uint1_4_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 1, 4> uint1_4_p;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
