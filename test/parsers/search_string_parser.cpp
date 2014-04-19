@@ -326,13 +326,13 @@ boost::spirit::classic::uint_parser<unsigned int, 10, 1, 1> uint1_p;
 /** Up-to-2-digit-integer parser */
 boost::spirit::classic::uint_parser<unsigned int, 10, 1, 2> uint1_2_p;
 /** 2-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 2, 2> uint2_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 2, 2> uint2_p;
 /** Up-to-4-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 2, 4> uint2_4_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 2, 4> uint2_4_p;
 /** 4-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 4, 4> uint4_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 4, 4> uint4_p;
 /** Up-to-4-digit-integer parser */
-boost::spirit::classic::uint_parser<int, 10, 1, 4> uint1_4_p;
+boost::spirit::classic::uint_parser<unsigned int, 10, 1, 4> uint1_4_p;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
