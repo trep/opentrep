@@ -186,7 +186,7 @@ namespace OPENTREP {
     /**
      * Weigh down a set of strings when compared to the single string.
      * For instance, the {"paris", "texas"} combination is weighed down
-     * (by K_DEFAULT_ATTENUATION_FCTR, usually equal to 170.0), so that
+     * (by K_DEFAULT_ATTENUATION_FCTR, usually equal to 850.0), so that
      * it is ranked less than "paris texas".
      * 
      */
