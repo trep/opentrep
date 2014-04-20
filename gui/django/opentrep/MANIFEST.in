@@ -1,0 +1,13 @@
+include ez_setup.py
+recursive-include opentrep *
+recursive-exclude opentrep *.pyc
+recursive-include search *
+recursive-exclude search *.pyc
+recursive-include searchsimple *
+recursive-exclude searchsimple *.pyc
+prune dist
+prune build
+exclude settings.py
+exclude manage.py
+exclude __init__.py
+exclude urls.py

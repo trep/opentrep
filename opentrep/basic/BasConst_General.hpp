@@ -51,7 +51,10 @@ namespace OPENTREP {
   extern const Percentage_T K_DEFAULT_FULL_CODE_MATCH_PCT;
 
   /**
-   * Default attenuation factor (e.g., 34.0)
+   * Default attenuation factor (e.g., 170.0). It weighs down a set
+   * of strings when compared to the single string.
+   * For instance, the {"paris", "texas"} combination is weighed down,
+   * so that it is ranked less than "paris texas".
    */
   extern const Percentage_T K_DEFAULT_ATTENUATION_FCTR;
 
