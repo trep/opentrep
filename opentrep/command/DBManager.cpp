@@ -8,6 +8,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 // SOCI
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
@@ -91,8 +92,8 @@ namespace OPENTREP {
         lSociSession.open (soci::mysql, iSQLDBConnStr);
 
         // DEBUG
-        OPENTREP_LOG_DEBUG ("The " << iDBType.describe() << " database "
-                            << " is accessible");
+        OPENTREP_LOG_DEBUG ("The " << iDBType.describe() << " database ("
+                            << iSQLDBConnStr << ") is accessible");
 
       } catch (std::exception const& lException) {
         std::ostringstream errorStr;
@@ -482,10 +483,9 @@ namespace OPENTREP {
          select serialised_place from ori_por;
       */
 
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select serialised_place from ori_por",
-         soci::into (oSerialisedPlaceStr));
+      ioSelectStatement = (ioSociSession.prepare
+                           << "select serialised_place from ori_por",
+                           soci::into (oSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -517,13 +517,14 @@ namespace OPENTREP {
       /**
          select serialised_place from ori_por where iata_code = iIataCode;
       */
+      const std::string lCode = static_cast<std::string> (iIataCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
 
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select serialised_place from ori_por "
-         << "where iata_code = :place_iata_code",
-         soci::into (ioSerialisedPlaceStr),
-         soci::use (static_cast<std::string>(iIataCode)));
+      ioSelectStatement = (ioSociSession.prepare
+                           << "select serialised_place from ori_por "
+                           << "where iata_code = :place_iata_code",
+                           soci::into (ioSerialisedPlaceStr),
+                           soci::use (lCodeUpper));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -552,13 +553,14 @@ namespace OPENTREP {
       /**
          select serialised_place from ori_por where iata_code = iIataCode;
       */
+      const std::string lCode = static_cast<std::string> (iIcaoCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
 
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select serialised_place from ori_por "
-         << "where icao_code = :place_icao_code",
-         soci::into (ioSerialisedPlaceStr),
-         soci::use (static_cast<std::string>(iIcaoCode)));
+      ioSelectStatement = (ioSociSession.prepare
+                           << "select serialised_place from ori_por "
+                           << "where icao_code = :place_icao_code",
+                           soci::into (ioSerialisedPlaceStr),
+                           soci::use (lCodeUpper));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -587,13 +589,14 @@ namespace OPENTREP {
       /**
          select serialised_place from ori_por where iata_code = iIataCode;
       */
+      const std::string lCode = static_cast<std::string> (iFaaCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
 
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select serialised_place from ori_por "
-         << "where faa_code = :place_faa_code",
-         soci::into (ioSerialisedPlaceStr),
-         soci::use (static_cast<std::string>(iFaaCode)));
+      ioSelectStatement = (ioSociSession.prepare
+                           << "select serialised_place from ori_por "
+                           << "where faa_code = :place_faa_code",
+                           soci::into (ioSerialisedPlaceStr),
+                           soci::use (lCodeUpper));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -623,12 +626,11 @@ namespace OPENTREP {
          select serialised_place from ori_por where iata_code = iIataCode;
       */
 
-      ioSelectStatement =
-        (ioSociSession.prepare
-         << "select serialised_place from ori_por "
-         << "where geoname_id = :place_geoname_id",
-         soci::into (ioSerialisedPlaceStr),
-         soci::use (iGeonameID));
+      ioSelectStatement = (ioSociSession.prepare
+                           << "select serialised_place from ori_por "
+                           << "where geoname_id = :place_geoname_id",
+                           soci::into (ioSerialisedPlaceStr),
+                           soci::use (iGeonameID));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -912,8 +914,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T DBManager::getPORByIATACode (soci::session& ioSociSession,
                                                const IATACode_T& iIataCode,
-                                               LocationList_T& ioLocationList) {
+                                               LocationList_T& ioLocationList,
+                                               const bool iUniqueEntry) {
     NbOfDBEntries_T oNbOfEntries = 0;
+    LocationList_T lLocationList;
 
     try {
 
@@ -934,6 +938,11 @@ namespace OPENTREP {
         hasStillData = iterateOnStatement (lSelectStatement,
                                            lPlaceRawDataString);
 
+        // DEBUG
+        const std::string lFoundStr = hasStillData?"Yes":"No";
+        OPENTREP_LOG_DEBUG ("Checked locations corresponding to "
+                            << iIataCode << " IATA code. Found: " << lFoundStr);
+
         if (hasStillData == true) {
           //
           ++oNbOfEntries;
@@ -944,7 +953,7 @@ namespace OPENTREP {
           const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
 
           // Add the new found location to the list
-          ioLocationList.push_back (lLocation);
+          lLocationList.push_back (lLocation);
 
           // Debug
           OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
@@ -957,6 +966,33 @@ namespace OPENTREP {
                << " from the SQL database: " << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
+    }
+
+    // Add the just retrieved Location structure(s) to the list given
+    // as parameter
+    const Location* lHighestPRLocation_ptr = NULL;
+    PageRank_T lHighestPRValue = 0.0;
+    for (LocationList_T::const_iterator itLoc = lLocationList.begin();
+         itLoc != lLocationList.end(); ++itLoc) {
+      const Location& lLocation = *itLoc;
+      const PageRank_T& lPRValue = lLocation.getPageRank();
+
+      // Store (a pointer on) the Location structure with the highest Page Rank
+      if (lPRValue > lHighestPRValue) {
+        lHighestPRLocation_ptr = &lLocation;
+        lHighestPRValue = lPRValue;
+      }
+
+      // Add the Location structure now, only when 
+      if (iUniqueEntry == false) {
+        ioLocationList.push_back (lLocation);
+      }
+    }
+
+    // Add the Location structure with the highest Page Rank value
+    if (iUniqueEntry == true && lHighestPRLocation_ptr != NULL) {
+      assert (lHighestPRLocation_ptr != NULL);
+      ioLocationList.push_back (*lHighestPRLocation_ptr);
     }
 
     //
@@ -987,6 +1023,11 @@ namespace OPENTREP {
       while (hasStillData == true) {
         hasStillData = iterateOnStatement (lSelectStatement,
                                            lPlaceRawDataString);
+
+        // DEBUG
+        const std::string lFoundStr = hasStillData?"Yes":"No";
+        OPENTREP_LOG_DEBUG ("Checked locations corresponding to "
+                            << iIcaoCode << " ICAO code. Found: " << lFoundStr);
 
         if (hasStillData == true) {
           //
@@ -1042,6 +1083,11 @@ namespace OPENTREP {
         hasStillData = iterateOnStatement (lSelectStatement,
                                            lPlaceRawDataString);
 
+        // DEBUG
+        const std::string lFoundStr = hasStillData?"Yes":"No";
+        OPENTREP_LOG_DEBUG ("Checked locations corresponding to "
+                            << iFaaCode << " FAA code. Found: " << lFoundStr);
+
         if (hasStillData == true) {
           //
           ++oNbOfEntries;
@@ -1095,6 +1141,11 @@ namespace OPENTREP {
       while (hasStillData == true) {
         hasStillData = iterateOnStatement (lSelectStatement,
                                            lPlaceRawDataString);
+
+        // DEBUG
+        const std::string lFoundStr = hasStillData?"Yes":"No";
+        OPENTREP_LOG_DEBUG ("Checked locations corresponding to "
+                            << iGeonameID<< " Geonames ID. Found: "<< lFoundStr);
 
         if (hasStillData == true) {
           //

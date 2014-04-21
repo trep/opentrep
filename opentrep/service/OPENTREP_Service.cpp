@@ -397,8 +397,9 @@ namespace OPENTREP {
     soci::session& lSociSession = *lSociSession_ptr;
       
     // Get the list of POR corresponding to the given IATA code
-    nbOfMatches =
-      DBManager::getPORByIATACode (lSociSession, iIataCode, ioLocationList);
+    const bool lSeveralEntries = false;
+    nbOfMatches = DBManager::getPORByIATACode (lSociSession, iIataCode,
+                                               ioLocationList, lSeveralEntries);
 
     const double lDBListMeasure = lDBListChronometer.elapsed();
       
@@ -658,10 +659,10 @@ namespace OPENTREP {
                         << lNowDateTime << " - Match query '" << iTravelQuery
                         << "' on Xapian database (index)");
     
-    // Check that the travel request is not empty
+    // Check that the travel query is not empty
     if (iTravelQuery.empty() == true) {
       std::ostringstream errorStr;
-      errorStr << "The travel request is empty.";
+      errorStr << "The travel query is empty.";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw TravelRequestEmptyException (errorStr.str());
     }
@@ -670,14 +671,22 @@ namespace OPENTREP {
     const TravelDBFilePath_T& lTravelDBFilePath =
       lOPENTREP_ServiceContext.getTravelDBFilePath();
       
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
     // Delegate the query execution to the dedicated command
     BasChronometer lRequestInterpreterChronometer;
     lRequestInterpreterChronometer.start();
-    nbOfMatches = RequestInterpreter::interpretTravelRequest (lTravelDBFilePath,
-                                                              iTravelQuery,
-                                                              ioLocationList,
-                                                              ioWordList,
-                                                              lTransliterator);
+    nbOfMatches =
+      RequestInterpreter::interpretTravelRequest (lTravelDBFilePath,
+                                                  lSQLDBType, lSQLDBConnString,
+                                                  iTravelQuery,
+                                                  ioLocationList, ioWordList,
+                                                  lTransliterator);
     const double lRequestInterpreterMeasure =
       lRequestInterpreterChronometer.elapsed();
 

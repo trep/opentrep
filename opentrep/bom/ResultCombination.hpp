@@ -104,6 +104,11 @@ namespace OPENTREP {
     void calculateCombinedWeights() const;
 
     /**
+     * Combine all of the above methods
+     */
+    void calculateAllWeights();
+
+    /**
      * Choose the best matching ResultHolder object from the underlying list.
      *
      * @return bool Whether or not a best matching ResultHolder exists.
