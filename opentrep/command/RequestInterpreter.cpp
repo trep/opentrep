@@ -9,7 +9,11 @@
 #include <exception>
 // Boost
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
+// SOCI
+#include <soci/soci.h>
 // OpenTrep
+#include <opentrep/DBType.hpp>
 #include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/WordHolder.hpp>
@@ -25,6 +29,7 @@
 #include <opentrep/factory/FacResultCombination.hpp>
 #include <opentrep/factory/FacResultHolder.hpp>
 #include <opentrep/factory/FacResult.hpp>
+#include <opentrep/command/DBManager.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -247,8 +252,140 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  bool RequestInterpreter::areAllCodeOrGeoID (const TravelQuery_T& iQueryString,
+                                              WordList_T& ioWordList) {
+    bool areAllWordsCodes = true;
+
+    // Token-ise the given string
+    WordHolder::tokeniseStringIntoWordList (iQueryString, ioWordList);
+    for (WordList_T::const_iterator itWord = ioWordList.begin();
+         itWord != ioWordList.end(); ++itWord) {
+      const std::string& lWord = *itWord;
+
+      // IATA code: alpha{3}
+      const boost::regex lIATACodeExp ("^[[:alpha:]]{3}$");
+      const bool lMatchesWithIATACode = regex_match (lWord, lIATACodeExp);
+
+      // ICAO code: (alpha|digit){4}
+      const boost::regex lICAOCodeExp ("^([[:alpha:]]|[[:digit:]]){4}$");
+      const bool lMatchesWithICAOCode = regex_match (lWord, lICAOCodeExp);
+
+      // Geonames ID: digit{1,11}
+      const boost::regex lGeoIDCodeExp ("^[[:digit:]]{1,11}$");
+      const bool lMatchesWithGeoID = regex_match (lWord, lGeoIDCodeExp);
+
+      // If the word is neither a IATA/ICAO code or a Geonames ID,
+      // there is nothing more to be done at that stage. The query string
+      // will have to be fully analysed.
+      // Otherwise, we go on analysing the other words.
+      if (lMatchesWithIATACode == false && lMatchesWithICAOCode == false
+          && lMatchesWithGeoID == false) {
+        areAllWordsCodes = false;
+        break;
+      }
+    }
+
+    return areAllWordsCodes;
+  }
+
+  /**
+   * Return the list of locations/places corresponding
+   * to the given IATA/ICAO codes or Geonames IDs.
+   *
+   * @param const DBType& SQL database type (can be no database at all).
+   * @param const SQLDBConnectionString_T& SQL DB connection string.
+   * @param const WordList_T& List of IATA/ICAO codes or Geonames ID (e.g.,
+   *        "sna 5391989 6299418 los chi par rio lso rek lfmn iev mow").
+   * @param LocationList_T& The matching (geographical) locations, if any,
+   *                        are added to that list.
+   * @param WordList_T& List of non-matched words of the query string.
+   * @return NbOfMatches_T Number of matches.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T getLocationList (const DBType& iSQLDBType,
+                                 const SQLDBConnectionString_T& iSQLDBConnStr,
+                                 const WordList_T& iCodeList,
+                                 LocationList_T& ioLocationList,
+                                 WordList_T& ioWordList) {
+    NbOfMatches_T oNbOfMatches = 0;
+
+    // Connect to the SQL database/file
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
+    if (lSociSession_ptr == NULL) {
+      std::ostringstream oStr;
+      oStr << "The " << iSQLDBType.describe()
+           << " database is not accessible. Connection string: "
+           << iSQLDBConnStr << std::endl
+           << "Hint: launch the 'opentrep-dbmgr' program and "
+           << "see the 'tutorial' command.";
+      OPENTREP_LOG_ERROR (oStr.str());
+      throw SQLDatabaseImpossibleConnectionException (oStr.str());
+    }
+    assert (lSociSession_ptr != NULL);
+
+    // Browse the list of words/items
+    for (WordList_T::const_iterator itWord = iCodeList.begin();
+         itWord != iCodeList.end(); ++itWord) {
+      const std::string& lWord = *itWord;
+
+      // Check for IATA code: alpha{3}
+      const boost::regex lIATACodeExp ("^[[:alpha:]]{3}$");
+      const bool lMatchesWithIATACode = regex_match (lWord, lIATACodeExp);
+      if (lMatchesWithIATACode == true) {
+        // Perform the select statement on the underlying SQL database
+        const IATACode_T lIATACode (lWord);
+        const bool lUniqueEntry = true;
+        const NbOfDBEntries_T& lNbOfEntries =
+          DBManager::getPORByIATACode (*lSociSession_ptr, lIATACode,
+                                       ioLocationList, lUniqueEntry);
+        oNbOfMatches += lNbOfEntries;
+        continue;
+      }
+
+      // Check for ICAO code: (alpha|digit){4}
+      const boost::regex lICAOCodeExp ("^([[:alpha:]]|[[:digit:]]){4}$");
+      const bool lMatchesWithICAOCode = regex_match (lWord, lICAOCodeExp);
+      if (lMatchesWithICAOCode == true) {
+        // Perform the select statement on the underlying SQL database
+        const ICAOCode_T lICAOCode (lWord);
+        const NbOfDBEntries_T& lNbOfEntries =
+          DBManager::getPORByICAOCode (*lSociSession_ptr, lICAOCode,
+                                       ioLocationList);
+        oNbOfMatches += lNbOfEntries;
+        continue;
+      }
+
+      // Check for Geonames ID: digit{1,11}
+      const boost::regex lGeoIDCodeExp ("^[[:digit:]]{1,11}$");
+      const bool lMatchesWithGeoID = regex_match (lWord, lGeoIDCodeExp);
+      if (lMatchesWithGeoID == true) {
+        try {
+          // Convert the character string into a number
+          const GeonamesID_T lGeonamesID =
+            boost::lexical_cast<GeonamesID_T> (lWord);
+          
+          // Perform the select statement on the underlying SQL database
+          const NbOfDBEntries_T& lNbOfEntries =
+            DBManager::getPORByGeonameID (*lSociSession_ptr, lGeonamesID,
+                                          ioLocationList);
+          oNbOfMatches += lNbOfEntries;
+
+        } catch (boost::bad_lexical_cast& eCast) {
+          OPENTREP_LOG_ERROR ("The Geoname ID ('" << lWord
+                              << "') cannot be understood.");
+        }
+      }
+    }
+
+    return oNbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T RequestInterpreter::
   interpretTravelRequest (const TravelDBFilePath_T& iTravelDBFilePath,
+                          const DBType& iSQLDBType,
+                          const SQLDBConnectionString_T& iSQLDBConnStr,
                           const TravelQuery_T& iTravelQuery,
                           LocationList_T& ioLocationList,
                           WordList_T& ioWordList,
@@ -257,9 +394,6 @@ namespace OPENTREP {
 
     // Sanity check
     assert (iTravelQuery.empty() == false);
-
-    // Create a PlaceHolder object, to collect the matching Place objects
-    PlaceHolder& lPlaceHolder = FacPlaceHolder::instance().create();
 
     // Check whether the file-path to the Xapian database/index exists
     // and is a directory.
@@ -318,73 +452,95 @@ namespace OPENTREP {
       OPENTREP_LOG_DEBUG ("Travel query slice: `" << lTravelQuerySlice << "'");
       OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
 
-      /**
-       * 1.1. Perform all the full-text matches, and fill accordingly the
-       *      list of Result instances.
-       */
-      OPENTREP::searchString (lTravelQuerySlice, lXapianDatabase,
-                              lResultCombination, ioWordList);
 
       /**
-       * Display a summary of the Xapian matching results.
+       * 1.0. Check whether the travel query is made only of IATA/ICAO codes
+       *      and Geonames ID.
        */
-      lResultCombination.displayXapianPercentages();
+      WordList_T lCodeList;
+      const bool areAllWordsCodes =
+        areAllCodeOrGeoID (lTravelQuerySlice, lCodeList);
 
-      /**
-       * 1.2. Calculate/set the envelope weights for all the matching documents
-       */
-      lResultCombination.calculateEnvelopeWeights();
+      if (areAllWordsCodes == true && !(iSQLDBType == DBType::NODB)) {
+        /**
+         * All the words/items of the travel query are either IATA/ICAO codes
+         * or Geonames ID. The corresponding details will be retrieved directly
+         * from the underlying database, if existing.
+         * The Xapian database/index is not used.
+         */
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The travel query string (" << lTravelQuerySlice
+                            << ") is made only of IATA/ICAO codes "
+                            << "or Geonames ID. The " << iSQLDBType.describe()
+                            << " SQL database (" << iSQLDBConnStr
+                            << ") will used. "
+                            << "The Xapian database will not be used");
 
-      /**
-       * 1.3. Calculate/set the IATA/ICAO code matching weights
-       *      for all the matching documents
-       */
-      lResultCombination.calculateCodeMatches();
+        const NbOfMatches_T& lNbOfMatches =
+          OPENTREP::getLocationList (iSQLDBType, iSQLDBConnStr, lCodeList,
+                                     ioLocationList, ioWordList);
+        assert (lNbOfMatches != 0);
 
-      /**
-       * 1.4. Calculate/set the PageRanks for all the matching documents
-       */
-      lResultCombination.calculatePageRanks();
+      } else {
+        /**
+         * Some of the words/items of the travel query are neither IATA/ICAO
+         * codes nor Geonames ID, or there is no underlying SQL database.
+         * The Xapian database/index must therefore be used.
+         */
+        // DEBUG
+        if (iSQLDBType == DBType::NODB) {
+          OPENTREP_LOG_DEBUG ("No SQL database may be used. "
+                              << "The Xapian database will be used instead");
+        } else {
+          OPENTREP_LOG_DEBUG ("The travel query string (" << lTravelQuerySlice
+                              << ") has got items/words, which are neither "
+                              << "IATA/ICAO codes nor Geonames ID. "
+                              << "The Xapian database will be used");
+        }
 
-      /**
-       * 1.5. Calculate/set the heuristic weights for all the matching documents
-       */
-      lResultCombination.calculateHeuristicWeights();
+        /**
+         * 1.1. Perform all the full-text matches, and fill accordingly the
+         *      list of Result instances.
+         */
+        OPENTREP::searchString (lTravelQuerySlice, lXapianDatabase,
+                                lResultCombination, ioWordList);
 
-      /**
-       * 1.6. Calculate/set the combined weights for all the matching documents
-       */
-      lResultCombination.calculateCombinedWeights();
+        /**
+         * 1.2. Calculate/set all the weights for all the matching documents
+         */
+        lResultCombination.calculateAllWeights();
 
-      /**
-       * 2. Calculate the best matching scores / weighting percentages.
-       */
-      OPENTREP::chooseBestMatchingResultHolder (lResultCombination);
+        /**
+         * 2. Calculate the best matching scores / weighting percentages.
+         */
+        OPENTREP::chooseBestMatchingResultHolder (lResultCombination);
 
-      /**
-       * 3. Create the list of Place objects, for each of which a
-       *    look-up is made in the SQL database (e.g., MySQL or Oracle)
-       *    to retrieve complementary data.
-       */
-      createPlaces (lResultCombination, lPlaceHolder);
+        /**
+         * 3. Create the list of Place objects, for each of which a
+         *    look-up is made in the SQL database (e.g., MySQL or Oracle)
+         *    to retrieve complementary data.
+         */
+        // Create a PlaceHolder object, to collect the matching Place objects
+        PlaceHolder& lPlaceHolder = FacPlaceHolder::instance().create();
+        createPlaces (lResultCombination, lPlaceHolder);
       
-      // DEBUG
-      OPENTREP_LOG_DEBUG (std::endl
-                          << "========================================="
-                          << std::endl << "Summary:" << std::endl
-                          << lPlaceHolder.toShortString() << std::endl
-                          << "========================================="
-                          << std::endl);
+        // DEBUG
+        OPENTREP_LOG_DEBUG (std::endl
+                            << "========================================="
+                            << std::endl << "Summary:" << std::endl
+                            << lPlaceHolder.toShortString() << std::endl
+                            << "========================================="
+                            << std::endl);
+
+        /**
+         * 4. Create a list of Location structures, which are light copies
+         *    of the Place objects, and add them to the given list.
+         */
+        lPlaceHolder.createLocations (ioLocationList);
+      }
     }
 
-    /**
-     * 4. Create the list of Location structures, which are light copies
-     *    of the Place objects. Those (Location) structures are passed
-     *    back to the caller of the service.
-     */
-    lPlaceHolder.createLocations (ioLocationList);
     oNbOfMatches = ioLocationList.size();
-    
     return oNbOfMatches;
   }
   

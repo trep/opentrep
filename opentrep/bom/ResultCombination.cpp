@@ -192,6 +192,40 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void ResultCombination::calculateAllWeights() {
+    /**
+     * 1. Display a summary of the Xapian matching results.
+     */
+    displayXapianPercentages();
+
+    /**
+     * 2. Calculate/set the envelope weights for all the matching documents
+     */
+    calculateEnvelopeWeights();
+
+    /**
+     * 3. Calculate/set the IATA/ICAO code matching weights
+     *    for all the matching documents
+     */
+    calculateCodeMatches();
+
+    /**
+     * 4. Calculate/set the PageRanks for all the matching documents
+     */
+    calculatePageRanks();
+
+    /**
+     * 5. Calculate/set the heuristic weights for all the matching documents
+     */
+    calculateHeuristicWeights();
+
+    /**
+     * 6. Calculate/set the combined weights for all the matching documents
+     */
+    calculateCombinedWeights();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   bool ResultCombination::chooseBestMatchingResultHolder() {
 
     // Identify the ResultHolder object corresponding to the best

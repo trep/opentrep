@@ -383,7 +383,7 @@ TokenList_T extractTokenListForIcaoCode (const TokenList_T& iTokenList) {
   /**
    * Expected format:
    *   line:         icao_code
-   *   icao_code:    word (alpha{4})
+   *   icao_code:    word ((alpha|digit){4})
    */
   const std::string lRegEx ("^(([[:alpha:]]|[[:digit:]]){4})$");
 
@@ -568,9 +568,9 @@ int main (int argc, char* argv[]) {
       std::cout << " fill_from_por_file" << std::endl;
       std::cout << " create_indexes" << std::endl;
       std::cout << " list_nb" << std::endl;
-      std::cout << " list_by_iata nce" << std::endl;
-      std::cout << " list_by_icao lfmn" << std::endl;
-      std::cout << " list_by_faa afm" << std::endl;
+      std::cout << " list_by_iata NCE" << std::endl;
+      std::cout << " list_by_icao LFMN" << std::endl;
+      std::cout << " list_by_faa AFM" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
       std::cout << std::endl;
       break;
@@ -599,7 +599,7 @@ int main (int argc, char* argv[]) {
       // For now, just hard code a single IATA code.
       // TODO: implement the page down process, so that the full list
       // can be retrieved and browsed.
-      const std::string lIataCodeStr ("nce");
+      const std::string lIataCodeStr ("NCE");
 
       // Call the underlying OpenTREP service
       const OPENTREP::IATACode_T lIataCode (lIataCodeStr);
@@ -636,7 +636,7 @@ int main (int argc, char* argv[]) {
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
-      std::string lIataCodeStr ("nce");
+      std::string lIataCodeStr ("NCE");
       parsePlaceKey (lTokenList, lIataCodeStr);
 
       // Call the underlying OpenTREP service
@@ -674,7 +674,7 @@ int main (int argc, char* argv[]) {
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
-      std::string lIcaoCodeStr ("lfmn");
+      std::string lIcaoCodeStr ("LFMN");
       parsePlaceKey (lTokenList, lIcaoCodeStr);
 
       // Call the underlying OpenTREP service
@@ -712,7 +712,7 @@ int main (int argc, char* argv[]) {
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
-      std::string lFaaCodeStr ("sfo");
+      std::string lFaaCodeStr ("jfk");
       parsePlaceKey (lTokenList, lFaaCodeStr);
 
       // Call the underlying OpenTREP service

@@ -92,6 +92,10 @@ namespace OPENTREP {
   public:
     explicit IATACode_T (const std::string& iValue) : std::string (iValue) { }
   };
+  /**
+   * List of IATA three-letter codes.
+   */
+  typedef std::list<IATACode_T> IATACodeList_T;
 
   /**
    * ICAO four-letter code (e.g., KORD).
@@ -100,11 +104,20 @@ namespace OPENTREP {
   public:
     explicit ICAOCode_T (const std::string& iValue) : std::string (iValue) { }
   };
+  /**
+   * List of ICAO four-letter codes.
+   */
+  typedef std::list<ICAOCode_T> ICAOCodeList_T;
+
 
   /**
    * Geonames ID.
    */
   typedef int GeonamesID_T;
+  /**
+   * List of Geonames IDs.
+   */
+  typedef std::list<GeonamesID_T> GeonamesIDList_T;
 
   /**
    * Envelope ID.

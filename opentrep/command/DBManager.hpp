@@ -117,14 +117,21 @@ namespace OPENTREP {
      * Get the POR (point of reference), from the SQL database, corresponding
      * to the given IATA code.
      *
+     * Note that several entries may correspond to
+     * the given IATA code, for instance SFO would give both the airport and
+     * the city. If so required (by setting the corresponding parameter),
+     * the entry having the greatest Page Rank will be returned.
+     *
      * @param const SQLDBConnectionString_T& Connection string to the SQL DB.
      * @param const IATACode_T& The IATA code (key) of the POR to be retrieved.
      * @param LocationList_T& List of (geographical) locations, if any,
      *                        matching the given key.
+     * @param const bool States whether a unique entry should be returned.
      * @return NbOfDBEntries_T Number of documents of the SQL database.
      */
     static NbOfDBEntries_T getPORByIATACode (soci::session&, const IATACode_T&,
-                                             LocationList_T&);
+                                             LocationList_T&,
+                                             const bool iUniqueEntry);
 
     /**
      * Get the POR (point of reference), from the SQL database, corresponding
