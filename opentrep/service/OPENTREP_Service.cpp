@@ -69,6 +69,21 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  SQLDBConnectionString_T
+  getSQLConnStr (const DBType& iSQLDBType,
+                 const SQLDBConnectionString_T& iSQLDBConnStr) {
+    // When the SQL database is MariaDB/MySQL and the connection string
+    // is equal to the default SQLite one, override it
+    std::string oSQLDBConnStr =
+      static_cast<const std::string> (iSQLDBConnStr);
+    if (iSQLDBType == DBType::MYSQL
+        && oSQLDBConnStr == DEFAULT_OPENTREP_SQLITE_DB_FILEPATH) {
+      oSQLDBConnStr = DEFAULT_OPENTREP_MYSQL_CONN_STRING;
+    }
+    return SQLDBConnectionString_T (oSQLDBConnStr);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void OPENTREP_Service::init (std::ostream& ioLogStream,
                                const TravelDBFilePath_T& iTravelDBFilePath,
                                const DBType& iSQLDBType,
@@ -76,10 +91,14 @@ namespace OPENTREP {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
+    // Fix the SQL database connection string, if needed
+    const SQLDBConnectionString_T& lSQLDBConnStr =
+      getSQLConnStr (iSQLDBType, iSQLDBConnStr);
+
     // Initialise the context
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
       FacOpenTrepServiceContext::instance().create (iTravelDBFilePath,
-                                                    iSQLDBType, iSQLDBConnStr);
+                                                    iSQLDBType, lSQLDBConnStr);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
@@ -96,11 +115,15 @@ namespace OPENTREP {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
+    // Fix the SQL database connection string, if needed
+    const SQLDBConnectionString_T& lSQLDBConnStr =
+      getSQLConnStr (iSQLDBType, iSQLDBConnStr);
+
     // Initialise the context
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
       FacOpenTrepServiceContext::instance().create (iPORFilepath,
                                                     iTravelDBFilePath,
-                                                    iSQLDBType, iSQLDBConnStr);
+                                                    iSQLDBType, lSQLDBConnStr);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object

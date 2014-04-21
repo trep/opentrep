@@ -939,9 +939,10 @@ namespace OPENTREP {
                                            lPlaceRawDataString);
 
         // DEBUG
-        const std::string lFoundStr = hasStillData?"Yes":"No";
-        OPENTREP_LOG_DEBUG ("Checked locations corresponding to "
-                            << iIataCode << " IATA code. Found: " << lFoundStr);
+        const std::string lFoundStr = hasStillData?"more; see below":"no more";
+        OPENTREP_LOG_DEBUG ("Checked whether there are more locations "
+                            << "corresponding to '" << iIataCode
+                            << "' IATA code. Result: " << lFoundStr);
 
         if (hasStillData == true) {
           //
@@ -993,6 +994,11 @@ namespace OPENTREP {
     if (iUniqueEntry == true && lHighestPRLocation_ptr != NULL) {
       assert (lHighestPRLocation_ptr != NULL);
       ioLocationList.push_back (*lHighestPRLocation_ptr);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG("Kept the location with the highest PageRank value ("
+                         << lHighestPRValue << ") for '" << iIataCode
+                         << "' IATA code: " << lHighestPRLocation_ptr->getKey());
     }
 
     //
