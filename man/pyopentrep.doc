@@ -1,10 +1,10 @@
 /*!
 \page pyopentrep
-      Python wrapper around the C++ Travel Request Parser (TREP)
+      Python wrapper around the C++ Travel Request Parser (TREP) library
 
 \section sec_synopsis SYNOPSIS
 
-<b>pyopentrep</b> <tt>[--prefix] [-v|--version] [-h|--help] [-x|--xapiandb <Xapian-travel-database-path>] [-f|--format <output-format>]</tt>
+<b>pyopentrep</b> <tt>[--prefix] [-v|--version] [-h|--help] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-f|--format <output-format>] [-g|--generate <nb-of-por>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -15,15 +15,26 @@
  \b -h, \b --help<br>
     Produce that message and show usage.
 
- \b -x, \b --xapiandb <Xapian-travel-database-path><br>
+ \b -d, \b --xapiandb <Xapian-travel-database-path><br>
     Path (directory) to the Xapian travel database.
 	The indexer creates, or overwrites it when it already exists,
 	the Xapian database. It materialises as a collection of data files
 	within a directory usually named 'traveldb'.
 
+ \b -t, \b --sqldbtype <SQL-database-type><br>
+    SQL database type, e.g., nosql (no SQL database), sqlite, mysql
+
+ \b -s, \b --sqldbconx <SQL-database-connection-string><br>
+    SQL database connection string, e.g.,
+    ~/tmp/opentrep/sqlite_travel.db (for SQLite3),
+    "db=trep_trep user=trep password=trep" (for MySQL)
+
  \b -f, \b --format<br>
  	Format of the output: Short (S, default), Full (F), raw JSON (J) and
 	Interpretation from JSON (I).
+
+ \b -g, \b --generate <nb-of-por><br>
+ 	Number of POR (points of reference) to generate
 
 See the output of the <tt>`pyopentrep --help'</tt> command for default options.
 
