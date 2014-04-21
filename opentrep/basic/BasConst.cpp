@@ -164,8 +164,13 @@ namespace OPENTREP {
     oBL.insert ("Flughafe"); oBL.insert ("flughafe");
     oBL.insert ("Flughaveno"); oBL.insert ("flughaveno");
     oBL.insert ("Lufthavn"); oBL.insert ("lufthavn");
+    oBL.insert ("Letise"); oBL.insert ("letise");
+    oBL.insert ("Letisko"); oBL.insert ("letisko");
+    oBL.insert ("Lotniczy"); oBL.insert ("lotniczy");
     oBL.insert ("Lentoasema"); oBL.insert ("lentoasema");
     oBL.insert ("Lapangan"); oBL.insert ("lapangan");
+    oBL.insert ("Bandar"); oBL.insert ("bandar");
+    oBL.insert ("Udara"); oBL.insert ("udara");
     oBL.insert ("Terbang"); oBL.insert ("terbang");
     oBL.insert ("Repülőtér"); oBL.insert ("repülőtér");
     oBL.insert ("Aerodrome"); oBL.insert ("aerodrome");
@@ -173,6 +178,8 @@ namespace OPENTREP {
     oBL.insert ("Aeroporto"); oBL.insert ("aeroporto");
     oBL.insert ("Aeropuerto"); oBL.insert ("aeropuerto");
     oBL.insert ("Аэропорт"); oBL.insert ("аэропорт");
+    oBL.insert ("Letiště"); oBL.insert ("letiště");
+    oBL.insert ("Летище"); oBL.insert ("летище");
     oBL.insert ("Sân"); oBL.insert ("sân");
     oBL.insert ("Bay"); oBL.insert ("bay");
     oBL.insert ("Quốc"); oBL.insert ("quốc");
@@ -184,7 +191,6 @@ namespace OPENTREP {
     oBL.insert ("Internasjonale"); oBL.insert ("internasjonale");
     oBL.insert ("Международный"); oBL.insert ("международный");
     oBL.insert ("Международно"); oBL.insert ("международно");
-    oBL.insert ("Lotniczy"); oBL.insert ("lotniczy");
     oBL.insert ("Kansainvälinen"); oBL.insert ("kansainvälinen");
     oBL.insert ("Nemzetközi"); oBL.insert ("nemzetközi");
     oBL.insert ("Intl"); oBL.insert ("intl");
