@@ -461,6 +461,7 @@ namespace OPENTREP {
       const bool areAllWordsCodes =
         areAllCodeOrGeoID (lTravelQuerySlice, lCodeList);
 
+      NbOfMatches_T lNbOfMatches = 0;
       if (areAllWordsCodes == true && !(iSQLDBType == DBType::NODB)) {
         /**
          * All the words/items of the travel query are either IATA/ICAO codes
@@ -476,15 +477,20 @@ namespace OPENTREP {
                             << ") will be used. "
                             << "The Xapian database will not be used");
 
-        const NbOfMatches_T& lNbOfMatches =
-          OPENTREP::getLocationList (iSQLDBType, iSQLDBConnStr, lCodeList,
-                                     ioLocationList, ioWordList);
-        assert (lNbOfMatches != 0);
+        lNbOfMatches = OPENTREP::getLocationList (iSQLDBType, iSQLDBConnStr,
+                                                  lCodeList,
+                                                  ioLocationList, ioWordList);
+      }
 
-      } else {
+      if (lNbOfMatches == 0) {
         /**
-         * Some of the words/items of the travel query are neither IATA/ICAO
-         * codes nor Geonames ID, or there is no underlying SQL database.
+         * <ul>
+         *   <li>Some of the words/items of the travel query are neither
+         *        IATA/ICAO codes nor Geonames ID;</li>
+         *   <li>or there is no underlying SQL database;</li>
+         *   <li>or the word/item is 3/4-character long but is not
+         *       a IATA/ICAO code (e.g., lviv)</li>
+         * </ul>
          * The Xapian database/index must therefore be used.
          */
         // DEBUG
@@ -495,7 +501,7 @@ namespace OPENTREP {
           OPENTREP_LOG_DEBUG ("The travel query string (" << lTravelQuerySlice
                               << ") has got items/words, which are neither "
                               << "IATA/ICAO codes nor Geonames ID. "
-                              << "The Xapian database will be used");
+                              << "The Xapian database/index will be used");
         }
 
         /**
