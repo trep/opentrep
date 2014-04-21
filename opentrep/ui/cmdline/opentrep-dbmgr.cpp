@@ -103,10 +103,10 @@ int readConfiguration (int argc, char* argv[],
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
     ("sqldbtype,t",
      boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
-     "SQL database type, e.g., nodb (no SQL database), sqlite, mysql")
+     "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
-     "SQL database connection string, e.g., ~/tmp/opentrep/sqlite_travel.db (for SQLite3), \"db=trep_trep user=trep password=trep\" (for MySQL)")
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
@@ -568,9 +568,9 @@ int main (int argc, char* argv[]) {
       std::cout << " fill_from_por_file" << std::endl;
       std::cout << " create_indexes" << std::endl;
       std::cout << " list_nb" << std::endl;
-      std::cout << " list_by_iata NCE" << std::endl;
-      std::cout << " list_by_icao LFMN" << std::endl;
-      std::cout << " list_by_faa AFM" << std::endl;
+      std::cout << " list_by_iata nce" << std::endl;
+      std::cout << " list_by_icao lfmn" << std::endl;
+      std::cout << " list_by_faa afm" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
       std::cout << std::endl;
       break;

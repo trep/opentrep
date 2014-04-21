@@ -57,10 +57,10 @@ int readConfiguration (int argc, char* argv[],
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
     ("sqldbtype,t",
      boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
-     "SQL database type (e.g., nodb, i.e., no SQL database)")
+     "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
-     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db)")
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")

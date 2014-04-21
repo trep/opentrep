@@ -29,7 +29,7 @@ def usage (script_name):
     print "  -h, --help      : outputs this help and exits"
     print "  -i, --index     : performs the indexation with Xapian"
     print "  -g, --generate= : randomly draws the documents from Xapian"
-    print "  -x, --xapiandb= : specifies the path to the Xapian DB (index)"
+    print "  -d, --xapiandb= : specifies the path to the Xapian DB (index)"
     print "  -t, --sqldbtype=: specifies the type of SQL DB (noDB, sqlite, mysql)"
     print "  -s, --sqldbconx=: specifies the connection string for the SQL DB"
     print "  -f, --format=   : format of the output: Short (S, default),"
@@ -44,7 +44,7 @@ def str2bool (v):
 # Handle command-line options
 def handle_opt():
     try:
-        opts, args = getopt.getopt (sys.argv[1:], "hif:x:s:g:",
+        opts, args = getopt.getopt (sys.argv[1:], "hif:d:t:s:g:",
                         ["help", "index", "format=", "xapiandb=", "sqldbtype=",
                          "sqldbconx=", "generate="])
     except getopt.GetoptError, err:
@@ -73,22 +73,22 @@ def handle_opt():
     sqlDBType = "nodb"
     sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
     for o, a in opts:
-        if o in ("-f", "--format"):
+        if o in ("-h", "--help"):
+            usage (sys.argv[0])
+            sys.exit()
+        elif o in ("-i", "--index"):
+            command = "index"
+        elif o in ("-f", "--format"):
             outputFormat = a
-        elif o in ("-x", "--xapiandb"):
+        elif o in ("-d", "--xapiandb"):
             xapianDBPath = a
-        elif o in ("-l", "--sqldbtype"):
+        elif o in ("-t", "--sqldbtype"):
             sqlDBType = a
         elif o in ("-s", "--sqldbconx"):
             sqlDBConnStr = a
-        elif o in ("-i", "--index"):
-            command = "index"
         elif o in ("-g", "--generate"):
             command = "generate"
             nbOfDraws = int (a)
-        elif o in ("-h", "--help"):
-            usage (sys.argv[0])
-            sys.exit()
         else:
             assert False, "Unhandled option"
     return (command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, searchString, nbOfDraws)
@@ -257,9 +257,11 @@ def getPaths (openTrepLibrary):
 
     # Report the results
     print "ORI-maintained list of POR (points of reference): '" + filePathList[0] + "'"
-    print "Xapian-based travel database/index: '" + filePathList[1] + "'"
-    print "SQLite database: '" + filePathList[2] + "'"
-
+    if len(filePathList) >= 2:
+        print "Xapian-based travel database/index: '" + filePathList[1] + "'"
+    if len(filePathList) >= 3:
+        print "SQLite database: '" + filePathList[2] + "'"
+    #
 
 ##
 # Indexation

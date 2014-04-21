@@ -4,7 +4,7 @@
 
 \section sec_synopsis SYNOPSIS
 
-<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error < spelling error>] [-d|--database <Xapian-travel-database-path>] [-l|--log <path-to-output-log-file>] [-t|--type <search-type>] [-q|--query <search-query>]</tt>
+<b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error < spelling error>] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-l|--log <path-to-output-log-file>] [-y|--type <search-type>] [-q|--query <search-query>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -25,16 +25,24 @@
  \b -e, \b --error<br>
     Allowed spelling error distance (e.g., 3).
 
- \b -d, \b --database <Xapian-travel-database-path><br>
+ \b -d, \b --xapiandb <Xapian-travel-database-path><br>
     Path (directory) to the Xapian travel database.
 	The indexer creates, or overwrites it when it already exists,
 	the Xapian database. It materialises as a collection of data files
 	within a directory usually named 'traveldb'.
 
+ \b -t, \b --sqldbtype <SQL-database-type><br>
+    SQL database type, e.g., nosql (no SQL database), sqlite, mysql
+
+ \b -s, \b --sqldbconx <SQL-database-connection-string><br>
+    SQL database connection string, e.g.,
+    ~/tmp/opentrep/sqlite_travel.db (for SQLite3),
+    "db=trep_trep user=trep password=trep" (for MySQL)
+
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.
 
- \b -t, \b --type <search-type><br>
+ \b -y, \b --type <search-type><br>
     Type of search request (0 = full text, 1 = coordinates).
 
  \b -q, \b --query <search-query><br>

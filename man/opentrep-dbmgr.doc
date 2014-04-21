@@ -8,9 +8,11 @@
 
 \section sec_description DESCRIPTION
 
-\e opentrep-dbmgr is a small program to manage the SQLite3 database.
+\e opentrep-dbmgr is a small program to manage the relational (SQL) database.
+   For now, only SQLite3 and MariaDB/MySQL databases are supported.
    The file with the list of the ORI-maintained POR (points of reference)
-   may be parsed, and the corresponding content inserted into the SQLite3 DB.
+   may be parsed, and the corresponding content inserted into the SQL database.
+   At the prompt, launch the 'help' or 'tutorial' command to heva more details.
 
 \e opentrep-dbmgr accepts the following options:
 

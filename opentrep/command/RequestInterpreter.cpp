@@ -473,7 +473,7 @@ namespace OPENTREP {
                             << ") is made only of IATA/ICAO codes "
                             << "or Geonames ID. The " << iSQLDBType.describe()
                             << " SQL database (" << iSQLDBConnStr
-                            << ") will used. "
+                            << ") will be used. "
                             << "The Xapian database will not be used");
 
         const NbOfMatches_T& lNbOfMatches =
