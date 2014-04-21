@@ -951,7 +951,8 @@ namespace OPENTREP {
           // Parse the POR details and create the corresponding
           // Location structure
           const RawDataString_T lPlaceRawData (lPlaceRawDataString);
-          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+          Location lLocation = Result::retrieveLocation (lPlaceRawData);
+          lLocation.setCorrectedKeywords (iIataCode);
 
           // Add the new found location to the list
           lLocationList.push_back (lLocation);
@@ -1042,7 +1043,8 @@ namespace OPENTREP {
           // Parse the POR details and create the corresponding
           // Location structure
           const RawDataString_T lPlaceRawData (lPlaceRawDataString);
-          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+          Location lLocation = Result::retrieveLocation (lPlaceRawData);
+          lLocation.setCorrectedKeywords (iIcaoCode);
 
           // Add the new found location to the list
           ioLocationList.push_back (lLocation);
@@ -1101,7 +1103,8 @@ namespace OPENTREP {
           // Parse the POR details and create the corresponding
           // Location structure
           const RawDataString_T lPlaceRawData (lPlaceRawDataString);
-          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+          Location lLocation = Result::retrieveLocation (lPlaceRawData);
+          lLocation.setCorrectedKeywords (iFaaCode);
 
           // Add the new found location to the list
           ioLocationList.push_back (lLocation);
@@ -1160,7 +1163,10 @@ namespace OPENTREP {
           // Parse the POR details and create the corresponding
           // Location structure
           const RawDataString_T lPlaceRawData (lPlaceRawDataString);
-          const Location& lLocation = Result::retrieveLocation (lPlaceRawData);
+          Location lLocation = Result::retrieveLocation (lPlaceRawData);
+          const std::string lGeonamesIDStr =
+            boost::lexical_cast<std::string> (iGeonameID);
+          lLocation.setCorrectedKeywords (lGeonamesIDStr);
 
           // Add the new found location to the list
           ioLocationList.push_back (lLocation);
