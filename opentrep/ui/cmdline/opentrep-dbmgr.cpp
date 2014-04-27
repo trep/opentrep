@@ -516,8 +516,8 @@ int main (int argc, char* argv[]) {
       std::cout << " help" << "\t\t\t\t" << "Display this help" << std::endl;
       std::cout << " info" << "\t\t\t\t"
                 << "Display details for the current session "
-                << "(e.g., file-paths for the log file, Xapian index, "
-                << "SQL database)" << std::endl;
+                << "(e.g., file-paths for the log file, SQL database)"
+                << std::endl;
       std::cout << " tutorial" << "\t\t\t" << "Display examples" << std::endl;
       std::cout << " quit" << "\t\t\t\t" << "Quit the application" << std::endl;
       std::cout << " create_user" << "\t\t\t"
@@ -573,8 +573,6 @@ int main (int argc, char* argv[]) {
       std::cout << "Log file-path: " << "\t\t\t\t" << lLogFilename
                 << std::endl;
       std::cout << "POR file-path: " << "\t\t\t\t" << lPORFilepathStr
-                << std::endl;
-      std::cout << "Xapian index file-path: " << "\t\t" << lXapianDBNameStr
                 << std::endl;
       std::cout << "SQL database type: " << "\t\t\t" << lDBType.describe()
                 << std::endl;
