@@ -204,7 +204,7 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("sqldbtype")) {
     ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
-    std::cout << "SQL database connection string is: " << ioSQLDBTypeString
+    std::cout << "SQL database type is: " << ioSQLDBTypeString
               << std::endl;
   }
 

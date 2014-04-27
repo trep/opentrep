@@ -49,6 +49,7 @@ struct Command_T {
     NOP = 0,
     QUIT,
     HELP,
+    INFO,
     TUTORIAL,
     CREATE_USER,
     RESET_CONNECTION_STRING,
@@ -159,31 +160,27 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("porfile")) {
     ioPORFilepath = vm["porfile"].as< std::string >();
-    std::cout << "POR file-path is: " << ioPORFilepath << std::endl;
   }
 
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
-    std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
-              << std::endl;
   }
 
   if (vm.count ("sqldbtype")) {
     ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
-    std::cout << "SQL database connection string is: " << ioSQLDBTypeString
-              << std::endl;
   }
 
   if (vm.count ("sqldbconx")) {
     ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
-    std::cout << "SQL database connection string is: " << ioSQLDBConnectionString
-              << std::endl;
   }
 
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
-    std::cout << "Log filename is: " << ioLogFilename << std::endl;
   }
+
+  // Information
+  std::cout << "Type the 'info' command to get a few details (e.g., file-path)"
+            << std::endl;
 
   return 0;
 }
@@ -198,6 +195,7 @@ void initReadline (swift::SReadline& ioInputReader) {
   // - "identifiers"
   // - special identifier %file - means to perform a file name completion
   Completers.push_back ("help");
+  Completers.push_back ("info");
   Completers.push_back ("tutorial");
   Completers.push_back ("create_user");
   Completers.push_back ("reset_connection_string %connection_string");
@@ -230,6 +228,9 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
     if (lCommand == "help") {
       oCommandType = Command_T::HELP;
 
+    } else if (lCommand == "info") {
+      oCommandType = Command_T::INFO;
+    
     } else if (lCommand == "tutorial") {
       oCommandType = Command_T::TUTORIAL;
     
@@ -510,7 +511,13 @@ int main (int argc, char* argv[]) {
     case Command_T::HELP: {
       std::cout << std::endl;
       std::cout << "Commands: " << std::endl;
+      std::cout << " CTRL-L (Control and L keys)" << "\t" << "Clean the screen"
+                << std::endl;
       std::cout << " help" << "\t\t\t\t" << "Display this help" << std::endl;
+      std::cout << " info" << "\t\t\t\t"
+                << "Display details for the current session "
+                << "(e.g., file-paths for the log file, Xapian index, "
+                << "SQL database)" << std::endl;
       std::cout << " tutorial" << "\t\t\t" << "Display examples" << std::endl;
       std::cout << " quit" << "\t\t\t\t" << "Quit the application" << std::endl;
       std::cout << " create_user" << "\t\t\t"
@@ -550,6 +557,28 @@ int main (int argc, char* argv[]) {
                 << std::endl;
       std::cout << " list_by_geonameid" << "\t\t"
                 << "List all the entries for a given Geoname ID"
+                << std::endl;
+      std::cout << std::endl;
+      break;
+    }
+ 
+      // ////////////////////////////// Information ////////////////////////
+    case Command_T::INFO: {
+      const OPENTREP::OPENTREP_Service::FilePathSet_T& lFPSet =
+        opentrepService.getFilePaths();
+      const OPENTREP::OPENTREP_Service::DBFilePathPair_T& lDBFPPair =
+        lFPSet.second;
+      const OPENTREP::SQLDBConnectionString_T& lSQLConnStr = lDBFPPair.second;
+      std::cout << std::endl;
+      std::cout << "Log file-path: " << "\t\t\t\t" << lLogFilename
+                << std::endl;
+      std::cout << "POR file-path: " << "\t\t\t\t" << lPORFilepathStr
+                << std::endl;
+      std::cout << "Xapian index file-path: " << "\t\t" << lXapianDBNameStr
+                << std::endl;
+      std::cout << "SQL database type: " << "\t\t\t" << lDBType.describe()
+                << std::endl;
+      std::cout << "SQL database connection string: " << "\t" << lSQLConnStr
                 << std::endl;
       std::cout << std::endl;
       break;
