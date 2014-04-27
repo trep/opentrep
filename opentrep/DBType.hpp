@@ -24,7 +24,7 @@ namespace OPENTREP {
     } EN_DBType;
 
     /**
-     * Get the label as a string (e.g., "NODB", "SQLITE3", "MYSQL").
+     * Get the label as a string (e.g., "NoDB", "SQLite3", "MySQL/MariaDB").
      */
     static const std::string& getLabel (const EN_DBType&);
 
@@ -64,7 +64,8 @@ namespace OPENTREP {
     std::string getTypeAsString() const;
     
     /**
-     * Give a description of the structure (e.g., "NODB", "SQLITE3", "MYSQL").
+     * Give a description of the structure (e.g., "NoDB", "SQLite3",
+     * "MySQL/MariaDB").
      */
     const std::string describe() const;
 
