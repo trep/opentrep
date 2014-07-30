@@ -165,7 +165,7 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
     unset (DOC_NEWS_FILE)
   endif (NOT EXISTS ${DOC_NEWS_FILE})
   set (BASICDOC_FILES AUTHORS ${DOC_NEWS_FILE} README ${DOC_INSTALL_FILE})
-  set (BASICDOC_PATH "share/doc/${PACKAGE}-${PACKAGE_VERSION}")
+  set (BASICDOC_PATH "share/doc/${PACKAGE}")
 
 endmacro (set_project_options)
 
@@ -2233,7 +2233,7 @@ macro (doc_add_web_pages)
 
   ##
   # Installation of the HTML documentation
-  set (DOC_PATH share/doc/${PROJECT_NAME}-${CPACK_PACKAGE_VERSION})
+  set (DOC_PATH share/doc/${PROJECT_NAME})
   # HTML pages
   install (DIRECTORY ${htmldoc_DIR} DESTINATION ${DOC_PATH})
   # PDF reference manual
