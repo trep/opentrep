@@ -955,8 +955,8 @@ namespace OPENTREP {
        -- modification date : Date of last modification in yyyy-MM-dd format
        --
        --
-       -- ORI-related part:
-       -- -----------------
+       -- OPTD-related part:
+       -- ------------------
        --
        -- is_geonames       : Whether that POR is known by Geonames; varchar(1)
        --                     varchar(1)

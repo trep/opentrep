@@ -51,7 +51,7 @@ int readConfiguration (int argc, char* argv[],
   config.add_options()
     ("porfile,p",
      boost::program_options::value< std::string >(&ioPORFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_POR_FILEPATH),
-     "POR file-path (e.g., ori_por_public.csv)")
+     "POR file-path (e.g., optd_por_public.csv)")
     ("xapiandb,d",
      boost::program_options::value< std::string >(&ioXapianDBFilepath)->default_value(OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")

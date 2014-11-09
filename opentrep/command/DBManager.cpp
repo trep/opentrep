@@ -284,8 +284,8 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries:
          * -------------------------------------------
-           drop table if exists ori_por;
-           create table ori_por (
+           drop table if exists optd_por;
+           create table optd_por (
            pk varchar(20) NOT NULL,
            location_type varchar(4) default NULL,
            iata_code varchar(3) default NULL,
@@ -300,9 +300,9 @@ namespace OPENTREP {
            primary key (pk));
         */
 
-        ioSociSession << "drop table if exists ori_por;";
+        ioSociSession << "drop table if exists optd_por;";
         std::ostringstream lSQLTableCreationStr;
-        lSQLTableCreationStr << "create table ori_por (";
+        lSQLTableCreationStr << "create table optd_por (";
         lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
         lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
         lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
@@ -332,8 +332,8 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries:
          * -------------------------------------------
-           drop table if exists ori_por;
-           create table ori_por (
+           drop table if exists optd_por;
+           create table optd_por (
            pk varchar(20) NOT NULL,
            location_type varchar(4) default NULL,
            iata_code varchar(3) default NULL,
@@ -347,9 +347,9 @@ namespace OPENTREP {
            serialised_place varchar(8000) default NULL);
         */
 
-        ioSociSession << "drop table if exists ori_por;";
+        ioSociSession << "drop table if exists optd_por;";
         std::ostringstream lSQLTableCreationStr;
-        lSQLTableCreationStr << "create table ori_por (";
+        lSQLTableCreationStr << "create table optd_por (";
         lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
         lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
         lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
@@ -401,20 +401,20 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries for SQLite3:
          * -------------------------------------------------------
-         create index ori_por_iata_code on ori_por (iata_code);
-         create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);
-         create index ori_por_icao_code on ori_por (icao_code);
-         create index ori_por_geonameid on ori_por (geoname_id);
+         create index optd_por_iata_code on optd_por (iata_code);
+         create index optd_por_iata_date on optd_por (iata_code, date_from, date_until);
+         create index optd_por_icao_code on optd_por (icao_code);
+         create index optd_por_geonameid on optd_por (geoname_id);
         */
 
         ioSociSession
-          << "create index ori_por_iata_code on ori_por (iata_code);";
+          << "create index optd_por_iata_code on optd_por (iata_code);";
         ioSociSession
-          << "create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);";
+          << "create index optd_por_iata_date on optd_por (iata_code, date_from, date_until);";
         ioSociSession
-          << "create index ori_por_icao_code on ori_por (icao_code);";
+          << "create index optd_por_icao_code on optd_por (icao_code);";
         ioSociSession
-          << "create index ori_por_geonameid on ori_por (geoname_id);";
+          << "create index optd_por_geonameid on optd_por (geoname_id);";
 
       } catch (std::exception const& lException) {
         std::ostringstream errorStr;
@@ -431,24 +431,24 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries for MySQLMariaDB:
          * ------------------------------------------------------------
-         -- alter table ori_por add primary key (pk);
-         alter table ori_por add unique index ori_por_pk (pk asc);
-         alter table ori_por add index ori_por_iata_code (iata_code asc);
-         alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);
-         alter table ori_por add index ori_por_icao_code (icao_code asc);
-         alter table ori_por add index ori_por_geonameid (geoname_id asc);
+         -- alter table optd_por add primary key (pk);
+         alter table optd_por add unique index optd_por_pk (pk asc);
+         alter table optd_por add index optd_por_iata_code (iata_code asc);
+         alter table optd_por add index optd_por_iata_date (iata_code asc, date_from asc, date_until asc);
+         alter table optd_por add index optd_por_icao_code (icao_code asc);
+         alter table optd_por add index optd_por_geonameid (geoname_id asc);
         */
 
         ioSociSession
-          << "alter table ori_por add unique index ori_por_pk (pk asc);";
+          << "alter table optd_por add unique index optd_por_pk (pk asc);";
         ioSociSession
-          << "alter table ori_por add index ori_por_iata_code (iata_code asc);";
+          << "alter table optd_por add index optd_por_iata_code (iata_code asc);";
         ioSociSession
-          << "alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);";
+          << "alter table optd_por add index optd_por_iata_date (iata_code asc, date_from asc, date_until asc);";
         ioSociSession
-          << "alter table ori_por add index ori_por_icao_code (icao_code asc);";
+          << "alter table optd_por add index optd_por_icao_code (icao_code asc);";
         ioSociSession
-          << "alter table ori_por add index ori_por_geonameid (geoname_id asc);";
+          << "alter table optd_por add index optd_por_geonameid (geoname_id asc);";
 
       } catch (std::exception const& lException) {
         std::ostringstream errorStr;
@@ -480,11 +480,11 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from ori_por;
+         select serialised_place from optd_por;
       */
 
       ioSelectStatement = (ioSociSession.prepare
-                           << "select serialised_place from ori_por",
+                           << "select serialised_place from optd_por",
                            soci::into (oSerialisedPlaceStr));
 
       // Execute the SQL query
@@ -493,7 +493,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr
-        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << "Error in the 'select serialised_place from optd_por' SQL request: "
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -515,13 +515,13 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from ori_por where iata_code = iIataCode;
+         select serialised_place from optd_por where iata_code = iIataCode;
       */
       const std::string lCode = static_cast<std::string> (iIataCode);
       const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
 
       ioSelectStatement = (ioSociSession.prepare
-                           << "select serialised_place from ori_por "
+                           << "select serialised_place from optd_por "
                            << "where iata_code = :place_iata_code",
                            soci::into (ioSerialisedPlaceStr),
                            soci::use (lCodeUpper));
@@ -532,7 +532,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr
-        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << "Error in the 'select serialised_place from optd_por' SQL request: "
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -551,13 +551,13 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from ori_por where iata_code = iIataCode;
+         select serialised_place from optd_por where iata_code = iIataCode;
       */
       const std::string lCode = static_cast<std::string> (iIcaoCode);
       const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
 
       ioSelectStatement = (ioSociSession.prepare
-                           << "select serialised_place from ori_por "
+                           << "select serialised_place from optd_por "
                            << "where icao_code = :place_icao_code",
                            soci::into (ioSerialisedPlaceStr),
                            soci::use (lCodeUpper));
@@ -568,7 +568,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr
-        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << "Error in the 'select serialised_place from optd_por' SQL request: "
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -587,13 +587,13 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from ori_por where iata_code = iIataCode;
+         select serialised_place from optd_por where iata_code = iIataCode;
       */
       const std::string lCode = static_cast<std::string> (iFaaCode);
       const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
 
       ioSelectStatement = (ioSociSession.prepare
-                           << "select serialised_place from ori_por "
+                           << "select serialised_place from optd_por "
                            << "where faa_code = :place_faa_code",
                            soci::into (ioSerialisedPlaceStr),
                            soci::use (lCodeUpper));
@@ -604,7 +604,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr
-        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << "Error in the 'select serialised_place from optd_por' SQL request: "
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -623,11 +623,11 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from ori_por where iata_code = iIataCode;
+         select serialised_place from optd_por where iata_code = iIataCode;
       */
 
       ioSelectStatement = (ioSociSession.prepare
-                           << "select serialised_place from ori_por "
+                           << "select serialised_place from optd_por "
                            << "where geoname_id = :place_geoname_id",
                            soci::into (ioSerialisedPlaceStr),
                            soci::use (iGeonameID));
@@ -638,7 +638,7 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr
-        << "Error in the 'select serialised_place from ori_por' SQL request: "
+        << "Error in the 'select serialised_place from optd_por' SQL request: "
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());
@@ -696,7 +696,7 @@ namespace OPENTREP {
       // DEBUG
       /*
       std::ostringstream oStr;
-      oStr << "insert into ori_por values (" << lPK << ", ";
+      oStr << "insert into optd_por values (" << lPK << ", ";
       oStr << lLocationType << ", ";
       oStr << lIataCode << ", " << lIcaoCode << ", " << lFaaCode << ", ";
       oStr << lIsGeonames << ", " << lGeonameID << ", ";
@@ -705,7 +705,7 @@ namespace OPENTREP {
       OPENTREP_LOG_DEBUG ("Full SQL statement: '" << oStr.str() << "'");
       */
 
-      ioSociSession << "insert into ori_por values (:pk, "
+      ioSociSession << "insert into optd_por values (:pk, "
                     << ":location_type, :iata_code, :icao_code, :faa_code, "
                     << ":is_geonames, :geoname_id, "
                     << ":envelope_id, :date_from, :date_until, "
@@ -779,15 +779,15 @@ namespace OPENTREP {
       /**
        * SQL DDL (Data Definition Language) queries for SQLite3:
        * -------------------------------------------------------
-       select count(1) from ori_por;
+       select count(1) from optd_por;
       */
 
-      ioSociSession << "select count(1) from ori_por;", soci::into(oNbOfEntries);
+      ioSociSession << "select count(1) from optd_por;", soci::into(oNbOfEntries);
 
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr
-        << "Error when trying to count the number of rows in the ori_por table: "
+        << "Error when trying to count the number of rows in the optd_por table: "
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseIndexCreationException (errorStr.str());

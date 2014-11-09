@@ -15,8 +15,8 @@ namespace OPENTREP {
    * @brief Utility class to ease the access to the POR (points of reference)
    * file.
    *
-   * \see The POR file is ori_por_public.csv, located in the
-   * http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI directory.
+   * \see The POR file is optd_por_public.csv, located in the
+   * http://github.com/opentraveldata/opentraveldata directory.
    */
   class PORFileHelper {
   public:
