@@ -97,7 +97,7 @@ namespace OPENTREP {
     const RawDataString_T& lRawDataString = ioPlace.getRawDataString();
 
     // The Xapian document data is indeed the same as the one of the
-    // ORI-maintained list of POR (points of reference), allowing the search
+    // OPTD-maintained list of POR (points of reference), allowing the search
     // process to use exactly the same parser as the indexation process
     lDocument.set_data (lRawDataString);
       

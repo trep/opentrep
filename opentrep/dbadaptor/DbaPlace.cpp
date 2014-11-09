@@ -37,8 +37,8 @@ namespace soci {
          alt.specifiers as alt_spec,
          city_iata_code, city_location_type, city_geoname_id,
          city_UTF8_name, city_ASCII_name
-         from ori_por_public_details dts, ori_por_public_alt_names alt,
-              ori_por_public_served_cities cty
+         from optd_por_public_details dts, optd_por_public_alt_names alt,
+              optd_por_public_served_cities cty
          where dts.iata_code = alt.iata_code
            and dts.location_type = alt.location_type
            and dts.geoname_id = alt.geoname_id

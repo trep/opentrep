@@ -9,10 +9,10 @@
 namespace OPENTREP {
 
   /**
-   * Default file-path for the ORI-maintained POR (points of reference) file.
+   * Default file-path for the OPTD-maintained POR (points of reference) file.
    *
    * Usually, the default file-path on Linux/Unix is
-   * <tt><installation directory>/share/opentrep/data/ori_por_public.csv</tt>
+   * <tt><installation directory>/share/opentrep/data/por/optd_por_public.csv</tt>
    * where <tt><installation directory></tt> may be:
    * <ul>
    *   <li><tt>/usr</tt> when installed as root (e.g., with the RPM)</li>
@@ -61,12 +61,7 @@ namespace OPENTREP {
    * Default name and location for the SQLite3 database.
    *
    * Usually, the default file-path on Linux/Unix is
-   * <tt><installation directory>/share/opentrep/data/ori_por_public.db</tt>
-   * where <tt><installation directory></tt> may be:
-   * <ul>
-   *   <li><tt>/usr</tt> when installed as root (e.g., with the RPM)</li>
-   *   <li><tt>$HOME/dev/deliveries/opentrep-<version></tt></li>
-   * </ul>
+   * <tt>/tmp/opentrep/sqlite_travel.db</tt>
    */
   extern const std::string DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
 
@@ -76,9 +71,9 @@ namespace OPENTREP {
    *
    * Usually, the default MySQL database details are:
    * <ul>
-   *   <li>User: geo</li>
-   *   <li>Passwd: geo</li>
-   *   <li>DB name: geo_ori</li>
+   *   <li>User: trep</li>
+   *   <li>Passwd: trep</li>
+   *   <li>DB name: trep_trep</li>
    *   <li>Server hostname: localhost</li>
    *   <li>Server port: 3306</li>
    * </ul>

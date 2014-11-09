@@ -70,7 +70,7 @@ namespace OPENTREP {
     static bool createSQLDBUser (const DBType&, const SQLDBConnectionString_T&);
 
     /**
-     * Create the database tables (e.g., 'ori_por' table).
+     * Create the database tables (e.g., 'optd_por' table).
      *
      * If tables were previously existing, they are deleted and re-created.
      *

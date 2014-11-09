@@ -29,7 +29,7 @@ namespace OPENTREP {
     /** 
      * Get the file-paths for the:
      * <ul>
-     *   <li>ORI-maintained list of POR (points of reference)</li>
+     *   <li>OPTD-maintained list of POR (points of reference)</li>
      *   <li>Xapian-based travel database/index</li>
      * </ul>
      */
@@ -110,7 +110,7 @@ namespace OPENTREP {
                       << ";" << lSQLDBConnStr;
 
         // DEBUG
-        *_logOutputStream << "ORI-maintained list of POR: '" << lPORFilePath
+        *_logOutputStream << "OPTD-maintained list of POR: '" << lPORFilePath
                           << "'" << std::endl;
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath << "'" << std::endl;
@@ -171,14 +171,14 @@ namespace OPENTREP {
         const SQLDBConnectionString_T& lSQLDBConnStr = lDBFilePathPair.second;
 
         // DEBUG
-        *_logOutputStream << "ORI-maintained list of POR: '" << lPORFilePath
+        *_logOutputStream << "OPTD-maintained list of POR: '" << lPORFilePath
                           << "'" << std::endl;
         *_logOutputStream << "Xapian travel database/index: '"
                           << lTravelDBFilePath << "'" << std::endl;
         *_logOutputStream << "SQL database connection string: '"
                           << lSQLDBConnStr << "'" << std::endl;
 
-        // Launch the indexation by Xapian of the ORI-maintained list of POR
+        // Launch the indexation by Xapian of the OPTD-maintained list of POR
         const NbOfDBEntries_T lNbOfEntries= _opentrepService->buildSearchIndex();
 
         // Dump the results into the output string
@@ -251,7 +251,7 @@ namespace OPENTREP {
                           << lTravelDBFilePath
                           << "' - SQL database connection string: '"
                           << lSQLDBConnStr
-                          << "' - ORI-maintained list of POR: '"
+                          << "' - OPTD-maintained list of POR: '"
                           << lPORFilePath << "'" << std::endl;
 
         // Query the Xapian database (index)
@@ -451,7 +451,7 @@ namespace OPENTREP {
                           << lTravelDBFilePath
                           << "' - SQL database connection string: '"
                           << lSQLDBConnStr
-                          << "' - ORI-maintained list of POR: '"
+                          << "' - OPTD-maintained list of POR: '"
                           << lPORFilePath << "'" << std::endl;
 
         // Query the Xapian database (index)

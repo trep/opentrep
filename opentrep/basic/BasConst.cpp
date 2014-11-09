@@ -10,10 +10,10 @@ namespace OPENTREP {
 
   // ////////////// OPENTREP_Service ///////////////
   /**
-   * Default file-path for the ORI-maintained POR (points of reference) file.
+   * Default file-path for the OPTD-maintained POR (points of reference) file.
    */
   const std::string DEFAULT_OPENTREP_POR_FILEPATH (OPENTREP_POR_DATA_DIR
-                                                   "/ori_por_public.csv");
+                                                   "/optd_por_public.csv");
   
   /**
    * Default file-path for the Xapian database/index.
