@@ -1,11 +1,11 @@
 --
--- ORI-maintained list of POR (points of reference, i.e., airports, cities,
+-- OPTD-maintained list of POR (points of reference, i.e., airports, cities,
 -- places, etc.)
--- See http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
+-- See http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata
 --
 
-drop table if exists ori_por;
-create table ori_por (
+drop table if exists optd_por;
+create table optd_por (
  pk varchar(20) NOT NULL,
  location_type varchar(4) default NULL,
  iata_code varchar(3) default NULL,
@@ -24,15 +24,15 @@ create table ori_por (
 -- SQLite3 standard load statement (however, there is no correspondance
 -- between the table and CSV file formats)
 --
--- delete from ori_por;
+-- delete from optd_por;
 -- .separator '^'
--- .import ori_por_public.csv ori_por
+-- .import optd_por_public.csv optd_por
 
 
 --
 -- Indexes
 --
-create index ori_por_iata_code on ori_por (iata_code);
-create index ori_por_iata_date on ori_por (iata_code, date_from, date_until);
-create index ori_por_icao_code on ori_por (icao_code);
-create index ori_por_geonameid on ori_por (geoname_id);
+create index optd_por_iata_code on optd_por (iata_code);
+create index optd_por_iata_date on optd_por (iata_code, date_from, date_until);
+create index optd_por_icao_code on optd_por (icao_code);
+create index optd_por_geonameid on optd_por (geoname_id);
