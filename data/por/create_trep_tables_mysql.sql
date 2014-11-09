@@ -1,11 +1,11 @@
 --
--- ORI-maintained list of POR (points of reference, i.e., airports, cities,
+-- OPTD-maintained list of POR (points of reference, i.e., airports, cities,
 -- places, etc.)
--- See http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
+-- See http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata
 --
 
-drop table if exists ori_por;
-create table ori_por (
+drop table if exists optd_por;
+create table optd_por (
  pk varchar(20) NOT NULL,
  location_type varchar(4) default NULL,
  iata_code varchar(3) default NULL,
@@ -23,15 +23,15 @@ create table ori_por (
 -- MySQL standard load statement (however, there is no correspondance
 -- between the table and CSV file formats)
 --
--- load data local infile 'ori_por_public.csv' replace into table ori_por
+-- load data local infile 'optd_por_public.csv' replace into table optd_por
 -- character set utf8 columns terminated by '^' ignore 1 lines;
 
 
 --
 -- Indexes
 --
-alter table ori_por add primary key (pk);
-alter table ori_por add index ori_por_iata_code (iata_code asc);
-alter table ori_por add index ori_por_iata_date (iata_code asc, date_from asc, date_until asc);
-alter table ori_por add index ori_por_icao_code (icao_code asc);
-alter table ori_por add index ori_por_geonameid (geoname_id asc);
+alter table optd_por add primary key (pk);
+alter table optd_por add index optd_por_iata_code (iata_code asc);
+alter table optd_por add index optd_por_iata_date (iata_code asc, date_from asc, date_until asc);
+alter table optd_por add index optd_por_icao_code (icao_code asc);
+alter table optd_por add index optd_por_geonameid (geoname_id asc);

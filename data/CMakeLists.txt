@@ -1,11 +1,11 @@
 ##
 # OpenTREP data directory
 #
-# For now, that data directories consist of the ORI-maintained list of points of
-# reference (POR). The main file comes from the OpenTravelData project
-# (https://github.com/opentraveldata/optd/).
+# For now, that data directories consist of the OPTD-maintained list of
+# points of reference (POR). The main file comes from the OpenTravelData
+# project (http://github.com/opentraveldata/opentraveldata/).
 # The original file is directly accessible on GitHub:
-# http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
+# http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv
 #
 
 # Define the substitutes for the variables present in the script files

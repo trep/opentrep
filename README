@@ -8,8 +8,8 @@ It powers the http://search-travel.org Web site.
 OpenTREP uses Xapian (http://www.xapian.org) for the Information Retrieval part,
 on freely available travel-related data (e.g., country names and codes,
 city names and codes, airline names and codes, etc.), mainly to be found
-in the OpenTravelData project (http://github.com/opentraveldata/optd):
-http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
+in the OpenTravelData project (http://github.com/opentraveldata/opentraveldata):
+http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata
 
 OpenTREP exposes a simple, clean and object-oriented, API. For instance,
 the OPENTREP::interpretTravelRequest() method takes, as input, a string
@@ -36,7 +36,7 @@ SOCI (http://soci.sourceforge.net) libraries are used.
 
 Note that OpenTREP currently only recognises points of reference (POR),
 as to be found in the ori_por_public.csv file:
-http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
+http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv
 A good complementary tool is GeoBase (http://opentraveldata.github.io/geobases/),
 a Python-based software able to access to any travel-related data source.
 
@@ -86,26 +86,124 @@ export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 
 Then, as usual:
 * To configure the project, type something like:
-  mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
+$ mkdir build && cd build
+$ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 * To build the project, type:
-  make
+$ make
 * To test the project, type:
-  make check
+$ make check
 * To install the library (libopentrep*.so*) and the binary (opentrep), just type:
-  make install
+$ make install
 * To package the source files, type:
-  make dist
+$ make dist
 * To package the binary and the documentation:
-  make package
+$ make package
 * To run the local binary version:
-  ./opentrep/opentrep -b
+$ ./opentrep/opentrep-{dbmgr,indexer,searcher}
 * To run the installed version (the first following line must be done once
   per session):
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
-  $INSTALL_BASEDIR/opentrep-$TREP_VER/bin/opentrep -b
+$ export TREP_LIB=$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TREP_LIB
+$ $INSTALL_BASEDIR/opentrep-$TREP_VER/bin/opentrep-{dbmgr,indexer,searcher}
+
+Underlying (relational) database, SQLite or MySQL, if any:
+----------------------------------------------------------
+OpenTREP may use, if so configured, a relational database. For now,
+two database products are supported, SQLite3 and MySQL/MariaDB.
+The database accelerates the look up of POR by (IATA, ICAO, FAA) codes
+and of Geonames ID. When OpenTREP is configured to run without database,
+those codes and Geonames ID are full-text searched directly with Xapian.
+Note that the database can be managed directly, i.e., without the
+OpenTREP search interface on top of it, thanks to the opentrep-dbmgr utility,
+which is detailed below.
+
+Filling the (relational) database, SQLite or MySQL, if any:
+-----------------------------------------------------------
+Here, for clarity reason, we use the local version. It is easy (see above)
+to derive the same commands with the installed version.
+The following command prompts a shell:
+$ ./opentrep/opentrep-dbmgr -t sqlite
+Then, within the opentrep> shell, a typical sequence for SQLite would be:
+ create_user
+ create_tables
+ fill_from_por_file
+ create_indexes
+ list_nb
+ list_by_iata nce
+ list_by_icao lfmn
+ list_by_faa afm
+ list_by_geonameid 6299418
+
+The following command prompts a shell:
+  ./opentrep/opentrep-dbmgr -t mysql
+Then, within the opentrep> shell, a typical sequence for MySQL/MariaDB would be:
+ reset_connection_string db=mysql user=root password=<passwd>
+ create_user
+ reset_connection_string db=trep_trep user=trep password=trep
+ create_tables
+ fill_from_por_file
+ create_indexes
+ list_nb
+ list_by_iata nce
+ list_by_icao lfmn
+ list_by_faa afm
+ list_by_geonameid 6299418
+
+Xapian indexing with standard installation:
+-------------------------------------------
+By default, the Xapian indexer runs without filling any relational database,
+as that step can be performed independantly by the opentrep-dbmgr, as seen above.
+
+Xapian indexing without any relational database:
+$ ./opentrep/opentrep-indexer
+
+(Optional) Filling and indexing the SQLite database:
+$ ./opentrep/opentrep-dbmgr -t sqlite
+    create_user
+    create_tables
+    fill_from_por_file
+    create_indexes
+    quit
+
+(Optional) Filling and indexing the MySQL/MariaDB database:
+$ ./opentrep/opentrep-dbmgr -t mysql
+    reset_connection_string db=mysql user=root password=<passwd>
+    create_user
+    reset_connection_string db=trep_trep user=trep password=trep
+    create_tables
+    fill_from_por_file
+    create_indexes
+    quit
+
+Xapian indexing for an ad hoc deployed Web application:
+-------------------------------------------------------
+Xapian indexing without any relational database:
+$ ./opentrep/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb
+
+(Optional) Filling and indexing the SQLite database:
+$ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite/travel.db
+    create_user
+    create_tables
+    fill_from_por_file
+    create_indexes
+    quit
+
+Searching:
+----------
+Searching without any relational database support:
+$ ./opentrep/opentrep-searcher -q nce sfo
+
+Searching with SQLite (note that it should be quicker than without a database):
+$ ./opentrep/opentrep-searcher -t sqlite -q nce sfo
+
+Searching with MySQL/MariaDB:
+$ ./opentrep/opentrep-searcher -t mysql -q nce sfo
+
+Searching with SQLite (with Xapian and SQLite DB in a webapps directory):
+$ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -s /var/www/webapps/opentrep/trep/sqlite/travel.db -q nce sfo
+
 
 Checking that the Python module works:
 --------------------------------------
@@ -117,7 +215,7 @@ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python/opentrep
 
 Running the Django-based application server:
 --------------------------------------------
-export TREP_LIB=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib$LIBSUFFIX
+export TREP_LIB=$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
 # Optional:
 export TREP_TRAVELDB=/tmp/opentrep/traveldb
 export TREP_LOG=django_trep.log
@@ -134,5 +232,5 @@ midori http://localhost:8000/search?q=rio de janero reykyavik sna francicso
 
 
 ----
-Denis Arnaud (February 2014)
+Denis Arnaud (November 2014)
 
