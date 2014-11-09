@@ -186,7 +186,7 @@ Xapian indexing without any relational database:
 $ ./opentrep/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb
 
 (Optional) Filling and indexing the SQLite database:
-$ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite/travel.db
+$ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db
     create_user
     create_tables
     fill_from_por_file
@@ -205,7 +205,7 @@ Searching with MySQL/MariaDB:
 $ ./opentrep/opentrep-searcher -t mysql -q nce sfo
 
 Searching with SQLite (with Xapian and SQLite DB in a webapps directory):
-$ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -s /var/www/webapps/opentrep/trep/sqlite/travel.db -q nce sfo
+$ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -q nce sfo
 
 
 Checking that the Python module works:
