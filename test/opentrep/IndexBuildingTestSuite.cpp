@@ -50,7 +50,7 @@ struct UnitTestConfig {
  * File-path of the POR (points of reference) file.
  */
 const std::string K_POR_FILEPATH (OPENTREP_POR_DATA_DIR
-                                  "/test_ori_por_public.csv");
+                                  "/test_optd_por_public.csv");
 
 /**
  * Xapian database/index file-path (directory containing the index).
