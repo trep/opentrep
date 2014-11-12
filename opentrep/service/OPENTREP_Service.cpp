@@ -304,6 +304,10 @@ namespace OPENTREP {
     // Create the SQL database tables
     DBManager::createSQLDBTables (lSociSession);
 
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
+
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
     // DEBUG
@@ -339,6 +343,10 @@ namespace OPENTREP {
 
     // Create the SQL database tables
     DBManager::createSQLDBIndexes (lSociSession);
+
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
 
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
@@ -378,6 +386,10 @@ namespace OPENTREP {
       
     // Get the number of POR stored within the SQLite3/MySQL database
     nbOfMatches = DBManager::displayCount (lSociSession);
+
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
 
     const double lDBListMeasure = lDBListChronometer.elapsed();
       
@@ -424,6 +436,10 @@ namespace OPENTREP {
     nbOfMatches = DBManager::getPORByIATACode (lSociSession, iIataCode,
                                                ioLocationList, lSeveralEntries);
 
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
+
     const double lDBListMeasure = lDBListChronometer.elapsed();
       
     // DEBUG
@@ -467,6 +483,10 @@ namespace OPENTREP {
     // Get the list of POR corresponding to the given ICAO code
     nbOfMatches =
       DBManager::getPORByICAOCode (lSociSession, iIcaoCode, ioLocationList);
+
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
 
     const double lDBListMeasure = lDBListChronometer.elapsed();
       
@@ -512,6 +532,10 @@ namespace OPENTREP {
     nbOfMatches =
       DBManager::getPORByFAACode (lSociSession, iFaaCode, ioLocationList);
 
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
+
     const double lDBListMeasure = lDBListChronometer.elapsed();
       
     // DEBUG
@@ -555,6 +579,10 @@ namespace OPENTREP {
     // Get the list of POR corresponding to the given Geoname ID
     nbOfMatches =
       DBManager::getPORByGeonameID (lSociSession, iGeonameID, ioLocationList);
+
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
 
     const double lDBListMeasure = lDBListChronometer.elapsed();
       
