@@ -32,7 +32,7 @@ namespace OPENTREP {
   class DBManager {
   public:
     /**
-     * Create a SQL database.
+     * Create a connection to a SQL database.
      *
      * <ul>
      *  <li>With SQLite3, a database is given by just a file-path. If the SQLite3
@@ -54,6 +54,23 @@ namespace OPENTREP {
      */
     static soci::session* initSQLDBSession (const DBType&,
                                             const SQLDBConnectionString_T&);
+
+
+    /**
+     * Release/close the connection to a SQL database.
+     *
+     * The parameters specifying the database type and connection string
+     * are for information only, so that a proper exception message be
+     * throwed, if ever.
+     *
+     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const SQLDBConnectionString_T& Connection string for the SQL
+     *                                       database.
+     * @param soci::session& A reference to the SQL database connection.
+     */
+    static void terminateSQLDBSession (const DBType&,
+                                       const SQLDBConnectionString_T&,
+                                       soci::session&);
 
     /**
      * On MySQL, create the 'trep' database user and 'trep_trep' database.

@@ -121,6 +121,59 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void DBManager::
+  terminateSQLDBSession (const DBType& iDBType,
+                         const SQLDBConnectionString_T& iSQLDBConnStr,
+                         soci::session& ioSociSession) {
+    // DEBUG
+    if (!(iDBType == DBType::NODB)) {
+      OPENTREP_LOG_DEBUG ("Connecting to the " << iDBType.describe()
+                          << " SQL database/file ('" << iSQLDBConnStr << "')");
+    }
+
+    if (iDBType == DBType::SQLITE3) {
+      //
+      try {
+
+        // Release the SQL database connection
+        ioSociSession.close();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to release the connection ('" << iSQLDBConnStr
+                 << "') to the SQLite3 database: " << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseConnectionReleaseException (errorStr.str());
+      }
+
+    } else if (iDBType == DBType::MYSQL) {
+      //
+      try {
+
+        // Release the SQL database connection
+        ioSociSession.close();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to release the connection ('" << iSQLDBConnStr
+                 << "') to the MySQL/MariaDB database: " << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseConnectionReleaseException (errorStr.str());
+      }
+
+    } else if (iDBType == DBType::NODB) {
+      // Do nothing
+
+    } else {
+      std::ostringstream errorStr;
+      errorStr << "Error: the '" << iDBType.describe()
+               << "' SQL database type is not supported";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseTableCreationException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   bool DBManager::
   createSQLDBUser (const DBType& iDBType,
                    const SQLDBConnectionString_T& iSQLDBConnStr) {

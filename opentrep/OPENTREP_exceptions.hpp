@@ -316,7 +316,7 @@ namespace OPENTREP {
   };
 
   /**
-   * The connection fails with the MySQL database.
+   * The connection fails with the SQL database.
    */
   class SQLDatabaseImpossibleConnectionException : public SQLDatabaseException {
   public:
@@ -324,6 +324,18 @@ namespace OPENTREP {
      * Constructor.
      */
     SQLDatabaseImpossibleConnectionException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
+   * The SQL database connection cannot be closed/released.
+   */
+  class SQLDatabaseConnectionReleaseException : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseConnectionReleaseException (const std::string& iWhat)
       : SQLDatabaseException (iWhat) {}
   };
 
