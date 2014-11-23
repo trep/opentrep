@@ -10,59 +10,74 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/OPENTREP_Abstract.hpp>
+#include <opentrep/DBType.hpp>
 
 namespace OPENTREP {
 
   /**
-   * List of names for a given (geographical) dbparams.
+   * List of database parameters, as character strings
    */
   typedef std::list<std::string> DBParamsNameList_T;
 
   
   /**
-   * @brief Structure modelling a database parameters.
+   * @brief Structure holding the database parameters.
    */
   struct DBParams : public OPENTREP_Abstract {
   public:
     // ///////////////////// Getters //////////////////////
     /**
+     * Get the database type.
+     */
+    const DBType& getType() const {
+      return _dbtype;
+    }
+    
+    /**
      * Get the database user name.
      */
-    std::string getUser() const {
+    const std::string& getUser() const {
       return _user;
     }
     
     /**
      * Get the database user password.
      */
-    std::string getPassword() const {
+    const std::string& getPassword() const {
       return _passwd;
     }
     
     /**
      * Get the database host name.
      */
-    std::string getHost() const {
+    const std::string& getHost() const {
       return _host;
     }
     
     /**
      * Get the database port number.
      */
-    std::string getPort() const {
+    const std::string& getPort() const {
       return _port;
     }
     
     /**
      * Get the database name.
      */
-    std::string getDBName() const {
+    const std::string& getDBName() const {
       return _dbname;
     }
     
     
   public:
     // /////////////////////// Setters ///////////////////////
+    /**
+     * Set the database type.
+     */
+    void setType (const DBType& iType) {
+      _dbtype = iType;
+    }
+
     /**
      * Set the database user name.
      */
@@ -126,7 +141,7 @@ namespace OPENTREP {
   public:
     // //////////////////// Display methods //////////////////////
     /**
-     * Dump a structure into an output stream.
+     * Dump the structure into an output stream.
      *
      * @param ostream& the output stream.
      */
@@ -135,7 +150,7 @@ namespace OPENTREP {
     }
 
     /**
-     * Read a structure from an input stream.
+     * Read the structure from an input stream.
      * @param istream& the input stream.
      */
     void fromStream (std::istream&) {
@@ -184,13 +199,15 @@ namespace OPENTREP {
     /**
      * Main constructors.
      */
-    DBParams (const std::string& iDBUser, const std::string& iDBPasswd,
+    DBParams (const DBType& iDBType,
+              const std::string& iDBUser, const std::string& iDBPasswd,
               const std::string& iDBHost, const std::string& iDBPort,
               const std::string& iDBName)
-      : _user (iDBUser), _passwd (iDBPasswd), _host (iDBHost), _port (iDBPort),
-        _dbname (iDBName) {
+      : _dbtype (iDBType), _user (iDBUser), _passwd (iDBPasswd),
+        _host (iDBHost), _port (iDBPort), _dbname (iDBName) {
     }
-    DBParams (const std::string& iDBName) : _dbname (iDBName) {
+    DBParams (const DBType& iDBType, const std::string& iDBName)
+      : _dbtype (iDBType), _dbname (iDBName) {
     }
 
     /**
@@ -211,21 +228,30 @@ namespace OPENTREP {
   private:
     // ///////////////////////// Attributes ////////////////////////
     /**
+     * Database type.
+     */
+    DBType _dbtype;
+
+    /**
      * Database user name.
      */
     std::string _user;
+
     /**
      * Database user password.
      */
     std::string _passwd;
+
     /**
      * Database host name.
      */
     std::string _host;
+
     /**
      * Database port number.
      */
     std::string _port;
+
     /**
      * Database name.
      */

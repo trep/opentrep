@@ -27,6 +27,11 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   DBSessionManager::~DBSessionManager() {
+    // Properly close the (SOCI) database session, only when one has been created
+    if (_dbSession != NULL) {
+      _dbSession->close();
+    }
+    // Reset the underlying (SOCI) database connection
     delete _dbSession; _dbSession = NULL;
   }
 
@@ -49,7 +54,7 @@ namespace OPENTREP {
     }
 
     // Instanciate a (SOCI) database session: nothing is performed at
-    // that stage
+    // that stage, else than creating a SOCI session object
     _dbSession = new soci::session();
     
     try {
