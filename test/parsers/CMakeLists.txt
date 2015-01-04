@@ -10,8 +10,8 @@
 
 # With Protobuf
 if (Boost_FOUND)
-  module_test_add_suite (schedule_parser schedule_parser "schedule_parser.cpp" opentrep)
-  module_test_add_suite (search_string_parser search_string_parser "search_string_parser.cpp")
+  module_test_add_suite (parsers schedule_parser "schedule_parser.cpp" opentrep)
+  module_test_add_suite (parsers search_string_parser "search_string_parser.cpp")
 endif (Boost_FOUND)
 
 
