@@ -203,10 +203,10 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the parsed date until. */
-    struct storeDateUntil : public ParserSemanticAction {
+    /** Store the parsed date end. */
+    struct storeDateEnd : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeDateUntil (Location&);
+      storeDateEnd (Location&);
       /** Actor Function (functor). */
       void operator() (boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type,

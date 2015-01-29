@@ -291,30 +291,26 @@ namespace OPENTREP {
     // //////////////////////////////////////////////////////////////////
     void storeDateFrom::operator() (bsq::unused_type,
                                     bsq::unused_type, bsq::unused_type) const {
-      /*
       const OPENTREP::Date_T& lDateFrom = _location.calculateDate();
       _location.setDateFrom (lDateFrom);
-      */
 
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Date from: " << _location.getDateFrom());
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeDateUntil::storeDateUntil (Location& ioLocation)
+    storeDateEnd::storeDateEnd (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeDateUntil::operator() (bsq::unused_type,
+    void storeDateEnd::operator() (bsq::unused_type,
                                      bsq::unused_type, bsq::unused_type) const {
-      /*
-      const OPENTREP::Date_T& lDateUntil = _location.calculateDate();
-      _location.setDateUntil (lDateUntil);
-      */
+      const OPENTREP::Date_T& lDateEnd = _location.calculateDate();
+      _location.setDateEnd (lDateEnd);
 
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("Date until: " << _location.getDateUntil());
+      //OPENTREP_LOG_DEBUG ("Date end: " << _location.getDateEnd());
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -1016,7 +1012,7 @@ namespace OPENTREP {
        fcode              varchar(10)
        page_rank          decimal(15,12)
        date_from          date
-       date_until         date
+       date_end         date
        comments           varchar(4000)
        country_code       varchar(2)
        cc2                varchar(60)
@@ -1050,7 +1046,7 @@ namespace OPENTREP {
        iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
        latitude^longitude^fclass^fcode^
-       page_rank^date_from^date_until^comment^
+       page_rank^date_from^date_end^comment^
        country_code^cc2^country_name^continent_name^
        adm1_code^adm1_name_utf^adm1_name_ascii^
        adm2_code^adm2_name_utf^adm2_name_ascii^
@@ -1101,7 +1097,7 @@ namespace OPENTREP {
           >> '^' >> feat_code
           >> '^' >> -page_rank
           >> '^' >> -date_from
-          >> '^' >> -date_until
+          >> '^' >> -date_end
           >> '^' >> -comments
           >> '^' >> country_code
           >> '^' >> -country_code2
@@ -1188,7 +1184,7 @@ namespace OPENTREP {
 
         date_from = date[storeDateFrom(_location)];
 
-        date_until = date[storeDateUntil(_location)];
+        date_end = date[storeDateEnd(_location)];
 
         comments =
           (bsq::no_skip[+~bsu::char_('^')]
@@ -1386,7 +1382,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (feat_code);
         BOOST_SPIRIT_DEBUG_NODE (page_rank);
         BOOST_SPIRIT_DEBUG_NODE (date_from);
-        BOOST_SPIRIT_DEBUG_NODE (date_until);
+        BOOST_SPIRIT_DEBUG_NODE (date_end);
         BOOST_SPIRIT_DEBUG_NODE (comments);
         BOOST_SPIRIT_DEBUG_NODE (country_code);
         BOOST_SPIRIT_DEBUG_NODE (country_code2);
@@ -1440,7 +1436,7 @@ namespace OPENTREP {
         alt_name_short_list, alt_name_short, alt_name_sep,
         tvl_por_code_list, tvl_por_code, tvl_por_sep,
         latitude, longitude, feat_class, feat_code,
-        page_rank, date_from, date_until, comments,
+        page_rank, date_from, date_end, comments,
         country_code, country_code2, country_name, continent_name,
         adm1_code, adm1_name_utf, adm1_name_ascii,
         adm2_code, adm2_name_utf, adm2_name_ascii, adm3_code, adm4_code,
