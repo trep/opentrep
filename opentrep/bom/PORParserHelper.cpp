@@ -713,6 +713,34 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeWAC::storeWAC (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeWAC::operator() (unsigned int iWAC,
+                               bsq::unused_type, bsq::unused_type) const {
+      _location.setWAC (iWAC);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("WAC: " << _location.getWAC());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    storeWACName::storeWACName (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeWACName::operator() (std::vector<uchar_t> iChar,
+                                   bsq::unused_type, bsq::unused_type) const {
+      const std::string lWACNameStr (iChar.begin(), iChar.end());
+      const OPENTREP::WACName_T lWACName (lWACNameStr);
+      _location.setWACName (lWACName);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("WAC name: " << _location.getWACName());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
     storePORType::storePORType (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -972,6 +1000,8 @@ namespace OPENTREP {
        --                     serving the city.
        --                     varchar(100)
        -- state code        : The ISO code of the related state; varchar(3)
+       -- wac               : The US DOT World Area Code (WAC)
+       -- wac_name          : The US DOT world area name (of the country/state) 
        -- location type     : A/APT airport; B/BUS bus/coach station;
        --                     C/CITY City;
        --                     G/GRD ground transport (this code is used for SK in
@@ -993,9 +1023,9 @@ namespace OPENTREP {
        -- AN Antarctica      6255152
        --
        -- Samples:
-       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.650357283214^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
-       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=fr|Paris|p
-       -- HDQ^ZZZZ^^N^0^^Headquarters ZZ^Headquarters ZZ^^^X^XXXX^^^^^ZZ^^Not relevant/available^Not relevant/available^^^^^^^^^^^^^^^^-1^HDQ^Headquarters ZZ^Headquarters ZZ^^^O^^
+       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.650357283214^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^^427^FranceA^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
+       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^427^France^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=fr|Paris|p
+       -- HDQ^ZZZZ^^N^0^^Headquarters ZZ^Headquarters ZZ^^^X^XXXX^^^^^ZZ^^Not relevant/available^Not relevant/available^^^^^^^^^^^^^^^^-1^HDQ^Headquarters ZZ^Headquarters ZZ^^^^^O^^
        --
 
        iata_code          varchar(3)
@@ -1039,6 +1069,8 @@ namespace OPENTREP {
        city_detail_list   varchar(500)
        tvl_por_list       varchar(100)
        state_code         varchar(3)
+       wac                int(3)
+       wac_name           varchar(200)
        location_type      varchar(4)
        wiki_link          varchar(200)
        alt_name_section   text
@@ -1054,7 +1086,7 @@ namespace OPENTREP {
        population^elevation^gtopo30^
        timezone^gmt_offset^dst_offset^raw_offset^moddate^
        city_code_list^city_name_list^city_detail_list^tvl_por_list^
-       state_code^location_type^wiki_link^
+       state_code^wac^wac_name^location_type^wiki_link^
        alt_name_section
     */ 
 
@@ -1124,6 +1156,8 @@ namespace OPENTREP {
           >> '^' >> -city_detail_list
           >> '^' >> -tvl_por_code_list[storeTvlPORListString(_location)]
           >> '^' >> -state_code
+          >> '^' >> -wac
+          >> '^' >> -wac_name
           >> '^' >> por_type
           >> '^' >> -wiki_link
           ;
@@ -1310,6 +1344,13 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeStateCode(_location)]
           ;
 
+        wac = uint1_4_p[storeWAC(_location)];
+
+        wac_name =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeWACName(_location)]
+          ;
+
         por_type =
           bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
@@ -1414,6 +1455,8 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
         BOOST_SPIRIT_DEBUG_NODE (state_code);
+        BOOST_SPIRIT_DEBUG_NODE (wac);
+        BOOST_SPIRIT_DEBUG_NODE (wac_name);
         BOOST_SPIRIT_DEBUG_NODE (por_type);
         BOOST_SPIRIT_DEBUG_NODE (wiki_link);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
@@ -1446,7 +1489,7 @@ namespace OPENTREP {
         city_code_list, city_code,
         city_name_list, city_name_utf, city_name_ascii,
         city_detail_list, city_details, city_geoname_id,
-        state_code,
+        state_code, wac, wac_name,
         por_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,

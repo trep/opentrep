@@ -168,6 +168,16 @@ namespace OPENTREP {
     const CountryName_T& lCountryName = iLocation.getCountryName();
     ioPlace.set_country_name (lCountryName);
 
+    // Retrieve and set the US DOT World Area Code (WAC)
+    const WAC_T& lWAC = iLocation.getWAC();
+    treppb::WorldAreaCode* lWorldAreaCodePtr = ioPlace.mutable_wac_code();
+    assert (lWorldAreaCodePtr != NULL);
+    lWorldAreaCodePtr->set_code (lWAC);
+
+    // Retrieve and set the US DOT World Area Code (WAC) name
+    const WACName_T& lWACName = iLocation.getWACName();
+    ioPlace.set_wac_name (lWACName);
+
     // Retrieve and set the continent code
     const ContinentCode_T& lContinentCode = iLocation.getContinentCode();
     treppb::ContinentCode* lContinentCodePtr = ioPlace.mutable_continent_code();

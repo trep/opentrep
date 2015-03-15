@@ -27,6 +27,7 @@ namespace OPENTREP {
     _cityGeonamesID (0),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
+    _wac (0), _wacName (WACName_T ("")),
     _continentCode (ContinentCode_T ("NA")),
     _continentName (ContinentName_T ("NotAvailable")),
     _latitude (0), _longitude (0),
@@ -68,6 +69,7 @@ namespace OPENTREP {
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
     _countryName (iLocation._countryName),
+    _wac (iLocation._wac), _wacName (iLocation._wacName),
     _continentCode (iLocation._continentCode),
     _continentName (iLocation._continentName),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
@@ -115,6 +117,7 @@ namespace OPENTREP {
                       const CountryCode_T& iCountryCode,
                       const AltCountryCode_T& iAltCountryCode,
                       const CountryName_T& iCountryName,
+                      const WAC_T& iWAC, const WACName_T& iWACName,
                       const ContinentName_T& iContinentName,
                       const Latitude_T& iLatitude, const Longitude_T& iLongitude,
                       const FeatureClass_T& iFeatureClass,
@@ -156,6 +159,7 @@ namespace OPENTREP {
     _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
     _countryName (iCountryName),
+    _wac (iWAC), _wacName (iWACName),
     _continentCode ("NA"), _continentName (iContinentName),
     _latitude (iLatitude), _longitude (iLongitude),
     _featClass (iFeatureClass), _featCode (iFeatureCode),
@@ -220,6 +224,7 @@ namespace OPENTREP {
          << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
          << ", " << _countryName
+         << ", " << _wac << ", " << _wacName
          << ", " << _continentCode << ", " << _continentName
          << ", " << _latitude << ", " << _longitude
          << ", " << _featClass << ", " << _featCode

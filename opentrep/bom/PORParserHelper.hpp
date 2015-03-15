@@ -473,6 +473,26 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed World Area Code (WAC). */
+    struct storeWAC : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeWAC (Location&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed World Area Code (WAC). */
+    struct storeWACName : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeWACName (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed POR type. */
     struct storePORType : public ParserSemanticAction {
       /** Actor Constructor. */

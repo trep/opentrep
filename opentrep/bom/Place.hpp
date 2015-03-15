@@ -208,6 +208,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the US DOT World Area Code (WAC).
+     */
+    const WAC_T& getWAC() const {
+      return _location.getWAC();
+    }
+    
+    /**
+     * Get the US DOT World Area Code (WAC) name.
+     */
+    const WACName_T& getWACName() const {
+      return _location.getWACName();
+    }
+    
+    /**
      * Get the continent code.
      */
     const ContinentCode_T& getContinentCode() const {
@@ -651,6 +665,20 @@ namespace OPENTREP {
      */
     void setCountryName (const std::string& iCountryName) {
       _location.setCountryName (iCountryName);
+    }
+    
+    /**
+     * Set the US DOT World Area Code (WAC).
+     */
+    void setWAC (const WAC_T& iWAC) {
+      _location.setWAC (iWAC);
+    }
+    
+    /**
+     * Set the US DOT World Area Code (WAC) name.
+     */
+    void setWACName (const std::string& iWACName) {
+      _location.setWACName (iWACName);
     }
     
     /**
