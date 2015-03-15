@@ -32,6 +32,10 @@ message AltCountryCode {
   required string code = 1;
 }
 
+message WorldAreaCode {
+  required int32 code = 1;
+}
+
 message ContinentCode {
   required string code = 1;
 }
@@ -205,16 +209,18 @@ message Place {
   optional string city_name_ascii = 38;
   optional TravelRelatedList tvl_por_list = 39;
   optional StateCode state_code = 40;
-  optional PlaceType loc_type = 41;
-  optional WikiLinkList link_list = 42;
-  optional AltNameList alt_name_list = 43;
-  optional KeywordList original_keyword_list = 44;
-  optional KeywordList corrected_keyword_list = 45;
-  optional EditDistance edit_distance_actual = 46;
-  optional EditDistance edit_distance_allowable = 47;
-  optional MatchingPercentage matching_percentage = 48;
-  optional PlaceList extra_place_list = 49;
-  optional PlaceList alt_place_list = 50;
+  optional WorldAreaCode wac_code = 41;
+  optional string wac_name = 42;
+  optional PlaceType loc_type = 43;
+  optional WikiLinkList link_list = 44;
+  optional AltNameList alt_name_list = 45;
+  optional KeywordList original_keyword_list = 46;
+  optional KeywordList corrected_keyword_list = 47;
+  optional EditDistance edit_distance_actual = 48;
+  optional EditDistance edit_distance_allowable = 49;
+  optional MatchingPercentage matching_percentage = 50;
+  optional PlaceList extra_place_list = 51;
+  optional PlaceList alt_place_list = 52;
 }
 
 message UnknownKeywordList {

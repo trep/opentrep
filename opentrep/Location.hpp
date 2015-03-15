@@ -187,6 +187,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the US DOT World Area Code (WAC).
+     */
+    const WAC_T& getWAC() const {
+      return _wac;
+    }
+    
+    /**
+     * Get the US DOT World Area Code (WAC) name.
+     */
+    const WACName_T& getWACName() const {
+      return _wacName;
+    }
+    
+    /**
      * Get the continent code.
      */
     const ContinentCode_T& getContinentCode() const {
@@ -591,6 +605,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the US DOT World Area Code (WAC).
+     */
+    void setWAC (const WAC_T& iWAC) {
+      _wac = iWAC;
+    }
+    
+    /**
+     * Set the US DOT World Area Code (WAC) name.
+     */
+    void setWACName (const std::string& iWACName) {
+      _wacName = WACName_T (iWACName);
+    }
+    
+    /**
      * Set the continent code.
      */
     void setContinentCode (const std::string& iContinentCode) {
@@ -940,7 +968,8 @@ namespace OPENTREP {
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
               const GeonamesID_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
-              const CountryName_T&, const ContinentName_T&,
+              const CountryName_T&, const WAC_T&, const WACName_T&,
+              const ContinentName_T&,
               const Latitude_T&, const Longitude_T&,
               const FeatureClass_T&, const FeatureCode_T&,
               const Admin1Code_T&, const Admin1UTFName_T&,
@@ -1089,6 +1118,16 @@ namespace OPENTREP {
      * Country name (e.g., Germany).
      */
     CountryName_T _countryName;
+
+    /**
+     * US DOT World Area Code (WAC) (e.g., 1 for Alaska, US, or 427 for France).
+     */
+    WAC_T _wac;
+
+    /**
+     * US DOT World Area Code (WAC) name (e.g., Alaska).
+     */
+    WACName_T _wacName;
 
     /**
      * Continent code (e.g., SA for South America).

@@ -264,6 +264,18 @@ namespace OPENTREP {
     explicit CountryName_T (const std::string& iValue) : std::string (iValue) { }
   };
 
+  /**
+   * US DOT World Area Code (WAC) (e.g., 1 for Alaska, US, or 427 for France)
+   */
+  typedef int WAC_T;
+
+  /**
+   * US DOT World Area Code (WAC) name (e.g., Alaska)
+   */
+  struct WACName_T : public std::string {
+  public:
+    explicit WACName_T (const std::string& iValue) : std::string (iValue) { }
+  };
 
   /**
    * Continent code (e.g., SA for South America).

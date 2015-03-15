@@ -32,7 +32,7 @@ namespace soci {
          population, elevation, gtopo30,
          time_zone, gmt_offset, dst_offset, raw_offset,
          date(moddate) as moddate,
-         state_code, wiki_link,
+         state_code, wac, wac_name, wiki_link,
          alt.lang_code as alt_lang_code, alt.name as alt_name,
          alt.specifiers as alt_spec,
          city_iata_code, city_location_type, city_geoname_id,
@@ -205,6 +205,14 @@ namespace soci {
       const OPENTREP::Date_T lModDate (boost::gregorian::from_string (lModDateStr));
       ioPlace.setModificationDate (lModDate);
 
+      // The US DOT World Area Code (WAC) will be set to the default value (zero)
+      // when the column is null
+      ioPlace.setWAC (iPlaceValues.get<int> ("wac", 0));
+
+      // The US DOT World Area Code (WAC) name will be set to the default value
+      // (empty string) when the column is null
+      ioPlace.setWACName (iPlaceValues.get<std::string> ("wac_name", ""));
+
       // The Wikipedia link will be set to the default value (empty string)
       // when the column is null
       ioPlace.setWikiLink (iPlaceValues.get<std::string> ("wiki_link", ""));
@@ -304,6 +312,10 @@ namespace soci {
     const OPENTREP::TimeZone_T& lTimeZone = iPlace.getTimeZone();
     const std::string lTimeZoneStr (lTimeZone);
 
+    // US DOT World Area Code (WAC) name
+    const OPENTREP::WACName_T& lWACName = iPlace.getWACName();
+    const std::string lWACNameStr (lWACName);
+
     // Wikipedia link
     const OPENTREP::WikiLink_T& lWikiLink = iPlace.getWikiLink();
     const std::string lWikiLinkStr (lWikiLink);
@@ -322,6 +334,8 @@ namespace soci {
     ioPlaceValues.set ("latitude", iPlace.getLatitude());
     ioPlaceValues.set ("longitude", iPlace.getLongitude());
     ioPlaceValues.set ("page_rank", iPlace.getPageRank());
+    ioPlaceValues.set ("wac", iPlace.getWAC());
+    ioPlaceValues.set ("wac_name", lWACNameStr);
     ioPlaceValues.set ("wiki_link", lWikiLinkStr);
     ioIndicator = i_ok;
   }
