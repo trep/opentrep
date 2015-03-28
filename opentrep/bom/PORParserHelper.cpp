@@ -1000,8 +1000,6 @@ namespace OPENTREP {
        --                     serving the city.
        --                     varchar(100)
        -- state code        : The ISO code of the related state; varchar(3)
-       -- wac               : The US DOT World Area Code (WAC)
-       -- wac_name          : The US DOT world area name (of the country/state) 
        -- location type     : A/APT airport; B/BUS bus/coach station;
        --                     C/CITY City;
        --                     G/GRD ground transport (this code is used for SK in
@@ -1011,6 +1009,8 @@ namespace OPENTREP {
        --                     R/RAIL railway Station;
        --                     S/ASSOC a location without its own IATA code,
        --                     but attached to an IATA location.
+       -- wac               : The US DOT World Area Code (WAC)
+       -- wac_name          : The US DOT world area name (of the country/state) 
        --
        -- Continents:
        -- -----------
@@ -1023,9 +1023,9 @@ namespace OPENTREP {
        -- AN Antarctica      6255152
        --
        -- Samples:
-       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.650357283214^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^^427^FranceA^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|
-       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^427^France^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=fr|Paris|p
-       -- HDQ^ZZZZ^^N^0^^Headquarters ZZ^Headquarters ZZ^^^X^XXXX^^^^^ZZ^^Not relevant/available^Not relevant/available^^^^^^^^^^^^^^^^-1^HDQ^Headquarters ZZ^Headquarters ZZ^^^^^O^^
+       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.650357283214^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|^427^France
+       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=fr|Paris|p^427^France
+       -- HDQ^ZZZZ^^N^0^^Headquarters ZZ^Headquarters ZZ^^^X^XXXX^^^^^ZZ^^Not relevant/available^Not relevant/available^^^^^^^^^^^^^^^^-1^HDQ^Headquarters ZZ^Headquarters ZZ^^^O^^^^
        --
 
        iata_code          varchar(3)
@@ -1069,11 +1069,11 @@ namespace OPENTREP {
        city_detail_list   varchar(500)
        tvl_por_list       varchar(100)
        state_code         varchar(3)
-       wac                int(3)
-       wac_name           varchar(200)
        location_type      varchar(4)
        wiki_link          varchar(200)
        alt_name_section   text
+       wac                int(3)
+       wac_name           varchar(200)
 
        iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
@@ -1086,8 +1086,9 @@ namespace OPENTREP {
        population^elevation^gtopo30^
        timezone^gmt_offset^dst_offset^raw_offset^moddate^
        city_code_list^city_name_list^city_detail_list^tvl_por_list^
-       state_code^wac^wac_name^location_type^wiki_link^
-       alt_name_section
+       state_code^location_type^wiki_link^
+       alt_name_section^
+       wac^wac_name
     */ 
 
     /**
@@ -1108,6 +1109,7 @@ namespace OPENTREP {
         por_rule = por_key
           >> '^' >> por_details
           >> '^' >> -alt_name_section
+          >> '^' >> por_details_additional
           >> por_rule_end[doEndPor(_location)];
         // >> +( '^' >> segment )
 
@@ -1156,12 +1158,14 @@ namespace OPENTREP {
           >> '^' >> -city_detail_list
           >> '^' >> -tvl_por_code_list[storeTvlPORListString(_location)]
           >> '^' >> -state_code
-          >> '^' >> -wac
-          >> '^' >> -wac_name
           >> '^' >> por_type
           >> '^' >> -wiki_link
           ;
         // >> '^' >> -alt_name_short_list[storeAltNameShortListString(_location)]
+
+        por_details_additional =
+          -wac >> '^' >> -wac_name
+          ;
 
         iata_code =
           bsq::repeat(3)[bsu::char_('A', 'Z')][storeIataCode(_location)];
@@ -1455,8 +1459,6 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
         BOOST_SPIRIT_DEBUG_NODE (state_code);
-        BOOST_SPIRIT_DEBUG_NODE (wac);
-        BOOST_SPIRIT_DEBUG_NODE (wac_name);
         BOOST_SPIRIT_DEBUG_NODE (por_type);
         BOOST_SPIRIT_DEBUG_NODE (wiki_link);
         BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
@@ -1469,6 +1471,9 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (lang_code_2char);
         BOOST_SPIRIT_DEBUG_NODE (lang_code_ext);
         BOOST_SPIRIT_DEBUG_NODE (lang_code_hist);
+        BOOST_SPIRIT_DEBUG_NODE (por_details_additional);
+        BOOST_SPIRIT_DEBUG_NODE (wac);
+        BOOST_SPIRIT_DEBUG_NODE (wac_name);
       }
 
       // Instantiation of rules
@@ -1489,12 +1494,12 @@ namespace OPENTREP {
         city_code_list, city_code,
         city_name_list, city_name_utf, city_name_ascii,
         city_detail_list, city_details, city_geoname_id,
-        state_code, wac, wac_name,
+        state_code,
         por_type, wiki_link,
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,
         lang_code_opt, lang_code_2char, lang_code_ext, lang_code_hist,
-        destination;
+        por_details_additional, wac, wac_name;
       
       // Parser Context
       Location& _location;
