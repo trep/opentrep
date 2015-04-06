@@ -389,9 +389,9 @@ macro (get_external_libs)
       get_travelccm (${_arg_version})
     endif (${_arg_lower} STREQUAL "travelccm")
 
-    if (${_arg_lower} STREQUAL "airsched")
-      get_airsched (${_arg_version})
-    endif (${_arg_lower} STREQUAL "airsched")
+    if (${_arg_lower} STREQUAL "airtsp")
+      get_airtsp (${_arg_version})
+    endif (${_arg_lower} STREQUAL "airtsp")
 
     if (${_arg_lower} STREQUAL "airrac")
       get_airrac (${_arg_version})
@@ -691,28 +691,28 @@ endfunction (PROTOBUF_GENERATE_PYTHON)
 #    if the debug one is specified also include debug/optimized keywords
 #    in *_LIBRARIES variable
 function(_protobuf_find_libraries name filename)
-   find_library(${name}_LIBRARY
-       NAMES ${filename}
-       PATHS ${PROTOBUF_SRC_ROOT_FOLDER}/vsprojects/Release)
-   mark_as_advanced(${name}_LIBRARY)
+  find_library(${name}_LIBRARY
+    NAMES ${filename}
+    PATHS ${PROTOBUF_SRC_ROOT_FOLDER}/vsprojects/Release)
+  mark_as_advanced(${name}_LIBRARY)
 
-   find_library(${name}_LIBRARY_DEBUG
-       NAMES ${filename}
-       PATHS ${PROTOBUF_SRC_ROOT_FOLDER}/vsprojects/Debug)
-   mark_as_advanced(${name}_LIBRARY_DEBUG)
+  find_library(${name}_LIBRARY_DEBUG
+    NAMES ${filename}
+    PATHS ${PROTOBUF_SRC_ROOT_FOLDER}/vsprojects/Debug)
+  mark_as_advanced(${name}_LIBRARY_DEBUG)
 
-   if(NOT ${name}_LIBRARY_DEBUG)
-      # There is no debug library
-      set(${name}_LIBRARY_DEBUG ${${name}_LIBRARY} PARENT_SCOPE)
-      set(${name}_LIBRARIES     ${${name}_LIBRARY} PARENT_SCOPE)
-   else()
-      # There IS a debug library
-      set(${name}_LIBRARIES
-          optimized ${${name}_LIBRARY}
-          debug     ${${name}_LIBRARY_DEBUG}
-          PARENT_SCOPE
+  if(NOT ${name}_LIBRARY_DEBUG)
+    # There is no debug library
+    set(${name}_LIBRARY_DEBUG ${${name}_LIBRARY} PARENT_SCOPE)
+    set(${name}_LIBRARIES     ${${name}_LIBRARY} PARENT_SCOPE)
+  else()
+    # There IS a debug library
+    set(${name}_LIBRARIES
+      optimized ${${name}_LIBRARY}
+      debug     ${${name}_LIBRARY_DEBUG}
+      PARENT_SCOPE
       )
-   endif()
+  endif()
 endfunction()
 
 # ~~~~~~~~~~ Protobuf ~~~~~~~~~
@@ -1070,37 +1070,37 @@ macro (get_travelccm)
 
 endmacro (get_travelccm)
 
-# ~~~~~~~~~~ AirSched ~~~~~~~~~
-macro (get_airsched)
+# ~~~~~~~~~~ AirTSP ~~~~~~~~~
+macro (get_airtsp)
   unset (_required_version)
   if (${ARGC} GREATER 0)
     set (_required_version ${ARGV0})
-    message (STATUS "Requires AirSched-${_required_version}")
+    message (STATUS "Requires AirTSP-${_required_version}")
   else (${ARGC} GREATER 0)
-    message (STATUS "Requires AirSched without specifying any version")
+    message (STATUS "Requires AirTSP without specifying any version")
   endif (${ARGC} GREATER 0)
 
-  find_package (AirSched ${_required_version} REQUIRED
-	HINTS ${WITH_AIRSCHED_PREFIX})
-  if (AirSched_FOUND)
+  find_package (AirTSP ${_required_version} REQUIRED
+	HINTS ${WITH_AIRTSP_PREFIX})
+  if (AirTSP_FOUND)
     #
-    message (STATUS "Found AirSched version: ${AIRSCHED_VERSION}")
+    message (STATUS "Found AirTSP version: ${AIRTSP_VERSION}")
 
     # Update the list of include directories for the project
-    include_directories (${AIRSCHED_INCLUDE_DIRS})
+    include_directories (${AIRTSP_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRSCHED_LIBRARIES})
+    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRTSP_LIBRARIES})
 
-  else (AirSched_FOUND)
-    set (ERROR_MSG "The AirSched library cannot be found. If it is installed")
+  else (AirTSP_FOUND)
+    set (ERROR_MSG "The AirTSP library cannot be found. If it is installed")
     set (ERROR_MSG "${ERROR_MSG} in a in a non standard directory, just invoke")
-    set (ERROR_MSG "${ERROR_MSG} 'cmake' specifying the -DWITH_AIRSCHED_PREFIX=")
-    set (ERROR_MSG "${ERROR_MSG}<AirSched install path> variable.")
+    set (ERROR_MSG "${ERROR_MSG} 'cmake' specifying the -DWITH_AIRTSP_PREFIX=")
+    set (ERROR_MSG "${ERROR_MSG}<AirTSP install path> variable.")
     message (FATAL_ERROR "${ERROR_MSG}")
-  endif (AirSched_FOUND)
+  endif (AirTSP_FOUND)
 
-endmacro (get_airsched)
+endmacro (get_airtsp)
 
 # ~~~~~~~~~~ AirRAC ~~~~~~~~~
 macro (get_airrac)
@@ -1495,7 +1495,7 @@ macro (module_generate_config_helpers)
   if (EXISTS ${PROJ_PATH_CFG_SRC})
     set (PROJ_PATH_CFG ${PROJ_PATH_CFG_DIR}/${MODULE_NAME}-paths.hpp)
     configure_file (${PROJ_PATH_CFG_SRC} ${PROJ_PATH_CFG} @ONLY)
-  
+
     # Add the 'hdr_cfg_${MODULE_NAME}' target, depending on the converted header
     add_custom_target (hdr_cfg_${MODULE_NAME} ALL DEPENDS ${PROJ_PATH_CFG})
 
@@ -2288,9 +2288,9 @@ macro (doc_add_man_pages)
     foreach (_option_item ${ARGN})
       string (REGEX MATCH "MAN([1-9])" _current_section_tmp "${_option_item}")
       if ("${CMAKE_MATCH_1}" STREQUAL "")
-	list (APPEND _man_arg_MAN${_current_section} ${_option_item})
+		list (APPEND _man_arg_MAN${_current_section} ${_option_item})
       else ("${CMAKE_MATCH_1}" STREQUAL "")
-	set (_current_section "${CMAKE_MATCH_1}")
+		set (_current_section "${CMAKE_MATCH_1}")
       endif ("${CMAKE_MATCH_1}" STREQUAL "")
     endforeach (_option_item ${ARGN})
   endif (${CMAKE_VERSION} VERSION_GREATER 2.8.1)
@@ -2683,19 +2683,19 @@ macro (display_travelccm)
   endif (TravelCCM_FOUND)
 endmacro (display_travelccm)
 
-# AirSched
-macro (display_airsched)
-  if (AirSched_FOUND)
+# AirTSP
+macro (display_airtsp)
+  if (AirTSP_FOUND)
     message (STATUS)
-    message (STATUS "* AirSched:")
-    message (STATUS "  - AIRSCHED_VERSION .............. : ${AIRSCHED_VERSION}")
-    message (STATUS "  - AIRSCHED_BINARY_DIRS .......... : ${AIRSCHED_BINARY_DIRS}")
-    message (STATUS "  - AIRSCHED_EXECUTABLES .......... : ${AIRSCHED_EXECUTABLES}")
-    message (STATUS "  - AIRSCHED_LIBRARY_DIRS ......... : ${AIRSCHED_LIBRARY_DIRS}")
-    message (STATUS "  - AIRSCHED_LIBRARIES ............ : ${AIRSCHED_LIBRARIES}")
-    message (STATUS "  - AIRSCHED_INCLUDE_DIRS ......... : ${AIRSCHED_INCLUDE_DIRS}")
-  endif (AirSched_FOUND)
-endmacro (display_airsched)
+    message (STATUS "* AirTSP:")
+    message (STATUS "  - AIRTSP_VERSION .............. : ${AIRTSP_VERSION}")
+    message (STATUS "  - AIRTSP_BINARY_DIRS .......... : ${AIRTSP_BINARY_DIRS}")
+    message (STATUS "  - AIRTSP_EXECUTABLES .......... : ${AIRTSP_EXECUTABLES}")
+    message (STATUS "  - AIRTSP_LIBRARY_DIRS ......... : ${AIRTSP_LIBRARY_DIRS}")
+    message (STATUS "  - AIRTSP_LIBRARIES ............ : ${AIRTSP_LIBRARIES}")
+    message (STATUS "  - AIRTSP_INCLUDE_DIRS ......... : ${AIRTSP_INCLUDE_DIRS}")
+  endif (AirTSP_FOUND)
+endmacro (display_airtsp)
 
 # AirRAC
 macro (display_airrac)
@@ -2836,14 +2836,14 @@ endmacro (display_status_all_test_suites)
 ##
 macro (display_doc_generation)
   message (STATUS)
-    message (STATUS "* Documentation to be generated ... :")
-	if (INSTALL_DOC)
-      message (STATUS "  + HTML main page ................ : ${DOXYGEN_OUTPUT_REL}")
-      message (STATUS "  + CSS-related files ............. : ${CSS_ALL_TARGETS}")
-      message (STATUS "  + Image-related files ........... : ${IMG_ALL_TARGETS}")
-      message (STATUS "  + PDF reference manual .......... : ${REFMAN_TEX} => ${REFMAN_PDF}")
-	endif (INSTALL_DOC)
-    message (STATUS "  + Man page sections ............. : ${MAN_ALL_TARGETS}")
+  message (STATUS "* Documentation to be generated ... :")
+  if (INSTALL_DOC)
+    message (STATUS "  + HTML main page ................ : ${DOXYGEN_OUTPUT_REL}")
+    message (STATUS "  + CSS-related files ............. : ${CSS_ALL_TARGETS}")
+    message (STATUS "  + Image-related files ........... : ${IMG_ALL_TARGETS}")
+    message (STATUS "  + PDF reference manual .......... : ${REFMAN_TEX} => ${REFMAN_PDF}")
+  endif (INSTALL_DOC)
+  message (STATUS "  + Man page sections ............. : ${MAN_ALL_TARGETS}")
 endmacro (display_doc_generation)
 
 ##
@@ -2935,7 +2935,7 @@ macro (display_status)
   display_sevmgr ()
   display_trademgen ()
   display_travelccm ()
-  display_airsched ()
+  display_airtsp ()
   display_airrac ()
   display_rmol ()
   display_airinv ()
