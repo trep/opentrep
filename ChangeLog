@@ -1,7 +1,19 @@
 
+	* Sun Apr 19 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.5
+	- The POR reference data file has been renamed, from ORI
+	to OPTD (standing for Open Travel Data, i.e., the name of the
+	project maintaining that file). The new location is now
+	http://bit.ly/1FXmQdl	and the file is named optd_por_public.csv.
+	- When only (IATA, ICAO) codes are used in the query string,
+	the POR are retrieved from the underlying database, when existing
+	(and from the classical free-text search when no database is
+  available).
+	- The US DOT World Area Code (WAC) has been added to the POR
+	reference data file, and is now retrieved by OpenTREP.
+
 	* Sun Apr 13 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.1
 	Re-wrote the SQL database layer. A new program, namely
-	opentrep-dbmgr, to create, update and query the SQL
+	opentrep-dbmgr, can now create, update and query the SQL
 	database (which can be SQLite3 or MySQL/MariaDB).
 	There is still some work to do to use the SQL database
 	when only codes are detected within the search string.
