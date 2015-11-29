@@ -28,7 +28,7 @@ namespace OPENTREP {
    * the given index up until the end of the list.
    */
   std::string createStringFromWordList (const WordList_T&,
-                                        const unsigned short iSplitIdx = 0,
+                                        const NbOfWords_T iSplitIdx = 0,
                                         const bool iFromBeginningFlag = true);
 
 }
