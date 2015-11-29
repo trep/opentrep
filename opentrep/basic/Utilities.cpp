@@ -38,12 +38,12 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   std::string createStringFromWordList (const WordList_T& iWordList,
-                                        const unsigned short iSplitIdx,
+                                        const NbOfWords_T iSplitIdx,
                                         const bool iFromBeginningFlag) {
     std::ostringstream oStr;
 
     // Browse the left-hand side of the string
-    unsigned short idx = 0;
+    NbOfWords_T idx = 0;
     WordList_T::const_iterator itWord = iWordList.begin();
     for ( ; itWord != iWordList.end(); ++itWord, ++idx) {
 

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <set>
 // OpenTrep
+#include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/Filter.hpp>
 #include <opentrep/bom/StringPartition.hpp>
@@ -92,37 +93,83 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   void StringPartition::init (const std::string& iPhrase) {
-    // 0. Initialisation
-    // 0.1. Initialisation of the tokenizer
+    /**
+     * 0. Initialisation
+     * 0.1. Initialisation of the tokenizer
+     */
     WordList_T lWordList;
     tokeniseStringIntoWordList (iPhrase, lWordList);
-    const short nbOfWords = lWordList.size();
+    NbOfWords_T nbOfWords = lWordList.size();
 
-    // 0.2. Re-create the initial phrase, without any (potential) seperator
-    const std::string lPhrase = createStringFromWordList (lWordList);
+    /**
+     * 0.2. Re-create the initial phrase:
+     *   <ul>
+     *     <li>Without any (potential) seperator</li>
+     *     <li>Capping the number of words. Indeed, the number of string
+     *         partitions increases exponentially with the number of words
+     *         within the string. With the name of Bangkok (BKK), for instance,
+     *         the number of string partitions would so big as to crash the
+     *         indexing process, even on big servers.<br>
+     *         See basic/BasCont.cpp for the value of
+     *         K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING</li>
+     *   </ul>
+     */
+    const std::string lPhrase =
+      createStringFromWordList (lWordList,
+                                K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING);
     
-    // 0.3. Create the list with a single sub-list, itself containing only
-    //      the given input string.
+    /**
+     * When the initial string has more words than the maximum allowed (see
+     * above), then it is strip down.
+     */
+    if (nbOfWords > K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING) {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The initial string ('" << iPhrase << "') has got "
+                          << nbOfWords << " words, and will be strip down to "
+                          << K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING
+                          << " words, giving: ':" << lPhrase << "'");
+
+      // Rebuild the list of words
+      tokeniseStringIntoWordList (lPhrase, lWordList);
+
+      // Recalculate the number of words
+      nbOfWords = lWordList.size();
+
+      // The number of wors must be, by construction, the maximum number of words
+      assert (nbOfWords == K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING);
+    }
+
+    /**
+     * 0.3. Create the list with a single sub-list, itself containing only
+     *      the given input string.
+     */
     StringSet oStringSet (lPhrase);
       
-    // 0.4. If the string contains no more than one word, the job is finished.
+    /**
+     * 0.4. If the string contains no more than one word, the job is finished.
+     */
     if (nbOfWords <= 1) {
       _partition.push_back (oStringSet);
       return;
     }
 
-    // 1. Iteration on all the words of the given string, from 1 to nbOfWords-1
-    for (short idx_word = 1; idx_word != nbOfWords; ++idx_word) {
+    /**
+     * 1. Iteration on all the words of the given string, from 1 to nbOfWords-1
+     */
+    for (NbOfWords_T idx_word = 1; idx_word != nbOfWords; ++idx_word) {
       // 1.1. Create a sub-string copy of the first idx_word
       const std::string& lLeftHandString = createStringFromWordList (lWordList,
                                                                      idx_word);
 
       // DEBUG
-      // std::cout << "[" << lPhrase << ", " << idx_word
-      //          << "] Left-hand string: '" << lLeftHandString << "'"
-      //          << std::endl;
+      /*
+      OPENTREP_LOG_DEBUG ("[" << lPhrase << ", " << idx_word
+                          << "] Left-hand string: '" << lLeftHandString << "'");
+      */
         
-      // 1.2. Create another sub-string with the remaining of the string
+      /**
+       * 1.2. Create another sub-string with the remaining of the string
+       */
       const std::string& lRightHandString = createStringFromWordList (lWordList,
                                                                       idx_word,
                                                                       false);
@@ -132,21 +179,27 @@ namespace OPENTREP {
       //           << "] Right-hand string: '" << lRightHandString << "'"
       //           << std::endl;
         
-      // 1.3. Recurse
-      // 1.3.1. Call the Partition algorithm on the right-hand side string
+      /**
+       * 1.3. Recurse
+       * 1.3.1. Call the Partition algorithm on the right-hand side string
+       */
       StringPartition lStringPartition (lRightHandString);
 
-      // 1.3.2. Extract the sub-lists of strings, and add them to the current
-      //        sub-lists.
+      /**
+       * 1.3.2. Extract the sub-lists of strings, and add them to the current
+       *        sub-lists.
+       */
       const StringPartition_T& lStringRHSPartition= lStringPartition._partition;
       for (StringPartition_T::const_iterator itSet= lStringRHSPartition.begin();
            itSet != lStringRHSPartition.end(); ++itSet) {
         const StringSet& lRHSStringSet = *itSet;
           
-        // Create the sub-list which will accommodate:
-        //  - The left-hand-side sub-string.
-        //  - The the sub-list having been generated by the recursion on the
-        //    the right-hand-side sub-string.
+        /**
+         * Create the sub-list which will accommodate:
+         *  - The left-hand-side sub-string.
+         *  - The sub-list having been generated by the recursion on the
+         *    the right-hand-side sub-string.
+         */
         StringSet lNewStringSet;
 
         // Add the string to the list
@@ -161,9 +214,11 @@ namespace OPENTREP {
     }
     
 
-    // 2.
-    // 2.1. Add the sub-list with the full string (the one given as input) to
-    // the back of the list.
+    /**
+     * 2.
+     * 2.1. Add the sub-list with the full string (the one given as input) to
+     * the back of the list.
+     */
     _partition.push_back (oStringSet);
   }
 
@@ -186,7 +241,8 @@ namespace OPENTREP {
         const std::string& lWordCombination = *itString;
 
         // Check whether that word combination has already been stored once.
-        WordSet_T::const_iterator itExistingString = lStringList.find (lWordCombination);
+        WordSet_T::const_iterator itExistingString =
+          lStringList.find (lWordCombination);
         if (itExistingString == lStringList.end()) {
           // If not, add it to the dedicated list (STD set).
           lStringList.insert (lWordCombination);

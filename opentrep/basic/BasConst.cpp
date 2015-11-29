@@ -143,11 +143,11 @@ namespace OPENTREP {
   const NbOfErrors_T K_DEFAULT_SIZE_FOR_SPELLING_ERROR_UNIT (4);
 
   /**
-   * Maximum number of words a string may have (e.g., 10).
+   * Maximum number of words a string may have (e.g., 14).
    * The issue typically arises with Bangkok (BKK):
    * http://www.geonames.org/1609350
    */
-  const NbOfWords_T K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING (30);
+  const NbOfWords_T K_DEFAULT_MAXIMUM_NUMBER_OF_WORDS_IN_STRING (14);
 
   /**
    * Black list, i.e., a list of words which should not be indexed
