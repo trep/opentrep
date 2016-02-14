@@ -3,17 +3,17 @@
 \page opentrep-config
 	Configuration Script for the C++ Travel Request Parsing (TREP) Library
 
-\section sec_synopsis SYNOPSIS
+\section sec_synopsis_config SYNOPSIS
 <b>opentrep-config</b> <tt>[--prefix] [--version] [--libs] [--cflags]</tt>
 
-\section sec_description DESCRIPTION
+\section sec_description_config DESCRIPTION
 
 \e opentrep-config is a tool that is used by configure to determine the
 compiler and linker flags that should be used to compile and link
 programs that use \e Opentrep. It is also used internally by the .m4
 macros, that are included with \e Opentrep, for GNU autoconf.
 
-\section sec_options OPTIONS
+\section sec_options_config OPTIONS
 
 \e opentrep-config accepts the following options:
 
@@ -51,12 +51,12 @@ macros, that are included with \e Opentrep, for GNU autoconf.
  \b --refmanpath<br>
     Show where the PDF documentation is located.
 
-\section sec_see_also SEE ALSO
+\section sec_see_also_config SEE ALSO
  \b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b boost-config(1), \b opentrep-library(3)
 
-\section sec_copyright COPYRIGHT
+\section sec_copyright_config COPYRIGHT
 
-Copyright © 2009-2014 Denis Arnaud
+Copyright © 2009-2016 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>

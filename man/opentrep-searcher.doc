@@ -2,11 +2,11 @@
 \page opentrep-searcher
       Command-line utility to parse travel requests
 
-\section sec_synopsis SYNOPSIS
+\section sec_synopsis_searcher SYNOPSIS
 
 <b>opentrep-searcher</b> <tt>[--prefix] [-v|--version] [-h|--help] [-e|--error < spelling error>] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-l|--log <path-to-output-log-file>] [-y|--type <search-type>] [-q|--query <search-query>]</tt>
 
-\section sec_description DESCRIPTION
+\section sec_description_searcher DESCRIPTION
 
 \e opentrep-searcher is a small program to parse a travel request and
    search through a Xapian-index
@@ -54,18 +54,18 @@
 See the output of the <tt>`opentrep-searcher --help'</tt> command for the default options.
 
 
-\section sec_see_also SEE ALSO
+\section sec_see_also_searcher SEE ALSO
 \b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-config(1), \b opentrep-library(3), \b pyopentrep(1)
 
 
-\section sec_support SUPPORT
+\section sec_support_searcher SUPPORT
 
 Please report any bugs to http://github.com/trep/opentrep/issues
 
 
-\section sec_copyright COPYRIGHT
+\section sec_copyright_searcher COPYRIGHT
 
-Copyright © 2009-2014 Denis Arnaud
+Copyright © 2009-2016 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
