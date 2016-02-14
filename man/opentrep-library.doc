@@ -2,13 +2,13 @@
 \page opentrep-library
 	  C++ Travel Request Parsing (TREP) Library
 
-\section sec_synopsis SYNOPSIS
+\section sec_synopsis_config SYNOPSIS
 
 \code
 #include <opentrep/...>
 \endcode
 
-\section sec_description DESCRIPTION
+\section sec_description_config DESCRIPTION
 
 OpenTREP aims at providing a clean API, and the corresponding C++
 implementation, for parsing travel-focused requests (e.g.,
@@ -47,18 +47,18 @@ http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
 A good complementary tool is GeoBase (http://opentraveldata.github.io/geobases/),
 a Python-based software able to access to any travel-related data source.
 
-\section sec_see_also SEE ALSO
+\section sec_see_also_config SEE ALSO
  \b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b opentrep-config(1)
 
 
-\section sec_support SUPPORT
+\section sec_support_config SUPPORT
 
 Please report any bugs to https://sourceforge.net/apps/trac/opentrep/report
 
 
-\section sec_copyright COPYRIGHT
+\section sec_copyright_config COPYRIGHT
 
-Copyright © 2009-2014 Denis Arnaud
+Copyright © 2009-2016 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>

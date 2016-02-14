@@ -2,11 +2,11 @@
 \page opentrep-dbmgr
       Interactive command-line utility to manage the SQL database (SQLite3 or MySQL)
 
-\section sec_synopsis SYNOPSIS
+\section sec_synopsis_dbmgr SYNOPSIS
 
 <b>opentrep-dbmgr</b> <tt>[--prefix] [-v|--version] [-h|--help] [-p|--porfile <POR-file-path>] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-l|--log <path-to-output-log-file>]</tt>
 
-\section sec_description DESCRIPTION
+\section sec_description_dbmgr DESCRIPTION
 
 \e opentrep-dbmgr is a small program to manage the relational (SQL) database.
    For now, only SQLite3 and MariaDB/MySQL databases are supported.
@@ -55,25 +55,25 @@ Once the program is launched, just type the 'help' command to get the full list
 of all the possible commands and their parameters.
 Note that that program features the auto-completion of commands.
 
-\section sec_examples EXAMPLES
+\section sec_examples_dbmgr EXAMPLES
  \b With SQLite3<br>
   opentrep-dbmgr -t sqlite -s /tmp/opentrep/sqlite_travel.db
 
  \b With MySQL<br>
   opentrep-dbmgr -t mysql -s "db=trep_trep user=trep password=trep"
 
-\section sec_see_also SEE ALSO
+\section sec_see_also_dbmgr SEE ALSO
 \b opentrep-indexer(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
 
 
-\section sec_support SUPPORT
+\section sec_support_dbmgr SUPPORT
 
 Please report any bugs to http://github.com/trep/opentrep/issues
 
 
-\section sec_copyright COPYRIGHT
+\section sec_copyright_dbmgr COPYRIGHT
 
-Copyright © 2009-2014 Denis Arnaud
+Copyright © 2009-2016 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
