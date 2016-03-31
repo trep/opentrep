@@ -2,11 +2,11 @@
 \page pyopentrep
       Python wrapper around the C++ Travel Request Parser (TREP) library
 
-\section sec_synopsis SYNOPSIS
+\section sec_synopsis_py SYNOPSIS
 
 <b>pyopentrep</b> <tt>[--prefix] [-v|--version] [-h|--help] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-f|--format <output-format>] [-g|--generate <nb-of-por>]</tt>
 
-\section sec_description DESCRIPTION
+\section sec_description_py DESCRIPTION
 
 \e pyopentrep is a small Python wrapper around the OpenTREP library.
 
@@ -39,18 +39,18 @@
 See the output of the <tt>`pyopentrep --help'</tt> command for default options.
 
 
-\section sec_see_also SEE ALSO
+\section sec_see_also_py SEE ALSO
 \b opentrep-indexer(1), \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
 
 
-\section sec_support SUPPORT
+\section sec_support_py SUPPORT
 
 Please report any bugs to http://github.com/trep/opentrep/issues
 
 
-\section sec_copyright COPYRIGHT
+\section sec_copyright_py COPYRIGHT
 
-Copyright © 2009-2014 Denis Arnaud
+Copyright © 2009-2016 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>

@@ -2,11 +2,11 @@
 \page opentrep-indexer
       Command-line utility to Xapian-index a travel-related database text file
 
-\section sec_synopsis SYNOPSIS
+\section sec_synopsis_indexer SYNOPSIS
 
 <b>opentrep-indexer</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-p|--porfile <POR-file-path>] [-d|--xapiandb <Xapian-travel-database-path>] [-t|--sqldbtype <SQL-database-type>] [-s|--sqldbconx <SQL-database-connection-string>] [-l|--log <path-to-output-log-file>]</tt>
 
-\section sec_description DESCRIPTION
+\section sec_description_indexer DESCRIPTION
 
 \e opentrep-indexer is a small program to Xapian-index the key-words
    appearing in the given input file.
@@ -49,18 +49,18 @@
 See the output of the <tt>`opentrep-indexer --help'</tt> command for default options.
 
 
-\section sec_see_also SEE ALSO
+\section sec_see_also_indexer SEE ALSO
 \b opentrep-dbmgr(1), \b opentrep-searcher(1), \b opentrep-config(1), \b opentrep-library(3)
 
 
-\section sec_support SUPPORT
+\section sec_support_indexer SUPPORT
 
 Please report any bugs to http://github.com/trep/opentrep/issues
 
 
-\section sec_copyright COPYRIGHT
+\section sec_copyright_indexer COPYRIGHT
 
-Copyright © 2009-2014 Denis Arnaud
+Copyright © 2009-2016 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
