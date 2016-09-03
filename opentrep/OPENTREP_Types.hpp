@@ -278,6 +278,14 @@ namespace OPENTREP {
   };
 
   /**
+   * Currency code (e.g., USD, EUR)
+   */
+  struct CurrencyCode_T : public std::string {
+  public:
+    explicit CurrencyCode_T (const std::string& iValue): std::string (iValue) { }
+  };
+
+  /**
    * Continent code (e.g., SA for South America).
    */
   struct ContinentCode_T : public std::string {

@@ -493,6 +493,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed currency code. */
+    struct storeCurrencyCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCurrencyCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed POR type. */
     struct storePORType : public ParserSemanticAction {
       /** Actor Constructor. */

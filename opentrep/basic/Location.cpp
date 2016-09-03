@@ -28,6 +28,7 @@ namespace OPENTREP {
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
     _wac (0), _wacName (WACName_T ("")),
+    _currencyCode ("ZZZ"),
     _continentCode (ContinentCode_T ("NA")),
     _continentName (ContinentName_T ("NotAvailable")),
     _latitude (0), _longitude (0),
@@ -70,6 +71,7 @@ namespace OPENTREP {
     _altCountryCode (iLocation._altCountryCode),
     _countryName (iLocation._countryName),
     _wac (iLocation._wac), _wacName (iLocation._wacName),
+    _currencyCode (iLocation._currencyCode),
     _continentCode (iLocation._continentCode),
     _continentName (iLocation._continentName),
     _latitude (iLocation._latitude), _longitude (iLocation._longitude),
@@ -118,6 +120,7 @@ namespace OPENTREP {
                       const AltCountryCode_T& iAltCountryCode,
                       const CountryName_T& iCountryName,
                       const WAC_T& iWAC, const WACName_T& iWACName,
+                      const CurrencyCode_T& iCurrencyCode,
                       const ContinentName_T& iContinentName,
                       const Latitude_T& iLatitude, const Longitude_T& iLongitude,
                       const FeatureClass_T& iFeatureClass,
@@ -160,6 +163,7 @@ namespace OPENTREP {
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
     _countryName (iCountryName),
     _wac (iWAC), _wacName (iWACName),
+    _currencyCode (iCurrencyCode),
     _continentCode ("NA"), _continentName (iContinentName),
     _latitude (iLatitude), _longitude (iLongitude),
     _featClass (iFeatureClass), _featCode (iFeatureCode),
@@ -225,6 +229,7 @@ namespace OPENTREP {
          << ", " << _countryCode << ", " << _altCountryCode
          << ", " << _countryName
          << ", " << _wac << ", " << _wacName
+         << ", " << _currencyCode
          << ", " << _continentCode << ", " << _continentName
          << ", " << _latitude << ", " << _longitude
          << ", " << _featClass << ", " << _featCode
