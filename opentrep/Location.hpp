@@ -201,6 +201,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the currency code.
+     */
+    const CurrencyCode_T& getCurrencyCode() const {
+      return _currencyCode;
+    }
+    
+    /**
      * Get the continent code.
      */
     const ContinentCode_T& getContinentCode() const {
@@ -619,6 +626,13 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the currency code.
+     */
+    void setCurrencyCode (const std::string& iCurrencyCode) {
+      _currencyCode = CurrencyCode_T (iCurrencyCode);
+    }
+    
+    /**
      * Set the continent code.
      */
     void setContinentCode (const std::string& iContinentCode) {
@@ -969,6 +983,7 @@ namespace OPENTREP {
               const GeonamesID_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const WAC_T&, const WACName_T&,
+              const CurrencyCode_T&,
               const ContinentName_T&,
               const Latitude_T&, const Longitude_T&,
               const FeatureClass_T&, const FeatureCode_T&,
@@ -1128,6 +1143,11 @@ namespace OPENTREP {
      * US DOT World Area Code (WAC) name (e.g., Alaska).
      */
     WACName_T _wacName;
+
+    /**
+     * Currency code (e.g., USD, EUR)
+     */
+    CurrencyCode_T _currencyCode;
 
     /**
      * Continent code (e.g., SA for South America).

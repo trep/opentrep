@@ -741,6 +741,22 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
+    storeCurrencyCode::storeCurrencyCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCurrencyCode::operator() (std::vector<uchar_t> iChar,
+                                        bsq::unused_type,
+                                        bsq::unused_type) const {
+      const std::string lCurrencyCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::CurrencyCode_T lCurrencyCode (lCurrencyCodeStr);
+      _location.setCurrencyCode (lCurrencyCode);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Currency code: " << _location.getCurrencyCode());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
     storePORType::storePORType (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -1010,7 +1026,8 @@ namespace OPENTREP {
        --                     S/ASSOC a location without its own IATA code,
        --                     but attached to an IATA location.
        -- wac               : The US DOT World Area Code (WAC)
-       -- wac_name          : The US DOT world area name (of the country/state) 
+       -- wac_name          : The US DOT world area name (of the country/state)
+       -- ccy_code          : Currency code (of the country)
        --
        -- Continents:
        -- -----------
@@ -1074,6 +1091,7 @@ namespace OPENTREP {
        alt_name_section   text
        wac                int(3)
        wac_name           varchar(200)
+       ccy_code           varchar(3)
 
        iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
@@ -1088,7 +1106,7 @@ namespace OPENTREP {
        city_code_list^city_name_list^city_detail_list^tvl_por_list^
        state_code^location_type^wiki_link^
        alt_name_section^
-       wac^wac_name
+       wac^wac_name^ccy_code
     */ 
 
     /**
@@ -1164,7 +1182,7 @@ namespace OPENTREP {
         // >> '^' >> -alt_name_short_list[storeAltNameShortListString(_location)]
 
         por_details_additional =
-          -wac >> '^' >> -wac_name
+          wac >> '^' >> wac_name >> '^' >> -ccy_code
           ;
 
         iata_code =
@@ -1355,6 +1373,11 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeWACName(_location)]
           ;
 
+        ccy_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeCurrencyCode(_location)]
+          ;
+
         por_type =
           bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
@@ -1474,6 +1497,7 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (por_details_additional);
         BOOST_SPIRIT_DEBUG_NODE (wac);
         BOOST_SPIRIT_DEBUG_NODE (wac_name);
+        BOOST_SPIRIT_DEBUG_NODE (ccy_code);
       }
 
       // Instantiation of rules
@@ -1499,7 +1523,7 @@ namespace OPENTREP {
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,
         lang_code_opt, lang_code_2char, lang_code_ext, lang_code_hist,
-        por_details_additional, wac, wac_name;
+        por_details_additional, wac, wac_name, ccy_code;
       
       // Parser Context
       Location& _location;

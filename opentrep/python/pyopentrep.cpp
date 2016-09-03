@@ -208,6 +208,7 @@ namespace OPENTREP {
      */
     std::string searchImpl(const std::string& iTravelQuery,
                            const OutputFormat::EN_OutputFormat& iOutputFormat) {
+      const std::string oEmptyStr ("");
       std::ostringstream oNoDetailedStr;
       std::ostringstream oDetailedStr;
       std::ostringstream oJSONStr;
@@ -401,6 +402,9 @@ namespace OPENTREP {
         assert (false);
       }
       }
+
+      // That line cannot be reached, but some compilers fail if no final return
+      return oEmptyStr;
     }
 
     /**
@@ -408,6 +412,7 @@ namespace OPENTREP {
      */
     std::string generateImpl(const NbOfMatches_T& iNbOfDraws,
                              const OutputFormat::EN_OutputFormat& iOutputFormat){
+      const std::string oEmptyStr ("");
       std::ostringstream oNoDetailedStr;
       std::ostringstream oDetailedStr;
       std::ostringstream oJSONStr;
@@ -584,6 +589,9 @@ namespace OPENTREP {
         assert (false);
       }
       }
+
+      // That line cannot be reached, but some compilers fail if no final return
+      return oEmptyStr;
     }
 
   public:
