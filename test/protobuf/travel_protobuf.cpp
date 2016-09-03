@@ -16,7 +16,7 @@ int main (int argc, char* argv[]) {
   
   // Build the POR (point of reference) corresponding to Kiev Boryspil
   const OPENTREP::LocationKey lLocationKey (OPENTREP::IATACode_T ("KBP"),
-                                            OPENTREP::ICAOCode_T ("UKBB"),
+                                            OPENTREP::IATAType ("A"),
                                             OPENTREP::GeonamesID_T (6300952));
   // Build the list of non-matching keywords
   const std::string lNonMatchedKeyword ("zorglub");
