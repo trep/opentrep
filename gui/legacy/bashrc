@@ -1,0 +1,35 @@
+
+# Language
+export LANG=en_US.UTF-8
+
+# Prompt
+source /usr/share/git-core/contrib/completion/git-prompt.sh # From Fedora 18+
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWUNTRACKEDFILES=true
+export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+
+# Aliases
+alias dir='ls -laFh --color'
+alias grep='grep --color'
+
+#
+alias cddeliv='cd ~/dev/deliveries'
+alias cdopentraveldata='cd ~/dev/geo/opentraveldatagit'
+alias cdairports='cd /var/www/webapps/airports'
+alias cdmeije='cd ~/dev/meijegit/meije'
+alias cdstdairgit='cd ~/dev/sim/stdair/stdairgit'
+alias cdtvlsimgit='cd ~/dev/sim/tvlsim/tvlsimgit'
+
+# OpenTREP
+TREP_DIR=/var/www/webapps/opentrep/trep
+alias trepCMake='cmake -DCMAKE_INSTALL_PREFIX=$TREP_DIR -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF -DRUN_GCOV:BOOL=OFF ..'
+alias cdtrep='cd /opt/trep/opentre'
+alias trepIndex='$TREP_DIR/bin/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb'
+alias trepDBMgrSL='$TREP_DIR/bin/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db'
+alias trepDBMgrMS='$TREP_DIR/bin/opentrep-dbmgr -t mysql -s "db=trep_trep user=trep password=trep"'
+alias trepSearchSL='$TREP_DIR/bin/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -q '
+alias trepSearchMS='$TREP_DIR/bin/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t mysql -s "db=trep_trep user=trep password=trep" -q '
+export PYTHONPATH=$PYTHONPATH:/var/www/webapps/opentrep/trep/lib/python/opentrep/
+alias trepPywrapSL='$TREP_DIR/bin/pyopentrep -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db '
+alias trepPywrapMS='$TREP_DIR/bin/pyopentrep -d /var/www/webapps/opentrep/trep/traveldb -t mysql -s "db=trep_trep user=trep password=trep" '
+
