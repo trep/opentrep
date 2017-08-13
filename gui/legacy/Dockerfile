@@ -28,7 +28,7 @@ RUN dnf -y install doxygen ghostscript "tex(latex)"
 # Set up and start Maria (MySQL) database
 RUN dnf -y install mariadb-server
 RUN mysql_install_db
-RUN mysqladmin' -u root password '$DB_PASS'
+#RUN mysqladmin -u root password '$DB_PASS'
 
 
 # User environment
