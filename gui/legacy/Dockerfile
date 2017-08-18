@@ -25,6 +25,9 @@ RUN dnf -y install python-devel python34-devel
 # Documentation tools
 RUN dnf -y install doxygen ghostscript "tex(latex)"
 
+#
+VOLUME [ "/sys/fs/cgroup" ]
+
 # Set up and start Maria (MySQL) database
 RUN dnf -y install mariadb-server
 RUN mysql_install_db
