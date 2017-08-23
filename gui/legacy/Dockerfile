@@ -4,9 +4,15 @@ FROM mkubenka/centos-systemd
 MAINTAINER Denis Arnaud <des.arnaud_fedora@m4x.org>
 
 #
+ENV container docker
 ENV HOME /root
-ENV TREP_DIR /opt/trep
+ENV TREP_BASE_DIR /opt/trep
+ENV TREP_DIR $TREP_BASE_DIR/opentrep
+ENV TREP_BUILD_DIR $TREP_DIR/build
 ENV DB_PASS dbpass
+ENV INSTALL_BASEDIR=$TREP_BASE_DIR/deliveries
+ENV TREP_VER=99.99.99
+
 
 # House keeping
 RUN yum -y install epel-release
@@ -39,11 +45,25 @@ ADD bashrc $HOME/
 RUN cat $HOME/bashrc >> $HOME/.bashrc && rm -f $HOME/bashrc
 
 # Set up of the environment for OpenTREP
-RUN mkdir -p $TREP_DIR
-
-WORKDIR $TREP_DIR
-
+RUN mkdir -p $TREP_BASE_DIR
+WORKDIR $TREP_BASE_DIR
 RUN git clone https://github.com/trep/opentrep.git
+WORKDIR $TREP_DIR
+RUN mkdir -p build
+WORKDIR $TREP_BUILD_DIR
 
+# Launch the build
+RUN cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF \
+   -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX=64 ..
+RUN make && make install
+
+# Launch the indexation
+RUN ./opentrep/opentrep-indexer
+
+# Check that the search works correctly
+RUN ./opentrep/opentrep-searcher -q nce sfo
+
+#
 CMD ["/bin/bash"]
 

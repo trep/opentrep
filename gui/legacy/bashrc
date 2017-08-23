@@ -23,7 +23,7 @@ alias cdtvlsimgit='cd ~/dev/sim/tvlsim/tvlsimgit'
 # OpenTREP
 TREP_DIR=/var/www/webapps/opentrep/trep
 alias trepCMake='cmake -DCMAKE_INSTALL_PREFIX=$TREP_DIR -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF -DRUN_GCOV:BOOL=OFF ..'
-alias cdtrep='cd /opt/trep/opentre'
+alias cdtrep='cd /opt/trep/opentrep'
 alias trepIndex='$TREP_DIR/bin/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb'
 alias trepDBMgrSL='$TREP_DIR/bin/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db'
 alias trepDBMgrMS='$TREP_DIR/bin/opentrep-dbmgr -t mysql -s "db=trep_trep user=trep password=trep"'
