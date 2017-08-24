@@ -32,7 +32,7 @@ RUN dnf -y install python-devel python34-devel
 RUN dnf -y install doxygen ghostscript "tex(latex)"
 
 #
-VOLUME [ "/sys/fs/cgroup" ]
+VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
 
 # Set up and start Maria (MySQL) database
 RUN dnf -y install mariadb-server
@@ -65,5 +65,5 @@ RUN ./opentrep/opentrep-indexer
 RUN ./opentrep/opentrep-searcher -q nce sfo
 
 #
-CMD ["/bin/bash"]
+CMD ["/usr/sbin/init"]
 

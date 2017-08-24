@@ -162,7 +162,7 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
   if (NOT EXISTS ${DOC_NEWS_FILE})
     unset (DOC_NEWS_FILE)
   endif (NOT EXISTS ${DOC_NEWS_FILE})
-  set (BASICDOC_FILES AUTHORS ${DOC_NEWS_FILE} README ${DOC_INSTALL_FILE})
+  set (BASICDOC_FILES AUTHORS ${DOC_NEWS_FILE} README.md ${DOC_INSTALL_FILE})
   set (BASICDOC_PATH "share/doc/${PACKAGE}")
 
 endmacro (set_project_options)
@@ -240,11 +240,11 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
   set (CPACK_PACKAGE_VERSION ${${PROJECT_NAME}_VERSION})
 
   # Basic documentation
-  if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/README)
-    message (FATAL_ERROR "A README file must be defined and located at the root directory")
-  endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/README)
-  set (CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/README)
-  set (CPACK_RESOURCE_FILE_README ${CMAKE_CURRENT_SOURCE_DIR}/README)
+  if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+    message (FATAL_ERROR "A README.md file must be defined and located at the root directory")
+  endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+  set (CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+  set (CPACK_RESOURCE_FILE_README ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
 
   # Licence
   if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/COPYING)
