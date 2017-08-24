@@ -12,13 +12,14 @@ ENV TREP_BUILD_DIR $TREP_DIR/build
 ENV DB_PASS dbpass
 ENV INSTALL_BASEDIR=$TREP_BASE_DIR/deliveries
 ENV TREP_VER=99.99.99
-
+ENV XAPIANDB $TREP_BASE_DIR/xapiandb
 
 # House keeping
 RUN yum -y install epel-release
 RUN yum -y install dnf
 RUN dnf clean all
 RUN dnf -y update
+RUN dnf -y install initscripts
 RUN dnf -y install htop less rpmconf git-all bash-completion
 
 # C++ development
@@ -32,7 +33,7 @@ RUN dnf -y install python-devel python34-devel
 RUN dnf -y install doxygen ghostscript "tex(latex)"
 
 #
-VOLUME [ "/sys/fs/cgroup" ]
+VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
 
 # Set up and start Maria (MySQL) database
 RUN dnf -y install mariadb-server
@@ -59,11 +60,12 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
 RUN make && make install
 
 # Launch the indexation
-RUN ./opentrep/opentrep-indexer
+RUN ./opentrep/opentrep-indexer --xapiandb $XAPIANDB
 
 # Check that the search works correctly
-RUN ./opentrep/opentrep-searcher -q nce sfo
+RUN ./opentrep/opentrep-searcher --xapiandb $XAPIANDB -q nce sfo
 
 #
-CMD ["/bin/bash"]
+RUN echo "root:root"|chpasswd
+CMD ["/usr/sbin/init"]
 
