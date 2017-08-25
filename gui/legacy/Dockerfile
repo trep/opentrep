@@ -39,7 +39,8 @@ VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
 RUN dnf -y install mariadb-server
 RUN mysql_install_db
 RUN chown -R mysql.mysql /var/lib/mysql
-#RUN mysqladmin -u root password '$DB_PASS'
+RUN mysqladmin -u root password '$DB_PASS'
+RUN systemctl start mariadb.service && systemctl enable mariadb.service
 
 # User environment
 ADD bashrc $HOME/
