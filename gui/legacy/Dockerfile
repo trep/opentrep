@@ -37,6 +37,7 @@ VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
 
 # Set up and start Maria (MySQL) database
 RUN dnf -y install mariadb-server
+RUN mkdir -p /var/run/mariadb && chown -R mysql.mysql /var/run/mariadb
 RUN mysql_install_db
 RUN chown -R mysql.mysql /var/lib/mysql
 WORKDIR /usr
