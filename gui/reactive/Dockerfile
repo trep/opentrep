@@ -38,8 +38,8 @@ VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
 # Set up and start Maria (MySQL) database
 RUN dnf -y install mariadb-server
 RUN mysql_install_db
+RUN chown -R mysql.mysql /var/lib/mysql
 #RUN mysqladmin -u root password '$DB_PASS'
-
 
 # User environment
 ADD bashrc $HOME/
