@@ -41,7 +41,7 @@ RUN mysql_install_db
 RUN chown -R mysql.mysql /var/lib/mysql
 WORKDIR /usr
 RUN /usr/bin/mysqld_safe --datadir='/var/lib/mysql' --nowatch
-RUN mysqladmin -u root password '$DB_PASS'
+#RUN mysqladmin -u root password '$DB_PASS'
 
 # User environment
 ADD bashrc $HOME/
