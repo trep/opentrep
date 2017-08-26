@@ -88,18 +88,17 @@ namespace OPENTREP {
     boost::random::random_device lRandomDevice;
     boost::random::uniform_int_distribution<> uniformDistrib (1, lTotalNbOfDocs);
     
-    // Randomly generate document IDs. If they the corresponding documents
+    // Randomly generate document IDs. If the corresponding documents
     // do not exist in the Xapian database, generate another one.
     for (NbOfMatches_T idx = 1; idx <= iNbOfDraws; ++idx) {
       unsigned int lRandomNbInt = uniformDistrib (lRandomDevice);
       Xapian::docid lDocID = static_cast<Xapian::docid> (lRandomNbInt);
 
       // Retrieve the document from the Xapian database/index
-      Xapian::Document::Internal* lDocPtr =
-        lXapianDatabase.get_document_lazily (lDocID);
+      Xapian::termcount lDocLength = lXapianDatabase.get_doclength (lDocID);
 
       unsigned short currentNbOfIterations = 0;
-      while (lDocPtr == NULL && currentNbOfIterations <= 100) {
+      while (lDocLength == 0 && currentNbOfIterations <= 100) {
         // DEBUG
         OPENTREP_LOG_DEBUG ("[" << idx << "] The " << lDocID
                             << " document ID does not exist in the Xapian "
@@ -110,12 +109,12 @@ namespace OPENTREP {
         lDocID = static_cast<Xapian::docid> (lRandomNbInt);
 
         // Retrieve the document from the Xapian database/index
-        lDocPtr = lXapianDatabase.get_document_lazily (lDocID);
+        lDocLength = lXapianDatabase.get_doclength (lDocID);
       }
 
       // Bad luck: no document ID can be generated so that it corresponds to
       // an actual document in the Xapian database/index
-      if (lDocPtr == NULL) {
+      if (lDocLength == 0) {
         //
         OPENTREP_LOG_NOTIFICATION ("[" << idx << "] No document ID can be "
                                    << "generated so that it corresponds to "
@@ -123,7 +122,7 @@ namespace OPENTREP {
 
       } else {
         // Retrieve the actual document.
-        const Xapian::Document lDoc (lDocPtr);
+	const Xapian::Document lDoc = lXapianDatabase.get_document (lDocID);
         const std::string& lDocDataStr = lDoc.get_data();
         const RawDataString_T& lDocData = RawDataString_T (lDocDataStr);
 
