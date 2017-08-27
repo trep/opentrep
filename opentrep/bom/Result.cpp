@@ -195,7 +195,7 @@ namespace OPENTREP {
      */
     for (Xapian::MSetIterator itDoc = iMatchingSet.begin();
          itDoc != iMatchingSet.end(); ++itDoc) {
-      const Xapian::percent& lXapianPercentage = itDoc.get_percent();
+      const int& lXapianPercentage = itDoc.get_percent();
       const Xapian::Document& lDocument = itDoc.get_document();
       addDocument (lDocument, lXapianPercentage);
     }

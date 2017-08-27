@@ -82,6 +82,7 @@ $ git checkout trunk
 Download the tar-ball from SourceForge (http://sourceforge.net/project/showfiles.php?group_id=252803).
 
 ### Installation of the dependencies
+#### On Linux
 Then, you need the following packages (Fedora/RedHat/CentOS names here, 
 but names may vary according to distributions):
 * cmake
@@ -90,7 +91,6 @@ but names may vary according to distributions):
 * xapian-core-devel / xapian-dev
 * python-devel / python-dev
 * libicu-devel / libicu-dev
-* gettext-devel / gettext-dev
 * soci-mysql-devel, soci-sqlite3-devel / soci-mysql-dev, soci-sqlite3-dev
 * sqlite3-devel / libsqlite3-dev
 * mariadb-devel / mariadb-dev
@@ -111,6 +111,13 @@ $ dnf -y install python-devel python34-devel
 $ # Documentation tools
 $ dnf -y install doxygen ghostscript "tex(latex)"
 ```
+
+### On MacOS
+* With Homebrew:
+```bash
+$ brew install boost boost-python cmake libedit xapian soci sqlite mysql \
+  icu4c protobuf protobuf-c doxygen
+```
  
 ### Building the library and test binary
 To customise the following to your environment, you can alter
@@ -130,6 +137,18 @@ $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 ```
+* On MacOS, a few software (e.g., ICU and Readline) are not in
+the standard place. So, the ``cmake`` command becomes:
+```bash
+$ export CMAKE_CXX_FLAGS="-Wno-mismatched-new-delete"; \
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
+   -DREADLINE_ROOT=/usr/local/opt/portable-readline \
+   -DREADLINE_LIBRARY=/usr/local/opt/libedit/lib/libedit.dylib \
+   -DICU_ROOT=/usr/local/opt/icu4c \
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
+   -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+```
+
 * To build the project, type:
 ```bash
 $ make
