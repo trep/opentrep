@@ -349,7 +349,7 @@ namespace OPENTREP {
            envelope_id int(11) default NULL,
            date_from date default NULL,
            date_until date default NULL,
-           serialised_place varchar(8000) default NULL,
+           serialised_place varchar(12000) default NULL,
            primary key (pk));
         */
 
@@ -366,7 +366,7 @@ namespace OPENTREP {
         lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
         lSQLTableCreationStr << "date_from date default NULL, ";
         lSQLTableCreationStr << "date_until date default NULL, ";
-        lSQLTableCreationStr << "serialised_place varchar(8000) default NULL, ";
+        lSQLTableCreationStr << "serialised_place varchar(12000) default NULL, ";
         lSQLTableCreationStr << "primary key (pk)); ";
         ioSociSession << lSQLTableCreationStr.str();
 
@@ -397,7 +397,7 @@ namespace OPENTREP {
            envelope_id int(11) default NULL,
            date_from date default NULL,
            date_until date default NULL,
-           serialised_place varchar(8000) default NULL);
+           serialised_place varchar(12000) default NULL);
         */
 
         ioSociSession << "drop table if exists optd_por;";
@@ -413,7 +413,7 @@ namespace OPENTREP {
         lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
         lSQLTableCreationStr << "date_from date default NULL, ";
         lSQLTableCreationStr << "date_until date default NULL, ";
-        lSQLTableCreationStr << "serialised_place varchar(8000) default NULL); ";
+        lSQLTableCreationStr << "serialised_place varchar(12000) default NULL); ";
         ioSociSession << lSQLTableCreationStr.str();
 
       } catch (std::exception const& lException) {

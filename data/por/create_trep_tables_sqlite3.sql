@@ -16,7 +16,7 @@ create table optd_por (
  envelope_id int(11) default NULL,
  date_from date default NULL,
  date_until date default NULL,
- serialised_place varchar(8000) default NULL,
+ serialised_place varchar(12000) default NULL,
  primary key (pk)
 );
 
