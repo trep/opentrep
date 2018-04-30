@@ -27,7 +27,7 @@ namespace OPENTREP {
    * @param const UnicodeString& ICU Unicode string
    * @return UnicodeString  ICU Unicode string with escaped characters
    */
-  UnicodeString escape (const UnicodeString&);
+  icu::UnicodeString escape (const icu::UnicodeString&);
 
   /**
    * Get a STL string from the given UnicodeString.
@@ -35,7 +35,7 @@ namespace OPENTREP {
    * @param const UnicodeString& ICU Unicode string
    * @return std::string STL string
    */
-  std::string getUTF8 (const UnicodeString&);
+  std::string getUTF8 (const icu::UnicodeString&);
 
 }
 #endif // __OPENTREP_BAS_ICU_UTIL_HPP

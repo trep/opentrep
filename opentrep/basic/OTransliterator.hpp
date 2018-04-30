@@ -94,7 +94,7 @@ namespace OPENTREP {
      * @param UnicodeString& The string for which the punctuation
      *                       must be removed
      */
-    void unpunctuate (UnicodeString&) const;
+    void unpunctuate (icu::UnicodeString&) const;
 
     /**
      * Remove the quote characters of the given string.
@@ -102,7 +102,7 @@ namespace OPENTREP {
      * @param UnicodeString& The string for which the quote characters
      *                       must be removed
      */
-    void unquote (UnicodeString&) const;
+    void unquote (icu::UnicodeString&) const;
 
     /**
      * Remove the accents of the given string.
@@ -114,7 +114,7 @@ namespace OPENTREP {
      *
      * @param UnicodeString& The string for which the accents must be removed
      */
-    void unaccent (UnicodeString&) const;
+    void unaccent (icu::UnicodeString&) const;
 
     /**
      * Transliterate (e.g., from Chinese or Russian scripts),
@@ -122,7 +122,7 @@ namespace OPENTREP {
      *
      * @param UnicodeString& The string to be transliterated
      */
-    void transliterate (UnicodeString&) const;
+    void transliterate (icu::UnicodeString&) const;
     
   private:
     /**
@@ -179,24 +179,24 @@ namespace OPENTREP {
     /**
      * Pointer on the Unicode Transliterator for the removal of punctuation.
      */
-    Transliterator* _punctuationRemover;
+    icu::Transliterator* _punctuationRemover;
 
     /**
      * Pointer on the Unicode Transliterator for the removal of quotation.
      */
-    Transliterator* _quoteRemover;
+    icu::Transliterator* _quoteRemover;
 
     /**
      * Pointer on the Unicode Transliterator for the removal of accents.
      */
-    Transliterator* _accentRemover;
+    icu::Transliterator* _accentRemover;
 
     /**
      * Pointer on the Unicode Transliterator for the transliteration of any
      * language script (e.g., Arabic, Cyrillic, Greek, Han, Hangul, Hebrew,
      * Katakana, Thai) to Latin characters.
      */
-    Transliterator* _tranlist;
+    icu::Transliterator* _tranlist;
   };
 
 }
