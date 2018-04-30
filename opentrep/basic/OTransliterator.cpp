@@ -48,7 +48,7 @@ namespace OPENTREP {
     // Create a remover of punctuation
     UErrorCode lStatus = U_ZERO_ERROR;
     _punctuationRemover =
-      Transliterator::createInstance (K_ICU_PUNCTUATION_REMOVAL_RULE,
+      icu::Transliterator::createInstance (K_ICU_PUNCTUATION_REMOVAL_RULE,
                                       UTRANS_FORWARD, lStatus);
 
     if (_punctuationRemover == NULL || U_FAILURE (lStatus)) {
@@ -61,7 +61,7 @@ namespace OPENTREP {
     assert (_punctuationRemover != NULL);
                
     // Register the Unicode Transliterator
-    Transliterator::registerInstance (_punctuationRemover);
+    icu::Transliterator::registerInstance (_punctuationRemover);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -69,9 +69,9 @@ namespace OPENTREP {
     // Create a remover of quotation
     UErrorCode lStatus = U_ZERO_ERROR;
     UParseError pError;
-    UnicodeString lUnquotedRules (K_ICU_QUOTATION_REMOVAL_RULE);
+    icu::UnicodeString lUnquotedRules (K_ICU_QUOTATION_REMOVAL_RULE);
     _quoteRemover =
-      Transliterator::createFromRules ("RBTUnaccent", lUnquotedRules,
+      icu::Transliterator::createFromRules ("RBTUnaccent", lUnquotedRules,
                                        UTRANS_FORWARD, pError, lStatus);
 
     if (_quoteRemover == NULL || U_FAILURE (lStatus)) {
@@ -84,7 +84,7 @@ namespace OPENTREP {
     assert (_quoteRemover != NULL);
                
     // Register the Unicode Transliterator
-    Transliterator::registerInstance (_quoteRemover);
+    icu::Transliterator::registerInstance (_quoteRemover);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ namespace OPENTREP {
     // Create a remover of accents
     UErrorCode lStatus = U_ZERO_ERROR;
     _accentRemover =
-      Transliterator::createInstance (K_ICU_ACCENT_REMOVAL_RULE, UTRANS_FORWARD,
+      icu::Transliterator::createInstance (K_ICU_ACCENT_REMOVAL_RULE, UTRANS_FORWARD,
                                       lStatus);
 
     if (_accentRemover == NULL || U_FAILURE (lStatus)) {
@@ -105,7 +105,7 @@ namespace OPENTREP {
     assert (_accentRemover != NULL);
                
     // Register the Unicode Transliterator
-    Transliterator::registerInstance (_accentRemover);
+    icu::Transliterator::registerInstance (_accentRemover);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ namespace OPENTREP {
     // Create a generic transliterator
     UErrorCode lStatus = U_ZERO_ERROR;
     _tranlist =
-      Transliterator::createInstance (K_ICU_GENERIC_TRANSLITERATOR_RULE,
+      icu::Transliterator::createInstance (K_ICU_GENERIC_TRANSLITERATOR_RULE,
                                       UTRANS_FORWARD, lStatus);
 
     if (_tranlist == NULL || U_FAILURE (lStatus)) {
@@ -126,7 +126,7 @@ namespace OPENTREP {
     assert (_tranlist != NULL);
                
     // Register the Unicode Transliterator
-    Transliterator::registerInstance (_tranlist);
+    icu::Transliterator::registerInstance (_tranlist);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OTransliterator::unpunctuate (UnicodeString& ioString) const {
+  void OTransliterator::unpunctuate (icu::UnicodeString& ioString) const {
     // Apply the punctuation removal scheme
     assert (_punctuationRemover != NULL);
     _punctuationRemover->transliterate (ioString);
@@ -155,7 +155,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string OTransliterator::unpunctuate (const std::string& iString) const {
     // Build a UnicodeString from the STL string
-    UnicodeString lString (iString.c_str());
+    icu::UnicodeString lString (iString.c_str());
 
     // Apply the punctuation removal scheme
     unpunctuate (lString);
@@ -167,7 +167,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OTransliterator::unquote (UnicodeString& ioString) const {
+  void OTransliterator::unquote (icu::UnicodeString& ioString) const {
     // Apply the quotation removal scheme
     assert (_quoteRemover != NULL);
     _quoteRemover->transliterate (ioString);
@@ -176,7 +176,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string OTransliterator::unquote (const std::string& iString) const {
     // Build a UnicodeString from the STL string
-    UnicodeString lString (iString.c_str());
+    icu::UnicodeString lString (iString.c_str());
 
     // Apply the quotation removal scheme
     unquote (lString);
@@ -188,7 +188,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OTransliterator::unaccent (UnicodeString& ioString) const {
+  void OTransliterator::unaccent (icu::UnicodeString& ioString) const {
     // Apply the accent removal scheme
     assert (_accentRemover != NULL);
     _accentRemover->transliterate (ioString);
@@ -197,7 +197,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string OTransliterator::unaccent (const std::string& iString) const {
     // Build a UnicodeString from the STL string
-    UnicodeString lString (iString.c_str());
+    icu::UnicodeString lString (iString.c_str());
 
     // Apply the accent removal scheme
     unaccent (lString);
@@ -209,7 +209,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void OTransliterator::transliterate (UnicodeString& ioString) const {
+  void OTransliterator::transliterate (icu::UnicodeString& ioString) const {
     // Apply the transliteration scheme
     assert (_tranlist != NULL);
     _tranlist->transliterate (ioString);
@@ -218,7 +218,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string OTransliterator::transliterate (const std::string& iString) const {
     // Build a UnicodeString from the STL string
-    UnicodeString lString (iString.c_str());
+    icu::UnicodeString lString (iString.c_str());
 
     // Apply the transliteration scheme
     transliterate (lString);
@@ -232,7 +232,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string OTransliterator::normalise (const std::string& iString) const {
     // Build a UnicodeString from the STL string
-    UnicodeString lString (iString.c_str());
+    icu::UnicodeString lString (iString.c_str());
 
     // Apply the whole sery of transformators
     unaccent (lString);

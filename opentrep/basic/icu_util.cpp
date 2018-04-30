@@ -31,9 +31,9 @@ namespace OPENTREP {
                                                       
   // Append a hex string to the target
   // //////////////////////////////////////////////////////////////////////
-  UnicodeString& appendHex (const uint32_t iNumber, int8_t ioDigits,
-                                   UnicodeString& ioTarget) {
-    static const UnicodeString DIGIT_STRING ("0123456789ABCDEF");
+  icu::UnicodeString& appendHex (const uint32_t iNumber, int8_t ioDigits,
+                                   icu::UnicodeString& ioTarget) {
+    static const icu::UnicodeString DIGIT_STRING ("0123456789ABCDEF");
     while (ioDigits > 0) {
       ioTarget += DIGIT_STRING[(iNumber >> ((--ioDigits) * 4)) & 0xF];
     }
@@ -42,9 +42,9 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  UnicodeString escape (const UnicodeString& iSource) {
+  icu::UnicodeString escape (const icu::UnicodeString& iSource) {
     int32_t i;
-    UnicodeString target ("\"");
+    icu::UnicodeString target ("\"");
     for (i = 0; i < iSource.length(); ++i) {
       UChar ch = iSource[i];
 
@@ -62,7 +62,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string getUTF8 (const UnicodeString& iString) {
+  std::string getUTF8 (const icu::UnicodeString& iString) {
     std::ostringstream oStr;
   
     const int32_t len = iString.length();
