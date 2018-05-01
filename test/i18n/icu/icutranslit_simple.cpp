@@ -13,24 +13,25 @@
 int main() {
 
 	// UTF8 string
-	UnicodeString lString ("À côté de chez vous");
-	UnicodeString lNormalisedString (lString);
+	icu::UnicodeString lString ("À côté de chez vous");
+	icu::UnicodeString lNormalisedString (lString);
 
 	// Create a Normalizer
 	UErrorCode status = U_ZERO_ERROR;
 	const char* lNormaliserID = "NFD; [:M:] Remove; NFC;";
-	Transliterator* lNormaliser =
-		Transliterator::createInstance (lNormaliserID, UTRANS_FORWARD, status);
+	icu::Transliterator* lNormaliser =
+		icu::Transliterator::createInstance (lNormaliserID, UTRANS_FORWARD,
+                                             status);
 
 	if (lNormaliser == NULL || U_FAILURE (status)) {
-		std::cerr << "ERROR: Transliterator::createInstance() failed for "
-	             << lNormaliserID << std::endl;
+		std::cerr << "ERROR: icu::Transliterator::createInstance() failed for "
+                  << lNormaliserID << std::endl;
 		return 0;
 	}
 	assert (lNormaliser != NULL);
                
 	// Register the Transliterator
-	Transliterator::registerInstance (lNormaliser);
+	icu::Transliterator::registerInstance (lNormaliser);
 
 	// Normalise the string
 	lNormaliser->transliterate (lNormalisedString);

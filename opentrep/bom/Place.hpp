@@ -20,7 +20,7 @@ namespace OPENTREP {
   // Forward declarations
   class World;
   class PlaceHolder;
-  struct OTransliterator;
+  class OTransliterator;
   
   /**
    * @brief Class modelling a place/POR (point of reference).

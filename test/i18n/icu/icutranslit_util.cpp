@@ -23,9 +23,9 @@ void check (UErrorCode& status, const char* msg) {
 }
                                                       
 // Append a hex string to the target
-static UnicodeString& appendHex (uint32_t number, int8_t digits, 
-                                 UnicodeString& target) {
-    static const UnicodeString DIGIT_STRING ("0123456789ABCDEF");
+static icu::UnicodeString& appendHex (uint32_t number, int8_t digits, 
+                                      icu::UnicodeString& target) {
+    static const icu::UnicodeString DIGIT_STRING ("0123456789ABCDEF");
     while (digits > 0) {
       target += DIGIT_STRING[(number >> ((--digits) * 4)) & 0xF];
     }
@@ -34,9 +34,9 @@ static UnicodeString& appendHex (uint32_t number, int8_t digits,
 }
 
 // Replace nonprintable characters with unicode escapes
-UnicodeString escape (const UnicodeString& source) {
+icu::UnicodeString escape (const icu::UnicodeString& source) {
   int32_t i;
-  UnicodeString target;
+  icu::UnicodeString target;
   target += "\"";
   for (i=0; i<source.length(); ++i) {
     UChar ch = source[i];
@@ -54,7 +54,7 @@ UnicodeString escape (const UnicodeString& source) {
 }
 
 // Print the given string to stdout
-std::string uprintf (const UnicodeString& str) {
+std::string uprintf (const icu::UnicodeString& str) {
   std::ostringstream oStr;
   
   const int32_t len = str.length();
@@ -69,13 +69,13 @@ std::string uprintf (const UnicodeString& str) {
   buf[actualLen] = '\0';
 
   oStr << buf;
-  delete buf; buf = NULL;
+  delete[] buf; buf = NULL;
 
   return oStr.str();
 }
 
 // /////////////////////////////////////////////////////////////////////
-std::string toUTF8String (const UnicodeString& iString) {
+std::string toUTF8String (const icu::UnicodeString& iString) {
   std::ostringstream oStr;
 
   // String length
@@ -101,7 +101,7 @@ std::string toUTF8String (const UnicodeString& iString) {
   // DEBUG
   /*
   std::cout << "toUTF8String(): converted " << nbOfConvertedChars
-            << " for the UnicodeString '" << uprintf(iString)
+            << " for the icu::UnicodeString '" << uprintf(iString)
             << "' (of length " << lLength << std::endl;
   */
   

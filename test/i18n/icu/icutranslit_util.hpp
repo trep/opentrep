@@ -12,10 +12,10 @@
 void check (UErrorCode& status, const char* msg);
 
 /** Replace nonprintable characters with unicode escapes. */
-UnicodeString escape (const UnicodeString &source);
+icu::UnicodeString escape (const icu::UnicodeString &source);
 
 /** Print the given string to stdout. */
-std::string uprintf (const UnicodeString& str);
+std::string uprintf (const icu::UnicodeString& str);
 
 /** Print the given Unicode string as a UTF8-encoded string. */
-std::string toUTF8String (const UnicodeString& str);
+std::string toUTF8String (const icu::UnicodeString& str);
