@@ -77,7 +77,7 @@ namespace OPENTREP {
     buf[actualLen] = '\0';
 
     oStr << buf;
-    delete buf; buf = NULL;
+    delete[] buf; buf = NULL;
 
     return oStr.str();
   }

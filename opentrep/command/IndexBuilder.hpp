@@ -25,7 +25,7 @@ namespace OPENTREP {
 
   // Forward declarations
   class Place;
-  struct OTransliterator;
+  class OTransliterator;
 
   /**
    * @brief Command wrapping the travel request process.
