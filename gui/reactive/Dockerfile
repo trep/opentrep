@@ -16,30 +16,29 @@ ENV XAPIANDB $TREP_BASE_DIR/xapiandb
 ENV DB_RUN_DIR /opt/mysql/run
 
 # House keeping
+RUN yum clean all
 RUN yum -y install epel-release
-RUN yum -y install dnf
-RUN dnf clean all
-RUN dnf -y update
-RUN dnf -y install initscripts
-RUN dnf -y install htop less file rpmconf git-all bash-completion
+RUN yum -y update
+RUN yum -y install initscripts
+RUN yum -y install htop less file rpmconf git-all bash-completion
 
 # C++ development
-RUN dnf -y install gcc-c++ cmake cmake3 boost-devel xapian-core-devel \
+RUN yum -y install gcc-c++ cmake cmake3 boost-devel xapian-core-devel \
     soci-mysql-devel soci-sqlite3-devel \
     readline-devel sqlite-devel mariadb-devel \
     libicu-devel protobuf-devel protobuf-compiler
 
 # Python development
-RUN dnf -y install python-devel python34-devel
+RUN yum -y install python-devel python34-devel
 
 # Documentation tools
-RUN dnf -y install doxygen ghostscript "tex(latex)"
+RUN yum -y install doxygen ghostscript "tex(latex)"
 
 #
 VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
 
 # Set up and start Maria (MySQL) database
-RUN dnf -y install mariadb-server
+RUN yum -y install mariadb-server
 RUN mkdir -p $DB_RUN_DIR && chown -R mysql.mysql $DB_RUN_DIR
 RUN mysql_install_db
 ADD my.cnf /etc/
