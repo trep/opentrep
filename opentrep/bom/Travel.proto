@@ -14,6 +14,10 @@ message FAACode {
   required string code = 1;
 } 
 
+message UNLOCode {
+  required string code = 1;
+} 
+
 message GeonameID {
   required int32 id = 1;
 }
@@ -39,6 +43,10 @@ message WorldAreaCode {
 }
 
 message ContinentCode {
+  required string code = 1;
+}
+
+message CurrencyCode {
   required string code = 1;
 }
 
@@ -174,55 +182,57 @@ message Place {
   optional IATACode tvl_code = 1;
   optional ICAOCode icao_code = 2;
   optional FAACode faa_code = 3;
-  optional bool is_geoname = 4;
-  optional GeonameID geoname_id = 5;
-  optional EnvelopeID env_id = 6;
-  required string name_utf = 7;
-  required string name_ascii = 8;
-  optional GeoPoint coord = 9;
-  optional FeatureType feat_type = 10;
-  optional PageRank page_rank = 11;
-  optional Date date_from = 12;
-  optional Date date_end = 13;
-  optional Comment comment = 14;
-  optional CountryCode country_code = 15;
-  optional AltCountryCode alt_country_code = 16;
-  optional string country_name = 17;
-  optional ContinentCode continent_code = 18;
-  optional string continent_name = 19;
-  optional Admin1Code adm1_code = 20;
-  optional string adm1_name_utf = 21;
-  optional string adm1_name_ascii = 22;
-  optional Admin2Code adm2_code = 23;
-  optional string adm2_name_utf = 24;
-  optional string adm2_name_ascii = 25;
-  optional Admin3Code adm3_code = 26;
-  optional Admin4Code adm4_code = 27;
-  optional Population population = 28;
-  optional Elevation elevation = 29;
-  optional GTopo30 gtopo30 = 30;
-  optional TimeZone tz = 31;
-  optional TZOffSet gmt_offset = 32;
-  optional TZOffSet dst_offset = 33;
-  optional TZOffSet raw_offset = 34;
-  optional Date mod_date = 35;
-  optional IATACode city_code = 36;
-  optional string city_name_utf = 37;
-  optional string city_name_ascii = 38;
-  optional TravelRelatedList tvl_por_list = 39;
-  optional StateCode state_code = 40;
-  optional WorldAreaCode wac_code = 41;
-  optional string wac_name = 42;
-  optional PlaceType loc_type = 43;
-  optional WikiLinkList link_list = 44;
-  optional AltNameList alt_name_list = 45;
-  optional KeywordList original_keyword_list = 46;
-  optional KeywordList corrected_keyword_list = 47;
-  optional EditDistance edit_distance_actual = 48;
-  optional EditDistance edit_distance_allowable = 49;
-  optional MatchingPercentage matching_percentage = 50;
-  optional PlaceList extra_place_list = 51;
-  optional PlaceList alt_place_list = 52;
+  optional UNLOCode unlocode_code = 4;
+  optional bool is_geoname = 5;
+  optional GeonameID geoname_id = 6;
+  optional EnvelopeID env_id = 7;
+  required string name_utf = 8;
+  required string name_ascii = 9;
+  optional GeoPoint coord = 10;
+  optional FeatureType feat_type = 11;
+  optional PageRank page_rank = 12;
+  optional Date date_from = 13;
+  optional Date date_end = 14;
+  optional Comment comment = 15;
+  optional CountryCode country_code = 16;
+  optional AltCountryCode alt_country_code = 17;
+  optional string country_name = 18;
+  optional CurrencyCode currency_code = 19;
+  optional ContinentCode continent_code = 20;
+  optional string continent_name = 21;
+  optional Admin1Code adm1_code = 22;
+  optional string adm1_name_utf = 23;
+  optional string adm1_name_ascii = 24;
+  optional Admin2Code adm2_code = 25;
+  optional string adm2_name_utf = 26;
+  optional string adm2_name_ascii = 27;
+  optional Admin3Code adm3_code = 28;
+  optional Admin4Code adm4_code = 29;
+  optional Population population = 30;
+  optional Elevation elevation = 31;
+  optional GTopo30 gtopo30 = 32;
+  optional TimeZone tz = 33;
+  optional TZOffSet gmt_offset = 34;
+  optional TZOffSet dst_offset = 35;
+  optional TZOffSet raw_offset = 36;
+  optional Date mod_date = 37;
+  optional IATACode city_code = 38;
+  optional string city_name_utf = 39;
+  optional string city_name_ascii = 40;
+  optional TravelRelatedList tvl_por_list = 41;
+  optional StateCode state_code = 42;
+  optional WorldAreaCode wac_code = 43;
+  optional string wac_name = 44;
+  optional PlaceType loc_type = 45;
+  optional WikiLinkList link_list = 46;
+  optional AltNameList alt_name_list = 47;
+  optional KeywordList original_keyword_list = 48;
+  optional KeywordList corrected_keyword_list = 49;
+  optional EditDistance edit_distance_actual = 50;
+  optional EditDistance edit_distance_allowable = 51;
+  optional MatchingPercentage matching_percentage = 52;
+  optional PlaceList extra_place_list = 53;
+  optional PlaceList alt_place_list = 54;
 }
 
 message UnknownKeywordList {

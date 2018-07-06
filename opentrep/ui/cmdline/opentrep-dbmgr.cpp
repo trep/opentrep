@@ -59,6 +59,7 @@ struct Command_T {
     LIST_BY_IATA,
     LIST_BY_ICAO,
     LIST_BY_FAA,
+    LIST_BY_UNLOCODE,
     LIST_BY_GEONAMEID,
     LIST_NB,
     LIST_ALL,
@@ -205,6 +206,7 @@ void initReadline (swift::SReadline& ioInputReader) {
   Completers.push_back ("list_by_iata %iata_code");
   Completers.push_back ("list_by_icao %icao_code");
   Completers.push_back ("list_by_faa %faa_code");
+  Completers.push_back ("list_by_unlocode %unlocode_code");
   Completers.push_back ("list_by_geonameid %geoname_id");
   Completers.push_back ("list_nb");
   Completers.push_back ("list_all");
@@ -257,6 +259,9 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "list_by_faa") {
       oCommandType = Command_T::LIST_BY_FAA;
+
+    } else if (lCommand == "list_by_unlocode") {
+      oCommandType = Command_T::LIST_BY_UNLOCODE;
 
     } else if (lCommand == "list_by_geonameid") {
       oCommandType = Command_T::LIST_BY_GEONAMEID;
@@ -398,9 +403,23 @@ TokenList_T extractTokenListForFaaCode (const TokenList_T& iTokenList) {
   /**
    * Expected format:
    *   line:         faa_code
-   *   faa_code:     word (alpha{3,4})
+   *   faa_code:     word ((alpha|digit){3,4})
    */
   const std::string lRegEx ("^(([[:alpha:]]|[[:digit:]]){3,4})$");
+
+  //
+  const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
+  return oTokenList;
+}    
+
+// /////////////////////////////////////////////////////////
+TokenList_T extractTokenListForUNLOCode (const TokenList_T& iTokenList) {
+  /**
+   * Expected format:
+   *   line:           unlocode_code
+   *   unlocode_code:  word ((alpha|digit){5})
+   */
+  const std::string lRegEx ("^(([[:alpha:]]|[[:digit:]]){5})$");
 
   //
   const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
@@ -555,6 +574,9 @@ int main (int argc, char* argv[]) {
       std::cout << " list_by_faa" << "\t\t\t"
                 << "List all the entries for a given FAA code"
                 << std::endl;
+      std::cout << " list_by_unlocode" << "\t\t\t"
+                << "List all the entries for a given UN/LOCODE code"
+                << std::endl;
       std::cout << " list_by_geonameid" << "\t\t"
                 << "List all the entries for a given Geoname ID"
                 << std::endl;
@@ -585,7 +607,7 @@ int main (int argc, char* argv[]) {
       // /////////////////////////// Help with Examples //////////////////////
     case Command_T::TUTORIAL: {
       std::cout << std::endl;
-      std::cout << "Typical succession of Commands: " << std::endl;
+      std::cout << "Typical succession of commands (for a MySQL/MariaDB connection here): " << std::endl;
       std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
                 << std::endl;
       std::cout << " create_user" << std::endl;
@@ -597,7 +619,8 @@ int main (int argc, char* argv[]) {
       std::cout << " list_nb" << std::endl;
       std::cout << " list_by_iata nce" << std::endl;
       std::cout << " list_by_icao lfmn" << std::endl;
-      std::cout << " list_by_faa afm" << std::endl;
+      std::cout << " list_by_faa jfk" << std::endl;
+      std::cout << " list_by_unlocode deham" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
       std::cout << std::endl;
       break;
@@ -663,7 +686,7 @@ int main (int argc, char* argv[]) {
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
-      std::string lIataCodeStr ("NCE");
+      std::string lIataCodeStr ("nce");
       parsePlaceKey (lTokenList, lIataCodeStr);
 
       // Call the underlying OpenTREP service
@@ -701,7 +724,7 @@ int main (int argc, char* argv[]) {
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
-      std::string lIcaoCodeStr ("LFMN");
+      std::string lIcaoCodeStr ("lfmn");
       parsePlaceKey (lTokenList, lIcaoCodeStr);
 
       // Call the underlying OpenTREP service
@@ -765,6 +788,44 @@ int main (int argc, char* argv[]) {
       } else {
         std::cout << "List of unmatched words:" << std::endl;
         std::cout << " [" << 1 << "]: " << lFaaCodeStr << std::endl;
+      }
+
+      break;
+    }
+
+      // //////////////////////// List by UN/LOCODE code //////////////////////
+    case Command_T::LIST_BY_UNLOCODE: {
+      //
+      TokenList_T lTokenList = extractTokenListForUNLOCode(lTokenListByReadline);
+
+      // Parse the parameters given by the user, giving default values
+      // in case the user does not specify some (or all) of them
+      std::string lUNLOCodeStr ("deham");
+      parsePlaceKey (lTokenList, lUNLOCodeStr);
+
+      // Call the underlying OpenTREP service
+      const OPENTREP::UNLOCode_T lUNLOCode (lUNLOCodeStr);
+      OPENTREP::LocationList_T lLocationList;
+      const OPENTREP::NbOfMatches_T nbOfMatches =
+        opentrepService.listByUNLOCode (lUNLOCode, lLocationList);
+
+      //
+      std::cout << nbOfMatches << " (geographical) location(s) have been found "
+                << "matching the UN/LOCODE code ('" << lUNLOCodeStr << "')."
+                << std::endl;
+      
+      if (nbOfMatches != 0) {
+        OPENTREP::NbOfMatches_T idx = 1;
+        for (OPENTREP::LocationList_T::const_iterator itLocation =
+               lLocationList.begin();
+             itLocation != lLocationList.end(); ++itLocation, ++idx) {
+          const OPENTREP::Location& lLocation = *itLocation;
+          std::cout << " [" << idx << "]: " << lLocation << std::endl;
+        }
+
+      } else {
+        std::cout << "List of unmatched words:" << std::endl;
+        std::cout << " [" << 1 << "]: " << lUNLOCodeStr << std::endl;
       }
 
       break;

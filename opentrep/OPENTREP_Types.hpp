@@ -32,7 +32,7 @@ namespace OPENTREP {
   };
 
   /** 
-   * File-path for the ORI-maintained list of POR (points of reference).
+   * File-path for the OPTD-maintained list of POR (points of reference).
    */
   struct PORFilePath_T : public FilePath_T {
   public:
@@ -87,6 +87,9 @@ namespace OPENTREP {
 
   /**
    * IATA three-letter code (e.g., ORD for Chicago O'Hare, IL, USA).
+   *
+   * IATA is the [International Air Transport Association](http://en.wikipedia.org/wiki/International_Air_Transport_Association).
+   * The corresponding alternate name code in Geonames is ``iata``.
    */
   struct IATACode_T : public std::string {
   public:
@@ -99,6 +102,9 @@ namespace OPENTREP {
 
   /**
    * ICAO four-letter code (e.g., KORD).
+   *
+   * ICAO is the [International Civil Aviation Organization](http://en.wikipedia.org/wiki/International_Civil_Aviation_Organization).
+   * The corresponding alternate name code in Geonames is ``icao``.
    */
   struct ICAOCode_T : public std::string {
   public:
@@ -108,7 +114,6 @@ namespace OPENTREP {
    * List of ICAO four-letter codes.
    */
   typedef std::list<ICAOCode_T> ICAOCodeList_T;
-
 
   /**
    * Geonames ID.
@@ -126,11 +131,36 @@ namespace OPENTREP {
 
   /**
    * FAA three-letter code (e.g., ORD).
+   * FAA is the [U.S. Federal Aviation Administration](http://en.wikipedia.org/wiki/Federal_Aviation_Administration).
+   * The corresponding alternate name code in Geonames is ``faac``.
    */
   struct FAACode_T : public std::string {
   public:
     explicit FAACode_T (const std::string& iValue) : std::string (iValue) { }
   };
+
+  /**
+   * TC LID four-letter code (e.g., CTB6).
+   *
+   * TC stands for [Transport Canada](http://en.wikipedia.org/wiki/Transport_Canada).
+   * LID stands for [Location Identifier](http://en.wikipedia.org/wiki/Location_identifier).
+   * The corresponding alternate name code in Geonames is ``tcid``.
+   */
+  struct TCLIDCode_T : public std::string {
+  public:
+    explicit TCLIDCode_T (const std::string& iValue) : std::string (iValue) { }
+  };
+
+  /**
+   * UN/LOCODE five-letter code (e.g., DEHAM).
+   *
+   * UN/LOCODE is the [United Nations Code for Trade and Transport Locations](http://en.wikipedia.org/wiki/UN/LOCODE)
+   * The corresponding alternate name code in Geonames is ``unlc``.
+   */
+  struct UNLOCode_T : public std::string {
+  public:
+    explicit UNLOCode_T (const std::string& iValue) : std::string (iValue) { }
+  };  
 
   /**
    * Location name (e.g., Nice Côte d'Azur).
@@ -152,7 +182,7 @@ namespace OPENTREP {
   };
     
   /** 
-   * ASCII name (not necessarily in English, e.g., aéroport de Nice Cote d'Azur).
+   * ASCII name (not necessarily in English, e.g., Aeroport de Nice Cote d'Azur).
    */
   struct ASCIIName_T : public LocationName_T {
   public:
@@ -177,13 +207,12 @@ namespace OPENTREP {
    * List of the IATA codes of the travel-related POR, aggregated within
    * a single string (e.g., "EMB,JCC,SFO" for San Francisco, California, USA).
    */
-  struct TvlPORListString_T : public IATACode_T {
+  struct TvlPORListString_T : public std::string {
   public:
     explicit TvlPORListString_T (const std::string& iValue)
-      : IATACode_T (iValue) {
+      : std::string (iValue) {
     }
   };
-  typedef std::list<TvlPORListString_T> TvlPORList_T;
 
   /**
    * Language code (e.g., en). Note that some language codes may contain
@@ -231,6 +260,19 @@ namespace OPENTREP {
       : std::string (iValue) { }
   };
 
+  /** 
+   * List of the IATA codes of the served cities, aggregated within
+   * a single string (e.g., "HFD,BDL,SFY" for
+   * [Bradley International Airport](http://www.geonames.org/5282636),
+   * Connecticut (CT), United States (US)).
+   */
+  struct CityListString_T : public std::string {
+  public:
+    explicit CityListString_T (const std::string& iValue)
+      : std::string (iValue) {
+    }
+  };
+
   /**
    * State code (e.g., IL for Illinois, USA).
    */
@@ -240,7 +282,9 @@ namespace OPENTREP {
   };
 
   /**
-   * Country code (e.g., US for USA).
+   * Country two-letter code (e.g., US for USA).
+   *
+   * The code follows the [ISO 639-1 standard](http://en.wikipedia.org/wiki/ISO_639-1).
    */
   struct CountryCode_T : public std::string {
   public:
@@ -248,7 +292,11 @@ namespace OPENTREP {
   };
 
   /**
-   * Alternative country code (e.g., US for USA).
+   * Alternative country code (e.g., GB for UK).
+   *
+   * That alternative code is used when the place belongs to several countries.
+   * For instance, [Jersey Airport](http://www.geonames.org/6296595) belongs
+   * to both Jersey (JE) and UK (GB).
    */
   struct AltCountryCode_T : public std::string {
   public:
@@ -258,6 +306,8 @@ namespace OPENTREP {
 
   /**
    * Country name (e.g., Germany, Switzerland, France).
+   *
+   * That is the (most used) English name, as reference in Wikipedia.
    */
   struct CountryName_T : public std::string {
   public:
@@ -266,11 +316,17 @@ namespace OPENTREP {
 
   /**
    * US DOT World Area Code (WAC) (e.g., 1 for Alaska, US, or 427 for France)
+   *
+   * Those [US DOT WAC codes](http://en.wikipedia.org/wiki/US_DOT_WAC) are
+   * maintained by the [BTS](http://en.wikipedia.org/wiki/Bureau_of_Transportation_Statistics),
+   * part of the [US DOT](http://en.wikipedia.org/wiki/United_States_Department_of_Transportation).
    */
   typedef int WAC_T;
 
   /**
    * US DOT World Area Code (WAC) name (e.g., Alaska)
+   *
+   * See above WAC_T for the details.
    */
   struct WACName_T : public std::string {
   public:
@@ -279,6 +335,8 @@ namespace OPENTREP {
 
   /**
    * Currency code (e.g., USD, EUR)
+   *
+   * That currency code follows the [ISO 4217 standard](http://en.wikipedia.org/wiki/ISO_4217).
    */
   struct CurrencyCode_T : public std::string {
   public:
@@ -305,6 +363,8 @@ namespace OPENTREP {
 
   /**
    * Administrative code of rank 1 (e.g., IL for Illinois).
+   *
+   * It corresponds to Geonames ADM1 code and names.
    */
   struct Admin1Code_T : public std::string {
   public:
@@ -313,6 +373,8 @@ namespace OPENTREP {
 
   /**
    * Administrative UTF8 name of rank 1 (e.g., Illinois).
+   *
+   * It corresponds to Geonames ADM1 code and names.
    */
   struct Admin1UTFName_T : public std::string {
   public:
@@ -322,6 +384,8 @@ namespace OPENTREP {
 
   /**
    * Administrative ASCII name of rank 1 (e.g., Illinois).
+   *
+   * It corresponds to Geonames ADM1 code and names.
    */
   struct Admin1ASCIIName_T : public std::string {
   public:
@@ -331,6 +395,8 @@ namespace OPENTREP {
 
   /**
    * Administrative code of rank 2.
+   *
+   * It corresponds to Geonames ADM2 code and names.
    */
   struct Admin2Code_T : public std::string {
   public:
@@ -339,6 +405,8 @@ namespace OPENTREP {
 
   /**
    * Administrative UTF8 name of rank 2 (e.g., Alpes-Maritimes).
+   *
+   * It corresponds to Geonames ADM2 code and names.
    */
   struct Admin2UTFName_T : public std::string {
   public:
@@ -348,6 +416,8 @@ namespace OPENTREP {
 
   /**
    * Administrative ASCII name of rank 2 (e.g., Alpes-Maritimes).
+   *
+   * It corresponds to Geonames ADM2 code and names.
    */
   struct Admin2ASCIIName_T : public std::string {
   public:
@@ -357,6 +427,8 @@ namespace OPENTREP {
 
   /**
    * Administrative code of rank 3.
+   *
+   * It corresponds to Geonames ADM3 code.
    */
   struct Admin3Code_T : public std::string {
   public:
@@ -365,6 +437,8 @@ namespace OPENTREP {
 
   /**
    * Administrative code of rank 4.
+   *
+   * It corresponds to Geonames ADM4 code.
    */
   struct Admin4Code_T : public std::string {
   public:
@@ -373,6 +447,8 @@ namespace OPENTREP {
 
   /**
    * Feature class (e.g., S for spot).
+   *
+   * It corresponds to [Geonames feature codes and classes](http://www.geonames.org/export/codes.html).
    */
   struct FeatureClass_T : public std::string {
   public:
@@ -382,6 +458,8 @@ namespace OPENTREP {
 
   /**
    * Feature code (e.g., AIRP for airport).
+   *
+   * It corresponds to [Geonames feature codes and classes](http://www.geonames.org/export/codes.html).
    */
   struct FeatureCode_T : public std::string {
   public:
@@ -390,6 +468,8 @@ namespace OPENTREP {
 
   /**
    * Feature name (e.g., airport, airfield, airstrip, airbase, heliport).
+   *
+   * It corresponds to [Geonames feature codes and classes](http://www.geonames.org/export/codes.html).
    */
   struct FeatureName_T : public std::string {
   public:
@@ -414,21 +494,29 @@ namespace OPENTREP {
 
   /**
    * Date (e.g., modification date).
+   *
+   * It corresponds to the date when the place was last modified on Geonames.
    */
   typedef boost::gregorian::date Date_T;
     
   /**
    * Population (e.g., 400,000).
+   *
+   * It corresponds to the population size as curated by Geonames.
    */
   typedef unsigned int Population_T;
 
   /**
    * Geographical elevation (e.g., 300).
+   *
+   * It corresponds to the elevation as curated by Geonames.
    */
   typedef int Elevation_T;
 
   /**
    * Geographical topology 30.
+   *
+   * It corresponds to the topology value as curated by Geonames.
    */
   typedef int GTopo30_T;
 
@@ -439,16 +527,6 @@ namespace OPENTREP {
   public:
     explicit TimeZone_T (const std::string& iValue) : std::string (iValue) { }
   };
-
-  /**
-   * PageRank (e.g., 94.66%).
-   */
-  typedef double PageRank_T;
-
-  /**
-   * Xapian document ID.
-   */
-  typedef int XapianDocID_T;
 
   /**
    * GMT offset (e.g., 1)
@@ -466,20 +544,31 @@ namespace OPENTREP {
   typedef float RawOffset_T;
 
   /**
-   * Whether or not that POR is referenced by Geonames
+   * PageRank (e.g., 94.66%).
+   *
+   * That value is derived from the frequency of trips to/from the place.
+   */
+  typedef double PageRank_T;
+
+  /**
+   * Whether or not that place is referenced by Geonames
    */
   typedef bool IsGeonames_T;
 
   /**
-   * Whether or not that POR is an airport
+   * Whether or not that place is an airport
    */
   typedef bool IsAirport_T;
 
   /**
-   * Whether or not that POR is for commercial use
+   * Whether or not that place is for commercial use
    */
   typedef bool IsCommercial_T;
 
+  /**
+   * Xapian document ID.
+   */
+  typedef int XapianDocID_T;
 
   /**
    * Weight when indexing terms of a Xapian document.

@@ -344,6 +344,7 @@ namespace OPENTREP {
            iata_code varchar(3) default NULL,
            icao_code varchar(4) default NULL,
            faa_code varchar(4) default NULL,
+           unlocode_code varchar(5) default NULL,
            is_geonames varchar(1) default NULL,
            geoname_id int(11) default NULL,
            envelope_id int(11) default NULL,
@@ -361,6 +362,7 @@ namespace OPENTREP {
         lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
         lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
         lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "unlocode_code varchar(5) default NULL, ";
         lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
         lSQLTableCreationStr << "geoname_id int(11) default NULL, ";
         lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
@@ -392,6 +394,7 @@ namespace OPENTREP {
            iata_code varchar(3) default NULL,
            icao_code varchar(4) default NULL,
            faa_code varchar(4) default NULL,
+           unlocode_code varchar(5) default NULL,
            is_geonames varchar(1) default NULL,
            geoname_id int(11) default NULL,
            envelope_id int(11) default NULL,
@@ -408,6 +411,7 @@ namespace OPENTREP {
         lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
         lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
         lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "unlocode_code varchar(5) default NULL, ";
         lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
         lSQLTableCreationStr << "geoname_id int(11) default NULL, ";
         lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
@@ -604,7 +608,7 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from optd_por where iata_code = iIataCode;
+         select serialised_place from optd_por where icao_code = iIcaoCode;
       */
       const std::string lCode = static_cast<std::string> (iIcaoCode);
       const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
@@ -640,7 +644,7 @@ namespace OPENTREP {
     
       // Instanciate a SQL statement (no request is performed at that stage)
       /**
-         select serialised_place from optd_por where iata_code = iIataCode;
+         select serialised_place from optd_por where faa_code = iFaaCode;
       */
       const std::string lCode = static_cast<std::string> (iFaaCode);
       const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
@@ -648,6 +652,42 @@ namespace OPENTREP {
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where faa_code = :place_faa_code",
+                           soci::into (ioSerialisedPlaceStr),
+                           soci::use (lCodeUpper));
+
+      // Execute the SQL query
+      ioSelectStatement.execute();
+
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr
+        << "Error in the 'select serialised_place from optd_por' SQL request: "
+        << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void DBManager::
+  prepareSelectBlobOnUNLOCodeStatement (soci::session& ioSociSession,
+                                        soci::statement& ioSelectStatement,
+                                        const UNLOCode_T& iUNLOCode,
+                                        std::string& ioSerialisedPlaceStr) {
+    std::string oSerialisedPlaceStr;
+  
+    try {
+    
+      // Instanciate a SQL statement (no request is performed at that stage)
+      /**
+         select serialised_place from optd_por where unlocode_code = iUNLOCode;
+      */
+      const std::string lCode = static_cast<std::string> (iUNLOCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
+
+      ioSelectStatement = (ioSociSession.prepare
+                           << "select serialised_place from optd_por "
+                           << "where unlocode_code = :place_unlocode_code",
                            soci::into (ioSerialisedPlaceStr),
                            soci::use (lCodeUpper));
 
@@ -736,6 +776,7 @@ namespace OPENTREP {
       const std::string lIataCode (iPlace.getIataCode());
       const std::string lIcaoCode (iPlace.getIcaoCode());
       const std::string lFaaCode (iPlace.getFaaCode());
+      const std::string lUNLOCode (iPlace.getUNLOCode());
       const std::string lIsGeonames ((iPlace.isGeonames())?"Y":"N");
       const std::string lGeonameID =
         boost::lexical_cast<std::string> (iPlace.getGeonamesID());
@@ -752,6 +793,7 @@ namespace OPENTREP {
       oStr << "insert into optd_por values (" << lPK << ", ";
       oStr << lLocationType << ", ";
       oStr << lIataCode << ", " << lIcaoCode << ", " << lFaaCode << ", ";
+      oStr << lUNLOCode << ", ";
       oStr << lIsGeonames << ", " << lGeonameID << ", ";
       oStr << lEnvID << ", " << lDateFrom << ", " << lDateEnd << ", ";
       oStr << lRawDataString << ")";
@@ -760,11 +802,11 @@ namespace OPENTREP {
 
       ioSociSession << "insert into optd_por values (:pk, "
                     << ":location_type, :iata_code, :icao_code, :faa_code, "
-                    << ":is_geonames, :geoname_id, "
+                    << ":unlocode_code, :is_geonames, :geoname_id, "
                     << ":envelope_id, :date_from, :date_until, "
                     << ":serialised_place)",
         soci::use (lPK), soci::use (lLocationType), soci::use (lIataCode),
-        soci::use (lIcaoCode), soci::use (lFaaCode),
+        soci::use (lIcaoCode), soci::use (lFaaCode), soci::use (lUNLOCode),
         soci::use (lIsGeonames), soci::use (lGeonameID),
         soci::use (lEnvID), soci::use (lDateFrom), soci::use (lDateEnd),
         soci::use (lRawDataString);
@@ -1170,6 +1212,67 @@ namespace OPENTREP {
     } catch (std::exception const& lException) {
       std::ostringstream errorStr;
       errorStr << "Error when trying to retrieve a POR for " << iFaaCode
+               << " from the SQL database: " << lException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseException (errorStr.str());
+    }
+
+    //
+    return oNbOfEntries;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfDBEntries_T DBManager::getPORByUNLOCode (soci::session& ioSociSession,
+                                               const UNLOCode_T& iUNLOCode,
+                                               LocationList_T& ioLocationList) {
+    NbOfDBEntries_T oNbOfEntries = 0;
+
+    try {
+
+      // Prepare the SQL request corresponding to the select statement
+      soci::statement lSelectStatement (ioSociSession);
+      std::string lPlaceRawDataString;
+      DBManager::prepareSelectBlobOnUNLOCodeStatement (ioSociSession,
+                                                       lSelectStatement,
+                                                       iUNLOCode,
+                                                       lPlaceRawDataString);
+
+      /**
+       * Retrieve the details of the place, as well as the alternate
+       * names, most often in other languages (e.g., "ru", "zh").
+       */
+      bool hasStillData = true;
+      while (hasStillData == true) {
+        hasStillData = iterateOnStatement (lSelectStatement,
+                                           lPlaceRawDataString);
+
+        // DEBUG
+        const std::string lFoundStr = hasStillData?"Yes":"No";
+        OPENTREP_LOG_DEBUG ("Checked locations corresponding to "
+                            << iUNLOCode << " UN/LOCODE code. Found: "
+                            << lFoundStr);
+
+        if (hasStillData == true) {
+          //
+          ++oNbOfEntries;
+
+          // Parse the POR details and create the corresponding
+          // Location structure
+          const RawDataString_T lPlaceRawData (lPlaceRawDataString);
+          Location lLocation = Result::retrieveLocation (lPlaceRawData);
+          lLocation.setCorrectedKeywords (iUNLOCode);
+
+          // Add the new found location to the list
+          ioLocationList.push_back (lLocation);
+
+          // Debug
+          OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
+        }
+      }
+      
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to retrieve a POR for " << iUNLOCode
                << " from the SQL database: " << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseException (errorStr.str());

@@ -17,13 +17,15 @@ namespace OPENTREP {
   Place::Place() :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _location (IATACode_T (""), IATAType::LAST_VALUE, 0,
-               ICAOCode_T (""), FAACode_T (""),
+               ICAOCode_T (""), FAACode_T (""), UNLOCode_T (""),
                CommonName_T (""), ASCIIName_T (""), 0,
                Date_T (1970, 01, 01), Date_T (2999, 12, 31), Comment_T (""),
-               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""), 0,
+               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""),
+               CityListString_T (""), 0,
                StateCode_T (""),
                CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
-               0, WACName_T (""), CurrencyCode_T (""), ContinentName_T (""), 
+               0, WACName_T (""),
+               CurrencyCode_T (""), ContinentName_T (""), 
                0.0, 0.0,
                FeatureClass_T (""), FeatureCode_T (""),
                Admin1Code_T (""), Admin1UTFName_T (""), Admin1ASCIIName_T (""),
@@ -40,13 +42,15 @@ namespace OPENTREP {
   Place::Place (const LocationKey& iKey) :
     _world (NULL), _placeHolder (NULL), _mainPlace (NULL),
     _location (iKey.getIataCode(), iKey.getIataType(), iKey.getGeonamesID(),
-               ICAOCode_T (""), FAACode_T (""),
+               ICAOCode_T (""), FAACode_T (""), UNLOCode_T (""),
                CommonName_T (""), ASCIIName_T (""), 0,
                Date_T (1970, 01, 01), Date_T (2999, 12, 31), Comment_T (""),
-               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""), 0,
+               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""),
+               CityListString_T (""), 0,
                StateCode_T (""),
                CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
-               0, WACName_T (""), CurrencyCode_T (""), ContinentName_T (""), 
+               0, WACName_T (""),
+               CurrencyCode_T (""), ContinentName_T (""), 
                0.0, 0.0,
                FeatureClass_T (""), FeatureCode_T (""),
                Admin1Code_T (""), Admin1UTFName_T (""), Admin1ASCIIName_T (""),
@@ -505,6 +509,17 @@ namespace OPENTREP {
       // Add the (FAA code, feature name) to the Xapian index, where the
       // feature name is derived from the feature code.
       addNameToXapianSets (lPageRank, lFaaCode, lFeatureCode);
+    }
+
+    // Add the UN/LOCODE code
+    const std::string& lUNLOCode = _location.getUNLOCode();
+    if (lUNLOCode.empty() == false) {
+      lWeightedTermSet.insert (lUNLOCode);
+      _spellingSet.insert (lUNLOCode);
+
+      // Add the (UN/LOCODE code, feature name) to the Xapian index, where the
+      // feature name is derived from the feature code.
+      addNameToXapianSets (lPageRank, lUNLOCode, lFeatureCode);
     }
 
     // Add the Geonames ID

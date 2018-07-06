@@ -148,12 +148,16 @@ namespace OPENTREP {
   private:
     // //////////////////// Attributes ///////////////////////
     /**
-     * IATA code (e.g., ORD, CHI, SFO, LAX, LHR, LON, CDG, PAR).
+     * IATA three-letter code (e.g., ORD, CHI, SFO, LAX, LHR, LON, CDG, PAR).
+     *
+     * See IATACode_T for more details.
      */
     IATACode_T _iataCode;
 
     /**
      * IATA location type (e.g., A for airport).
+     *
+     * See IATAType for more details.
      */
     IATAType _iataType;
 
@@ -163,7 +167,7 @@ namespace OPENTREP {
     GeonamesID_T _geonamesID;
 
     /**
-     * Whether or not that POR is referenced by Geonames
+     * Whether or not that place is referenced by Geonames.
      */
     IsGeonames_T _isGeonames;
   };

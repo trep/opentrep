@@ -175,6 +175,17 @@ namespace OPENTREP {
 
     /**
      * List all the POR (points of reference) corresponding
+     * to the given UN/LOCODE code.
+     *
+     * @param const UNLOCode_T& The given UN/LOCODE code (key).
+     * @param LocationList_T& List of (geographical) locations, if any,
+     *                        matching the given key.
+     * @return NbOfMatches_T Number of matches. 
+     */
+    NbOfMatches_T listByUNLOCode (const UNLOCode_T&, LocationList_T&);
+
+    /**
+     * List all the POR (points of reference) corresponding
      * to the given Geoname ID.
      *
      * @param const GeonamesID_T& The given Geoname ID (key).

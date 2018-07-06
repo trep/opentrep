@@ -88,6 +88,23 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeUNLOCode::storeUNLOCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeUNLOCode::operator() (std::vector<uchar_t> iChar,
+                                    bsq::unused_type, bsq::unused_type) const {
+
+      const std::string lUNLOCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::UNLOCode_T lUNLOCode (lUNLOCodeStr);
+      _location.setUNLOCode (lUNLOCode);
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("UN/LOCODE code: " << _location.getUNLOCode());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeGeonamesID::storeGeonamesID (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -189,7 +206,7 @@ namespace OPENTREP {
                                       bsq::unused_type)const {
 
       const std::string lTvlPORCodeStr (iChar.begin(), iChar.end());
-      const OPENTREP::TvlPORListString_T lTvlPORCode (lTvlPORCodeStr);
+      const OPENTREP::IATACode_T lTvlPORCode (lTvlPORCodeStr);
       _location._itTvlPORList.push_back (lTvlPORCode);
        // DEBUG
        //OPENTREP_LOG_DEBUG ("Travel-related IATA code: " << lTvlPORCodeStr);
@@ -948,7 +965,7 @@ namespace OPENTREP {
        -- asciiname         : Name of geographical point in plain ASCII
        --                     characters;
        --                     (ASCII) varchar(200)
-       -- alternatenames    : Alternate names, comma separated
+       -- alternate-names   : Alternate names, comma separated
        --                     varchar(5000)
        -- latitude          : Latitude in decimal degrees (WGS84)
        -- longitude         : Longitude in decimal degrees (WGS84)
@@ -1028,6 +1045,7 @@ namespace OPENTREP {
        -- wac               : The US DOT World Area Code (WAC)
        -- wac_name          : The US DOT world area name (of the country/state)
        -- ccy_code          : Currency code (of the country)
+       -- unlc_list         : List of UN/LOCODE codes. varchar(100)
        --
        -- Continents:
        -- -----------
@@ -1092,6 +1110,7 @@ namespace OPENTREP {
        wac                int(3)
        wac_name           varchar(200)
        ccy_code           varchar(3)
+       unlc_list          varchar(100)
 
        iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
@@ -1106,7 +1125,8 @@ namespace OPENTREP {
        city_code_list^city_name_list^city_detail_list^tvl_por_list^
        state_code^location_type^wiki_link^
        alt_name_section^
-       wac^wac_name^ccy_code
+       wac^wac_name^ccy_code^
+       unlc_list
     */ 
 
     /**
@@ -1182,7 +1202,7 @@ namespace OPENTREP {
         // >> '^' >> -alt_name_short_list[storeAltNameShortListString(_location)]
 
         por_details_additional =
-          wac >> '^' >> wac_name >> '^' >> -ccy_code
+          wac >> '^' >> wac_name >> '^' >> -ccy_code >> '^' >> -unlc_section
           ;
 
         iata_code =
@@ -1378,6 +1398,19 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeCurrencyCode(_location)]
           ;
 
+        unlc_section = unlc_details % '=';
+
+        unlc_details =
+          unlocode_code >> '|' >> -unlc_qualifiers
+          ;
+
+        unlocode_code =
+          bsq::repeat(5)[bsu::char_("A-Z0-9")][storeUNLOCode(_location)];
+
+        unlc_qualifiers =
+          bsq::repeat(1,2)[bsu::char_("hp")]
+          ;
+
         por_type =
           bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
@@ -1498,6 +1531,10 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (wac);
         BOOST_SPIRIT_DEBUG_NODE (wac_name);
         BOOST_SPIRIT_DEBUG_NODE (ccy_code);
+        BOOST_SPIRIT_DEBUG_NODE (unlc_section);
+        BOOST_SPIRIT_DEBUG_NODE (unlc_details);
+        BOOST_SPIRIT_DEBUG_NODE (unlocode_code);
+        BOOST_SPIRIT_DEBUG_NODE (unlc_qualifiers);
       }
 
       // Instantiation of rules
@@ -1523,7 +1560,8 @@ namespace OPENTREP {
         alt_name_section, alt_name_details,
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,
         lang_code_opt, lang_code_2char, lang_code_ext, lang_code_hist,
-        por_details_additional, wac, wac_name, ccy_code;
+        por_details_additional, wac, wac_name, ccy_code,
+        unlc_section, unlc_details, unlocode_code, unlc_qualifiers;
       
       // Parser Context
       Location& _location;
