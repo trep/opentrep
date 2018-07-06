@@ -64,8 +64,8 @@ $ dnf -y install opentrep opentrep-doc
 
 You can also get the RPM packages (which may work on Linux
 distributions like Novel Suse and Mandriva) from the Fedora repository
-(e.g., for Fedora 26,
-http://fr2.rpmfind.net/linux/fedora/releases/26/Everything/)
+(e.g., for Fedora 28,
+http://fr2.rpmfind.net/linux/fedora/releases/28/Everything/)
 
 ## Installation from the sources
 ### Clone the Git repository
@@ -115,10 +115,24 @@ $ dnf -y install doxygen ghostscript "tex(latex)"
 ### On MacOS
 * With Homebrew:
 ```bash
-$ brew install boost boost-python cmake libedit xapian soci sqlite mysql \
-  icu4c protobuf protobuf-c doxygen
+$ brew install boost boost-python boost-python3 cmake libedit \
+  xapian sqlite mysql icu4c protobuf protobuf-c doxygen
 ```
  
+#### SOCI
+* On MacOS, as of mid-2018, SOCI 4.0 has still not been released,
+  and soci-mysql is no longer available. Hence, SOCI must be built
+  from the sources. The following shows how to do that:
+```bash
+$ mkdir -p ~/dev/infra/soci && cd ~/dev/infra/soci
+$ git clone https://github.com/SOCI/soci.git
+$ cd soci
+$ mkdir build && cd build
+$ cmake ..
+$ make
+$ sudo make install
+```
+
 ### Building the library and test binary
 To customise the following to your environment, you can alter
 the installation directory:
