@@ -101,6 +101,13 @@ namespace OPENTREP {
       return _location.getFaaCode();
     }
     
+    /**
+     * Get the UN/LOCODE five-letter code.
+     */
+    const UNLOCode_T& getUNLOCode() const {
+      return _location.getUNLOCode();
+    }
+
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -219,6 +226,13 @@ namespace OPENTREP {
      */
     const WACName_T& getWACName() const {
       return _location.getWACName();
+    }
+    
+    /**
+     * Get the currency code.
+     */
+    const CurrencyCode_T& getCurrencyCode() const {
+      return _location.getCurrencyCode();
     }
     
     /**
@@ -561,6 +575,13 @@ namespace OPENTREP {
       _location.setFaaCode (iFaaCode);
     }
     
+    /**
+     * Set the UN/LOCODE five-letter code.
+     */
+    void setUNLOCode (const std::string& iUNLOCode) {
+      return _location.setUNLOCode (iUNLOCode);
+    }
+
     /** 
      * Set the common name (usually in American English, but not necessarily
      * in ASCII).

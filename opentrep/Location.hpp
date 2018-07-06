@@ -73,6 +73,16 @@ namespace OPENTREP {
       return _faaCode;
     }
     
+    /**
+     * Get the UN/LOCODE five-letter code.
+     *
+     *
+     * See UNLOCode_T for more details.
+     */
+    const UNLOCode_T& getUNLOCode() const {
+      return _unLOCode;
+    }
+
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -128,6 +138,13 @@ namespace OPENTREP {
      */
     const Comment_T& getComment() const {
       return _comment;
+    }
+
+    /** 
+     * Get the list of IATA codes of the served cities.
+     */
+    const CityListString_T& getCityListString() const {
+      return _cityListString;
     }
 
     /**
@@ -498,6 +515,13 @@ namespace OPENTREP {
       _faaCode = FAACode_T (iFaaCode);
     }
     
+    /**
+     * Set the UN/LOCODE five-letter code.
+     */
+    void setUNLOCode (const std::string& iUNLOCode) {
+      _unLOCode = UNLOCode_T (iUNLOCode);
+    }
+
     /** 
      * Set the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -576,6 +600,13 @@ namespace OPENTREP {
       _cityAsciiName = CityASCIIName_T (iCityAsciiName);
     }
     
+    /** 
+     * Set the list of IATA codes of the served cities.
+     */
+    void setCityListString (const std::string& iCityListString) {
+      _cityListString = CityListString_T (iCityListString);
+    }
+
     /**
      * Set the city Geonames ID (may be 0 if unknown).
      */
@@ -895,6 +926,11 @@ namespace OPENTREP {
     void consolidateTvlPORListString();
 
     /**
+     * Aggregate the temporary IATA codes into the list of served cities.
+     */
+    void consolidateCityListString();
+
+    /**
      * Derive a list from a (Geonames) feature code. For instance, the 'AIRP'
      * feature code provides:
      * <ul>
@@ -975,11 +1011,12 @@ namespace OPENTREP {
      * Main Constructor. 
      */
     Location (const IATACode_T&, const IATAType&, const GeonamesID_T&,
-              const ICAOCode_T&, const FAACode_T&,
+              const ICAOCode_T&, const FAACode_T&, const UNLOCode_T&,
               const CommonName_T&, const ASCIIName_T&,
               const EnvelopeID_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
+              const CityListString_T&,
               const GeonamesID_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const WAC_T&, const WACName_T&,
@@ -1029,13 +1066,25 @@ namespace OPENTREP {
 
     /**
      * ICAO code (e.g., KORD).
+     *
+     * See ICAOCode_T for more details.
      */
     ICAOCode_T _icaoCode;
 
     /**
      * FAA code (e.g., ORD).
+     *
+     * See FAACode_T for more details.
      */
     FAACode_T _faaCode;
+
+    /**
+     * UN/LOCODE five-letter code (e.g., DEHAM).
+     *
+     *
+     * See UNLOCode_T for more details.
+     */
+    UNLOCode_T _unLOCode;
 
     /** 
      * Common name (usually in American English, but not necessarily in ASCII).
@@ -1107,6 +1156,14 @@ namespace OPENTREP {
      */
     CityASCIIName_T _cityAsciiName;
 
+    /** 
+     * List of the IATA codes of the served cities, aggregated within
+     * a single string (e.g., "HFD,BDL,SFY" for
+     * [Bradley International Airport](http://www.geonames.org/5282636),
+     * Connecticut (CT), United States (US)).
+     */
+    CityListString_T _cityListString;
+
     /**
      * Related city Geonames ID.
      * \note The related city Geonames ID is null when the Location structure
@@ -1121,11 +1178,15 @@ namespace OPENTREP {
 
     /**
      * Country code (e.g., US).
+     *
+     * See CountryCode_T for more details.
      */
     CountryCode_T _countryCode;
 
     /**
      * Alternative country code (e.g., US).
+     *
+     * See AltCountryCode_T for more details.
      */
     AltCountryCode_T _altCountryCode;
 
@@ -1136,6 +1197,8 @@ namespace OPENTREP {
 
     /**
      * US DOT World Area Code (WAC) (e.g., 1 for Alaska, US, or 427 for France).
+     *
+     * See WAC_T for more details.
      */
     WAC_T _wac;
 
@@ -1145,7 +1208,9 @@ namespace OPENTREP {
     WACName_T _wacName;
 
     /**
-     * Currency code (e.g., USD, EUR)
+     * Currency code (e.g., USD, EUR).
+     *
+     * See CurrencyCode_T for more details.
      */
     CurrencyCode_T _currencyCode;
 
@@ -1171,16 +1236,22 @@ namespace OPENTREP {
 
     /**
      * Feature class (e.g., S for spot).
+     *
+     * See FeatureClass_T for more details.
      */
     FeatureClass_T _featClass;
 
     /**
      * Feature code (e.g., AIRP for airport).
+     *
+     * See FeatureCode_T for more details.
      */
     FeatureCode_T _featCode;
 
     /**
      * Administrative code of rank 1 (e.g., IL for Illinois).
+     *
+     * See Admin1Code_T for more details.
      */
     Admin1Code_T _admin1Code;
 
@@ -1196,6 +1267,8 @@ namespace OPENTREP {
 
     /**
      * Administrative code of rank 2.
+     *
+     * See Admin2Code_T for more details.
      */
     Admin2Code_T _admin2Code;
 
@@ -1211,11 +1284,15 @@ namespace OPENTREP {
 
     /**
      * Administrative code of rank 3.
+     *
+     * See Admin3Code_T for more details.
      */
     Admin3Code_T _admin3Code;
 
     /**
      * Administrative code of rank 4.
+     *
+     * See Admin4Code_T for more details.
      */
     Admin4Code_T _admin4Code;
 
@@ -1266,6 +1343,9 @@ namespace OPENTREP {
 
     /**
      * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).
+     *
+     * See PageRank_T for more details.
+     *
      * When the location is not referenced (e.g., by any schedule),
      * its PageRank/importance should be null (equal to zero).
      * But, as in some circonstances, it is required to have a
@@ -1344,7 +1424,8 @@ namespace OPENTREP {
     std::string _itLangCodeExt;
     std::string _itLangCodeHist;
     AltNameShortList_T _itAltNameShortList;
-    TvlPORList_T _itTvlPORList;
+    IATACodeList_T _itTvlPORList;
+    IATACodeList_T _itCityList;
   };
 
 }

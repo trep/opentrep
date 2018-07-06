@@ -17,7 +17,27 @@ namespace treppb {
 namespace OPENTREP {
 
   /**
-   * @brief Enumeration of place/location types.
+   * @brief Enumeration of place/location types with respect to their use
+   * for transportation purposes.
+   *
+   * IATA is the [International Air Transport Association](http://en.wikipedia.org/wiki/International_Air_Transport_Association).
+   * The types are:
+   * <ul>
+   *  <li>Combined city and airport, abbreviated ``CA``</li>
+   *  <li>Combined city and airport, abbreviated ``CH``</li>
+   *  <li>Combined city and railway station, abbreviated ``CR``</li>
+   *  <li>Combined city and bus station, abbreviated ``CB``</li>
+   *  <li>Combined city and ferry port, abbreviated ``CP``</li>
+   *  <li>City, abbreviated ``C``.
+          For that type, there is no specific associated transport type</li>
+   *  <li>Airport, airfield or aerodrome, abbreviated ``A``</li>
+   *  <li>Heliport, abbreviated ``H``</li>
+   *  <li>Railway station, abbreviated ``R``</li>
+   *  <li>Bus station, abbreviated ``B``</li>
+   *  <li>Ferry/maritime port, abbreviated ``P``</li>
+   *  <li>Off-line point, abbreviated ``O``.
+          It usually means that there is no specific transportation service.</li>
+   * </ul>
    */
   struct IATAType {
   public:
@@ -138,6 +158,8 @@ namespace OPENTREP {
     // //////// Attributes /////////
     /**
      * Location type.
+     *
+     * See IATAType above for more details.
      */
     EN_IATAType _type;
   };

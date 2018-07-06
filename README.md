@@ -123,7 +123,7 @@ $ brew install boost boost-python cmake libedit xapian soci sqlite mysql \
 To customise the following to your environment, you can alter
 the installation directory:
 ```bash
-export INSTALL_BASEDIR=/home/user/dev/deliveries
+export INSTALL_BASEDIR=$HOME/dev/deliveries
 export TREP_VER=99.99.99
 if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"

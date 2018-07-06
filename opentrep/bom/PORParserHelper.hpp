@@ -63,6 +63,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed UN/LOCODE code. */
+    struct storeUNLOCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeUNLOCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed Geonames ID. */
     struct storeGeonamesID : public ParserSemanticAction {
       /** Actor Constructor. */
