@@ -11,6 +11,7 @@
 // Opentrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 
 namespace OPENTREP {
 

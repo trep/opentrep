@@ -14,6 +14,7 @@
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/OutputFormat.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/bom/BomJSONExport.hpp>
 #include <opentrep/bom/LocationExchange.hpp>
 

@@ -15,6 +15,7 @@
 #include <opentrep/LocationKey.hpp>
 #include <opentrep/NameMatrix.hpp>
 #include <opentrep/LocationList.hpp>
+#include <opentrep/CityDetailsList.hpp>
 
 namespace OPENTREP {
 
@@ -141,10 +142,10 @@ namespace OPENTREP {
     }
 
     /** 
-     * Get the list of IATA codes of the served cities.
+     * Get the list of served cities.
      */
-    const CityListString_T& getCityListString() const {
-      return _cityListString;
+    const CityDetailsList_T& getCityList() const {
+      return _cityList;
     }
 
     /**
@@ -601,10 +602,10 @@ namespace OPENTREP {
     }
     
     /** 
-     * Set the list of IATA codes of the served cities.
+     * Set the list of served cities.
      */
-    void setCityListString (const std::string& iCityListString) {
-      _cityListString = CityListString_T (iCityListString);
+    void setCityList (const CityDetailsList_T& iCityList) {
+      _cityList = iCityList;
     }
 
     /**
@@ -926,11 +927,6 @@ namespace OPENTREP {
     void consolidateTvlPORListString();
 
     /**
-     * Aggregate the temporary IATA codes into the list of served cities.
-     */
-    void consolidateCityListString();
-
-    /**
      * Derive a list from a (Geonames) feature code. For instance, the 'AIRP'
      * feature code provides:
      * <ul>
@@ -1005,6 +1001,13 @@ namespace OPENTREP {
      */
     std::string toSingleLocationString() const;
 
+    /** 
+     * Display of the served cities.
+     *
+     * For instance, for [Bradley International Airport](http://www.geonames.org/5282636),
+     * Connecticut (CT), United States (US), it displays "HFD,BDL,SFY"
+     */
+    std::string describeCityDetailsList() const;
     
   public:
     /**
@@ -1016,7 +1019,6 @@ namespace OPENTREP {
               const EnvelopeID_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
               const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
-              const CityListString_T&,
               const GeonamesID_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const WAC_T&, const WACName_T&,
@@ -1157,12 +1159,11 @@ namespace OPENTREP {
     CityASCIIName_T _cityAsciiName;
 
     /** 
-     * List of the IATA codes of the served cities, aggregated within
-     * a single string (e.g., "HFD,BDL,SFY" for
+     * List of the served cities (e.g., HFD, BDL and SFY for
      * [Bradley International Airport](http://www.geonames.org/5282636),
      * Connecticut (CT), United States (US)).
      */
-    CityListString_T _cityListString;
+    CityDetailsList_T _cityList;
 
     /**
      * Related city Geonames ID.

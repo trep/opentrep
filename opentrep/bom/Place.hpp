@@ -12,6 +12,7 @@
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/NameMatrix.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/bom/BomAbstract.hpp>
 #include <opentrep/bom/PlaceList.hpp>
 

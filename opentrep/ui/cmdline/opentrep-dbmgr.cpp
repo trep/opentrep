@@ -13,8 +13,9 @@
 // GNU Readline Wrapper
 #include <opentrep/ui/cmdline/SReadline.hpp>
 // OpenTREP
-#include <opentrep/Location.hpp>
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 #include <opentrep/service/Logger.hpp>

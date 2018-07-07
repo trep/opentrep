@@ -9,6 +9,7 @@
 #include <opentrep/basic/BasConst_General.hpp>
 #include <opentrep/IATAType.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 
 namespace OPENTREP {
 
@@ -25,7 +26,6 @@ namespace OPENTREP {
     _dateFrom (1970, 01, 01), _dateEnd (2999, 12, 31), _comment (""),
     _cityCode (CityCode_T ("")),
     _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
-    _cityListString (CityListString_T ("")),
     _cityGeonamesID (0),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
@@ -69,7 +69,7 @@ namespace OPENTREP {
     _cityCode (iLocation._cityCode),
     _cityUtfName (iLocation._cityUtfName),
     _cityAsciiName (iLocation._cityAsciiName),
-    _cityListString (iLocation._cityListString),
+    _cityList (iLocation._cityList),
     _cityGeonamesID (iLocation._cityGeonamesID),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
@@ -119,7 +119,6 @@ namespace OPENTREP {
                       const CityCode_T& iCityCode,
                       const CityUTFName_T& iCityUtfName,
                       const CityASCIIName_T& iCityAsciiName,
-                      const CityListString_T& iCityListString,
                       const GeonamesID_T& iCityGeonamesID,
                       const StateCode_T& iStateCode,
                       const CountryCode_T& iCountryCode,
@@ -164,7 +163,6 @@ namespace OPENTREP {
     _comment (iComment),
     _cityCode (iCityCode),
     _cityUtfName (iCityUtfName), _cityAsciiName (iCityAsciiName),
-    _cityListString (iCityListString),
     _cityGeonamesID (iCityGeonamesID),
     _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
@@ -231,8 +229,8 @@ namespace OPENTREP {
          << ", " << _envelopeID
          << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
          << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
-         << ", " << _cityListString
          << ", " << _cityGeonamesID
+         << ", " << describeCityDetailsList()
          << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
          << ", " << _countryName
@@ -328,6 +326,22 @@ namespace OPENTREP {
   }
 
   // ////////////////////////////////////////////////////////////////////
+  std::string Location::describeCityDetailsList() const {
+    std::ostringstream oStr;
+    unsigned short idx = 0;
+    for (CityDetailsList_T::const_iterator itCity = _cityList.begin();
+         itCity != _cityList.end(); ++itCity, ++idx) {
+      if (idx != 0) {
+        oStr << ",";
+      }
+      const CityDetails& lCityDetails = *itCity;
+      oStr << lCityDetails;
+    }
+
+    return oStr.str();
+  }
+
+  // ////////////////////////////////////////////////////////////////////
   void Location::consolidateAltNameShortListString() {
     std::ostringstream oStr;
     unsigned short idx = 0;
@@ -361,24 +375,6 @@ namespace OPENTREP {
     // Store the list of IATA codes of the travel-related POR
     const std::string lTvlPORCodeList (oStr.str());
     setTvlPORListString (lTvlPORCodeList);
-  }
-
-  // ////////////////////////////////////////////////////////////////////
-  void Location::consolidateCityListString() {
-    std::ostringstream oStr;
-    unsigned short idx = 0;
-    for (IATACodeList_T::const_iterator itCode = _itCityList.begin();
-         itCode != _itCityList.end(); ++itCode, ++idx) {
-      if (idx != 0) {
-        oStr << ",";
-      }
-      const IATACode_T& lCityCode = *itCode;
-      oStr << lCityCode;
-    }
-
-    // Store the list of IATA codes of the travel-related POR
-    const std::string lCityCodeList (oStr.str());
-    setCityListString (lCityCodeList);
   }
 
   // ////////////////////////////////////////////////////////////////////

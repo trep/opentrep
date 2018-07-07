@@ -18,6 +18,7 @@
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 
 namespace boost_utf = boost::unit_test;
 
