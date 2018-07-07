@@ -1,0 +1,5 @@
+#Sitemap: http://search-airports.com/sitemap.xml
+
+User-agent: *
+Disallow: /Login/
+
