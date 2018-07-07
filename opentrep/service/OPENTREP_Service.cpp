@@ -10,6 +10,8 @@
 // SOCI
 #include <soci/soci.h>
 // OpenTrep
+#include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/basic/BasChronometer.hpp>
 #include <opentrep/factory/FacWorld.hpp>

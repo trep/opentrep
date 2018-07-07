@@ -10,6 +10,7 @@
 #include <opentrep/Travel.pb.h>
 // OpenTrep
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/bom/LocationExchange.hpp>
 
 namespace OPENTREP {

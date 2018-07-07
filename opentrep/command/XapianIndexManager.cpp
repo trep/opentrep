@@ -15,6 +15,7 @@
 #include <xapian.h>
 // OpenTrep
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/bom/Result.hpp>
 #include <opentrep/command/XapianIndexManager.hpp>
 #include <opentrep/service/Logger.hpp>

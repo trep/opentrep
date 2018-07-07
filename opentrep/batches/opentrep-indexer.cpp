@@ -11,6 +11,8 @@
 #include <boost/program_options.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 

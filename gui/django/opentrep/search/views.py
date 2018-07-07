@@ -33,7 +33,7 @@ def great_circle_distance (lat1, lon1, lat2, lon2, degrees=True):
     lat2 = lat2 / 180.0 * math.pi
     lon2 = lon2 / 180.0 * math.pi
 
-    diameter = 12756.0
+    diameter = 12742.0
     lat_diff = (lat2-lat1) / 2.0
     lat_diff_sin = math.sin (lat_diff)
     lon_diff = (lon2-lon1) / 2.0

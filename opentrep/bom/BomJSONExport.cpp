@@ -8,6 +8,7 @@
 //#include <boost/foreach.hpp>
 // OpenTREP
 #include <opentrep/Location.hpp>
+#include <opentrep/CityDetails.hpp>
 #include <opentrep/bom/BomJSONExport.hpp>
 
 namespace OPENTREP { 

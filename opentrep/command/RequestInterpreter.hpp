@@ -6,7 +6,7 @@
 // //////////////////////////////////////////////////////////////////////
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
-#include <opentrep/Location.hpp>
+#include <opentrep/LocationList.hpp>
 
 namespace OPENTREP {
 
