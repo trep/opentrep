@@ -2,8 +2,8 @@ from django.shortcuts import render_to_response
 from django.http import Http404
 import sys, getopt, os
 import simplejson as json
-sys.path.append ('/home/dan/dev/deliveries/opentrep-0.5.4/lib64')
-sys.path.append ('/home/dan/dev/deliveries/opentrep-0.5.4/lib64/python/opentrep')
+sys.path.append ('/var/www/webapps/opentrep/trep/lib')
+sys.path.append ('/var/www/webapps/opentrep/trep/lib/python/opentrep')
 import libpyopentrep
 import Travel_pb2
 
