@@ -114,6 +114,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the details of the served city. */
+    struct storeCityDetailList : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityDetailList (Location&);
+      /** Actor Function (functor). */
+      void operator() (boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };    
+
     /** Store the short list of alternate names. */
     struct storeAltNameShort : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -444,6 +454,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed city Geonames ID. */
+    struct storeCityGeonamesID : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityGeonamesID (Location&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed city UTF8 name. */
     struct storeCityUtfName : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -460,16 +480,6 @@ namespace OPENTREP {
       storeCityAsciiName (Location&);
       /** Actor Function (functor). */
       void operator() (std::vector<uchar_t>,
-                       boost::spirit::qi::unused_type,
-                       boost::spirit::qi::unused_type) const;
-    };
-
-    /** Store the parsed city Geonames ID. */
-    struct storeCityGeonamesID : public ParserSemanticAction {
-      /** Actor Constructor. */
-      storeCityGeonamesID (Location&);
-      /** Actor Function (functor). */
-      void operator() (unsigned int,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };

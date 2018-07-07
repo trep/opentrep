@@ -20,7 +20,7 @@ namespace OPENTREP {
                ICAOCode_T (""), FAACode_T (""), UNLOCode_T (""),
                CommonName_T (""), ASCIIName_T (""), 0,
                Date_T (1970, 01, 01), Date_T (2999, 12, 31), Comment_T (""),
-               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""), 0,
+               CityDetailsList_T(),
                StateCode_T (""),
                CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
                0, WACName_T (""),
@@ -44,7 +44,7 @@ namespace OPENTREP {
                ICAOCode_T (""), FAACode_T (""), UNLOCode_T (""),
                CommonName_T (""), ASCIIName_T (""), 0,
                Date_T (1970, 01, 01), Date_T (2999, 12, 31), Comment_T (""),
-               CityCode_T (""), CityUTFName_T (""), CityASCIIName_T (""), 0,
+               CityDetailsList_T(),
                StateCode_T (""),
                CountryCode_T (""), AltCountryCode_T (""), CountryName_T (""),
                0, WACName_T (""),
@@ -298,8 +298,8 @@ namespace OPENTREP {
   void Place::addNameToXapianSets (const Weight_T& iWeight,
                                    const LocationName_T& iLocationName,
                                    const FeatureCode_T& iFeatureCode,
-                                   const CityUTFName_T& iCityUtfName,
-                                   const CityASCIIName_T& iCityAsciiName,
+                                   const CityNameList_T& iCityUtfNameList,
+                                   const CityNameList_T& iCityAsciiNameList,
                                    const Admin1UTFName_T& iAdm1UtfName,
                                    const Admin1ASCIIName_T& iAdm1AsciiName,
                                    const Admin2UTFName_T& iAdm2UtfName,
@@ -325,14 +325,23 @@ namespace OPENTREP {
     // Add the (tokenised name, feature name) pair to the Xapian index
     addNameToXapianSets (iWeight, lTokenisedName, iFeatureCode);
 
-    // Add the (tokenised name, UTF8 city name) pair to the Xapian index
-    if (iCityUtfName.empty() == false) {
-      lTermSet.insert (lTokenisedName + " " + iCityUtfName);
+    // Add the (tokenised name, UTF8 name) pair to the Xapian index
+    for (CityNameList_T::const_iterator itCityUtfName = iCityUtfNameList.begin();
+         itCityUtfName != iCityUtfNameList.end(); ++itCityUtfName) {
+      const std::string& lCityUtfName = *itCityUtfName;
+      if (lCityUtfName.empty() == false) {
+        lTermSet.insert (lTokenisedName + " " + lCityUtfName);
+      }
     }
-
+    
     // Add the (tokenised name, ASCII city name) pair to the Xapian index
-    if (iCityAsciiName.empty() == false) {
-      lTermSet.insert (lTokenisedName + " " + iCityAsciiName);
+    for (CityNameList_T::const_iterator itCityAsciiName =
+           iCityAsciiNameList.begin();
+         itCityAsciiName != iCityAsciiNameList.end(); ++itCityAsciiName) {
+      const std::string& lCityAsciiName = *itCityAsciiName;
+      if (lCityAsciiName.empty() == false) {
+        lTermSet.insert (lTokenisedName + " " + lCityAsciiName);
+      }
     }
 
     // Add the (tokenised name, UTF8 admin level 1 name) pair to the Xapian index
@@ -386,14 +395,23 @@ namespace OPENTREP {
 
     // Add the (tokenised and normalised name, UTF8 city name) pair
     // to the Xapian index
-    if (iCityUtfName.empty() == false) {
-      lTermSet.insert (lNormalisedCommonName + " " + iCityUtfName);
+    for (CityNameList_T::const_iterator itCityUtfName = iCityUtfNameList.begin();
+         itCityUtfName != iCityUtfNameList.end(); ++itCityUtfName) {
+      const std::string& lCityUtfName = *itCityUtfName;
+      if (lCityUtfName.empty() == false) {
+        lTermSet.insert (lNormalisedCommonName + " " + lCityUtfName);
+      }
     }
-
+    
     // Add the (tokenised and normalised name, ASCII city name) pair
     // to the Xapian index
-    if (iCityAsciiName.empty() == false) {
-      lTermSet.insert (lNormalisedCommonName + " " + iCityAsciiName);
+    for (CityNameList_T::const_iterator itCityAsciiName =
+           iCityAsciiNameList.begin();
+         itCityAsciiName != iCityAsciiNameList.end(); ++itCityAsciiName) {
+      const std::string& lCityAsciiName = *itCityAsciiName;
+      if (lCityAsciiName.empty() == false) {
+        lTermSet.insert (lNormalisedCommonName + " " + lCityAsciiName);
+      }
     }
 
     // Add the (tokenised and normalised name, UTF8 admin level 1 name) pair
@@ -536,25 +554,36 @@ namespace OPENTREP {
       _spellingSet.insert (lFeatureCode);
     }
 
-    // Add the city IATA code
-    const std::string& lCityCode = _location.getCityCode();
-    if (lCityCode.empty() == false && lCityCode != lIataCode) {
-      lWeightedTermSet.insert (lCityCode);
-      _spellingSet.insert (lCityCode);
-    }
+    // Add the details of the served cities
+    CityNameList_T lCityUtfNameList;
+    CityNameList_T lCityAsciiNameList;
+    const CityDetailsList_T& lCityList = _location.getCityList();
+    for (CityDetailsList_T::const_iterator itCity = lCityList.begin();
+         itCity != lCityList.end(); ++itCity) {
+      const CityDetails& lCity = *itCity;
+      
+      // Add the city IATA code
+      const std::string& lCityCode = lCity.getIataCode();
+      if (lCityCode.empty() == false && lCityCode != lIataCode) {
+        lWeightedTermSet.insert (lCityCode);
+        _spellingSet.insert (lCityCode);
+      }
 
-    // Add the city UTF8 name
-    const std::string& lCityUtfName = _location.getCityUtfName();
-    if (lCityUtfName.empty() == false) {
-      lWeightedTermSet.insert (lCityUtfName);
-      _spellingSet.insert (lCityUtfName);
-    }
+      // Add the city UTF8 name
+      const std::string& lCityUtfName = lCity.getUtfName();
+      if (lCityUtfName.empty() == false) {
+        lCityUtfNameList.push_back(lCityUtfName);
+        lWeightedTermSet.insert (lCityUtfName);
+        _spellingSet.insert (lCityUtfName);
+      }
 
-    // Add the city ASCII name
-    const std::string& lCityAsciiName = _location.getCityAsciiName();
-    if (lCityAsciiName.empty() == false) {
-      lWeightedTermSet.insert (lCityAsciiName);
-      _spellingSet.insert (lCityAsciiName);
+      // Add the city ASCII name
+      const std::string& lCityAsciiName = lCity.getAsciiName();
+      if (lCityAsciiName.empty() == false) {
+        lCityAsciiNameList.push_back(lCityAsciiName);
+        lWeightedTermSet.insert (lCityAsciiName);
+        _spellingSet.insert (lCityAsciiName);
+      }
     }
 
     // Add the state code
@@ -626,8 +655,7 @@ namespace OPENTREP {
       addNameToXapianSets (K_DEFAULT_INDEXING_STD_WEIGHT,
                            LocationName_T (lCommonName),
                            FeatureCode_T (lFeatureCode),
-                           CityUTFName_T (lCityUtfName),
-                           CityASCIIName_T (lCityAsciiName),
+                           lCityUtfNameList, lCityAsciiNameList,
                            Admin1UTFName_T (lAdm1UtfName),
                            Admin1ASCIIName_T (lAdm1AsciiName),
                            Admin2UTFName_T (lAdm2UtfName),
@@ -644,8 +672,7 @@ namespace OPENTREP {
       addNameToXapianSets (K_DEFAULT_INDEXING_STD_WEIGHT,
                            LocationName_T (lASCIIName),
                            FeatureCode_T (lFeatureCode),
-                           CityUTFName_T (lCityUtfName),
-                           CityASCIIName_T (lCityAsciiName),
+                           lCityUtfNameList, lCityAsciiNameList,
                            Admin1UTFName_T (lAdm1UtfName),
                            Admin1ASCIIName_T (lAdm1AsciiName),
                            Admin2UTFName_T (lAdm2UtfName),

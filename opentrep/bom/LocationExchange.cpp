@@ -92,9 +92,9 @@ namespace OPENTREP {
 
     // Retrieve and set the Geonames ID
     const GeonamesID_T& lGeonamesID = lLocationKey.getGeonamesID();
-    treppb::GeonameID* lGeonameIDPtr = ioPlace.mutable_geoname_id();
-    assert (lGeonameIDPtr != NULL);
-    lGeonameIDPtr->set_id (lGeonamesID);
+    treppb::GeonamesID* lGeonamesIDPtr = ioPlace.mutable_geonames_id();
+    assert (lGeonamesIDPtr != NULL);
+    lGeonamesIDPtr->set_id (lGeonamesID);
 
     // Retrieve and set the ICAO code
     const ICAOCode_T& lIcaoCode = iLocation.getIcaoCode();
@@ -134,17 +134,37 @@ namespace OPENTREP {
     lPointPtr->set_latitude (lLatitude);
     lPointPtr->set_longitude (lLongitude);
 
-    // Retrieve and set the city IATA code
-    const CityCode_T& lCityCode = iLocation.getCityCode();
-    treppb::IATACode* lCityCodePtr = ioPlace.mutable_city_code();
-    assert (lCityCodePtr != NULL);
-    lCityCodePtr->set_code (lCityCode);
+    // Retrieve and set the list of served city details
+    const CityDetailsList_T& lCityList = iLocation.getCityList();
+    treppb::CityList* lCityListPtr = ioPlace.mutable_city_list();
+    assert (lCityListPtr != NULL);
+    //
+    for (CityDetailsList_T::const_iterator itCity = lCityList.begin();
+         itCity != lCityList.end(); ++itCity) {
+      const CityDetails& lCity = *itCity;
+      treppb::City* lCityPtr = lCityListPtr->add_city();
+      assert (lCityPtr != NULL);
 
-    // Retrieve and set the city names
-    const CityUTFName_T& lCityUtfName = iLocation.getCityUtfName();
-    ioPlace.set_city_name_utf (lCityUtfName);
-    const CityASCIIName_T& lCityAsciiName = iLocation.getCityAsciiName();
-    ioPlace.set_city_name_ascii (lCityAsciiName);
+      // IATA code of the served city
+      const IATACode_T& lIataCode = lCity.getIataCode();
+      treppb::IATACode* lIataCodePtr = lCityPtr->mutable_code();
+      assert (lIataCodePtr != NULL);
+      lIataCodePtr->set_code (lIataCode);
+
+      // Geonames ID of the served city
+      const GeonamesID_T& lGeonamesID = lCity.getGeonamesID();
+      treppb::GeonamesID* lGeonamesIDPtr = lCityPtr->mutable_geonames_id();
+      assert (lGeonamesIDPtr != NULL);
+      lGeonamesIDPtr->set_id (lGeonamesID);
+
+      // City UTF8 name
+      const CityUTFName_T& lCityUtfName = lCity.getUtfName();
+      lCityPtr->set_name_utf (lCityUtfName);
+
+      // City ASCII name
+      const CityASCIIName_T& lCityAsciiName = lCity.getAsciiName();
+      lCityPtr->set_name_ascii (lCityAsciiName);
+    }
 
     // Retrieve and set the state code
     const StateCode_T& lStateCode = iLocation.getStateCode();
@@ -178,6 +198,12 @@ namespace OPENTREP {
     // Retrieve and set the US DOT World Area Code (WAC) name
     const WACName_T& lWACName = iLocation.getWACName();
     ioPlace.set_wac_name (lWACName);
+
+    // Retrieve and set the currency code
+    const CurrencyCode_T& lCurrencyCode = iLocation.getCurrencyCode();
+    treppb::CurrencyCode* lCurrencyCodePtr = ioPlace.mutable_currency_code();
+    assert (lCurrencyCodePtr != NULL);
+    lCurrencyCodePtr->set_code (lCurrencyCode);
 
     // Retrieve and set the continent code
     const ContinentCode_T& lContinentCode = iLocation.getContinentCode();

@@ -166,6 +166,9 @@ namespace OPENTREP {
 
     /**
      * Geonames ID (e.g., 4887479).
+     *
+     * \note The city Geonames ID is null when the related Location
+     *       structure is itself a city.
      */
     GeonamesID_T _geonamesID;
 

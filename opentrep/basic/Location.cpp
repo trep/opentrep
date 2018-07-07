@@ -24,9 +24,6 @@ namespace OPENTREP {
     _tvlPORListString (TvlPORListString_T ("")),
     _envelopeID (0),
     _dateFrom (1970, 01, 01), _dateEnd (2999, 12, 31), _comment (""),
-    _cityCode (CityCode_T ("")),
-    _cityUtfName (CityUTFName_T ("")), _cityAsciiName (CityASCIIName_T ("")),
-    _cityGeonamesID (0),
     _stateCode (StateCode_T ("NA")), _countryCode (CountryCode_T ("NA")),
     _altCountryCode (AltCountryCode_T ("")), _countryName (CountryName_T ("NA")),
     _wac (0), _wacName (WACName_T ("")),
@@ -66,11 +63,7 @@ namespace OPENTREP {
     _envelopeID (iLocation.getEnvelopeID()),
     _dateFrom (iLocation.getDateFrom()), _dateEnd (iLocation.getDateEnd()),
     _comment (iLocation.getComment()),
-    _cityCode (iLocation._cityCode),
-    _cityUtfName (iLocation._cityUtfName),
-    _cityAsciiName (iLocation._cityAsciiName),
     _cityList (iLocation._cityList),
-    _cityGeonamesID (iLocation._cityGeonamesID),
     _stateCode (iLocation._stateCode), _countryCode (iLocation._countryCode),
     _altCountryCode (iLocation._altCountryCode),
     _countryName (iLocation._countryName),
@@ -116,10 +109,7 @@ namespace OPENTREP {
                       const EnvelopeID_T& iEnvelopeID,
                       const Date_T& iDateFrom, const Date_T& iDateEnd,
                       const Comment_T& iComment,
-                      const CityCode_T& iCityCode,
-                      const CityUTFName_T& iCityUtfName,
-                      const CityASCIIName_T& iCityAsciiName,
-                      const GeonamesID_T& iCityGeonamesID,
+                      const CityDetailsList_T& iCityDetailsList,
                       const StateCode_T& iStateCode,
                       const CountryCode_T& iCountryCode,
                       const AltCountryCode_T& iAltCountryCode,
@@ -161,9 +151,7 @@ namespace OPENTREP {
     _envelopeID (iEnvelopeID),
     _dateFrom (iDateFrom), _dateEnd (iDateEnd),
     _comment (iComment),
-    _cityCode (iCityCode),
-    _cityUtfName (iCityUtfName), _cityAsciiName (iCityAsciiName),
-    _cityGeonamesID (iCityGeonamesID),
+    _cityList (iCityDetailsList),
     _stateCode (iStateCode),
     _countryCode (iCountryCode), _altCountryCode (iAltCountryCode),
     _countryName (iCountryName),
@@ -228,8 +216,6 @@ namespace OPENTREP {
          << ", " << _icaoCode << ", " << _faaCode << ", " << _unLOCode
          << ", " << _envelopeID
          << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
-         << ", " << _cityCode << ", " << _cityUtfName << ", " << _cityAsciiName
-         << ", " << _cityGeonamesID
          << ", " << describeCityDetailsList()
          << ", " << _stateCode
          << ", " << _countryCode << ", " << _altCountryCode
@@ -339,6 +325,15 @@ namespace OPENTREP {
     }
 
     return oStr.str();
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void Location::consolidateCityDetailsList() {
+    const CityDetails lCityDetails (IATACode_T (_itCityIataCode),
+                                    _itCityGeonamesID,
+                                    CityUTFName_T (_itCityUtfName),
+                                    CityASCIIName_T (_itCityAsciiName));
+    _cityList.push_back (lCityDetails);
   }
 
   // ////////////////////////////////////////////////////////////////////

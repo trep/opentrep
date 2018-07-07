@@ -103,7 +103,8 @@ namespace OPENTREP {
   /**
    * ICAO four-letter code (e.g., KORD).
    *
-   * ICAO is the [International Civil Aviation Organization](http://en.wikipedia.org/wiki/International_Civil_Aviation_Organization).
+   * ICAO is the
+   * [International Civil Aviation Organization](http://en.wikipedia.org/wiki/International_Civil_Aviation_Organization).
    * The corresponding alternate name code in Geonames is ``icao``.
    */
   struct ICAOCode_T : public std::string {
@@ -118,7 +119,7 @@ namespace OPENTREP {
   /**
    * Geonames ID.
    */
-  typedef int GeonamesID_T;
+  typedef unsigned int GeonamesID_T;
   /**
    * List of Geonames IDs.
    */
@@ -127,11 +128,12 @@ namespace OPENTREP {
   /**
    * Envelope ID.
    */
-  typedef int EnvelopeID_T;
+  typedef unsigned int EnvelopeID_T;
 
   /**
    * FAA three-letter code (e.g., ORD).
-   * FAA is the [U.S. Federal Aviation Administration](http://en.wikipedia.org/wiki/Federal_Aviation_Administration).
+   * FAA is the
+   * [U.S. Federal Aviation Administration](http://en.wikipedia.org/wiki/Federal_Aviation_Administration).
    * The corresponding alternate name code in Geonames is ``faac``.
    */
   struct FAACode_T : public std::string {
@@ -142,8 +144,10 @@ namespace OPENTREP {
   /**
    * TC LID four-letter code (e.g., CTB6).
    *
-   * TC stands for [Transport Canada](http://en.wikipedia.org/wiki/Transport_Canada).
-   * LID stands for [Location Identifier](http://en.wikipedia.org/wiki/Location_identifier).
+   * TC stands for
+   * [Transport Canada](http://en.wikipedia.org/wiki/Transport_Canada).
+   * LID stands for
+   * [Location Identifier](http://en.wikipedia.org/wiki/Location_identifier).
    * The corresponding alternate name code in Geonames is ``tcid``.
    */
   struct TCLIDCode_T : public std::string {
@@ -154,7 +158,8 @@ namespace OPENTREP {
   /**
    * UN/LOCODE five-letter code (e.g., DEHAM).
    *
-   * UN/LOCODE is the [United Nations Code for Trade and Transport Locations](http://en.wikipedia.org/wiki/UN/LOCODE)
+   * UN/LOCODE is the
+   * [United Nations Code for Trade and Transport Locations](http://en.wikipedia.org/wiki/UN/LOCODE)
    * The corresponding alternate name code in Geonames is ``unlc``.
    */
   struct UNLOCode_T : public std::string {
@@ -321,7 +326,7 @@ namespace OPENTREP {
    * maintained by the [BTS](http://en.wikipedia.org/wiki/Bureau_of_Transportation_Statistics),
    * part of the [US DOT](http://en.wikipedia.org/wiki/United_States_Department_of_Transportation).
    */
-  typedef int WAC_T;
+  typedef unsigned int WAC_T;
 
   /**
    * US DOT World Area Code (WAC) name (e.g., Alaska)
@@ -568,7 +573,7 @@ namespace OPENTREP {
   /**
    * Xapian document ID.
    */
-  typedef int XapianDocID_T;
+  typedef unsigned int XapianDocID_T;
 
   /**
    * Weight when indexing terms of a Xapian document.

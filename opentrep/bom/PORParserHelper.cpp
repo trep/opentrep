@@ -165,6 +165,19 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeCityDetailList::storeCityDetailList (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCityDetailList::
+    operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type) const {
+      _location.consolidateCityDetailsList();
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("List of served cities: " << _location.describeCityDetailsList());
+    }
+    
+    // //////////////////////////////////////////////////////////////////
     storeAltNameShort::storeAltNameShort (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -189,7 +202,7 @@ namespace OPENTREP {
     
     // //////////////////////////////////////////////////////////////////
     void storeAltNameShortListString::
-    operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type)const {
+    operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type) const {
       _location.consolidateAltNameShortListString();
        // DEBUG
        //OPENTREP_LOG_DEBUG ("Alternative name short list: " << _location.getAltNameShortListString());
@@ -659,9 +672,23 @@ namespace OPENTREP {
 
       const std::string lCityCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::CityCode_T lCityCode (lCityCodeStr);
-      _location.setCityCode (lCityCode);
+      _location._itCityIataCode = lCityCode;
        // DEBUG
-       //OPENTREP_LOG_DEBUG ("City code: " << _location.getCityCode());
+       //OPENTREP_LOG_DEBUG ("City code: " << _location._itCityIataCode);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeCityGeonamesID::storeCityGeonamesID (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCityGeonamesID::operator() (unsigned int iCtyId,
+                                          bsq::unused_type,
+                                          bsq::unused_type) const {
+      _location._itCityGeonamesID = iCtyId;
+       // DEBUG
+       //OPENTREP_LOG_DEBUG("City Geonames ID: " << _location._itCityGeonamesID);
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -676,9 +703,9 @@ namespace OPENTREP {
 
       const std::string lCityUtfNameStr (iChar.begin(), iChar.end());
       const OPENTREP::CityUTFName_T lCityUtfName (lCityUtfNameStr);
-      _location.setCityUtfName (lCityUtfName);
+      _location._itCityUtfName = lCityUtfName;
        // DEBUG
-       //OPENTREP_LOG_DEBUG ("City UTF8 name: " << _location.getCityUtfName());
+       //OPENTREP_LOG_DEBUG ("City UTF8 name: " << _location._itCityUtfName);
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -693,24 +720,9 @@ namespace OPENTREP {
 
       const std::string lCityAsciiNameStr (iChar.begin(), iChar.end());
       const OPENTREP::CityASCIIName_T lCityAsciiName (lCityAsciiNameStr);
-      _location.setCityAsciiName (lCityAsciiName);
+      _location._itCityAsciiName = lCityAsciiName;
        // DEBUG
-       //OPENTREP_LOG_DEBUG("City ASCII name: " << _location.getCityAsciiName());
-    }
-
-    // //////////////////////////////////////////////////////////////////
-    storeCityGeonamesID::storeCityGeonamesID (Location& ioLocation)
-      : ParserSemanticAction (ioLocation) {
-    }
-    
-    // //////////////////////////////////////////////////////////////////
-    void storeCityGeonamesID::operator() (unsigned int iCtyId,
-                                          bsq::unused_type,
-                                          bsq::unused_type) const {
-
-      _location.setCityGeonamesID (iCtyId);
-       // DEBUG
-       //OPENTREP_LOG_DEBUG ("City Geonames ID: " << _location.getCityGeonamesID());
+       //OPENTREP_LOG_DEBUG("City ASCII name: " << _location._itCityAsciiName);
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -1370,7 +1382,7 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeCityAsciiName(_location)]
           ;
 
-        city_detail_list = city_details % '=';
+        city_detail_list = city_details[storeCityDetailList(_location)] % '=';
 
         city_details =
           city_code
