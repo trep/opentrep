@@ -97,12 +97,10 @@ namespace OPENTREP {
     ioPTLocation.put ("icao_code", iLocation.getIcaoCode());
     ioPTLocation.put ("geonames_id", iLocation.getGeonamesID());
     ioPTLocation.put ("faa_code", iLocation.getFaaCode());
-    ioPTLocation.put ("city_code", iLocation.getCityCode());
-    ioPTLocation.put ("city_name_utf", iLocation.getCityUtfName());
-    ioPTLocation.put ("city_name_ascii", iLocation.getCityAsciiName());
     ioPTLocation.put ("state_code", iLocation.getStateCode());
     ioPTLocation.put ("country_code", iLocation.getCountryCode());
     ioPTLocation.put ("country_name", iLocation.getCountryName());
+    ioPTLocation.put ("alt_country_code", iLocation.getAltCountryCode());
     ioPTLocation.put ("continent_name", iLocation.getContinentName());
     ioPTLocation.put ("adm1_code", iLocation.getAdmin1Code());
     ioPTLocation.put ("adm1_name_utf", iLocation.getAdmin1UtfName());
@@ -120,12 +118,39 @@ namespace OPENTREP {
     ioPTLocation.put ("wac", iLocation.getWAC());
     ioPTLocation.put ("wac_name", iLocation.getWACName());
     ioPTLocation.put ("wiki_link", iLocation.getWikiLink());
+    ioPTLocation.put ("currency_code", iLocation.getCurrencyCode());
     ioPTLocation.put ("original_keywords", iLocation.getOriginalKeywords());
     ioPTLocation.put ("corrected_keywords", iLocation.getCorrectedKeywords());
     ioPTLocation.put ("matching_percentage", iLocation.getPercentage());
     ioPTLocation.put ("edit_distance", iLocation.getEditDistance());
-    ioPTLocation.put ("allowable_distance", iLocation.getAllowableEditDistance());
+    ioPTLocation.put ("allowable_distance",iLocation.getAllowableEditDistance());
 
+    /**
+     * List of served cities
+     */
+    bpt::ptree ptCityList;
+    // Retrieve the list of served cities
+    const CityDetailsList_T& lCityList = iLocation.getCityList();
+    for (CityDetailsList_T::const_iterator itCity = lCityList.begin();
+         itCity != lCityList.end(); ++itCity) {
+      // Retrieve the details, ie, IATA code, Geonames ID and names
+      const CityDetails& lCityDetails = *itCity;
+      bpt::ptree ptCityDetails;
+      ptCityDetails.put ("iata_code", lCityDetails.getIataCode());
+      ptCityDetails.put ("geonames_id", lCityDetails.getGeonamesID());
+      ptCityDetails.put ("name_utf", lCityDetails.getUtfName());
+      ptCityDetails.put ("name_ascii", lCityDetails.getAsciiName());
+
+      // Add the item into the city list Boost.Property_Tree
+      ptCityList.push_back (std::make_pair ("cities", ptCityDetails));      
+    }
+
+    // Add the city detail list to the location Boost.Property_Tree
+    ioPTLocation.add_child ("cities", ptCityList);
+
+    /**
+     * Alternate names
+     */
     bpt::ptree ptLocationNameList;
     // Retrieve the place names in all the available languages
     const NameMatrix& lNameMatrixFull = iLocation.getNameMatrix();

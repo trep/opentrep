@@ -15,6 +15,7 @@
 namespace soci {
 
   // //////////////////////////////////////////////////////////////////////
+  // TODO: that method is obviously deprecated. Remove it.
   void type_conversion<OPENTREP::Place>::
   from_base (values const& iPlaceValues, indicator /* ind */,
              OPENTREP::Place& ioPlace) {
@@ -249,13 +250,13 @@ namespace soci {
     // TODO: check that that city code/name does not already exist, and add it
     // The city code will be set to the default value (empty string)
     // when the column is null
-    ioPlace.setCityCode (iPlaceValues.get<std::string> ("city_iata_code", ""));
+    //ioPlace.setCityCode (iPlaceValues.get<std::string> ("city_iata_code", ""));
     // The city UTF8 name will be set to the default value (empty string)
     // when the column is null
-    ioPlace.setCityUtfName (iPlaceValues.get<std::string>("city_UTF8_name", ""));
+    //ioPlace.setCityUtfName (iPlaceValues.get<std::string>("city_UTF8_name", ""));
     // The city ASCII name will be set to the default value (empty string)
     // when the column is null
-    ioPlace.setCityAsciiName (iPlaceValues.get<std::string> ("city_ASCII_name", ""));
+    //ioPlace.setCityAsciiName (iPlaceValues.get<std::string> ("city_ASCII_name", ""));
 
 
     // DEBUG
@@ -268,6 +269,7 @@ namespace soci {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  // TODO: that method is obviously deprecated. Remove it.
   void type_conversion<OPENTREP::Place>::
   to_base (const OPENTREP::Place& iPlace, values& ioPlaceValues,
            indicator& ioIndicator) {
@@ -287,9 +289,9 @@ namespace soci {
     const indicator lFaaCodeIndicator = lFaaCodeStr.empty() ? i_null : i_ok;
 
     // City IATA code
-    const OPENTREP::IATACode_T& lCityCode = iPlace.getCityCode();
-    const std::string lCityCodeStr (lCityCode);
-    const indicator lCityCodeIndicator = lCityCodeStr.empty() ? i_null : i_ok;
+    //const OPENTREP::IATACode_T& lCityCode = iPlace.getCityCode();
+    //const std::string lCityCodeStr (lCityCode);
+    //const indicator lCityCodeIndicator = lCityCodeStr.empty() ? i_null : i_ok;
 
     // State code
     const OPENTREP::StateCode_T& lStateCode = iPlace.getStateCode();
@@ -325,7 +327,7 @@ namespace soci {
     ioPlaceValues.set ("icao_code", lIcaoCodeStr, lIcaoCodeIndicator);
     ioPlaceValues.set ("geoname_id", iPlace.getGeonamesID());
     ioPlaceValues.set ("faa_code", lFaaCodeStr, lFaaCodeIndicator);
-    ioPlaceValues.set ("city_code", lCityCodeStr, lCityCodeIndicator);
+    //ioPlaceValues.set ("city_code", lCityCodeStr, lCityCodeIndicator);
     ioPlaceValues.set ("state_code", lStateCodeStr, lStateCodeIndicator);
     ioPlaceValues.set ("country_code", lCountryCodeStr);
     ioPlaceValues.set ("country_name", lCountryNameStr);

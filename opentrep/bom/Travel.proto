@@ -18,8 +18,8 @@ message UNLOCode {
   required string code = 1;
 } 
 
-message GeonameID {
-  required int32 id = 1;
+message GeonamesID {
+  required int32 id = 1 [default = 0];
 }
 
 message EnvelopeID {
@@ -133,6 +133,17 @@ message WikiLinkList {
   repeated WikiLink link = 1;
 } 
 
+message City {
+  required IATACode code = 1;
+  required GeonamesID geonames_id = 2;
+  required string name_utf = 3;
+  required string name_ascii = 4;
+}
+
+message CityList {
+  repeated City city = 1;
+}
+
 message GeoPoint {
   required double latitude = 1;
   required double longitude = 2;
@@ -168,7 +179,7 @@ message PlaceType {
     BSTN = 9;
     FERRY = 10;
     OFF = 11;
-	UNKNOWN = 12;
+    UNKNOWN = 12;
   }
 
   required LocationType type = 1 [default = UNKNOWN];
@@ -183,8 +194,8 @@ message Place {
   optional ICAOCode icao_code = 2;
   optional FAACode faa_code = 3;
   optional UNLOCode unlocode_code = 4;
-  optional bool is_geoname = 5;
-  optional GeonameID geoname_id = 6;
+  optional bool is_geonames = 5;
+  required GeonamesID geonames_id = 6;
   optional EnvelopeID env_id = 7;
   required string name_utf = 8;
   required string name_ascii = 9;
@@ -216,23 +227,21 @@ message Place {
   optional TZOffSet dst_offset = 35;
   optional TZOffSet raw_offset = 36;
   optional Date mod_date = 37;
-  optional IATACode city_code = 38;
-  optional string city_name_utf = 39;
-  optional string city_name_ascii = 40;
-  optional TravelRelatedList tvl_por_list = 41;
-  optional StateCode state_code = 42;
-  optional WorldAreaCode wac_code = 43;
-  optional string wac_name = 44;
-  optional PlaceType loc_type = 45;
-  optional WikiLinkList link_list = 46;
-  optional AltNameList alt_name_list = 47;
-  optional KeywordList original_keyword_list = 48;
-  optional KeywordList corrected_keyword_list = 49;
-  optional EditDistance edit_distance_actual = 50;
-  optional EditDistance edit_distance_allowable = 51;
-  optional MatchingPercentage matching_percentage = 52;
-  optional PlaceList extra_place_list = 53;
-  optional PlaceList alt_place_list = 54;
+  optional CityList city_list = 38;
+  optional TravelRelatedList tvl_por_list = 39;
+  optional StateCode state_code = 40;
+  optional WorldAreaCode wac_code = 41;
+  optional string wac_name = 42;
+  optional PlaceType loc_type = 43;
+  optional WikiLinkList link_list = 44;
+  optional AltNameList alt_name_list = 45;
+  optional KeywordList original_keyword_list = 46;
+  optional KeywordList corrected_keyword_list = 47;
+  optional EditDistance edit_distance_actual = 48;
+  optional EditDistance edit_distance_allowable = 49;
+  optional MatchingPercentage matching_percentage = 50;
+  optional PlaceList extra_place_list = 51;
+  optional PlaceList alt_place_list = 52;
 }
 
 message UnknownKeywordList {

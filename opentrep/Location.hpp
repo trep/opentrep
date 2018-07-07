@@ -149,34 +149,6 @@ namespace OPENTREP {
     }
 
     /**
-     * Get the city code.
-     */
-    const CityCode_T& getCityCode() const {
-      return _cityCode;
-    }
-    
-    /**
-     * Get the city name in UTF8.
-     */
-    const CityUTFName_T& getCityUtfName() const {
-      return _cityUtfName;
-    }
-    
-    /**
-     * Get the city name in ASCII (not necessarily in English).
-     */
-    const CityASCIIName_T& getCityAsciiName() const {
-      return _cityAsciiName;
-    }
-    
-    /**
-     * Get the city Geonames ID (may be 0 if unknown).
-     */
-    const GeonamesID_T& getCityGeonamesID() const {
-      return _cityGeonamesID;
-    }
-
-    /**
      * Get the state code.
      */
     const StateCode_T& getStateCode() const {
@@ -580,39 +552,11 @@ namespace OPENTREP {
       _comment = Comment_T (iComment);
     }
 
-    /**
-     * Set the related/served IATA city code.
-     */
-    void setCityCode (const std::string& iCityCode) {
-      _cityCode = CityCode_T (iCityCode);
-    }
-    
-    /**
-     * Set the city name in UTF8.
-     */
-    void setCityUtfName (const std::string& iCityUtfName) {
-      _cityUtfName = CityUTFName_T (iCityUtfName);
-    }
-    
-    /**
-     * Set the city name in ASCII (not necessarily in English).
-     */
-    void setCityAsciiName (const std::string& iCityAsciiName) {
-      _cityAsciiName = CityASCIIName_T (iCityAsciiName);
-    }
-    
     /** 
      * Set the list of served cities.
      */
     void setCityList (const CityDetailsList_T& iCityList) {
       _cityList = iCityList;
-    }
-
-    /**
-     * Set the city Geonames ID (may be 0 if unknown).
-     */
-    void setCityGeonamesID (const GeonamesID_T& iGeonamesID) {
-      _cityGeonamesID = iGeonamesID;
     }
 
     /**
@@ -916,6 +860,14 @@ namespace OPENTREP {
     Date_T calculateDate() const;
 
     /**
+     * Add the details of the served city into the dedicated list.
+     *
+     * The staging _itCityXxx items are used to create a CityDetails object,
+     * which is then added (copied) into the underlying _cityList member object.
+     */
+    void consolidateCityDetailsList();
+
+    /**
      * Aggregate the temporary alternate names into the short list of alternate
      * names.
      */
@@ -1004,7 +956,8 @@ namespace OPENTREP {
     /** 
      * Display of the served cities.
      *
-     * For instance, for [Bradley International Airport](http://www.geonames.org/5282636),
+     * For instance,
+     * for [Bradley International Airport](http://www.geonames.org/5282636),
      * Connecticut (CT), United States (US), it displays "HFD,BDL,SFY"
      */
     std::string describeCityDetailsList() const;
@@ -1018,8 +971,7 @@ namespace OPENTREP {
               const CommonName_T&, const ASCIIName_T&,
               const EnvelopeID_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
-              const CityCode_T&, const CityUTFName_T&, const CityASCIIName_T&,
-              const GeonamesID_T&,
+              const CityDetailsList_T&,
               const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const WAC_T&, const WACName_T&,
               const CurrencyCode_T&,
@@ -1136,41 +1088,12 @@ namespace OPENTREP {
      */
     Comment_T _comment;
 
-    /**
-     * Related IATA city code (e.g., CHI).
-     * \note The related city code is empty when the Location structure
-     *       is itself a city.
-     */
-    CityCode_T _cityCode;
-
-    /**
-     * Related city name in UTF8 (e.g., Nice Côte d'Azur).
-     * \note The related city UTF8 name is empty when the Location structure
-     *       is itself a city.
-     */
-    CityUTFName_T _cityUtfName;
-
-    /**
-     * Related city name in ASCII (not necessarily in English,
-     * e.g., Nice Cote d'Azur).
-     * \note The related city ASCII name is empty when the Location structure
-     *       is itself a city.
-     */
-    CityASCIIName_T _cityAsciiName;
-
     /** 
      * List of the served cities (e.g., HFD, BDL and SFY for
      * [Bradley International Airport](http://www.geonames.org/5282636),
      * Connecticut (CT), United States (US)).
      */
     CityDetailsList_T _cityList;
-
-    /**
-     * Related city Geonames ID.
-     * \note The related city Geonames ID is null when the Location structure
-     *       is itself a city.
-     */
-    GeonamesID_T _cityGeonamesID;
 
     /**
      * State code (e.g., IL).
@@ -1425,8 +1348,19 @@ namespace OPENTREP {
     std::string _itLangCodeExt;
     std::string _itLangCodeHist;
     AltNameShortList_T _itAltNameShortList;
+
+    /**
+     * Staging travel-related POR
+     */
     IATACodeList_T _itTvlPORList;
-    IATACodeList_T _itCityList;
+
+    /**
+     * Staging served cities
+     */
+    std::string _itCityIataCode;
+    GeonamesID_T _itCityGeonamesID;
+    std::string _itCityUtfName;
+    std::string _itCityAsciiName;
   };
 
 }

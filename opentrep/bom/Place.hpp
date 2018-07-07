@@ -39,7 +39,7 @@ namespace OPENTREP {
      */
     typedef std::set<std::string> StringSet_T;
     typedef std::map<const Weight_T, StringSet_T> TermSetMap_T;
-
+    typedef std::list<std::string> CityNameList_T;
 
   public:
     // //////////////// Getters ///////////////
@@ -159,32 +159,11 @@ namespace OPENTREP {
       return _location.getComment();
     }
 
-    /**
-     * Get the related/served IATA city code.
+    /** 
+     * Get the list of served cities.
      */
-    const CityCode_T& getCityCode() const {
-      return _location.getCityCode();
-    }
-
-    /**
-     * Get the city name in UTF8.
-     */
-    const CityUTFName_T& getCityUtfName() const {
-      return _location.getCityUtfName();
-    }
-    
-    /**
-     * Get the city name in ASCII (not necessarily in English).
-     */
-    const CityASCIIName_T& getCityAsciiName() const {
-      return _location.getCityAsciiName();
-    }
-    
-    /**
-     * Get the city Geonames ID (may be 0 if unknown).
-     */
-    const GeonamesID_T& getCityGeonamesID() const {
-      return _location.getCityGeonamesID();
+    const CityDetailsList_T& getCityList() const {
+      return _location.getCityList();
     }
 
     /**
@@ -633,32 +612,11 @@ namespace OPENTREP {
       _location.setComment (iComment);
     }
 
-    /**
-     * Set the related/served IATA city code.
+    /** 
+     * Set the list of served cities.
      */
-    void setCityCode (const std::string& iCityCode) {
-      _location.setCityCode (iCityCode);
-    }
-    
-    /**
-     * Set the city name in UTF8.
-     */
-    void setCityUtfName (const std::string& iCityUtfName) {
-      _location.setCityUtfName (iCityUtfName);
-    }
-    
-    /**
-     * Set the city name in ASCII (not necessarily in English).
-     */
-    void setCityAsciiName (const std::string& iCityAsciiName) {
-      _location.setCityAsciiName (iCityAsciiName);
-    }
-    
-    /**
-     * Set the city Geonames ID (may be 0 if unknown).
-     */
-    void setCityGeonamesID (const GeonamesID_T& iGeonamesID) {
-      _location.setCityGeonamesID (iGeonamesID);
+    void setCityList (const CityDetailsList_T& iCityList) {
+      _location.setCityList (iCityList);
     }
 
     /**
@@ -983,8 +941,8 @@ namespace OPENTREP {
      * @param const Weight_T& The weight with which the terms should be indexed
      * @param const LocationName_T& Name of the POR (point of reference)
      * @param const FeatureCode_T& Geonames feature code
-     * @param const CityUTFName_T& UTF8 name of the served city
-     * @param const CityASCIIName_T& ASCII name of the served city
+     * @param const CityNameList_T& UTF8 names of the list of served cities
+     * @param const CityNameList_T& ASCII names of the list of served cities
      * @param const Admin1UTFName_T& UTF8 Name of the administrative level 1
      *                               of the POR
      * @param const Admin1ASCIIName_T& ASCII Name of the administrative level 1
@@ -1001,7 +959,8 @@ namespace OPENTREP {
      */
     void addNameToXapianSets (const Weight_T&,
                               const LocationName_T&, const FeatureCode_T&,
-                              const CityUTFName_T&, const CityASCIIName_T&,
+                              const CityNameList_T& iCityUtfNameList,
+                              const CityNameList_T& iCityAsciiNameList,
                               const Admin1UTFName_T&, const Admin1ASCIIName_T&,
                               const Admin2UTFName_T&, const Admin2ASCIIName_T&,
                               const StateCode_T&,
