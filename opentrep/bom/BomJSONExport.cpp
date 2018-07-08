@@ -126,6 +126,24 @@ namespace OPENTREP {
     ioPTLocation.put ("allowable_distance",iLocation.getAllowableEditDistance());
 
     /**
+     * List of UN/LOCODE codes
+     */
+    bpt::ptree ptUNLOCodeList;
+    // Retrieve the list of UN/LOCODE codes
+    const UNLOCodeList_T& lUNCodeList = iLocation.getUNLOCodeList();
+    for (UNLOCodeList_T::const_iterator itUNLOCode = lUNCodeList.begin();
+         itUNLOCode != lUNCodeList.end(); ++itUNLOCode) {
+      // Retrieve the UN/LOCODE code
+      const UNLOCode_T& lUNLOCode = *itUNLOCode;
+
+      // Add the item into the UN/LOCODE list Boost.Property_Tree      
+      ptUNLOCodeList.put ("unlocode_code", lUNLOCode);
+    }
+
+    // Add the UN/LOCODE Boost.Property_Tree to the main tree
+    ioPTLocation.add_child ("unlocode_codes", ptUNLOCodeList);
+
+    /**
      * List of served cities
      */
     bpt::ptree ptCityList;
@@ -142,7 +160,7 @@ namespace OPENTREP {
       ptCityDetails.put ("name_ascii", lCityDetails.getAsciiName());
 
       // Add the item into the city list Boost.Property_Tree
-      ptCityList.push_back (std::make_pair ("cities", ptCityDetails));      
+      ptCityList.push_back (std::make_pair ("city_details", ptCityDetails));
     }
 
     // Add the city detail list to the location Boost.Property_Tree

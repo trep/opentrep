@@ -161,6 +161,12 @@ namespace OPENTREP {
         // Iteration
         ++oNbOfEntries;
 
+        // Progress status
+        if (oNbOfEntries % 1000 == 0) {
+          std::cout << "Number of parsed and Xapian-indexed records: "
+                    << oNbOfEntries << std::endl;
+        }
+
         // DEBUG
         OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
 

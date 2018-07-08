@@ -166,6 +166,7 @@ namespace OPENTREP {
   public:
     explicit UNLOCode_T (const std::string& iValue) : std::string (iValue) { }
   };  
+  typedef std::list<UNLOCode_T> UNLOCodeList_T;
 
   /**
    * Location name (e.g., Nice Côte d'Azur).

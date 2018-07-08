@@ -75,13 +75,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the UN/LOCODE five-letter code.
-     *
-     *
-     * See UNLOCode_T for more details.
+     * Get the list of UN/LOCODE five-letter codes.
      */
-    const UNLOCode_T& getUNLOCode() const {
-      return _unLOCode;
+    const UNLOCodeList_T& getUNLOCodeList() const {
+      return _unLOCodeList;
     }
 
     /** 
@@ -489,10 +486,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the UN/LOCODE five-letter code.
+     * Add a UN/LOCODE five-letter code to the underlying list.
      */
-    void setUNLOCode (const std::string& iUNLOCode) {
-      _unLOCode = UNLOCode_T (iUNLOCode);
+    void addUNLOCode (const std::string& iUNLOCode) {
+      _unLOCodeList.push_back (UNLOCode_T (iUNLOCode));
     }
 
     /** 
@@ -954,6 +951,15 @@ namespace OPENTREP {
     std::string toSingleLocationString() const;
 
     /** 
+     * Display of the list of UN/LOCODE five-letter codes.
+     *
+     * For instance,
+     * for [Atlantic City](http://www.geonames.org/4500546),
+     * New Jersey (NJ), United States (US), it displays "USACX,USAIY"
+     */
+    std::string describeUNLOCodeList() const;
+
+    /** 
      * Display of the served cities.
      *
      * For instance,
@@ -967,7 +973,7 @@ namespace OPENTREP {
      * Main Constructor. 
      */
     Location (const IATACode_T&, const IATAType&, const GeonamesID_T&,
-              const ICAOCode_T&, const FAACode_T&, const UNLOCode_T&,
+              const ICAOCode_T&, const FAACode_T&,
               const CommonName_T&, const ASCIIName_T&,
               const EnvelopeID_T&,
               const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
@@ -1014,7 +1020,13 @@ namespace OPENTREP {
   private:
     // /////// Attributes /////////
     /**
-     * Primary key, made of the IATA and ICAO codes, as well as Geonames ID.
+     * Primary key, composed of:
+     * <ul>
+     *   <li>IATA 3-letter code. See IATACode_T for more details.</li>
+     *   <li>Travel type. See IATAType for more details.</li>
+     *   <li>Geonames ID, when referenced by Geonames (0 otherwise).
+     *       See GeonamesID_T for more details.</li>
+     * </ul>
      */
     LocationKey _key;
 
@@ -1033,12 +1045,12 @@ namespace OPENTREP {
     FAACode_T _faaCode;
 
     /**
-     * UN/LOCODE five-letter code (e.g., DEHAM).
+     * List of UN/LOCODE five-letter codes (e.g., USACX and USAIY).
      *
      *
      * See UNLOCode_T for more details.
      */
-    UNLOCode_T _unLOCode;
+    UNLOCodeList_T _unLOCodeList;
 
     /** 
      * Common name (usually in American English, but not necessarily in ASCII).

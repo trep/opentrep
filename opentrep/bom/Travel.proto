@@ -18,6 +18,10 @@ message UNLOCode {
   required string code = 1;
 } 
 
+message UNLOCodeList {
+  repeated UNLOCode unlocode = 1;
+} 
+
 message GeonamesID {
   required int32 id = 1 [default = 0];
 }
@@ -193,7 +197,7 @@ message Place {
   optional IATACode tvl_code = 1;
   optional ICAOCode icao_code = 2;
   optional FAACode faa_code = 3;
-  optional UNLOCode unlocode_code = 4;
+  optional UNLOCodeList unlocode_list = 4;
   optional bool is_geonames = 5;
   required GeonamesID geonames_id = 6;
   optional EnvelopeID env_id = 7;

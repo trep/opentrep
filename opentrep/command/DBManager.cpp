@@ -14,6 +14,7 @@
 #include <soci/sqlite3/soci-sqlite3.h>
 #include <soci/mysql/soci-mysql.h>
 // OpenTrep
+#include <opentrep/Location.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/Result.hpp>
@@ -776,7 +777,6 @@ namespace OPENTREP {
       const std::string lIataCode (iPlace.getIataCode());
       const std::string lIcaoCode (iPlace.getIcaoCode());
       const std::string lFaaCode (iPlace.getFaaCode());
-      const std::string lUNLOCode (iPlace.getUNLOCode());
       const std::string lIsGeonames ((iPlace.isGeonames())?"Y":"N");
       const std::string lGeonameID =
         boost::lexical_cast<std::string> (iPlace.getGeonamesID());
@@ -787,6 +787,38 @@ namespace OPENTREP {
       const std::string lDateEnd =
         boost::gregorian::to_iso_extended_string (iPlace.getDateEnd());
       const std::string lRawDataString (iPlace.getRawDataString());
+
+      /**
+       * Sometimes, there are several UN/LOCODE codes for a single POR,
+       * for instance USACX/USAIY for
+       * [Atlantic City](http://www.geonames.org/4500546),
+       * New Jersey (NJ), United States (US).
+       *
+       * Take the first of those codes, when existing.
+       *
+       * That may not be optimal, but there is no easy way to solve this.
+       * Indeed, we should either have a related table (with the IATA code
+       * and Geonames ID as foreign key)
+       * or de-normalize the tables, ie having one record per UN/LOCODE,
+       * which would therefore inhibit the unicity in the current primary key.
+       *
+       * Nevertheless, adding that UN/LOCODE in the database allows a fast
+       * retrieval from the database by searching on that code.
+       * But that use case corresponds to a rare usage from the command-line.
+       * Indeed, the UI (eg, http://search-travel.org) uses the full-text
+       * search API, not the direct retrieval from the database.
+       * The only cases when the UI uses the direct database retrieval
+       * is for IATA codes. The condition to trigger that API usage is
+       * to have only a sequence of 3-letter codes. As UN/LOCODE are
+       * 5-letter, the normal full-text serach API is used for UN/LOCODE codes.
+       */
+      const UNLOCodeList_T& lUNLOCodeList = iPlace.getUNLOCodeList();
+      std::string lUNLOCodeStr ("");
+      if (lUNLOCodeList.empty() == false) {
+        const UNLOCode_T& lUNLOCode = lUNLOCodeList.front();
+        lUNLOCodeStr = static_cast<const std::string> (lUNLOCode);
+      }
+
       // DEBUG
       /*
       std::ostringstream oStr;
@@ -806,7 +838,7 @@ namespace OPENTREP {
                     << ":envelope_id, :date_from, :date_until, "
                     << ":serialised_place)",
         soci::use (lPK), soci::use (lLocationType), soci::use (lIataCode),
-        soci::use (lIcaoCode), soci::use (lFaaCode), soci::use (lUNLOCode),
+        soci::use (lIcaoCode), soci::use (lFaaCode), soci::use (lUNLOCodeStr),
         soci::use (lIsGeonames), soci::use (lGeonameID),
         soci::use (lEnvID), soci::use (lDateFrom), soci::use (lDateEnd),
         soci::use (lRawDataString);
