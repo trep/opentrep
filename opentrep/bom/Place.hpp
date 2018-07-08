@@ -103,10 +103,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Get the UN/LOCODE five-letter code.
+     * Get the list of UN/LOCODE five-letter codes.
      */
-    const UNLOCode_T& getUNLOCode() const {
-      return _location.getUNLOCode();
+    const UNLOCodeList_T& getUNLOCodeList() const {
+      return _location.getUNLOCodeList();
     }
 
     /** 
@@ -556,10 +556,10 @@ namespace OPENTREP {
     }
     
     /**
-     * Set the UN/LOCODE five-letter code.
+     * Add a UN/LOCODE five-letter code to the underlying list.
      */
-    void setUNLOCode (const std::string& iUNLOCode) {
-      return _location.setUNLOCode (iUNLOCode);
+    void addUNLOCode (const std::string& iUNLOCode) {
+      _location.addUNLOCode (iUNLOCode);
     }
 
     /** 

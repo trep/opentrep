@@ -97,11 +97,10 @@ namespace OPENTREP {
                                     bsq::unused_type, bsq::unused_type) const {
 
       const std::string lUNLOCodeStr (iChar.begin(), iChar.end());
-      const OPENTREP::UNLOCode_T lUNLOCode (lUNLOCodeStr);
-      _location.setUNLOCode (lUNLOCode);
+      _location.addUNLOCode (lUNLOCodeStr);
 
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("UN/LOCODE code: " << _location.getUNLOCode());
+      //OPENTREP_LOG_DEBUG ("UN/LOCODE codes: " << _location.describeUNLOCodeList());
     }
 
     // //////////////////////////////////////////////////////////////////

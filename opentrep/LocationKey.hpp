@@ -17,6 +17,14 @@ namespace OPENTREP {
   /**
    * @brief Class modelling the primary key of a location/POR (point of
    *        reference).
+   *
+   * The primary key is composed of:
+   * <ul>
+   *   <li>IATA 3-letter code. See IATACode_T for more details.</li>
+   *   <li>Travel type. See IATAType for more details.</li>
+   *   <li>Geonames ID, when referenced by Geonames (0 otherwise).
+   *       See GeonamesID_T for more details.</li>
+   * </ul>
    */
   struct LocationKey : public OPENTREP_Abstract {
   public:
@@ -163,6 +171,8 @@ namespace OPENTREP {
 
     /**
      * Geonames ID (e.g., 4887479).
+     *
+     * See GeonamesID_T for more details.
      */
     GeonamesID_T _geonamesID;
 

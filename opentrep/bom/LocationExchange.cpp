@@ -108,6 +108,19 @@ namespace OPENTREP {
     assert (lFaaCodePtr != NULL);
     lFaaCodePtr->set_code (lFaaCode);
 
+    // Retrieve and set the UN/LOCODE code list
+    const UNLOCodeList_T& lUNLOCodeList = iLocation.getUNLOCodeList();
+    treppb::UNLOCodeList* lUNLOCodeListPtr = ioPlace.mutable_unlocode_list();
+    assert (lUNLOCodeListPtr != NULL);
+    //
+    for (UNLOCodeList_T::const_iterator itUNLOCode = lUNLOCodeList.begin();
+         itUNLOCode != lUNLOCodeList.end(); ++itUNLOCode) {
+      const UNLOCode_T& lUNLOCode = *itUNLOCode;
+      treppb::UNLOCode* lUNLOCodePtr = lUNLOCodeListPtr->add_unlocode();
+      assert (lUNLOCodePtr != NULL);
+      lUNLOCodePtr->set_code (lUNLOCode);
+    }    
+    
     // Retrieve and set the names
     const CommonName_T& lUtfName = iLocation.getCommonName();
     ioPlace.set_name_utf (lUtfName);

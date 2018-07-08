@@ -17,7 +17,6 @@ namespace OPENTREP {
   Location::Location() :
     _key (IATACode_T (""), IATAType::LAST_VALUE, 0),
     _icaoCode (ICAOCode_T ("")), _faaCode (FAACode_T ("")),
-    _unLOCode (UNLOCode_T ("")),
     _commonName (CommonName_T ("NotAvailable")),
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
@@ -56,7 +55,7 @@ namespace OPENTREP {
   Location::Location (const Location& iLocation) :
     _key (iLocation._key),
     _icaoCode (iLocation._icaoCode), _faaCode (iLocation._faaCode),
-    _unLOCode (iLocation._unLOCode),
+    _unLOCodeList (iLocation._unLOCodeList),
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
     _tvlPORListString (iLocation._tvlPORListString),
@@ -103,7 +102,6 @@ namespace OPENTREP {
   Location::Location (const IATACode_T& iIataCode, const IATAType& iIataType,
                       const GeonamesID_T& iGeonamesID,
                       const ICAOCode_T& iIcaoCode, const FAACode_T& iFaaCode,
-                      const UNLOCode_T& iUNLOCode,
                       const CommonName_T& iCommonName,
                       const ASCIIName_T& iASCIIName,
                       const EnvelopeID_T& iEnvelopeID,
@@ -144,7 +142,7 @@ namespace OPENTREP {
                       const NbOfErrors_T& iAllowableEditDistance,
                       const RawDataString_T& iRawDataString) :
     _key (iIataCode, iIataType, iGeonamesID),
-    _icaoCode (iIcaoCode), _faaCode (iFaaCode), _unLOCode (iUNLOCode),
+    _icaoCode (iIcaoCode), _faaCode (iFaaCode),
     _commonName (iCommonName),_asciiName (iASCIIName),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
     _tvlPORListString (iTvlPORListString),
@@ -213,7 +211,8 @@ namespace OPENTREP {
 
     oStr << ", " << _pageRank << "%"
          << ", " << _commonName << ", " << _asciiName
-         << ", " << _icaoCode << ", " << _faaCode << ", " << _unLOCode
+         << ", " << _icaoCode << ", " << _faaCode
+         << ", " << describeUNLOCodeList()
          << ", " << _envelopeID
          << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
          << ", " << describeCityDetailsList()
@@ -309,6 +308,22 @@ namespace OPENTREP {
   Date_T Location::calculateDate() const {
     _itYear.check(); _itMonth.check(); _itDay.check();
     return Date_T (_itYear._value, _itMonth._value, _itDay._value);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string Location::describeUNLOCodeList() const {
+    std::ostringstream oStr;
+    unsigned short idx = 0;
+    for (UNLOCodeList_T::const_iterator itUNLOCode = _unLOCodeList.begin();
+         itUNLOCode != _unLOCodeList.end(); ++itUNLOCode, ++idx) {
+      if (idx != 0) {
+        oStr << ",";
+      }
+      const UNLOCode_T& lUNLOCode = *itUNLOCode;
+      oStr << lUNLOCode;
+    }
+
+    return oStr.str();
   }
 
   // ////////////////////////////////////////////////////////////////////
