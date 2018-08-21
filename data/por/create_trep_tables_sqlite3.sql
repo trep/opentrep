@@ -1,3 +1,4 @@
+
 --
 -- OPTD-maintained list of POR (points of reference, i.e., airports, cities,
 -- places, etc.)
@@ -17,8 +18,7 @@ create table optd_por (
  envelope_id int(11) default NULL,
  date_from date default NULL,
  date_until date default NULL,
- serialised_place varchar(12000) default NULL,
- primary key (pk)
+ serialised_place varchar(12000) default NULL
 );
 
 --
@@ -37,3 +37,4 @@ create index optd_por_iata_code on optd_por (iata_code);
 create index optd_por_iata_date on optd_por (iata_code, date_from, date_until);
 create index optd_por_icao_code on optd_por (icao_code);
 create index optd_por_geonameid on optd_por (geoname_id);
+create index optd_por_unlocode_code on optd_por (unlocode_code);

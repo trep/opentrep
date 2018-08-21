@@ -51,11 +51,13 @@ namespace OPENTREP {
      * @param const DBType& SQL database type (can be no database at all).
      * @param soci::session* SOCI session handler (can be NULL; see above).
      * @param std::ifstream& File stream for the POR data file.
+     * @param const shouldIndexNonIATAPOR_T& Whether all POR should be indexed.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (Xapian::WritableDatabase&,
                                              const DBType&, soci::session*,
                                              std::istream& iPORFileStream,
+                                             const shouldIndexNonIATAPOR_T&,
                                              const OTransliterator&);
 
     /**
@@ -65,12 +67,14 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
+     * @param const shouldIndexNonIATAPOR_T& Whether all POR should be indexed.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
                                              const TravelDBFilePath_T&,
                                              const DBType&,
                                              const SQLDBConnectionString_T&,
+                                             const shouldIndexNonIATAPOR_T&,
                                              const OTransliterator&);
 
   private:

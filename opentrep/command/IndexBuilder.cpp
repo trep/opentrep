@@ -121,6 +121,7 @@ namespace OPENTREP {
   buildSearchIndex (Xapian::WritableDatabase& ioDatabase,
                     const DBType& iSQLDBType, soci::session* ioSociSessionPtr,
                     std::istream& iPORFileStream,
+                    const shouldIndexNonIATAPOR_T& iIncludeNonIATAPOR,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
@@ -128,52 +129,81 @@ namespace OPENTREP {
     Place& lPlace = FacPlace::instance().create();
     std::string itReadLine;
     while (std::getline (iPORFileStream, itReadLine)) {
+
+      /* First, if only the IATA-refernced POR must be indexed
+       * (ie, when iIncludeNonIATAPOR is set to false), the line
+       * must start with a non empty IATA code of three letters;
+       * in other words, the separator (the hat symbol) is first seen
+       * at position 3 (remember that strings in C++ start at position 0).
+       * Otherwise, the line is skipped.
+       */
+      if (!iIncludeNonIATAPOR) {
+        const unsigned short lFirstSeparatorPos = itReadLine.find_first_of ("^");
+        if (lFirstSeparatorPos != 3) {
+          // DEBUG
+          /*
+            OPENTREP_LOG_ERROR ("[" << oNbOfEntries << "] pos of sep: "
+                                << lFirstSeparatorPos << ", full line: "
+                                << itReadLine);
+          */
+
+          continue;
+        }
+      }
+      
       // Initialise the parser
       PORStringParser lStringParser (itReadLine);
 
       // Parse the string
       const Location& lLocation = lStringParser.generateLocation();
-      //const LocationKey& lLocationKey = lLocation.getKey();
 
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+      /*
+        const LocationKey& lLocationKey = lLocation.getKey();
+        OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+      */
 
-      // When the line/string was relevant, create a BOM instance from
-      // the Location structure.
-      if (!(lLocation.getCommonName() == "NotAvailable")) {
-        // Fill the Place object with the Location structure.
-        lPlace.setLocation (lLocation);
-
-        // Add the document, associated to the Place object, to the Xapian index
-        IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
-
-        // Add the document to the SQL database, if required
-        if (ioSociSessionPtr != NULL) {
-          DBManager::insertPlaceInDB (*ioSociSessionPtr, lPlace);
-        }
-
-        // DEBUG
-        /*
-        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
-                            << ", Place: " << lPlace);
-        */
-
-        // Iteration
-        ++oNbOfEntries;
-
-        // Progress status
-        if (oNbOfEntries % 1000 == 0) {
-          std::cout << "Number of parsed and Xapian-indexed records: "
-                    << oNbOfEntries << std::endl;
-        }
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
-
-        // Reset for next turn
-        lPlace.resetMatrix();
-        lPlace.resetIndexSets();
+      /* When the line/string is relevant, create a BOM instance from
+       * the Location structure.
+       * Otherwise, the line is skipped.
+       */
+      const std::string& lCommonName = lLocation.getCommonName();
+      if (lCommonName == "NotAvailable") {
+        continue;
       }
+      
+      // Fill the Place object with the Location structure.
+      lPlace.setLocation (lLocation);
+
+      // Add the document, associated to the Place object, to the Xapian index
+      IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
+
+      // Add the document to the SQL database, if required
+      if (ioSociSessionPtr != NULL) {
+        DBManager::insertPlaceInDB (*ioSociSessionPtr, lPlace);
+      }
+
+      // DEBUG
+      /*
+        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
+        << ", Place: " << lPlace);
+      */
+
+      // Iteration
+      ++oNbOfEntries;
+      
+      // Progress status
+      if (oNbOfEntries % 1000 == 0) {
+        std::cout << "Number of parsed and Xapian-indexed records: "
+                  << oNbOfEntries << std::endl;
+      }
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+
+      // Reset for next turn
+      lPlace.resetMatrix();
+      lPlace.resetIndexSets();
     }
 
     return oNbOfEntries;
@@ -185,11 +215,12 @@ namespace OPENTREP {
                     const TravelDBFilePath_T& iTravelDBFilePath,
                     const DBType& iSQLDBType,
                     const SQLDBConnectionString_T& iSQLDBConnStr,
+                    const shouldIndexNonIATAPOR_T& iIncludeNonIATAPOR,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
     /**
-     *            0. Remove any existing directory (for Xapian and SQLite)
+     *            0. Remove any existing directory for Xapian
      */
     // Xapian directory
     boost::filesystem::path lTravelDBFilePath (iTravelDBFilePath.begin(),
@@ -200,7 +231,7 @@ namespace OPENTREP {
     boost::filesystem::remove_all (lTravelDBFilePath);
 
     /**
-     *            1. Xapian Database Initialisation
+     *            1. Xapian database (index) initialisation
      */
     // Re-create the Xapian directory
     boost::filesystem::create_directories (lTravelDBFilePath);
@@ -240,18 +271,45 @@ namespace OPENTREP {
 
 
     /**
-     *            2. Connection to the SQL Database
+     *            2. Re-initialize the SQL database
+     *
+     * Drop and re-create, if necessary, the content of the SQL database
      */
-    // Connect to the SQL database/file
-    soci::session* lSociSession_ptr =
-      DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
-
-
+    // Creation of the trep user and trep_trep database
+    bool isSuccessful = DBManager::createSQLDBUser (iSQLDBType, iSQLDBConnStr);
+    if (isSuccessful == false) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to re-initialize the SQL database ('"
+               << iSQLDBConnStr << "')";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+    }
+    
     /**
-     *            3. List of POR (points of reference)
+     *            3. Connection to the SQL Database
      */
-    // Check that the file exists and is regular.
+    soci::session* lSociSession_ptr = NULL;
+    if (!(iSQLDBType == DBType::NODB)) {
+      // Connection to the database
+      lSociSession_ptr =
+        DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
 
+      if (lSociSession_ptr == NULL) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to connect to the SQL database ('"
+                 << iSQLDBConnStr << "')";
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      }
+      assert (lSociSession_ptr != NULL);
+      
+      // Creation of the POR table
+      DBManager::createSQLDBTables (*lSociSession_ptr);
+    }
+    
+    /**
+     *            4. Parse and index the POR (points of reference)
+     */
     // DEBUG
     OPENTREP_LOG_DEBUG ("Parsing POR input file: " << iPORFilePath);
 
@@ -264,16 +322,20 @@ namespace OPENTREP {
     // and, if needed, within the SQL database.
     oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
                                      lSociSession_ptr,
-                                     lPORFileStream, iTransliterator);
+                                     lPORFileStream, iIncludeNonIATAPOR,
+                                     iTransliterator);
 
-    // Commit the pending modifications on the Xapian database (index)
+    /**
+     *            5. Commit the transactions of the Xapian database (index).
+     *
+     */
     lXapianDatabase.commit_transaction();
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("Xapian has indexed " << oNbOfEntries << " entries.");
 
     /**
-     * Close the Xapian database (index).
+     *            6. Close the Xapian database (index).
      *
      * \note For a yet unknown reason, when the current method is called within
      *       the Boost Unit Test framework, that latter kills the process.
@@ -281,7 +343,23 @@ namespace OPENTREP {
      */
     lXapianDatabase.close();
 
-
+    /**
+     *            7. Index the SQL database
+     */
+    if (!(iSQLDBType == DBType::NODB)) {
+      assert (lSociSession_ptr != NULL);
+      DBManager::createSQLDBIndexes (*lSociSession_ptr);
+    }
+    
+    /**
+     *            8. Close the connection to the SQL database
+     */
+    if (!(iSQLDBType == DBType::NODB)) {
+      assert (lSociSession_ptr != NULL);
+      DBManager::terminateSQLDBSession (iSQLDBType, iSQLDBConnStr,
+                                        *lSociSession_ptr);
+    }
+    
     return oNbOfEntries;
   }
 

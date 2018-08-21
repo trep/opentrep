@@ -16,7 +16,7 @@
 
 namespace OPENTREP {
 
-  /** Namespaces. */
+  /** Namespaces */
   namespace bsq = boost::spirit::qi;
   //namespace bsa = boost::spirit::ascii;
   namespace bsu = boost::spirit::unicode;
@@ -1160,11 +1160,10 @@ namespace OPENTREP {
           >> '^' >> -alt_name_section
           >> '^' >> por_details_additional
           >> por_rule_end[doEndPor(_location)];
-        // >> +( '^' >> segment )
 
         por_rule_end = bsq::eps;
 
-        por_key = iata_code
+        por_key = -iata_code
           >> '^' >> -icao_code
           >> '^' >> -faa_code
           >> '^' >> is_geonames
@@ -1202,7 +1201,7 @@ namespace OPENTREP {
           >> '^' >> -dst_offset
           >> '^' >> -raw_offset
           >> '^' >> (mod_date | bsq::lit("-1"))
-          >> '^' >> city_code_list
+          >> '^' >> -city_code_list
           >> '^' >> -city_name_list
           >> '^' >> -city_detail_list
           >> '^' >> -tvl_por_code_list[storeTvlPORListString(_location)]
@@ -1689,7 +1688,7 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void PORFileParser::generateLocations() {
       
-    OPENTREP_LOG_DEBUG ("Parsing por input file: " << _filename);
+    OPENTREP_LOG_DEBUG ("Parsing the POR input file: " << _filename);
 
     // File to be parsed
     const char* lFilenameStr = _filename.c_str();
@@ -1697,11 +1696,11 @@ namespace OPENTREP {
 
     // Check if the filename exist and can be open
     if (fileToBeParsed.is_open() == false) {
-      OPENTREP_LOG_ERROR ("The por file " << _filename << " can not be open."
+      OPENTREP_LOG_ERROR ("The POR file ('" << _filename << "') can not be open."
                           << std::endl);
 
-      throw FileNotFoundException ("The file " + _filename
-                                   + " does not exist or can not be read");
+      throw FileNotFoundException ("The '" + _filename
+                                   + "' file does not exist or can not be read");
     }
     
     // Create an input iterator
@@ -1720,22 +1719,22 @@ namespace OPENTREP {
        bsq::phrase_parse (start, end, lPORParser, bsu::blank);
       
     if (hasParsingBeenSuccesful == false) {
-      OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename
-                          << " failed");
-      throw PorFileParsingException ("Parsing of por input file: "
-                                     + _filename + " failed");
+      OPENTREP_LOG_ERROR ("Parsing of POR input file ('" << _filename
+                          << "') failed");
+      throw PorFileParsingException ("Parsing of POR input file ('"
+                                     + _filename + "') failed");
     }
     
     if  (start != end) {
-      OPENTREP_LOG_ERROR ("Parsing of por input file: " << _filename
-                          << " failed");
-      throw PorFileParsingException ("Parsing of por input file: "
-                                     + _filename + " failed");
+      OPENTREP_LOG_ERROR ("Parsing of POR input file ('" << _filename
+                          << "') failed");
+      throw PorFileParsingException ("Parsing of POR input file ('"
+                                     + _filename + "') failed");
     }
     
     if (hasParsingBeenSuccesful == true && start == end) {
-      OPENTREP_LOG_DEBUG ("Parsing of por input file: " << _filename
-                          << " succeeded");
+      OPENTREP_LOG_DEBUG ("Parsing of POR input file ('" << _filename
+                          << "') succeeded");
     } 
   }
 
