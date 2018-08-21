@@ -83,5 +83,15 @@ namespace OPENTREP {
   extern const std::string DEFAULT_OPENTREP_MYSQL_DB_DBNAME;
   extern const std::string DEFAULT_OPENTREP_MYSQL_DB_HOST;
   extern const std::string DEFAULT_OPENTREP_MYSQL_DB_PORT;
+
+  /**
+   * Whether or not the non-IATA-referenced POR should be included
+   * (and indexed).
+   *
+   * By default, and historically, only the POR, which are referenced
+   * by IATA (ie, which have a specific IATA code) are indexed (and may
+   * be searched for) in OpenTREP.
+   */
+  extern const bool DEFAULT_OPENTREP_INCLUDE_NONIATA_POR;
 }
 #endif // __OPENTREP_BAS_BASCONST_OPENTREP_SERVICE_HPP

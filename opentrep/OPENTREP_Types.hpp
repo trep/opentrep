@@ -86,6 +86,34 @@ namespace OPENTREP {
   };
 
   /**
+   * Whether or not the non-IATA-referenced POR should be included
+   * (and indexed).
+   *
+   * By default, and historically, only the POR, which are referenced
+   * by IATA (ie, which have a specific IATA code) are indexed (and may
+   * be searched for) in OpenTREP.
+   *
+   * POR are also referenced by other international organizations,
+   * such as ICAO or UN/LOCODE, and may not be referenced by IATA
+   * (in which case their IATA code is left empty).
+   *
+   * As of August 2018, there are around 110,000 POR in OpenTravelData (OPTD),
+   * the reference data source for OpenTREP:
+   * <ul>
+   *  <li>Around 20,000 POR are referenced by IATA</li>
+   *  <li>Around 90,000 POR are not referenced by IATA, but referenced
+   *      by other international organizations (eg, ICAO, UN/LOCODE)</li>
+   * </ul>
+   *
+   * Indexing 20,000 POR takes already a few minutes on standard hardware.
+   * Indexing 110,000 POR would take 15 to 20 minutes.
+   *
+   * Once indexed, all those POR become searchable. That flag is therefore
+   * only used at indexing time.
+   */
+  typedef bool shouldIndexNonIATAPOR_T;
+
+  /**
    * IATA three-letter code (e.g., ORD for Chicago O'Hare, IL, USA).
    *
    * IATA is the [International Air Transport Association](http://en.wikipedia.org/wiki/International_Air_Transport_Association).
