@@ -125,6 +125,13 @@ namespace OPENTREP {
     void createSQLDBIndexes();
 
     /**
+     * Toggle the flag stating whether to index non-IATA-referenced POR
+     *
+     * @return OPENTREP::shouldIndexNonIATAPOR_T New value of the flag
+     */
+    OPENTREP::shouldIndexNonIATAPOR_T toggleShouldIncludeAllPORFlag();
+
+    /**
      * Insert all the POR (points of reference) into the SQL database from
      * the file with the ORI-maintained list of POR (points of reference).
      *
