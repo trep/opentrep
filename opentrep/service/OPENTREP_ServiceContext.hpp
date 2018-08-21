@@ -137,7 +137,7 @@ namespace OPENTREP {
   private:
     // /////// Construction / initialisation ////////
     /**
-     * Main constructor for the search-related services.
+     * Main constructor for the query-/search-related services.
      *
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
      * @param const DBType& SQL database type (can be no database at all).
@@ -147,16 +147,18 @@ namespace OPENTREP {
                              const DBType&, const SQLDBConnectionString_T&);
 
     /**
-     * Main constructor for the indexation-related services.
+     * Main constructor for the indexing-related services.
      *
      * @param const PORFilePath_T& File-path of the file of POR
      *                             (points of reference).
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
+     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR
      */
     OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&,
-                             const DBType&, const SQLDBConnectionString_T&);
+                             const DBType&, const SQLDBConnectionString_T&,
+                             const shouldIndexNonIATAPOR_T&);
 
     /**
      * Default constructor.
@@ -171,7 +173,7 @@ namespace OPENTREP {
     /**
      * Destructor.
      */
-    ~OPENTREP_ServiceContext();
+    virtual ~OPENTREP_ServiceContext();
       
 
   private:
@@ -209,6 +211,34 @@ namespace OPENTREP {
      * </ul>
      */
     SQLDBConnectionString_T _sqlDBConnectionString;
+
+    /**
+     * Whether or not the non-IATA-referenced POR should be included
+     * (and indexed).
+     *
+     * By default, and historically, only the POR, which are referenced
+     * by IATA (ie, which have a specific IATA code) are indexed (and may
+     * be searched for) in OpenTREP.
+     *
+     * POR are also referenced by other international organizations,
+     * such as ICAO or UN/LOCODE, and may not be referenced by IATA
+     * (in which case their IATA code is left empty).
+     *
+     * As of August 2018, there are around 110,000 POR in OpenTravelData (OPTD),
+     * the reference data source for OpenTREP:
+     * <ul>
+     *  <li>Around 20,000 POR are referenced by IATA</li>
+     *  <li>Around 90,000 POR are not referenced by IATA, but referenced
+     *      by other international organizations (eg, ICAO, UN/LOCODE)</li>
+     * </ul>
+     *
+     * Indexing 20,000 POR takes already a few minutes on standard hardware.
+     * Indexing 110,000 POR would take 15 to 20 minutes.
+     *
+     * Once indexed, all those POR become searchable. That flag is therefore
+     * only used at indexing time.
+     */
+    shouldIndexNonIATAPOR_T _shouldIndexNonIATAPOR;
 
     /**
      * Unicode transliterator.

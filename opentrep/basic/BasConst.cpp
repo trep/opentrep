@@ -53,6 +53,16 @@ namespace OPENTREP {
   const std::string DEFAULT_OPENTREP_MYSQL_DB_PORT ("3306");
 
   /**
+   * Whether or not the non-IATA-referenced POR should be included
+   * (and indexed).
+   *
+   * By default, and historically, only the POR, which are referenced
+   * by IATA (ie, which have a specific IATA code) are indexed (and may
+   * be searched for) in OpenTREP.
+   */
+  const bool DEFAULT_OPENTREP_INCLUDE_NONIATA_POR (false);
+
+  /**
    * Default date-time with std::tm structure as type.
    */
   const std::tm DEFAULT_DATE_TM =
