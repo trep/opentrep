@@ -21,7 +21,7 @@ create table optd_por (
 );
 
 --
--- MySQL standard load statement (however, there is no correspondance
+-- MySQL/MariaDB standard load statement (however, there is no correspondance
 -- between the table and CSV file formats)
 --
 -- load data local infile 'optd_por_public.csv' replace into table optd_por
@@ -36,3 +36,4 @@ alter table optd_por add index optd_por_iata_code (iata_code asc);
 alter table optd_por add index optd_por_iata_date (iata_code asc, date_from asc, date_until asc);
 alter table optd_por add index optd_por_icao_code (icao_code asc);
 alter table optd_por add index optd_por_geonameid (geoname_id asc);
+alter table optd_por add index optd_por_unlocode_code (unlocode_code asc);

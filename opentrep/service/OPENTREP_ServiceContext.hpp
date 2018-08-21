@@ -68,6 +68,13 @@ namespace OPENTREP {
     const SQLDBConnectionString_T& getSQLDBConnectionString() const {
       return _sqlDBConnectionString;
     }
+
+    /**
+     * Get the flag stating whether or not all the POR should be indexed.
+     */
+    const shouldIndexNonIATAPOR_T& getShouldIncludeAllPORFlag() const {
+      return _shouldIndexNonIATAPOR;
+    }
     
     /**
      * Get the Unicode transliterator.
@@ -111,6 +118,13 @@ namespace OPENTREP {
      */
     void setSQLDBConnectionString(const std::string& iSQLDBConnStr) {
       _sqlDBConnectionString = SQLDBConnectionString_T (iSQLDBConnStr);
+    }
+    
+    /**
+     * Set the flag stating whether or not all the POR should be indexed.
+     */
+    void setShouldIncludeAllPORFlag (const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
+      _shouldIndexNonIATAPOR = iShouldIndexNonIATAPOR;
     }
     
     /**

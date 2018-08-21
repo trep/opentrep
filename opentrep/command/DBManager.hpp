@@ -25,14 +25,47 @@ namespace OPENTREP {
   /**
    * @brief Class wrapping the access to an underlying SQL database.
    *
-   * The SQL database may be one of SQLite3, MySQL, PostgreSQL.
+   * The SQL database may be one of none, SQLite3, MySQL, PostgreSQL.
    * That latter is not supported yet. However, patches are welcome on
    * http://github.com/trep/opentrep/issues.
+   *
+   * The methods are assumed to be used in the following order:
+   * <ol>
+   *   <li>DBManager::createSQLDBUser (iDBType, iSQLDBConnStr);</li>
+   *   <li>soci::session* lSociSession_ptr =
+   *         DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);</li>
+   *   <li>DBManager::createSQLDBTables (*lSociSession_ptr);</li>
+   *   <li>DBManager::terminateSQLDBSession (iSQLDBType, iSQLDBConnStr,
+   *         *lSociSession_ptr);</li>
+   * </ol>
    */
   class DBManager {
   public:
     /**
+     * Destroy and re-create the database.
+     *
+     * On SQLite, delete and re-create the content of the directory hosting
+     * the database.
+     * !!!!!Please be careful to not store anything else in that
+     * directory, as it would otherwise be deleted as well!!!!!
+     *
+     * On MySQL, create the 'trep' database user and 'trep_trep' database.
+     * If tables were previously existing, they are deleted and re-created.
+     *
+     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const SQLDBConnectionString_T& Connection string for the SQL
+     *                                       database.
+     * @return bool Whether or not the creation of the SQL database user
+     *              and DB was successful.
+     */
+    static bool createSQLDBUser (const DBType&, const SQLDBConnectionString_T&);
+
+    /**
      * Create a connection to a SQL database.
+     *
+     * The method has to be called after a potential call to
+     * the createSQLDBUser() method described above, and that latter
+     * destroys and re-creates the database.
      *
      * <ul>
      *  <li>With SQLite3, a database is given by just a file-path. If the SQLite3
@@ -71,20 +104,6 @@ namespace OPENTREP {
     static void terminateSQLDBSession (const DBType&,
                                        const SQLDBConnectionString_T&,
                                        soci::session&);
-
-    /**
-     * On MySQL, create the 'trep' database user and 'trep_trep' database.
-     * On other database types (e.g., nosql, sqlite), that method has no effect.
-     *
-     * If tables were previously existing, they are deleted and re-created.
-     *
-     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
-     * @param const SQLDBConnectionString_T& Connection string for the SQL
-     *                                       database.
-     * @return bool Whether or not the creation of the SQL database user
-     *              and DB was successful.
-     */
-    static bool createSQLDBUser (const DBType&, const SQLDBConnectionString_T&);
 
     /**
      * Create the database tables (e.g., 'optd_por' table).

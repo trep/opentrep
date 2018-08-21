@@ -670,17 +670,17 @@ namespace OPENTREP {
       lOPENTREP_ServiceContext.getSQLDBConnectionString();
       
     // Delegate the index building to the dedicated command
-    BasChronometer lBuildSearchIndexChronometer;
-    lBuildSearchIndexChronometer.start();
+    BasChronometer lFillInFromPORFileChronometer;
+    lFillInFromPORFileChronometer.start();
     oNbOfEntries =
       DBManager::fillInFromPORFile (lPORFilePath,
                                     lSQLDBType, lSQLDBConnectionString);
-    const double lBuildSearchIndexMeasure =
-      lBuildSearchIndexChronometer.elapsed();
+    const double lFillInFromPORFileMeasure =
+      lFillInFromPORFileChronometer.elapsed();
       
     // DEBUG
     OPENTREP_LOG_DEBUG ("Filled in the SQL database: "
-                        << lBuildSearchIndexMeasure << " - "
+                        << lFillInFromPORFileMeasure << " - "
                         << lOPENTREP_ServiceContext.display());
 
     return oNbOfEntries;
@@ -710,7 +710,11 @@ namespace OPENTREP {
     // Retrieve the SQL database connection string
     const SQLDBConnectionString_T& lSQLDBConnectionString =
       lOPENTREP_ServiceContext.getSQLDBConnectionString();
-      
+
+    // Retrieve whether or not all the POR should be indexed
+    const OPENTREP::shouldIndexNonIATAPOR_T& lIncludeNonIATAPOR =
+      lOPENTREP_ServiceContext.getShouldIncludeAllPORFlag();
+
     // Retrieve the Unicode transliterator
     const OTransliterator& lTransliterator =
       lOPENTREP_ServiceContext.getTransliterator();
@@ -722,6 +726,7 @@ namespace OPENTREP {
                                                    lTravelDBFilePath,
                                                    lSQLDBType,
                                                    lSQLDBConnectionString,
+                                                   lIncludeNonIATAPOR,
                                                    lTransliterator);
     const double lBuildSearchIndexMeasure =
       lBuildSearchIndexChronometer.elapsed();
