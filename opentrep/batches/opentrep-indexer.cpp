@@ -27,6 +27,20 @@ typedef std::vector<std::string> WordList_T;
  */
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-indexer.log");
 
+/**
+ * Default flag for the including (or not) of the non-IATA-referenced POR.
+ * By default, only POR which are referenced by IATA are included.
+ * If the flag is set up at 1, then also the POR referenced by other
+ * international organizations (such ICAO or UN/LOCODE) are included.
+ *  <br>
+ *  <ul>
+ *    <li>0 = Do not include non-IATA-referenced POR</li>
+ *    <li>1 = Include non-IATA-referenced POR (eg, POR referenced by ICAO
+ *        or UN/LOCODE)</li>
+ *  </ul>
+ */
+const bool K_OPENTREP_DEFAULT_POR_INCLUDING = false;
+
 
 // ///////// Parsing of Options & Configuration /////////
 /** Early return status (so that it can be differentiated from an error). */
@@ -38,6 +52,7 @@ int readConfiguration (int argc, char* argv[],
                        std::string& ioXapianDBFilepath,
                        std::string& ioSQLDBTypeString,
                        std::string& ioSQLDBConnectionString,
+                       bool& ioIncludeNonIATAPOR,
                        std::string& ioLogFilename) {
 
   // Declare a group of options that will be allowed only on command line
@@ -63,6 +78,9 @@ int readConfiguration (int argc, char* argv[],
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+    ("noniata,n",
+     boost::program_options::value<bool>(&ioIncludeNonIATAPOR)->default_value(K_OPENTREP_DEFAULT_POR_INCLUDING), 
+     "Whether or not to include POR not referenced by IATA (0 = only IATA-referenced POR, 1 = all POR are included)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
@@ -136,6 +154,9 @@ int readConfiguration (int argc, char* argv[],
               << std::endl;
   }
 
+  std::cout << "Are non-IATA-referenced POR included? "
+            << ioIncludeNonIATAPOR << std::endl;
+  
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
     std::cout << "Log filename is: " << ioLogFilename << std::endl;
@@ -163,10 +184,14 @@ int main (int argc, char* argv[]) {
   // SQL database connection string
   std::string lSQLDBConnectionStr;
 
+  // Whether or not to include non-IATA-referenced POR
+  bool lIncludeNonIATAPOR;
+
   // Call the command-line option parser
   const int lOptionParserStatus =
     readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
-                       lSQLDBTypeStr, lSQLDBConnectionStr, lLogFilename);
+                       lSQLDBTypeStr, lSQLDBConnectionStr, lIncludeNonIATAPOR,
+                       lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -190,7 +215,7 @@ int main (int argc, char* argv[]) {
   const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
                                               lXapianDBName, lDBType,
-                                              lSQLDBConnStr);
+                                              lSQLDBConnStr, lIncludeNonIATAPOR);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =

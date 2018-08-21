@@ -50,12 +50,14 @@ namespace OPENTREP {
   OPENTREP_ServiceContext& FacOpenTrepServiceContext::
   create (const PORFilePath_T& iPORFilePath,
           const TravelDBFilePath_T& iTravelDBFilePath, const DBType& iSQLDBType,
-          const SQLDBConnectionString_T& iSQLDBConnStr) {
+          const SQLDBConnectionString_T& iSQLDBConnStr,
+          const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
     OPENTREP_ServiceContext* aOPENTREP_ServiceContext_ptr = NULL;
 
     aOPENTREP_ServiceContext_ptr =
       new OPENTREP_ServiceContext (iPORFilePath, iTravelDBFilePath,
-                                   iSQLDBType, iSQLDBConnStr);
+                                   iSQLDBType, iSQLDBConnStr,
+                                   iShouldIndexNonIATAPOR);
     assert (aOPENTREP_ServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool

@@ -32,10 +32,11 @@ namespace OPENTREP {
   OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T& iPORFilepath,
                     const TravelDBFilePath_T& iTravelDBFilePath,
                     const DBType& iSQLDBType,
-                    const SQLDBConnectionString_T& iSQLDBConnStr)
+                    const SQLDBConnectionString_T& iSQLDBConnStr,
+                    const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR)
     : _opentrepServiceContext (NULL) {
     init (ioLogStream, iPORFilepath, iTravelDBFilePath,
-          iSQLDBType, iSQLDBConnStr);
+          iSQLDBType, iSQLDBConnStr, iShouldIndexNonIATAPOR);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -109,11 +110,13 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void OPENTREP_Service::init (std::ostream& ioLogStream,
-                               const PORFilePath_T& iPORFilepath,
-                               const TravelDBFilePath_T& iTravelDBFilePath,
-                               const DBType& iSQLDBType,
-                               const SQLDBConnectionString_T& iSQLDBConnStr) {
+  void OPENTREP_Service::
+  init (std::ostream& ioLogStream,
+        const PORFilePath_T& iPORFilepath,
+        const TravelDBFilePath_T& iTravelDBFilePath,
+        const DBType& iSQLDBType,
+        const SQLDBConnectionString_T& iSQLDBConnStr,
+        const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
@@ -125,7 +128,8 @@ namespace OPENTREP {
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
       FacOpenTrepServiceContext::instance().create (iPORFilepath,
                                                     iTravelDBFilePath,
-                                                    iSQLDBType, lSQLDBConnStr);
+                                                    iSQLDBType, lSQLDBConnStr,
+                                                    iShouldIndexNonIATAPOR);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
