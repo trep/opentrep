@@ -68,6 +68,7 @@ struct Command_T {
     TUTORIAL,
     CREATE_USER,
     RESET_CONNECTION_STRING,
+    TOGGLE_NONIATA_INDEXING_FLAG,
     CREATE_TABLES,
     CREATE_INDEXES,
     FILL_FROM_POR_FILE,
@@ -224,6 +225,7 @@ void initReadline (swift::SReadline& ioInputReader) {
   Completers.push_back ("reset_connection_string %connection_string");
   Completers.push_back ("create_tables");
   Completers.push_back ("create_indexes");
+  Completers.push_back ("toggle_noniata_indexing_flag");
   Completers.push_back ("fill_from_por_file");
   Completers.push_back ("list_by_iata %iata_code");
   Completers.push_back ("list_by_icao %icao_code");
@@ -269,6 +271,9 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "create_indexes") {
       oCommandType = Command_T::CREATE_INDEXES;
+
+    } else if (lCommand == "toggle_noniata_indexing_flag") {
+      oCommandType = Command_T::TOGGLE_NONIATA_INDEXING_FLAG;
 
     } else if (lCommand == "fill_from_por_file") {
       oCommandType = Command_T::FILL_FROM_POR_FILE;
@@ -577,7 +582,11 @@ int main (int argc, char* argv[]) {
                 << "Create/reset the SQLite3/MySQL tables"
                 << std::endl;
       std::cout << " create_indexes" << "\t\t\t"
-                << "Create/reset the SQLite3/MySQL indexes"
+                << "Create/reset the SQLite3/MySQL indices"
+                << std::endl;
+      std::cout << " toggle_noniata_indexing_flag" << "\t"
+                << "Toggle the flag for the indexing (or not) of the non-IATA referenced POR."
+                << " To see the flag, type 'info'"
                 << std::endl;
       std::cout << " fill_from_por_file" << "\t\t"
                 << "Parse the file of POR and fill-in the SQL database ori_por table."
@@ -619,14 +628,16 @@ int main (int argc, char* argv[]) {
         lFPSet.second;
       const OPENTREP::SQLDBConnectionString_T& lSQLConnStr = lDBFPPair.second;
       std::cout << std::endl;
-      std::cout << "Log file-path: " << "\t\t\t\t" << lLogFilename
+      std::cout << "Log file-path: " << "\t\t\t\t\t" << lLogFilename
                 << std::endl;
-      std::cout << "POR file-path: " << "\t\t\t\t" << lPORFilepathStr
+      std::cout << "POR file-path: " << "\t\t\t\t\t" << lPORFilepathStr
                 << std::endl;
-      std::cout << "SQL database type: " << "\t\t\t" << lDBType.describe()
+      std::cout << "SQL database type: " << "\t\t\t\t" << lDBType.describe()
                 << std::endl;
-      std::cout << "SQL database connection string: " << "\t" << lSQLConnStr
+      std::cout << "SQL database connection string: " << "\t\t" << lSQLConnStr
                 << std::endl;
+      std::cout << "Whether to index NON-IATA-referenced POR: " << "\t"
+                << lIncludeNonIATAPOR << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -649,6 +660,7 @@ int main (int argc, char* argv[]) {
       std::cout << " list_by_faa jfk" << std::endl;
       std::cout << " list_by_unlocode deham" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
+      std::cout << " toggle_noniata_indexing_flag" << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -915,7 +927,8 @@ int main (int argc, char* argv[]) {
       std::cout << "Creating the 'trep' user and 'trep_trep' database"
                 << std::endl;
     
-      // On MySQL, create the 'trep' user and 'trep_trep' database.
+      // On MySQL/MariaDB, create the 'trep' user and 'trep_trep' database.
+      // On SQLite, delete the directory hosting the database, and re-create it.
       // On other database types, do nothing.
       const bool lCreationSuccessful = opentrepService.createSQLDBUser();
 
@@ -928,7 +941,7 @@ int main (int argc, char* argv[]) {
       break;
     }
 
-      // ///////////////////////// Database Creation /////////////////////////
+      // ///////////////////// Database connection string //////////////////////
     case Command_T::RESET_CONNECTION_STRING: {
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -948,6 +961,17 @@ int main (int argc, char* argv[]) {
       break;
     }
 
+      // ///////////////////// Index or not non-IATA POR ///////////////////////
+    case Command_T::TOGGLE_NONIATA_INDEXING_FLAG: {
+      // Toggle the flag
+      lIncludeNonIATAPOR = opentrepService.toggleShouldIncludeAllPORFlag();
+
+      // Reporting
+      std::cout << "The new flag is: " << lIncludeNonIATAPOR << std::endl;
+    
+      break;
+    }
+                                                             
       // ///////////////////////// Tables Creation /////////////////////////
     case Command_T::CREATE_TABLES: {
       //
