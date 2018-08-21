@@ -982,7 +982,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T DBManager::
   fillInFromPORFile (const PORFilePath_T& iPORFilePath, const DBType& iDBType,
-                     const SQLDBConnectionString_T& iSQLDBConnStr) {
+                     const SQLDBConnectionString_T& iSQLDBConnStr,
+                     const shouldIndexNonIATAPOR_T& iIncludeNonIATAPOR) {
     NbOfDBEntries_T oNbOfEntries = 0;
 
     // DEBUG
@@ -1008,47 +1009,75 @@ namespace OPENTREP {
     Place& lPlace = FacPlace::instance().create();
     std::string itReadLine;
     while (std::getline (lPORFileStream, itReadLine)) {
+      /* First, if only the IATA-refernced POR must be indexed
+       * (ie, when iIncludeNonIATAPOR is set to false), the line
+       * must start with a non empty IATA code of three letters;
+       * in other words, the separator (the hat symbol) is first seen
+       * at position 3 (remember that strings in C++ start at position 0).
+       * Otherwise, the line is skipped.
+       */
+      if (!iIncludeNonIATAPOR) {
+        const unsigned short lFirstSeparatorPos = itReadLine.find_first_of ("^");
+        if (lFirstSeparatorPos != 3) {
+          // DEBUG
+          /*
+            OPENTREP_LOG_ERROR ("[" << oNbOfEntries << "] pos of sep: "
+                                << lFirstSeparatorPos << ", full line: "
+                                << itReadLine);
+          */
+
+          continue;
+        }
+      }
+      
       // Initialise the parser
       PORStringParser lStringParser (itReadLine);
 
       // Parse the string
       const Location& lLocation = lStringParser.generateLocation();
-      //const LocationKey& lLocationKey = lLocation.getKey();
 
       // DEBUG
-      //OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+      /*
+        const LocationKey& lLocationKey = lLocation.getKey();
+        OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
+      */
 
-      // When the line/string was relevant, create a BOM instance from
-      // the Location structure.
-      if (!(lLocation.getCommonName() == "NotAvailable")) {
-        // Fill the Place object with the Location structure.
-        lPlace.setLocation (lLocation);
+      /* When the line/string is relevant, create a BOM instance from
+       * the Location structure.
+       * Otherwise, the line is skipped.
+       */
+      const std::string& lCommonName = lLocation.getCommonName();
+      if (lCommonName == "NotAvailable") {
+        continue;
+      }
 
-        // Add the document to the SQL database
-        insertPlaceInDB (lSociSession, lPlace);
+      // Fill the Place object with the Location structure.
+      lPlace.setLocation (lLocation);
 
-        // DEBUG
-        /*
+      // Add the document to the SQL database
+      insertPlaceInDB (lSociSession, lPlace);
+
+      // DEBUG
+      /*
         OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
                             << ", Place: " << lPlace);
-        */
+      */
 
-        // Iteration
-        ++oNbOfEntries;
+      // Iteration
+      ++oNbOfEntries;
 
-        // Progress status
-        if (oNbOfEntries % 1000 == 0) {
-          std::cout << "Number of records inserted into the DB: "
-                    << oNbOfEntries << std::endl;
-        }
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
-
-        // Reset for next turn
-        lPlace.resetMatrix();
-        lPlace.resetIndexSets();
+      // Progress status
+      if (oNbOfEntries % 1000 == 0) {
+        std::cout << "Number of records inserted into the DB: "
+                  << oNbOfEntries << std::endl;
       }
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
+
+      // Reset for next turn
+      lPlace.resetMatrix();
+      lPlace.resetIndexSets();
     }
 
     return oNbOfEntries;

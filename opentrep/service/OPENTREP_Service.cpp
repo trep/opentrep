@@ -363,6 +363,36 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  OPENTREP::shouldIndexNonIATAPOR_T OPENTREP_Service::
+  toggleShouldIncludeAllPORFlag() {
+    shouldIndexNonIATAPOR_T oShouldIndexNonIATAPOR = false;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the flag
+    oShouldIndexNonIATAPOR =
+      lOPENTREP_ServiceContext.getShouldIncludeAllPORFlag();
+
+    // Toggle the flag
+    oShouldIndexNonIATAPOR = !(oShouldIndexNonIATAPOR);
+
+    // Store back the toggled flag
+    lOPENTREP_ServiceContext.setShouldIncludeAllPORFlag (oShouldIndexNonIATAPOR);
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The new non-IATA-referenced POR flag is: "
+                        << oShouldIndexNonIATAPOR << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oShouldIndexNonIATAPOR;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T OPENTREP_Service::getNbOfPORFromDB() {
     NbOfDBEntries_T nbOfMatches = 0;
 
@@ -669,12 +699,17 @@ namespace OPENTREP {
     const SQLDBConnectionString_T& lSQLDBConnectionString =
       lOPENTREP_ServiceContext.getSQLDBConnectionString();
       
+    // Retrieve whether or not all the POR should be indexed
+    const OPENTREP::shouldIndexNonIATAPOR_T& lIncludeNonIATAPOR =
+      lOPENTREP_ServiceContext.getShouldIncludeAllPORFlag();
+
     // Delegate the index building to the dedicated command
     BasChronometer lFillInFromPORFileChronometer;
     lFillInFromPORFileChronometer.start();
     oNbOfEntries =
       DBManager::fillInFromPORFile (lPORFilePath,
-                                    lSQLDBType, lSQLDBConnectionString);
+                                    lSQLDBType, lSQLDBConnectionString,
+                                    lIncludeNonIATAPOR);
     const double lFillInFromPORFileMeasure =
       lFillInFromPORFileChronometer.elapsed();
       
