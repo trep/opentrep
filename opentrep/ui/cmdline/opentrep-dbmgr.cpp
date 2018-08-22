@@ -69,6 +69,8 @@ struct Command_T {
     CREATE_USER,
     RESET_CONNECTION_STRING,
     TOGGLE_NONIATA_INDEXING_FLAG,
+    TOGGLE_XAPIAN_IDEXING_FLAG,
+    TOGGLE_SQLDB_INSERTING_FLAG,
     CREATE_TABLES,
     CREATE_INDEXES,
     FILL_FROM_POR_FILE,
@@ -226,6 +228,8 @@ void initReadline (swift::SReadline& ioInputReader) {
   Completers.push_back ("create_tables");
   Completers.push_back ("create_indexes");
   Completers.push_back ("toggle_noniata_indexing_flag");
+  Completers.push_back ("toggle_xapian_idexing_flag");
+  Completers.push_back ("toggle_sqldb_inserting_flag");
   Completers.push_back ("fill_from_por_file");
   Completers.push_back ("list_by_iata %iata_code");
   Completers.push_back ("list_by_icao %icao_code");
@@ -274,6 +278,12 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "toggle_noniata_indexing_flag") {
       oCommandType = Command_T::TOGGLE_NONIATA_INDEXING_FLAG;
+
+    } else if (lCommand == "toggle_xapian_idexing_flag") {
+      oCommandType = Command_T::TOGGLE_XAPIAN_IDEXING_FLAG;
+
+    } else if (lCommand == "toggle_sqldb_inserting_flag") {
+      oCommandType = Command_T::TOGGLE_SQLDB_INSERTING_FLAG;
 
     } else if (lCommand == "fill_from_por_file") {
       oCommandType = Command_T::FILL_FROM_POR_FILE;
@@ -492,7 +502,13 @@ int main (int argc, char* argv[]) {
   std::string lSQLDBConnectionStr;
 
   // Whether or not to include non-IATA-referenced POR
-  bool lIncludeNonIATAPOR;
+  bool lIncludeNonIATAPOR (OPENTREP::DEFAULT_OPENTREP_INCLUDE_NONIATA_POR);
+
+  // Whether or not to index the POR in Xapian
+  bool lShouldIndexPORInXapian (OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN);
+  
+  // Whether or not to insert the POR in the SQL database
+  bool lShouldAddPORInSQLDB (OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN);
 
   // Call the command-line option parser
   const int lOptionParserStatus =
@@ -588,6 +604,14 @@ int main (int argc, char* argv[]) {
                 << "Toggle the flag for the indexing (or not) of the non-IATA referenced POR."
                 << " To see the flag, type 'info'"
                 << std::endl;
+      std::cout << " toggle_xapian_idexing_flag" << "\t"
+                << "Toggle the flag for the Xapian indexing (or not) of the POR."
+                << " To see the flag, type 'info'"
+                << std::endl;
+      std::cout << " toggle_sqldb_inserting_flag" << "\t"
+                << "Toggle the flag for inserting (or not) the POR into the SQL database."
+                << " To see the flag, type 'info'"
+                << std::endl;
       std::cout << " fill_from_por_file" << "\t\t"
                 << "Parse the file of POR and fill-in the SQL database ori_por table."
                 << std::endl << "\t\t\t\t"
@@ -638,6 +662,10 @@ int main (int argc, char* argv[]) {
                 << std::endl;
       std::cout << "Whether to index NON-IATA-referenced POR: " << "\t"
                 << lIncludeNonIATAPOR << std::endl;
+      std::cout << "Whether to index the POR in Xapian: " << "\t\t"
+                << lShouldIndexPORInXapian << std::endl;
+      std::cout << "Whether to insert the POR in the SQL DB: " << "\t"
+                << lShouldAddPORInSQLDB << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -661,6 +689,8 @@ int main (int argc, char* argv[]) {
       std::cout << " list_by_unlocode deham" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
       std::cout << " toggle_noniata_indexing_flag" << std::endl;
+      std::cout << " toggle_xapian_idexing_flag" << std::endl;
+      std::cout << " toggle_sqldb_inserting_flag" << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -968,6 +998,29 @@ int main (int argc, char* argv[]) {
 
       // Reporting
       std::cout << "The new flag is: " << lIncludeNonIATAPOR << std::endl;
+    
+      break;
+    }
+                                                             
+      // ///////////////////// Index or not in Xapian ///////////////////////
+    case Command_T::TOGGLE_XAPIAN_IDEXING_FLAG: {
+      // Toggle the flag
+      lShouldIndexPORInXapian =
+        opentrepService.toggleShouldIndexPORInXapianFlag();
+
+      // Reporting
+      std::cout << "The new flag is: " << lShouldIndexPORInXapian << std::endl;
+    
+      break;
+    }
+                                                             
+      // ///////////////////// Add or not in SQL DB ///////////////////////
+    case Command_T::TOGGLE_SQLDB_INSERTING_FLAG: {
+      // Toggle the flag
+      lShouldAddPORInSQLDB = opentrepService.toggleShouldAddPORInSQLDBFlag();
+
+      // Reporting
+      std::cout << "The new flag is: " << lShouldAddPORInSQLDB << std::endl;
     
       break;
     }

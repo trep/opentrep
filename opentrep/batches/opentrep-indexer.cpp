@@ -219,7 +219,7 @@ int main (int argc, char* argv[]) {
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =
-    opentrepService.buildSearchIndex();
+    opentrepService.insertIntoDBAndXapian();
 
   // Close the Log outputFile
   logOutputFile.close();

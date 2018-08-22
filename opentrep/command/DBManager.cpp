@@ -23,29 +23,11 @@
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/dbadaptor/DbaPlace.hpp>
 #include <opentrep/command/DBManager.hpp>
+#include <opentrep/command/FileManager.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
 
-  // //////////////////////////////////////////////////////////////////////
-  bool checkSQLiteDirectory (const SQLDBConnectionString_T& iSQLDBConnStr) {
-    bool oExistSQLDBDir = true;
-    
-    // Retrieve the full file-path of the SQLite3 directory
-    boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
-                                               iSQLDBConnStr.end());
-
-    // Retrieve the directory hosting the SQLite3 database
-    boost::filesystem::path lSQLiteDBParentPath =
-      lSQLiteDBFullPath.parent_path();
-
-    // Check that the directory exists and is actually a directory
-    oExistSQLDBDir = boost::filesystem::exists (lSQLiteDBParentPath)
-      && boost::filesystem::is_directory (lSQLiteDBParentPath);
-
-    return oExistSQLDBDir;
-  }
-  
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::
   createSQLDBUser (const DBType& iDBType,
@@ -221,7 +203,8 @@ namespace OPENTREP {
     if (iDBType == DBType::SQLITE3) {
 
       // Check that the directory hosting the SQLite database exists
-      const bool existSQLDBDir = checkSQLiteDirectory (iSQLDBConnStr);
+      const bool existSQLDBDir =
+        FileManager::checkSQLiteDirectory (iSQLDBConnStr);
       if (existSQLDBDir == false) {
         std::ostringstream errorStr;
         errorStr << "Error when trying to connect to the '" << iSQLDBConnStr

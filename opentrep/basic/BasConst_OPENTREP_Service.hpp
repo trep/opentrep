@@ -93,5 +93,18 @@ namespace OPENTREP {
    * be searched for) in OpenTREP.
    */
   extern const bool DEFAULT_OPENTREP_INCLUDE_NONIATA_POR;
+
+  /**
+   * Whether or not to add the POR, or list of POR, in the Xapian index.
+   * By default, index the POR in Xapian.
+   */
+  extern const bool DEFAULT_OPENTREP_INDEX_IN_XAPIAN;
+
+  /**
+   * Whether or not to add the POR, or list of POR, in the SQL database.
+   * By default, insert the POR in the SQL database.
+   */
+  extern const bool DEFAULT_OPENTREP_ADD_IN_DB;
+
 }
 #endif // __OPENTREP_BAS_BASCONST_OPENTREP_SERVICE_HPP

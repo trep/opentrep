@@ -114,6 +114,16 @@ namespace OPENTREP {
   typedef bool shouldIndexNonIATAPOR_T;
 
   /**
+   * Whether or not to add the POR, or list of POR, into the Xapian index.
+   */
+  typedef bool shouldIndexPORInXapian_T;
+
+  /**
+   * Whether or not to add the POR, or list of POR, into the SQL database.
+   */
+  typedef bool shouldAddPORInSQLDB_T;
+
+  /**
    * IATA three-letter code (e.g., ORD for Chicago O'Hare, IL, USA).
    *
    * IATA is the [International Air Transport Association](http://en.wikipedia.org/wiki/International_Air_Transport_Association).

@@ -391,6 +391,66 @@ namespace OPENTREP {
 
     return oShouldIndexNonIATAPOR;
   }
+
+  // //////////////////////////////////////////////////////////////////////
+  OPENTREP::shouldIndexPORInXapian_T OPENTREP_Service::
+  toggleShouldIndexPORInXapianFlag() {
+    shouldIndexPORInXapian_T oShouldIndexPORInXapian = true;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the flag
+    oShouldIndexPORInXapian =
+      lOPENTREP_ServiceContext.getShouldIndexPORInXapianFlag();
+
+    // Toggle the flag
+    oShouldIndexPORInXapian = !(oShouldIndexPORInXapian);
+
+    // Store back the toggled flag
+    lOPENTREP_ServiceContext.setShouldIndexPORInXapianFlag (oShouldIndexPORInXapian);
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The new index-in-Xapian-POR flag is: "
+                        << oShouldIndexPORInXapian << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oShouldIndexPORInXapian;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  OPENTREP::shouldAddPORInSQLDB_T OPENTREP_Service::
+  toggleShouldAddPORInSQLDBFlag() {
+    shouldAddPORInSQLDB_T oShouldAddPORInSQLDB = false;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the flag
+    oShouldAddPORInSQLDB =
+      lOPENTREP_ServiceContext.getShouldAddPORInSQLDB();
+
+    // Toggle the flag
+    oShouldAddPORInSQLDB = !(oShouldAddPORInSQLDB);
+
+    // Store back the toggled flag
+    lOPENTREP_ServiceContext.setShouldAddPORInSQLDB (oShouldAddPORInSQLDB);
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The new insert-in-DB-POR flag is: "
+                        << oShouldAddPORInSQLDB << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oShouldAddPORInSQLDB;
+  }
   
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T OPENTREP_Service::getNbOfPORFromDB() {
@@ -679,6 +739,7 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  // TODO: to be deprecated; the caller should call insertIntoDBAndXapian()
   NbOfDBEntries_T OPENTREP_Service::fillInFromPORFile() {
     NbOfDBEntries_T oNbOfEntries = 0;
     
@@ -722,7 +783,7 @@ namespace OPENTREP {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T OPENTREP_Service::buildSearchIndex() {
+  NbOfDBEntries_T OPENTREP_Service::insertIntoDBAndXapian() {
     NbOfDBEntries_T oNbOfEntries = 0;
     
     if (_opentrepServiceContext == NULL) {
@@ -750,25 +811,35 @@ namespace OPENTREP {
     const OPENTREP::shouldIndexNonIATAPOR_T& lIncludeNonIATAPOR =
       lOPENTREP_ServiceContext.getShouldIncludeAllPORFlag();
 
+    // Retrieve whether or not the POR should be indexed in Xapian
+    const OPENTREP::shouldIndexPORInXapian_T& lShouldIndexPORInXapian =
+      lOPENTREP_ServiceContext.getShouldIndexPORInXapianFlag();
+
+    // Retrieve whether or not the POR should be indexed in Xapian
+    const OPENTREP::shouldAddPORInSQLDB_T& lShouldAddPORInSQLDB =
+      lOPENTREP_ServiceContext.getShouldAddPORInSQLDB();
+
     // Retrieve the Unicode transliterator
     const OTransliterator& lTransliterator =
       lOPENTREP_ServiceContext.getTransliterator();
       
     // Delegate the index building to the dedicated command
-    BasChronometer lBuildSearchIndexChronometer;
-    lBuildSearchIndexChronometer.start();
+    BasChronometer lInsertIntoXapianAndSQLDBChronometer;
+    lInsertIntoXapianAndSQLDBChronometer.start();
     oNbOfEntries = IndexBuilder::buildSearchIndex (lPORFilePath,
                                                    lTravelDBFilePath,
                                                    lSQLDBType,
                                                    lSQLDBConnectionString,
                                                    lIncludeNonIATAPOR,
+                                                   lShouldIndexPORInXapian,
+                                                   lShouldAddPORInSQLDB,
                                                    lTransliterator);
-    const double lBuildSearchIndexMeasure =
-      lBuildSearchIndexChronometer.elapsed();
+    const double lInsertIntoXapianAndSQLDBMeasure =
+      lInsertIntoXapianAndSQLDBChronometer.elapsed();
       
     // DEBUG
-    OPENTREP_LOG_DEBUG ("Built Xapian database/index and SQL database: "
-                        << lBuildSearchIndexMeasure << " - "
+    OPENTREP_LOG_DEBUG ("Built Xapian database/index and filled SQL database: "
+                        << lInsertIntoXapianAndSQLDBMeasure << " - "
                         << lOPENTREP_ServiceContext.display());
 
     return oNbOfEntries;

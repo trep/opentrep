@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   OPENTREP::LocationList_T lLocationList;
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T nbOfEntries =
-    opentrepService.buildSearchIndex();
+    opentrepService.insertIntoDBAndXapian();
 
   BOOST_CHECK_MESSAGE (nbOfEntries == 9,
                        "The Xapian index ('" << lTravelDBFilePath

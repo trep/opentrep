@@ -68,6 +68,8 @@ namespace OPENTREP {
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
      * @param const shouldIndexNonIATAPOR_T& Whether all POR should be indexed.
+     * @param const shouldIndexPORInXapian_T& Whether Xapian should be used.
+     * @param const shouldAddPORInSQLDB_T& Whether the SQL DB should be used.
      * @param const OTransliterator& Unicode transliterator.
      */
     static NbOfDBEntries_T buildSearchIndex (const PORFilePath_T&,
@@ -75,6 +77,8 @@ namespace OPENTREP {
                                              const DBType&,
                                              const SQLDBConnectionString_T&,
                                              const shouldIndexNonIATAPOR_T&,
+                                             const shouldIndexPORInXapian_T&,
+                                             const shouldAddPORInSQLDB_T&,
                                              const OTransliterator&);
 
   private:
