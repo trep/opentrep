@@ -1067,7 +1067,7 @@ int main (int argc, char* argv[]) {
     
       // Launch the indexation
       const OPENTREP::NbOfDBEntries_T lNbOfEntries =
-        opentrepService.fillInFromPORFile();
+        opentrepService.insertIntoDBAndXapian();
 
       //
       std::cout << lNbOfEntries << " entries have been processed" << std::endl;

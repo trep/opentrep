@@ -739,50 +739,6 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  // TODO: to be deprecated; the caller should call insertIntoDBAndXapian()
-  NbOfDBEntries_T OPENTREP_Service::fillInFromPORFile() {
-    NbOfDBEntries_T oNbOfEntries = 0;
-    
-    if (_opentrepServiceContext == NULL) {
-      throw NonInitialisedServiceException ("The OpenTREP service has not been"
-                                            " initialised");
-    }
-    assert (_opentrepServiceContext != NULL);
-    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
-
-    // Retrieve the file-path of the POR (points of reference) file
-    const PORFilePath_T& lPORFilePath= lOPENTREP_ServiceContext.getPORFilePath();
-      
-    // Retrieve the SQL database type
-    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
-      
-    // Retrieve the SQL database connection string
-    const SQLDBConnectionString_T& lSQLDBConnectionString =
-      lOPENTREP_ServiceContext.getSQLDBConnectionString();
-      
-    // Retrieve whether or not all the POR should be indexed
-    const OPENTREP::shouldIndexNonIATAPOR_T& lIncludeNonIATAPOR =
-      lOPENTREP_ServiceContext.getShouldIncludeAllPORFlag();
-
-    // Delegate the index building to the dedicated command
-    BasChronometer lFillInFromPORFileChronometer;
-    lFillInFromPORFileChronometer.start();
-    oNbOfEntries =
-      DBManager::fillInFromPORFile (lPORFilePath,
-                                    lSQLDBType, lSQLDBConnectionString,
-                                    lIncludeNonIATAPOR);
-    const double lFillInFromPORFileMeasure =
-      lFillInFromPORFileChronometer.elapsed();
-      
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("Filled in the SQL database: "
-                        << lFillInFromPORFileMeasure << " - "
-                        << lOPENTREP_ServiceContext.display());
-
-    return oNbOfEntries;
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T OPENTREP_Service::insertIntoDBAndXapian() {
     NbOfDBEntries_T oNbOfEntries = 0;
     

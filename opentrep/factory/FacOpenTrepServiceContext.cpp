@@ -60,7 +60,7 @@ namespace OPENTREP {
                                    iShouldIndexNonIATAPOR);
     assert (aOPENTREP_ServiceContext_ptr != NULL);
 
-    // The new object is added to the Bom pool
+    // The new object is added to the Service pool
     _pool.push_back (aOPENTREP_ServiceContext_ptr);
 
     return *aOPENTREP_ServiceContext_ptr;

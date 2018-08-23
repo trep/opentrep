@@ -1,11 +1,10 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
-#include <assert.h>
-// OPENTREP
+// OpenTREP
 #include <opentrep/factory/FacBomAbstract.hpp>
 #include <opentrep/factory/FacServiceAbstract.hpp>
+#include <opentrep/factory/FacXapianDB.hpp>
 #include <opentrep/factory/FacSupervisor.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -15,7 +14,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   FacSupervisor::FacSupervisor () :
-    _logger (NULL) {
+    _facXapianDB (NULL), _logger (NULL) {
   }
     
   // //////////////////////////////////////////////////////////////////////
@@ -23,7 +22,7 @@ namespace OPENTREP {
     if (_instance == NULL) {
       _instance = new FacSupervisor();
     }
-
+    assert (_instance != NULL);
     return *_instance;
   }
 
@@ -40,14 +39,24 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void FacSupervisor::registerXapianDBFactory (FacXapianDB* ioFacXapianDB_ptr) {
+    _facXapianDB = ioFacXapianDB_ptr;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void FacSupervisor::registerLoggerService (Logger* ioLogger_ptr) {
     _logger = ioLogger_ptr;
   }
 
   // //////////////////////////////////////////////////////////////////////
   FacSupervisor::~FacSupervisor() {
+    // For the underlying instance, if existing
+    cleanFactory();
+
+    // For the instance level
     cleanBomLayer();
     cleanServiceLayer();
+    cleanFacXapianDB();
     cleanLoggerService();
   }
 
@@ -58,10 +67,10 @@ namespace OPENTREP {
       const FacBomAbstract* currentFactory_ptr = *itFactory;
       assert (currentFactory_ptr != NULL);
 
-      delete (currentFactory_ptr); currentFactory_ptr = NULL;
+      delete currentFactory_ptr; currentFactory_ptr = NULL;
     }
 
-    // Empty the pool of Bom Factories
+    // Now that all the objects have been deleted, empty the underlying pool
     _bomPool.clear();
   }
 
@@ -72,11 +81,16 @@ namespace OPENTREP {
       const FacServiceAbstract* currentFactory_ptr = *itFactory;
       assert (currentFactory_ptr != NULL);
       
-      delete (currentFactory_ptr); currentFactory_ptr = NULL;
+      delete currentFactory_ptr; currentFactory_ptr = NULL;
     }
     
-    // Empty the pool of Service Factories
+    // Now that all the objects have been deleted, empty the underlying pool
     _svcPool.clear();
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  void FacSupervisor::cleanFacXapianDB() {
+    delete _facXapianDB; _facXapianDB = NULL;
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -89,9 +103,10 @@ namespace OPENTREP {
 	if (_instance != NULL) {
 		_instance->cleanBomLayer();
 		_instance->cleanServiceLayer();
+        _instance->cleanFacXapianDB();
 		_instance->cleanLoggerService();
 	}
-    delete (_instance); _instance = NULL;
+    delete _instance; _instance = NULL;
   }
 
 }

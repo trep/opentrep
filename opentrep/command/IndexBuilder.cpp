@@ -16,6 +16,8 @@
 #include <boost/iostreams/filter/bzip2.hpp>
 // SOCI
 #include <soci/soci.h>
+// Xapian
+#include <xapian.h>
 // OpenTrep
 #include <opentrep/basic/OTransliterator.hpp>
 #include <opentrep/basic/Utilities.hpp>
@@ -26,12 +28,11 @@
 #include <opentrep/bom/PORFileHelper.hpp>
 #include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/factory/FacPlace.hpp>
+#include <opentrep/factory/FacXapianDB.hpp>
 #include <opentrep/command/FileManager.hpp>
 #include <opentrep/command/DBManager.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/service/Logger.hpp>
-// Xapian
-#include <xapian.h>
 
 namespace OPENTREP {
 
@@ -119,12 +120,13 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T IndexBuilder::
-  buildSearchIndex (Xapian::WritableDatabase& ioDatabase,
+  buildSearchIndex (Xapian::WritableDatabase* ioXapianDB_ptr,
                     const DBType& iSQLDBType, soci::session* ioSociSessionPtr,
                     std::istream& iPORFileStream,
                     const shouldIndexNonIATAPOR_T& iIncludeNonIATAPOR,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
+    NbOfDBEntries_T oNbOfEntriesInPORFile = 0;
 
     // Open the file to be parsed
     Place& lPlace = FacPlace::instance().create();
@@ -148,6 +150,10 @@ namespace OPENTREP {
                                 << itReadLine);
           */
 
+          //
+          ++oNbOfEntriesInPORFile;
+
+          //
           continue;
         }
       }
@@ -176,8 +182,12 @@ namespace OPENTREP {
       // Fill the Place object with the Location structure.
       lPlace.setLocation (lLocation);
 
-      // Add the document, associated to the Place object, to the Xapian index
-      IndexBuilder::addDocumentToIndex (ioDatabase, lPlace, iTransliterator);
+      // Add the document, associated to the Place object, to the Xapian index,
+      // if required
+      if (ioXapianDB_ptr != NULL) {
+        IndexBuilder::addDocumentToIndex (*ioXapianDB_ptr, lPlace,
+                                          iTransliterator);
+      }
 
       // Add the document to the SQL database, if required
       if (ioSociSessionPtr != NULL) {
@@ -191,12 +201,13 @@ namespace OPENTREP {
       */
 
       // Iteration
-      ++oNbOfEntries;
+      ++oNbOfEntries; ++oNbOfEntriesInPORFile;
       
       // Progress status
       if (oNbOfEntries % 1000 == 0) {
-        std::cout << "Number of parsed and Xapian-indexed records: "
-                  << oNbOfEntries << std::endl;
+        std::cout << "Number of actually parsed records: " << oNbOfEntries
+                  << ", out of " << oNbOfEntriesInPORFile
+                  << " records in the POR data file so far" << std::endl;
       }
 
       // DEBUG
@@ -221,74 +232,85 @@ namespace OPENTREP {
                     const shouldAddPORInSQLDB_T& iShouldAddPORInSQLDB,
                     const OTransliterator& iTransliterator) {
     NbOfDBEntries_T oNbOfEntries = 0;
-
-    /**
-     *            0. Remove any existing directory for Xapian
-     */
-    FileManager::recreateXapianDirectory (iTravelIndexFilePath);
-
+    soci::session* lSociSession_ptr = NULL;
+    Xapian::WritableDatabase* lXapianDatabase_ptr = NULL;
+    
     /**
      *            1. Xapian database (index) initialisation
-     * Create the Xapian database (index). As the directory has been fully
-     * cleaned, deleted and re-created, that Xapian database (index) is empty.
-     */
-    Xapian::WritableDatabase lXapianDatabase (iTravelIndexFilePath,
-                                              Xapian::DB_CREATE);
-
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("The Xapian database ('" << iTravelIndexFilePath
-                        << "') has been checked and open");
-
-    /**
-     * Begin a transation on the Xapian database (index).
      *
-     * Normally, there are around 11,000 entries (rows/documents) to
-     * be indexed. Not specifying the beginning of a transaction would
-     * mean that every document addition would end up in a corresponding
-     * independant transaction, which would be very much inefficient.
+     * a. Remove any existing directory for Xapian
+     * b. Create the Xapian database (index). As the directory has been fully
+     * cleaned, deleted and re-created, that Xapian database (index) is empty
+     * c. Start a transaction for Xapian
      */
-    lXapianDatabase.begin_transaction();
+    if (iShouldIndexPORInXapian) {
+      // Delete and recreate the directory, and its full content,
+      // hosting the Xapian index / database
+      FileManager::recreateXapianDirectory (iTravelIndexFilePath);
 
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("A transaction has begun on the Xapian database ('"
-                        << iTravelIndexFilePath << "')");
+      // Recreate the Xapian index / database
+      lXapianDatabase_ptr =
+        FacXapianDB::instance().create (iTravelIndexFilePath, Xapian::DB_CREATE);
+      assert (lXapianDatabase_ptr != NULL);
+      
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The Xapian index / database ('"
+                          << iTravelIndexFilePath
+                          << "') has been re-created, checked and opened");
 
+
+      /**
+       * Begin a transation on the Xapian database (index).
+       *
+       * There may be around 120,000 entries (rows/documents) to
+       * be indexed. Not specifying the beginning of a transaction would
+       * mean that every document addition would end up in a corresponding
+       * independant transaction, which would be very much inefficient.
+       */
+      lXapianDatabase_ptr->begin_transaction();
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("A transaction has begun on the Xapian database ('"
+                          << iTravelIndexFilePath << "')");
+    }
 
     /**
      *            2. Re-initialize the SQL database
      *
      * Drop and re-create, if necessary, the content of the SQL database
      */
-    // Creation of the trep user and trep_trep database
-    bool isSuccessful = DBManager::createSQLDBUser (iSQLDBType, iSQLDBConnStr);
-    if (isSuccessful == false) {
-      std::ostringstream errorStr;
-      errorStr << "Error when trying to re-initialize the SQL database ('"
-               << iSQLDBConnStr << "')";
-      OPENTREP_LOG_ERROR (errorStr.str());
-      throw SQLDatabaseImpossibleConnectionException (errorStr.str());
-    }
-    
-    /**
-     *            3. Connection to the SQL Database
-     */
-    soci::session* lSociSession_ptr = NULL;
-    if (!(iSQLDBType == DBType::NODB)) {
-      // Connection to the database
-      lSociSession_ptr =
-        DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
+    if (iShouldAddPORInSQLDB) {
 
-      if (lSociSession_ptr == NULL) {
+      // Creation of the trep user and trep_trep database
+      bool isSuccessful = DBManager::createSQLDBUser (iSQLDBType, iSQLDBConnStr);
+      if (isSuccessful == false) {
         std::ostringstream errorStr;
-        errorStr << "Error when trying to connect to the SQL database ('"
+        errorStr << "Error when trying to re-initialize the SQL database ('"
                  << iSQLDBConnStr << "')";
         OPENTREP_LOG_ERROR (errorStr.str());
         throw SQLDatabaseImpossibleConnectionException (errorStr.str());
       }
-      assert (lSociSession_ptr != NULL);
-      
-      // Creation of the POR table
-      DBManager::createSQLDBTables (*lSociSession_ptr);
+    
+      /**
+       *            3. Connection to the SQL Database
+       */
+      if (!(iSQLDBType == DBType::NODB)) {
+        // Connection to the database
+        lSociSession_ptr =
+          DBManager::initSQLDBSession (iSQLDBType, iSQLDBConnStr);
+        
+        if (lSociSession_ptr == NULL) {
+          std::ostringstream errorStr;
+          errorStr << "Error when trying to connect to the SQL database ('"
+                   << iSQLDBConnStr << "')";
+          OPENTREP_LOG_ERROR (errorStr.str());
+          throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+        }
+        assert (lSociSession_ptr != NULL);
+        
+        // Creation of the POR table
+        DBManager::createSQLDBTables (*lSociSession_ptr);
+      }
     }
     
     /**
@@ -304,19 +326,21 @@ namespace OPENTREP {
     // Browse the input POR (point of reference) data file,
     // parse every of its rows, and put the result in the Xapian database/index
     // and, if needed, within the SQL database.
-    oNbOfEntries = buildSearchIndex (lXapianDatabase, iSQLDBType,
-                                     lSociSession_ptr,
-                                     lPORFileStream, iIncludeNonIATAPOR,
-                                     iTransliterator);
+    oNbOfEntries = buildSearchIndex (lXapianDatabase_ptr, iSQLDBType,
+                                     lSociSession_ptr, lPORFileStream,
+                                     iIncludeNonIATAPOR, iTransliterator);
 
     /**
      *            5. Commit the transactions of the Xapian database (index).
      *
      */
-    lXapianDatabase.commit_transaction();
+    if (iShouldIndexPORInXapian) {
+      assert (lXapianDatabase_ptr != NULL);
+      lXapianDatabase_ptr->commit_transaction();
 
-    // DEBUG
-    OPENTREP_LOG_DEBUG ("Xapian has indexed " << oNbOfEntries << " entries.");
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("Xapian has indexed " << oNbOfEntries << " entries.");
+    }
 
     /**
      *            6. Close the Xapian database (index).
@@ -325,7 +349,10 @@ namespace OPENTREP {
      *       the Boost Unit Test framework, that latter kills the process.
      *       When called from within GDB, all is fine.
      */
-    lXapianDatabase.close();
+    if (iShouldIndexPORInXapian) {
+      assert (lXapianDatabase_ptr != NULL);
+      lXapianDatabase_ptr->close();
+    }
 
     /**
      *            7. Index the SQL database

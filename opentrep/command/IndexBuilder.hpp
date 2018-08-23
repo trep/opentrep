@@ -47,14 +47,16 @@ namespace OPENTREP {
     /**
      * Build Xapian database.
      *
-     * @param Xapian::WritableDatabase& Xapian database.
+     * @param Xapian::WritableDatabase* Handle on the Xapian database/index
+     *                                  It is NULL when no use of Xapian.
      * @param const DBType& SQL database type (can be no database at all).
-     * @param soci::session* SOCI session handler (can be NULL; see above).
+     * @param soci::session* SOCI session handler. It can be NULL when there
+     *                       is no use of SQL DB.
      * @param std::ifstream& File stream for the POR data file.
      * @param const shouldIndexNonIATAPOR_T& Whether all POR should be indexed.
      * @param const OTransliterator& Unicode transliterator.
      */
-    static NbOfDBEntries_T buildSearchIndex (Xapian::WritableDatabase&,
+    static NbOfDBEntries_T buildSearchIndex (Xapian::WritableDatabase*,
                                              const DBType&, soci::session*,
                                              std::istream& iPORFileStream,
                                              const shouldIndexNonIATAPOR_T&,

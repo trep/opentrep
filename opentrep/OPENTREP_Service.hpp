@@ -154,16 +154,6 @@ namespace OPENTREP {
     NbOfDBEntries_T insertIntoDBAndXapian();    
 
     /**
-     * DEPRECATED - Use insertIntoDBAndXapian() above instead
-     *
-     * Insert all the POR (points of reference) into the SQL database from
-     * the file with the ORI-maintained list of POR (points of reference).
-     *
-     * @return NbOfDBEntries_T Number of documents of the file (stream).
-     */
-    NbOfDBEntries_T fillInFromPORFile();
-
-    /**
      * Retrieve the number of POR (points of reference)
      * within the SQL database.
      *
