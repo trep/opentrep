@@ -280,7 +280,7 @@ namespace OPENTREP {
      * Drop and re-create, if necessary, the content of the SQL database
      */
     if (iShouldAddPORInSQLDB) {
-
+      /*
       // Creation of the trep user and trep_trep database
       bool isSuccessful = DBManager::createSQLDBUser (iSQLDBType, iSQLDBConnStr);
       if (isSuccessful == false) {
@@ -290,6 +290,7 @@ namespace OPENTREP {
         OPENTREP_LOG_ERROR (errorStr.str());
         throw SQLDatabaseImpossibleConnectionException (errorStr.str());
       }
+      */
     
       /**
        *            3. Connection to the SQL Database

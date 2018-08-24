@@ -107,15 +107,17 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries:
          * -------------------------------------------
+         drop user if exists 'trep'@'localhost';
+         create user 'trep'@'localhost' identified by 'trep';
          grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
          ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* 
-         to 'trep'@'localhost' identified by 'trep';
+         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
 
+         drop user if exists 'trep'@'%';
+         create user 'trep'@'%' identified by 'trep';
          grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
          ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* 
-         to 'trep'@'%' identified by 'trep';
+         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'%';
 
          flush privileges;
 
@@ -125,6 +127,16 @@ namespace OPENTREP {
            collate utf8_unicode_ci;
         */
 
+        // Drop user (if it exists) 'trep'@'localhost'
+        std::ostringstream lSQLDropTrepLocalStr;
+        lSQLDropTrepLocalStr
+          << "drop user if exists 'trep'@'localhost';";
+        lSociSession << lSQLDropTrepLocalStr.str();
+        // Create user 'trep'@'localhost'
+        std::ostringstream lSQLCreateTrepLocalStr;
+        lSQLCreateTrepLocalStr
+          << "create user 'trep'@'localhost' identified by 'trep';";
+        lSociSession << lSQLCreateTrepLocalStr.str();
         //
         std::ostringstream lSQLGrantTrepLocalStr;
         lSQLGrantTrepLocalStr
@@ -133,8 +145,17 @@ namespace OPENTREP {
           << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
         lSQLGrantTrepLocalStr
           << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepLocalStr << " to 'trep'@'localhost' identified by 'trep';";
+        lSQLGrantTrepLocalStr << " to 'trep'@'localhost';";
         lSociSession << lSQLGrantTrepLocalStr.str();
+
+        // Drop user (if it exists) 'trep'@'%'
+        std::ostringstream lSQLDropTrepAllStr;
+        lSQLDropTrepAllStr << "drop user if exists 'trep'@'%';";
+        lSociSession << lSQLDropTrepAllStr.str();
+        // Create user 'trep'@'%'
+        std::ostringstream lSQLCreateTrepAllStr;
+        lSQLCreateTrepAllStr << "create user 'trep'@'%' identified by 'trep';";
+        lSociSession << lSQLCreateTrepAllStr.str();
         //
         std::ostringstream lSQLGrantTrepAllStr;
         lSQLGrantTrepAllStr
@@ -142,7 +163,7 @@ namespace OPENTREP {
         lSQLGrantTrepAllStr
           << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
         lSQLGrantTrepAllStr << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepAllStr << " to 'trep'@'%' identified by 'trep';";
+        lSQLGrantTrepAllStr << " to 'trep'@'%';";
         lSociSession << lSQLGrantTrepAllStr.str();
         //
         std::ostringstream lSQLFlushPrivilegesStr;
