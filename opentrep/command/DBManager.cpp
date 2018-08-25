@@ -91,146 +91,83 @@ namespace OPENTREP {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the 'trep' user and 'trep_trep' database "
                           << "in MySQL ('" << iSQLDBConnStr << "')");
-      
+
+      // Connection to the MySQL/MariaDB database
+      soci::session* lSociSession_ptr = NULL;      
       try {
 
         // Connect to the SQL database/file
-        soci::session* lSociSession_ptr = initSQLDBSession (iDBType,
-                                                            iSQLDBConnStr);
+        lSociSession_ptr = initSQLDBSession (iDBType, iSQLDBConnStr);
         if (lSociSession_ptr == NULL) {
           oCreationSuccessful = false;
           return oCreationSuccessful;
         }
-        assert (lSociSession_ptr != NULL);
-        soci::session& lSociSession = *lSociSession_ptr;
 
-        /**
-         * SQL DDL (Data Definition Language) queries:
-         * -------------------------------------------
-         -- Universal procedure for 'drop user if exists', as that feature
-         -- has been available on MySQL from 5.6 only (and CentOS 6
-         -- has MySQL 5.0)
-         -- https://stackoverflow.com/a/12502107/798053
-         DELIMITER $$
+      } catch (soci::mysql_soci_error const& lSociException) {
+        std::ostringstream errorStr;
+        errorStr << "SOCI-related error when trying to connect to the "
+                 << "MySQL/MariaDB database ('" << iSQLDBConnStr
+                 << "'). SOCI error message: " << lSociException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        std::cerr << errorStr.str() << std::endl;
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
+      }
+      assert (lSociSession_ptr != NULL);
+      soci::session& lSociSession = *lSociSession_ptr;
 
-         DROP PROCEDURE IF EXISTS `DropUserIfExistsAdvanced`$$
+      /**
+       * SQL DDL (Data Definition Language) queries:
+       * -------------------------------------------
+       -- Universal procedure for 'drop user if exists', as that feature
+       -- has been available on MySQL from 5.6 only (and CentOS 6
+       -- has MySQL 5.0): https://stackoverflow.com/a/12502107/798053
 
-         CREATE DEFINER=`root`@`localhost` PROCEDURE `DropUserIfExistsAdvanced`(
-         MyUserName VARCHAR(100)
-         , MyHostName VARCHAR(100)
-         )
-         BEGIN
-         DECLARE pDone INT DEFAULT 0;
-         DECLARE mUser VARCHAR(100);
-         DECLARE mHost VARCHAR(100);
-         DECLARE recUserCursor CURSOR FOR
-         SELECT `User`, `Host` FROM `mysql`.`user` WHERE `User` = MyUserName;
-         DECLARE CONTINUE HANDLER FOR NOT FOUND SET pDone = 1;
+       drop user 'trep'@'localhost'; drop user 'trep'@'%';
+         
+       create user 'trep'@'localhost' identified by 'trep';
+       grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+       ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+       CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
 
-         IF (MyHostName IS NOT NULL) THEN
-         -- 'username'@'hostname' exists
-         IF (EXISTS(SELECT NULL FROM `mysql`.`user` WHERE `User` = MyUserName AND `Host` = MyHostName)) THEN
-         SET @SQL = (SELECT mResult FROM (SELECT GROUP_CONCAT("DROP USER ", "'", MyUserName, "'@'", MyHostName, "'") AS mResult) AS Q LIMIT 1);
-         PREPARE STMT FROM @SQL;
-         EXECUTE STMT;
-         DEALLOCATE PREPARE STMT;
-         END IF;
-         ELSE
-         -- check whether MyUserName exists (MyUserName@'%' , MyUserName@'localhost' etc)
-         OPEN recUserCursor;
-         REPEAT
-         FETCH recUserCursor INTO mUser, mHost;
-         IF NOT pDone THEN
-         SET @SQL = (SELECT mResult FROM (SELECT GROUP_CONCAT("DROP USER ", "'", mUser, "'@'", mHost, "'") AS mResult) AS Q LIMIT 1);
-         PREPARE STMT FROM @SQL;
-         EXECUTE STMT;
-         DEALLOCATE PREPARE STMT;
-         END IF;
-         UNTIL pDone END REPEAT;
-         END IF;
-         FLUSH PRIVILEGES;
-         END$$
-         DELIMITER ;
+       create user 'trep'@'%' identified by 'trep';
+       grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+       ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+       CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'%';
 
-         call DropUserIfExistsAdvanced('trep', NULL);
-         create user 'trep'@'localhost' identified by 'trep';
-         grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
-         ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
+       flush privileges;
 
-         create user 'trep'@'%' identified by 'trep';
-         grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
-         ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'%';
+       drop database if exists trep_trep;
+       create database if not exists trep_trep
+       default character set utf8
+       collate utf8_unicode_ci;
+      */
 
-         flush privileges;
-
-         drop database if exists trep_trep;
-         create database if not exists trep_trep
-           default character set utf8
-           collate utf8_unicode_ci;
-        */
-
-        // Procedure DropUserIfExistsAdvanced
-        std::ostringstream lSQLDropUserProcedureStr;
-        lSQLDropUserProcedureStr << "DELIMITER $$" << std::endl;
-        lSQLDropUserProcedureStr << "DROP PROCEDURE IF EXISTS ";
-        lSQLDropUserProcedureStr << "`DropUserIfExistsAdvanced`$$" << std::endl;
-        lSQLDropUserProcedureStr << "CREATE DEFINER=`root`@`localhost` ";
-        lSQLDropUserProcedureStr << "PROCEDURE `DropUserIfExistsAdvanced`("
-                                 << std::endl;
-        lSQLDropUserProcedureStr << "MyUserName VARCHAR(100), ";
-        lSQLDropUserProcedureStr << "MyHostName VARCHAR(100)" << std::endl
-                                 << ")" << std::endl;
-        lSQLDropUserProcedureStr << "BEGIN" << std::endl;
-        lSQLDropUserProcedureStr << "DECLARE pDone INT DEFAULT 0;" << std::endl;
-        lSQLDropUserProcedureStr << "DECLARE mUser VARCHAR(100);" << std::endl;
-        lSQLDropUserProcedureStr << "DECLARE mHost VARCHAR(100);" << std::endl;
-        lSQLDropUserProcedureStr << "DECLARE recUserCursor CURSOR FOR"
-                                 << std::endl;
-        lSQLDropUserProcedureStr << "SELECT `User`, `Host` FROM `mysql`.`user` ";
-        lSQLDropUserProcedureStr << "WHERE `User` = MyUserName;" << std::endl;
-        lSQLDropUserProcedureStr << "DECLARE CONTINUE HANDLER FOR NOT FOUND ";
-        lSQLDropUserProcedureStr << "SET pDone = 1;" << std::endl;
-        lSQLDropUserProcedureStr << "IF (MyHostName IS NOT NULL) THEN"
-                                 << std::endl;
-        lSQLDropUserProcedureStr << "IF (EXISTS(SELECT NULL FROM `mysql`.`user`";
-        lSQLDropUserProcedureStr << "WHERE `User` = MyUserName AND ";
-        lSQLDropUserProcedureStr << "`Host` = MyHostName)) THEN" << std::endl;
-        lSQLDropUserProcedureStr << "SET @SQL = (SELECT mResult FROM ";
-        lSQLDropUserProcedureStr << "(SELECT GROUP_CONCAT(\"DROP USER \", ";
-        lSQLDropUserProcedureStr << "\"'\", MyUserName, \"'@'\", MyHostName, ";
-        lSQLDropUserProcedureStr << "\"'\") AS mResult) AS Q LIMIT 1);"
-                                 << std::endl;
-        lSQLDropUserProcedureStr << "PREPARE STMT FROM @SQL;" << std::endl;
-        lSQLDropUserProcedureStr << "EXECUTE STMT;" << std::endl;
-        lSQLDropUserProcedureStr << "DEALLOCATE PREPARE STMT;" << std::endl;
-        lSQLDropUserProcedureStr << "END IF;" << std::endl;
-        lSQLDropUserProcedureStr << "ELSE" << std::endl;
-        lSQLDropUserProcedureStr << "OPEN recUserCursor;" << std::endl;
-        lSQLDropUserProcedureStr << "REPEAT" << std::endl;
-        lSQLDropUserProcedureStr << "FETCH recUserCursor INTO mUser, mHost;"
-                                 << std::endl;
-        lSQLDropUserProcedureStr << "IF NOT pDone THEN" << std::endl;
-        lSQLDropUserProcedureStr << "SET @SQL = (SELECT mResult FROM ";
-        lSQLDropUserProcedureStr << "(SELECT GROUP_CONCAT(\"DROP USER \", ";
-        lSQLDropUserProcedureStr << "\"'\", mUser, \"'@'\", mHost, \"'\") ";
-        lSQLDropUserProcedureStr << "AS mResult) AS Q LIMIT 1);" << std::endl;
-        lSQLDropUserProcedureStr << "PREPARE STMT FROM @SQL;" << std::endl;
-        lSQLDropUserProcedureStr << "EXECUTE STMT;" << std::endl;
-        lSQLDropUserProcedureStr << "DEALLOCATE PREPARE STMT;" << std::endl;
-        lSQLDropUserProcedureStr << "END IF;" << std::endl;
-        lSQLDropUserProcedureStr << "UNTIL pDone END REPEAT;" << std::endl;
-        lSQLDropUserProcedureStr << "END IF;" << std::endl;
-        lSQLDropUserProcedureStr << "FLUSH PRIVILEGES;" << std::endl;
-        lSQLDropUserProcedureStr << "END$$" << std::endl;
-        lSQLDropUserProcedureStr << "DELIMITER ;" << std::endl;
-        lSociSession << lSQLDropUserProcedureStr.str();
-        
-        // Drop user (if it exists) 'trep'@'localhost' and 'trep'@'%'
+      try {
+        // Drop user 'trep'@'localhost'
         std::ostringstream lSQLDropTrepLocalStr;
-        lSQLDropTrepLocalStr << "call DropUserIfExistsAdvanced('trep', NULL);";
+        lSQLDropTrepLocalStr << "drop user 'trep'@'localhost';";
         lSociSession << lSQLDropTrepLocalStr.str();
+        
+        // Drop user 'trep'@'%'
+        std::ostringstream lSQLDropTrepAllStr;
+        lSQLDropTrepAllStr << "drop user 'trep'@'%';";
+        lSociSession << lSQLDropTrepAllStr.str();
+
+      } catch (soci::mysql_soci_error const& lSociException) {
+        std::ostringstream issueStr;
+        issueStr << "Issue when trying to drop MySQL/MariaDB 'trep' user. "
+                 << "Most probably the user did not exist before. "
+                 << std::endl
+                 << "SOCI error message: " << lSociException.what()
+                 << std::endl
+                 << "The database users should however be created without "
+                 << "any issue ";
+        OPENTREP_LOG_DEBUG (issueStr.str());
+        std::cout << issueStr.str() << std::endl;
+      }
+
+      try {
 
         // Create user 'trep'@'localhost'
         std::ostringstream lSQLCreateTrepLocalStr;
@@ -268,6 +205,19 @@ namespace OPENTREP {
         lSQLFlushPrivilegesStr << "flush privileges;";
         lSociSession << lSQLFlushPrivilegesStr.str();
 
+      } catch (soci::mysql_soci_error const& lSociException) {
+        oCreationSuccessful = false;
+        std::ostringstream errorStr;
+        errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+                 << "'trep' users. Error message: " << lSociException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        std::cerr << errorStr.str() << std::endl;
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
+      }
+
+      try {
+        
         // Drop the 'trep_trep' database, if existing
         std::ostringstream lSQLDropDBStr;
         lSQLDropDBStr << "drop database if exists trep_trep;";
@@ -283,16 +233,20 @@ namespace OPENTREP {
       } catch (soci::mysql_soci_error const& lSociException) {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
-        errorStr << "Error when trying to create MySQL/MariaDB 'trep' user "
-                 << "and 'trep_trep' database: " << lSociException.what();
+        errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+                 << "'trep_trep' database. Error message: "
+                 << lSociException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         std::cerr << errorStr.str() << std::endl;
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
 
       } catch (std::exception const& lException) {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
-        errorStr << "Error when trying to create MySQL/MariaDB 'trep' user "
-                 << "and 'trep_trep' database: " << lException.what();
+        errorStr << "STL-related error when trying to create MySQL/MariaDB "
+                 << "'trep_trep' database. "
+                 << "Error message: " << lException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         throw SQLDatabaseUserCreationException (errorStr.str());
       }
@@ -486,7 +440,7 @@ namespace OPENTREP {
            envelope_id int(11) default NULL,
            date_from date default NULL,
            date_until date default NULL,
-           serialised_place varchar(12000) default NULL);
+           serialised_place varchar(12000) character set 'utf8' default NULL);
         */
 
         ioSociSession << "drop table if exists optd_por;";
@@ -503,7 +457,7 @@ namespace OPENTREP {
         lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
         lSQLTableCreationStr << "date_from date default NULL, ";
         lSQLTableCreationStr << "date_until date default NULL, ";
-        lSQLTableCreationStr<< "serialised_place varchar(12000) default NULL); ";
+        lSQLTableCreationStr << "serialised_place varchar(12000) default NULL);";
         ioSociSession << lSQLTableCreationStr.str();
 
       } catch (std::exception const& lException) {
