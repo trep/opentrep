@@ -216,8 +216,15 @@ namespace OPENTREP {
         return oCreationSuccessful;
       }
 
+      /**
+       * On some MySQL server configurations (eg, MacOS), UTF8 just handles
+       * 3-byte character. To support 4-byte character on those platforms,
+       * 'utf8mb4' is needed, but is available only from MySQL 5.5. Moreover,
+       * 'utf8' seems enough on MySQL servers on CentOS.
+       * So, we first try with 'utf8mb4', and if it does not work, we try
+       * 'utf8'.
+       */
       try {
-        
         // Drop the 'trep_trep' database, if existing
         std::ostringstream lSQLDropDBStr;
         lSQLDropDBStr << "drop database if exists trep_trep;";
@@ -226,29 +233,44 @@ namespace OPENTREP {
         // Create the 'trep_trep' database
         std::ostringstream lSQLCreateDBStr;
         lSQLCreateDBStr << "create database if not exists trep_trep";
-        lSQLCreateDBStr << " default character set utf8";
-        lSQLCreateDBStr << " collate utf8_unicode_ci;";
+        lSQLCreateDBStr << " default character set utf8mb4";
+        lSQLCreateDBStr << " collate utf8mb4_unicode_ci;";
         lSociSession << lSQLCreateDBStr.str();
 
       } catch (soci::mysql_soci_error const& lSociException) {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
         errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                 << "'trep_trep' database. Error message: "
-                 << lSociException.what();
+                 << "'trep_trep' database with 'utf8mb4' as character set. "
+                 << "Error message: " << lSociException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         std::cerr << errorStr.str() << std::endl;
-        oCreationSuccessful = false;
-        return oCreationSuccessful;
+      }
+      if (oCreationSuccessful == false) {
+        try {
+          // Drop the 'trep_trep' database, if existing
+          std::ostringstream lSQLDropDBStr;
+          lSQLDropDBStr << "drop database if exists trep_trep;";
+          lSociSession << lSQLDropDBStr.str();
 
-      } catch (std::exception const& lException) {
-        oCreationSuccessful = false;
-        std::ostringstream errorStr;
-        errorStr << "STL-related error when trying to create MySQL/MariaDB "
-                 << "'trep_trep' database. "
-                 << "Error message: " << lException.what();
-        OPENTREP_LOG_ERROR (errorStr.str());
-        throw SQLDatabaseUserCreationException (errorStr.str());
+          // Create the 'trep_trep' database
+          std::ostringstream lSQLCreateDBStr;
+          lSQLCreateDBStr << "create database if not exists trep_trep";
+          lSQLCreateDBStr << " default character set utf8";
+          lSQLCreateDBStr << " collate utf8_unicode_ci;";
+          lSociSession << lSQLCreateDBStr.str();
+          
+        } catch (soci::mysql_soci_error const& lSociException) {
+          oCreationSuccessful = false;
+          std::ostringstream errorStr;
+          errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+                   << "'trep_trep' database. Error message: "
+                   << lSociException.what();
+          OPENTREP_LOG_ERROR (errorStr.str());
+          std::cerr << errorStr.str() << std::endl;
+          oCreationSuccessful = false;
+          return oCreationSuccessful;
+        }
       }
 
       // DEBUG
@@ -440,7 +462,7 @@ namespace OPENTREP {
            envelope_id int(11) default NULL,
            date_from date default NULL,
            date_until date default NULL,
-           serialised_place varchar(12000) character set 'utf8' default NULL);
+           serialised_place varchar(12000) default NULL);
         */
 
         ioSociSession << "drop table if exists optd_por;";

@@ -613,7 +613,9 @@ int main (int argc, char* argv[]) {
                 << " To see the flag, type 'info'"
                 << std::endl;
       std::cout << " fill_from_por_file" << "\t\t"
-                << "Parse the file of POR and fill-in the SQL database ori_por table."
+                << "Parse the file of POR and fill-in the SQL database optd_por table."
+                << std::endl << "\t\t\t\t"
+                << "That command (re-)creates both the Xapian index and the SQL tables (as well as the indices), if needed."
                 << std::endl << "\t\t\t\t"
                 << "Note that, as that command takes minutes, the connection to the SQL database may be lost and the program will exit abnormally."
                 << std::endl << "\t\t\t\t"
@@ -673,24 +675,35 @@ int main (int argc, char* argv[]) {
       // /////////////////////////// Help with Examples //////////////////////
     case Command_T::TUTORIAL: {
       std::cout << std::endl;
-      std::cout << "Typical succession of commands (for a MySQL/MariaDB connection here): " << std::endl;
-      std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
-                << std::endl;
-      std::cout << " create_user" << std::endl;
-      std::cout <<" reset_connection_string db=trep_trep user=trep password=trep"
-                << std::endl;
-      std::cout << " create_tables" << std::endl;
+      std::cout << "Typical succession of commands" << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Check with the 'info' command and adjust the various flags:" << std::endl;
+      std::cout << " toggle_noniata_indexing_flag" << std::endl;
+      std::cout << " toggle_xapian_idexing_flag" << std::endl;
+      std::cout << " toggle_sqldb_inserting_flag" << std::endl;
+      std::cout << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Re-indexing of the POR data file:" << std::endl;
       std::cout << " fill_from_por_file" << std::endl;
-      std::cout << " create_indexes" << std::endl;
+      std::cout << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Check the content of the SQL database:" << std::endl;
       std::cout << " list_nb" << std::endl;
       std::cout << " list_by_iata nce" << std::endl;
       std::cout << " list_by_icao lfmn" << std::endl;
       std::cout << " list_by_faa jfk" << std::endl;
       std::cout << " list_by_unlocode deham" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
-      std::cout << " toggle_noniata_indexing_flag" << std::endl;
-      std::cout << " toggle_xapian_idexing_flag" << std::endl;
-      std::cout << " toggle_sqldb_inserting_flag" << std::endl;
+      std::cout << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Management of the database user and database:" << std::endl;
+      std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
+                << std::endl;
+      std::cout << " create_user" << std::endl;
+      std::cout <<" reset_connection_string db=trep_trep user=trep password=trep"
+                << std::endl;
+      std::cout << " create_tables" << std::endl;
+      std::cout << " create_indexes" << std::endl;
       std::cout << std::endl;
       break;
     }
