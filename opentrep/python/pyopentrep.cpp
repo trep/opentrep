@@ -180,7 +180,7 @@ namespace OPENTREP {
                           << lSQLDBConnStr << "'" << std::endl;
 
         // Launch the indexation by Xapian of the OPTD-maintained list of POR
-        const NbOfDBEntries_T lNbOfEntries= _opentrepService->buildSearchIndex();
+        const NbOfDBEntries_T lNbOfEntries= _opentrepService->insertIntoDBAndXapian();
 
         // Dump the results into the output string
         oPythonLogStr << lNbOfEntries;
