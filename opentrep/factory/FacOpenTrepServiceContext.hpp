@@ -10,12 +10,12 @@
 
 namespace OPENTREP {
 
-  // Forward declarations.
+  // Forward declarations
   class OPENTREP_ServiceContext;
 
 
   /**
-   * @brief Factory for Bucket.
+   * @brief Factory for an OPENTREP_ServiceContext object
    */
   class FacOpenTrepServiceContext : public FacServiceAbstract {
   public:

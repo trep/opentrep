@@ -129,22 +129,6 @@ namespace OPENTREP {
     static NbOfDBEntries_T displayCount (soci::session&);
 
     /**
-     * Insert all the POR (points of reference) of the given POR file
-     * into the SQL database.
-     *
-     * @param const PORFilePath_T& File-path of the POR file.
-     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
-     * @param const SQLDBConnectionString_T& Connection string for the SQL
-     *                                       database.
-     * @param const shouldIndexNonIATAPOR_T& Whether all POR should be indexed.
-     * @return NbOfDBEntries_T Number of documents of the POR file.
-     */
-    static NbOfDBEntries_T fillInFromPORFile (const PORFilePath_T&,
-                                              const DBType&,
-                                              const SQLDBConnectionString_T&,
-                                              const shouldIndexNonIATAPOR_T&);
-
-    /**
      * Dump all the POR (points of reference) of the SQL database.
      *
      * @return NbOfDBEntries_T Number of documents of the SQL database.

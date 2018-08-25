@@ -19,7 +19,9 @@ namespace OPENTREP {
       _travelDBFilePath (DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
       _sqlDBType (DEFAULT_OPENTREP_SQL_DB_TYPE),
       _sqlDBConnectionString (DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
-      _shouldIndexNonIATAPOR (DEFAULT_OPENTREP_INCLUDE_NONIATA_POR) {
+      _shouldIndexNonIATAPOR (DEFAULT_OPENTREP_INCLUDE_NONIATA_POR),
+      _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
+      _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
     assert (false);
   }
 
@@ -32,7 +34,9 @@ namespace OPENTREP {
       _porFilePath (DEFAULT_OPENTREP_POR_FILEPATH),
       _travelDBFilePath (iTravelDBFilePath),
       _sqlDBType (iSQLDBType), _sqlDBConnectionString (iSQLDBConnStr),
-      _shouldIndexNonIATAPOR (DEFAULT_OPENTREP_INCLUDE_NONIATA_POR) {
+      _shouldIndexNonIATAPOR (DEFAULT_OPENTREP_INCLUDE_NONIATA_POR),
+      _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
+      _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -45,7 +49,9 @@ namespace OPENTREP {
     : _world (NULL), _porFilePath (iPORFilePath),
       _travelDBFilePath (iTravelDBFilePath),
       _sqlDBType (iSQLDBType), _sqlDBConnectionString (iSQLDBConnStr),
-      _shouldIndexNonIATAPOR (iShouldIndexNonIATAPOR) {
+      _shouldIndexNonIATAPOR (iShouldIndexNonIATAPOR),
+      _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
+      _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -67,6 +73,8 @@ namespace OPENTREP {
          << "; SQL database (" << _sqlDBType.describe()
          << ") connection string: " << _sqlDBConnectionString
          << "; should include non-IATA POR: " << _shouldIndexNonIATAPOR
+         << "; should index POR in Xapian: " << _shouldIndexNonIATAPOR
+         << "; should insert POR into the SQL DB: " << _shouldIndexNonIATAPOR
          << std::endl;
     return oStr.str();
   }
