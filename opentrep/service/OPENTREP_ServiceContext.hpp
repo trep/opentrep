@@ -77,6 +77,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the flag stating whether or not to add the POR in the Xapian index.
+     */
+    const shouldIndexPORInXapian_T& getShouldIndexPORInXapianFlag() const {
+      return _shouldIndexPORInXapian;
+    }
+    
+    /**
+     * Get the flag stating whether or not to add the POR in the SQL database.
+     */
+    const shouldAddPORInSQLDB_T& getShouldAddPORInSQLDB() const {
+      return _shouldAddPORInSQLDB;
+    }
+    
+    /**
      * Get the Unicode transliterator.
      */
     const OTransliterator& getTransliterator() const {
@@ -125,6 +139,20 @@ namespace OPENTREP {
      */
     void setShouldIncludeAllPORFlag (const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
       _shouldIndexNonIATAPOR = iShouldIndexNonIATAPOR;
+    }
+    
+    /**
+     * Set the flag stating whether or not to add the POR in the Xapian index.
+     */
+    void setShouldIndexPORInXapianFlag (const shouldIndexPORInXapian_T& iShouldIndexPORInXapian) {
+      _shouldIndexPORInXapian = iShouldIndexPORInXapian;
+    }
+    
+    /**
+     * Set the flag stating whether or not to add the POR in the SQL database.
+     */
+    void setShouldAddPORInSQLDB (const shouldAddPORInSQLDB_T& iShouldAddPORInSQLDB) {
+      _shouldAddPORInSQLDB = iShouldAddPORInSQLDB;
     }
     
     /**
@@ -253,6 +281,16 @@ namespace OPENTREP {
      * only used at indexing time.
      */
     shouldIndexNonIATAPOR_T _shouldIndexNonIATAPOR;
+
+    /**
+     * Whether or not to add the POR, or list of POR, in the Xapian index.
+     */
+    shouldIndexPORInXapian_T _shouldIndexPORInXapian;
+
+    /**
+     * Whether or not to add the POR, or list of POR, in the SQL database.
+     */
+    shouldAddPORInSQLDB_T _shouldAddPORInSQLDB;
 
     /**
      * Unicode transliterator.

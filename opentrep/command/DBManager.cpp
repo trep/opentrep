@@ -23,29 +23,11 @@
 #include <opentrep/factory/FacPlace.hpp>
 #include <opentrep/dbadaptor/DbaPlace.hpp>
 #include <opentrep/command/DBManager.hpp>
+#include <opentrep/command/FileManager.hpp>
 #include <opentrep/service/Logger.hpp>
 
 namespace OPENTREP {
 
-  // //////////////////////////////////////////////////////////////////////
-  bool checkSQLiteDirectory (const SQLDBConnectionString_T& iSQLDBConnStr) {
-    bool oExistSQLDBDir = true;
-    
-    // Retrieve the full file-path of the SQLite3 directory
-    boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
-                                               iSQLDBConnStr.end());
-
-    // Retrieve the directory hosting the SQLite3 database
-    boost::filesystem::path lSQLiteDBParentPath =
-      lSQLiteDBFullPath.parent_path();
-
-    // Check that the directory exists and is actually a directory
-    oExistSQLDBDir = boost::filesystem::exists (lSQLiteDBParentPath)
-      && boost::filesystem::is_directory (lSQLiteDBParentPath);
-
-    return oExistSQLDBDir;
-  }
-  
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::
   createSQLDBUser (const DBType& iDBType,
@@ -109,89 +91,186 @@ namespace OPENTREP {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the 'trep' user and 'trep_trep' database "
                           << "in MySQL ('" << iSQLDBConnStr << "')");
-      
+
+      // Connection to the MySQL/MariaDB database
+      soci::session* lSociSession_ptr = NULL;      
       try {
 
         // Connect to the SQL database/file
-        soci::session* lSociSession_ptr = initSQLDBSession (iDBType,
-                                                            iSQLDBConnStr);
+        lSociSession_ptr = initSQLDBSession (iDBType, iSQLDBConnStr);
         if (lSociSession_ptr == NULL) {
           oCreationSuccessful = false;
           return oCreationSuccessful;
         }
-        assert (lSociSession_ptr != NULL);
-        soci::session& lSociSession = *lSociSession_ptr;
 
-        /**
-         * SQL DDL (Data Definition Language) queries:
-         * -------------------------------------------
-         grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
-         ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* 
-         to 'trep'@'localhost' identified by 'trep';
+      } catch (soci::mysql_soci_error const& lSociException) {
+        std::ostringstream errorStr;
+        errorStr << "SOCI-related error when trying to connect to the "
+                 << "MySQL/MariaDB database ('" << iSQLDBConnStr
+                 << "'). SOCI error message: " << lSociException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        std::cerr << errorStr.str() << std::endl;
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
+      }
+      assert (lSociSession_ptr != NULL);
+      soci::session& lSociSession = *lSociSession_ptr;
 
-         grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
-         ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-         CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* 
-         to 'trep'@'%' identified by 'trep';
+      /**
+       * SQL DDL (Data Definition Language) queries:
+       * -------------------------------------------
+       -- Universal procedure for 'drop user if exists', as that feature
+       -- has been available on MySQL from 5.6 only (and CentOS 6
+       -- has MySQL 5.0): https://stackoverflow.com/a/12502107/798053
 
-         flush privileges;
+       drop user 'trep'@'localhost'; drop user 'trep'@'%';
+         
+       create user 'trep'@'localhost' identified by 'trep';
+       grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+       ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+       CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
 
-         drop database if exists trep_trep;
-         create database if not exists trep_trep
-           default character set utf8
-           collate utf8_unicode_ci;
-        */
+       create user 'trep'@'%' identified by 'trep';
+       grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+       ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+       CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'%';
 
-        //
+       flush privileges;
+
+       drop database if exists trep_trep;
+       create database if not exists trep_trep
+       default character set utf8
+       collate utf8_unicode_ci;
+      */
+
+      try {
+        // Drop user 'trep'@'localhost'
+        std::ostringstream lSQLDropTrepLocalStr;
+        lSQLDropTrepLocalStr << "drop user 'trep'@'localhost';";
+        lSociSession << lSQLDropTrepLocalStr.str();
+        
+        // Drop user 'trep'@'%'
+        std::ostringstream lSQLDropTrepAllStr;
+        lSQLDropTrepAllStr << "drop user 'trep'@'%';";
+        lSociSession << lSQLDropTrepAllStr.str();
+
+      } catch (soci::mysql_soci_error const& lSociException) {
+        std::ostringstream issueStr;
+        issueStr << "Issue when trying to drop MySQL/MariaDB 'trep' user. "
+                 << "Most probably the user did not exist before. "
+                 << std::endl
+                 << "SOCI error message: " << lSociException.what()
+                 << std::endl
+                 << "The database users should however be created without "
+                 << "any issue ";
+        OPENTREP_LOG_DEBUG (issueStr.str());
+        std::cout << issueStr.str() << std::endl;
+      }
+
+      try {
+
+        // Create user 'trep'@'localhost'
+        std::ostringstream lSQLCreateTrepLocalStr;
+        lSQLCreateTrepLocalStr << "create user 'trep'@'localhost' ";
+        lSQLCreateTrepLocalStr << "identified by 'trep';";
+        lSociSession << lSQLCreateTrepLocalStr.str();
+
+        // Grant privileges to 'trep'@'localhost'
         std::ostringstream lSQLGrantTrepLocalStr;
-        lSQLGrantTrepLocalStr
-          << "grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX,";
-        lSQLGrantTrepLocalStr
-          << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
-        lSQLGrantTrepLocalStr
-          << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepLocalStr << " to 'trep'@'localhost' identified by 'trep';";
+        lSQLGrantTrepLocalStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
+        lSQLGrantTrepLocalStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
+        lSQLGrantTrepLocalStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
+        lSQLGrantTrepLocalStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
+        lSQLGrantTrepLocalStr << "ALTER ROUTINE, EXECUTE ON *.*";
+        lSQLGrantTrepLocalStr << " to 'trep'@'localhost';";
         lSociSession << lSQLGrantTrepLocalStr.str();
-        //
+
+        // Create user 'trep'@'%'
+        std::ostringstream lSQLCreateTrepAllStr;
+        lSQLCreateTrepAllStr << "create user 'trep'@'%' identified by 'trep';";
+        lSociSession << lSQLCreateTrepAllStr.str();
+
+        // Grant privileges to 'trep'@'%'
         std::ostringstream lSQLGrantTrepAllStr;
-        lSQLGrantTrepAllStr
-          << "grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX,";
-        lSQLGrantTrepAllStr
-          << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
-        lSQLGrantTrepAllStr << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepAllStr << " to 'trep'@'%' identified by 'trep';";
+        lSQLGrantTrepAllStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
+        lSQLGrantTrepAllStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
+        lSQLGrantTrepAllStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
+        lSQLGrantTrepAllStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
+        lSQLGrantTrepAllStr << "ALTER ROUTINE, EXECUTE ON *.*";
+        lSQLGrantTrepAllStr << " to 'trep'@'%';";
         lSociSession << lSQLGrantTrepAllStr.str();
-        //
+
+        // Flush privileges
         std::ostringstream lSQLFlushPrivilegesStr;
         lSQLFlushPrivilegesStr << "flush privileges;";
         lSociSession << lSQLFlushPrivilegesStr.str();
-        //
+
+      } catch (soci::mysql_soci_error const& lSociException) {
+        oCreationSuccessful = false;
+        std::ostringstream errorStr;
+        errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+                 << "'trep' users. Error message: " << lSociException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        std::cerr << errorStr.str() << std::endl;
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
+      }
+
+      /**
+       * On some MySQL server configurations (eg, MacOS), UTF8 just handles
+       * 3-byte character. To support 4-byte character on those platforms,
+       * 'utf8mb4' is needed, but is available only from MySQL 5.5. Moreover,
+       * 'utf8' seems enough on MySQL servers on CentOS.
+       * So, we first try with 'utf8mb4', and if it does not work, we try
+       * 'utf8'.
+       */
+      try {
+        // Drop the 'trep_trep' database, if existing
         std::ostringstream lSQLDropDBStr;
         lSQLDropDBStr << "drop database if exists trep_trep;";
         lSociSession << lSQLDropDBStr.str();
-        //
+
+        // Create the 'trep_trep' database
         std::ostringstream lSQLCreateDBStr;
         lSQLCreateDBStr << "create database if not exists trep_trep";
-        lSQLCreateDBStr << " default character set utf8";
-        lSQLCreateDBStr << " collate utf8_unicode_ci;";
+        lSQLCreateDBStr << " default character set utf8mb4";
+        lSQLCreateDBStr << " collate utf8mb4_unicode_ci;";
         lSociSession << lSQLCreateDBStr.str();
 
       } catch (soci::mysql_soci_error const& lSociException) {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
-        errorStr << "Error when trying to create MySQL/MariaDB 'trep' user "
-                 << "and 'trep_trep' database: " << lSociException.what();
+        errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+                 << "'trep_trep' database with 'utf8mb4' as character set. "
+                 << "Error message: " << lSociException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         std::cerr << errorStr.str() << std::endl;
+      }
+      if (oCreationSuccessful == false) {
+        try {
+          // Drop the 'trep_trep' database, if existing
+          std::ostringstream lSQLDropDBStr;
+          lSQLDropDBStr << "drop database if exists trep_trep;";
+          lSociSession << lSQLDropDBStr.str();
 
-      } catch (std::exception const& lException) {
-        oCreationSuccessful = false;
-        std::ostringstream errorStr;
-        errorStr << "Error when trying to create MySQL/MariaDB 'trep' user "
-                 << "and 'trep_trep' database: " << lException.what();
-        OPENTREP_LOG_ERROR (errorStr.str());
-        throw SQLDatabaseUserCreationException (errorStr.str());
+          // Create the 'trep_trep' database
+          std::ostringstream lSQLCreateDBStr;
+          lSQLCreateDBStr << "create database if not exists trep_trep";
+          lSQLCreateDBStr << " default character set utf8";
+          lSQLCreateDBStr << " collate utf8_unicode_ci;";
+          lSociSession << lSQLCreateDBStr.str();
+          
+        } catch (soci::mysql_soci_error const& lSociException) {
+          oCreationSuccessful = false;
+          std::ostringstream errorStr;
+          errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+                   << "'trep_trep' database. Error message: "
+                   << lSociException.what();
+          OPENTREP_LOG_ERROR (errorStr.str());
+          std::cerr << errorStr.str() << std::endl;
+          oCreationSuccessful = false;
+          return oCreationSuccessful;
+        }
       }
 
       // DEBUG
@@ -221,7 +300,8 @@ namespace OPENTREP {
     if (iDBType == DBType::SQLITE3) {
 
       // Check that the directory hosting the SQLite database exists
-      const bool existSQLDBDir = checkSQLiteDirectory (iSQLDBConnStr);
+      const bool existSQLDBDir =
+        FileManager::checkSQLiteDirectory (iSQLDBConnStr);
       if (existSQLDBDir == false) {
         std::ostringstream errorStr;
         errorStr << "Error when trying to connect to the '" << iSQLDBConnStr
@@ -399,7 +479,7 @@ namespace OPENTREP {
         lSQLTableCreationStr << "envelope_id int(11) default NULL, ";
         lSQLTableCreationStr << "date_from date default NULL, ";
         lSQLTableCreationStr << "date_until date default NULL, ";
-        lSQLTableCreationStr<< "serialised_place varchar(12000) default NULL); ";
+        lSQLTableCreationStr << "serialised_place varchar(12000) default NULL);";
         ioSociSession << lSQLTableCreationStr.str();
 
       } catch (std::exception const& lException) {
@@ -974,110 +1054,6 @@ namespace OPENTREP {
         << lException.what();
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseIndexCreationException (errorStr.str());
-    }
-
-    return oNbOfEntries;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  NbOfDBEntries_T DBManager::
-  fillInFromPORFile (const PORFilePath_T& iPORFilePath, const DBType& iDBType,
-                     const SQLDBConnectionString_T& iSQLDBConnStr,
-                     const shouldIndexNonIATAPOR_T& iIncludeNonIATAPOR) {
-    NbOfDBEntries_T oNbOfEntries = 0;
-
-    // DEBUG
-    if (!(iDBType == DBType::NODB)) {
-      OPENTREP_LOG_DEBUG ("The " << iDBType.describe() << " SQL database/file "
-                          << "will be filled thanks to the POR "
-                          << "(points of reference) file");
-    }
-
-    // Connect to the SQL database/file
-    soci::session* lSociSession_ptr = initSQLDBSession (iDBType, iSQLDBConnStr);
-    if (lSociSession_ptr == NULL) {
-      return oNbOfEntries;
-    }
-    assert (lSociSession_ptr != NULL);
-    soci::session& lSociSession = *lSociSession_ptr;
-
-    // Get a reference on the file stream corresponding to the POR file.
-    const PORFileHelper lPORFileHelper (iPORFilePath);
-    std::istream& lPORFileStream = lPORFileHelper.getFileStreamRef();
-
-    // Open the file to be parsed
-    Place& lPlace = FacPlace::instance().create();
-    std::string itReadLine;
-    while (std::getline (lPORFileStream, itReadLine)) {
-      /* First, if only the IATA-refernced POR must be indexed
-       * (ie, when iIncludeNonIATAPOR is set to false), the line
-       * must start with a non empty IATA code of three letters;
-       * in other words, the separator (the hat symbol) is first seen
-       * at position 3 (remember that strings in C++ start at position 0).
-       * Otherwise, the line is skipped.
-       */
-      if (!iIncludeNonIATAPOR) {
-        const unsigned short lFirstSeparatorPos = itReadLine.find_first_of ("^");
-        if (lFirstSeparatorPos != 3) {
-          // DEBUG
-          /*
-            OPENTREP_LOG_ERROR ("[" << oNbOfEntries << "] pos of sep: "
-                                << lFirstSeparatorPos << ", full line: "
-                                << itReadLine);
-          */
-
-          continue;
-        }
-      }
-      
-      // Initialise the parser
-      PORStringParser lStringParser (itReadLine);
-
-      // Parse the string
-      const Location& lLocation = lStringParser.generateLocation();
-
-      // DEBUG
-      /*
-        const LocationKey& lLocationKey = lLocation.getKey();
-        OPENTREP_LOG_DEBUG ("[BEF-ADD] " << lLocationKey);
-      */
-
-      /* When the line/string is relevant, create a BOM instance from
-       * the Location structure.
-       * Otherwise, the line is skipped.
-       */
-      const std::string& lCommonName = lLocation.getCommonName();
-      if (lCommonName == "NotAvailable") {
-        continue;
-      }
-
-      // Fill the Place object with the Location structure.
-      lPlace.setLocation (lLocation);
-
-      // Add the document to the SQL database
-      insertPlaceInDB (lSociSession, lPlace);
-
-      // DEBUG
-      /*
-        OPENTREP_LOG_DEBUG ("[AFT-ADD] " << lLocationKey
-                            << ", Place: " << lPlace);
-      */
-
-      // Iteration
-      ++oNbOfEntries;
-
-      // Progress status
-      if (oNbOfEntries % 1000 == 0) {
-        std::cout << "Number of records inserted into the DB: "
-                  << oNbOfEntries << std::endl;
-      }
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lPlace);
-
-      // Reset for next turn
-      lPlace.resetMatrix();
-      lPlace.resetIndexSets();
     }
 
     return oNbOfEntries;

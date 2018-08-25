@@ -69,6 +69,8 @@ struct Command_T {
     CREATE_USER,
     RESET_CONNECTION_STRING,
     TOGGLE_NONIATA_INDEXING_FLAG,
+    TOGGLE_XAPIAN_IDEXING_FLAG,
+    TOGGLE_SQLDB_INSERTING_FLAG,
     CREATE_TABLES,
     CREATE_INDEXES,
     FILL_FROM_POR_FILE,
@@ -226,6 +228,8 @@ void initReadline (swift::SReadline& ioInputReader) {
   Completers.push_back ("create_tables");
   Completers.push_back ("create_indexes");
   Completers.push_back ("toggle_noniata_indexing_flag");
+  Completers.push_back ("toggle_xapian_idexing_flag");
+  Completers.push_back ("toggle_sqldb_inserting_flag");
   Completers.push_back ("fill_from_por_file");
   Completers.push_back ("list_by_iata %iata_code");
   Completers.push_back ("list_by_icao %icao_code");
@@ -274,6 +278,12 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "toggle_noniata_indexing_flag") {
       oCommandType = Command_T::TOGGLE_NONIATA_INDEXING_FLAG;
+
+    } else if (lCommand == "toggle_xapian_idexing_flag") {
+      oCommandType = Command_T::TOGGLE_XAPIAN_IDEXING_FLAG;
+
+    } else if (lCommand == "toggle_sqldb_inserting_flag") {
+      oCommandType = Command_T::TOGGLE_SQLDB_INSERTING_FLAG;
 
     } else if (lCommand == "fill_from_por_file") {
       oCommandType = Command_T::FILL_FROM_POR_FILE;
@@ -492,7 +502,13 @@ int main (int argc, char* argv[]) {
   std::string lSQLDBConnectionStr;
 
   // Whether or not to include non-IATA-referenced POR
-  bool lIncludeNonIATAPOR;
+  bool lIncludeNonIATAPOR (OPENTREP::DEFAULT_OPENTREP_INCLUDE_NONIATA_POR);
+
+  // Whether or not to index the POR in Xapian
+  bool lShouldIndexPORInXapian (OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN);
+  
+  // Whether or not to insert the POR in the SQL database
+  bool lShouldAddPORInSQLDB (OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN);
 
   // Call the command-line option parser
   const int lOptionParserStatus =
@@ -588,8 +604,18 @@ int main (int argc, char* argv[]) {
                 << "Toggle the flag for the indexing (or not) of the non-IATA referenced POR."
                 << " To see the flag, type 'info'"
                 << std::endl;
+      std::cout << " toggle_xapian_idexing_flag" << "\t"
+                << "Toggle the flag for the Xapian indexing (or not) of the POR."
+                << " To see the flag, type 'info'"
+                << std::endl;
+      std::cout << " toggle_sqldb_inserting_flag" << "\t"
+                << "Toggle the flag for inserting (or not) the POR into the SQL database."
+                << " To see the flag, type 'info'"
+                << std::endl;
       std::cout << " fill_from_por_file" << "\t\t"
-                << "Parse the file of POR and fill-in the SQL database ori_por table."
+                << "Parse the file of POR and fill-in the SQL database optd_por table."
+                << std::endl << "\t\t\t\t"
+                << "That command (re-)creates both the Xapian index and the SQL tables (as well as the indices), if needed."
                 << std::endl << "\t\t\t\t"
                 << "Note that, as that command takes minutes, the connection to the SQL database may be lost and the program will exit abnormally."
                 << std::endl << "\t\t\t\t"
@@ -638,6 +664,10 @@ int main (int argc, char* argv[]) {
                 << std::endl;
       std::cout << "Whether to index NON-IATA-referenced POR: " << "\t"
                 << lIncludeNonIATAPOR << std::endl;
+      std::cout << "Whether to index the POR in Xapian: " << "\t\t"
+                << lShouldIndexPORInXapian << std::endl;
+      std::cout << "Whether to insert the POR in the SQL DB: " << "\t"
+                << lShouldAddPORInSQLDB << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -645,22 +675,35 @@ int main (int argc, char* argv[]) {
       // /////////////////////////// Help with Examples //////////////////////
     case Command_T::TUTORIAL: {
       std::cout << std::endl;
-      std::cout << "Typical succession of commands (for a MySQL/MariaDB connection here): " << std::endl;
-      std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
-                << std::endl;
-      std::cout << " create_user" << std::endl;
-      std::cout <<" reset_connection_string db=trep_trep user=trep password=trep"
-                << std::endl;
-      std::cout << " create_tables" << std::endl;
+      std::cout << "Typical succession of commands" << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Check with the 'info' command and adjust the various flags:" << std::endl;
+      std::cout << " toggle_noniata_indexing_flag" << std::endl;
+      std::cout << " toggle_xapian_idexing_flag" << std::endl;
+      std::cout << " toggle_sqldb_inserting_flag" << std::endl;
+      std::cout << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Re-indexing of the POR data file:" << std::endl;
       std::cout << " fill_from_por_file" << std::endl;
-      std::cout << " create_indexes" << std::endl;
+      std::cout << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Check the content of the SQL database:" << std::endl;
       std::cout << " list_nb" << std::endl;
       std::cout << " list_by_iata nce" << std::endl;
       std::cout << " list_by_icao lfmn" << std::endl;
       std::cout << " list_by_faa jfk" << std::endl;
       std::cout << " list_by_unlocode deham" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
-      std::cout << " toggle_noniata_indexing_flag" << std::endl;
+      std::cout << std::endl;
+      std::cout << "    --------    " << std::endl;
+      std::cout << "Management of the database user and database:" << std::endl;
+      std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
+                << std::endl;
+      std::cout << " create_user" << std::endl;
+      std::cout <<" reset_connection_string db=trep_trep user=trep password=trep"
+                << std::endl;
+      std::cout << " create_tables" << std::endl;
+      std::cout << " create_indexes" << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -972,6 +1015,29 @@ int main (int argc, char* argv[]) {
       break;
     }
                                                              
+      // ///////////////////// Index or not in Xapian ///////////////////////
+    case Command_T::TOGGLE_XAPIAN_IDEXING_FLAG: {
+      // Toggle the flag
+      lShouldIndexPORInXapian =
+        opentrepService.toggleShouldIndexPORInXapianFlag();
+
+      // Reporting
+      std::cout << "The new flag is: " << lShouldIndexPORInXapian << std::endl;
+    
+      break;
+    }
+                                                             
+      // ///////////////////// Add or not in SQL DB ///////////////////////
+    case Command_T::TOGGLE_SQLDB_INSERTING_FLAG: {
+      // Toggle the flag
+      lShouldAddPORInSQLDB = opentrepService.toggleShouldAddPORInSQLDBFlag();
+
+      // Reporting
+      std::cout << "The new flag is: " << lShouldAddPORInSQLDB << std::endl;
+    
+      break;
+    }
+                                                             
       // ///////////////////////// Tables Creation /////////////////////////
     case Command_T::CREATE_TABLES: {
       //
@@ -1014,7 +1080,7 @@ int main (int argc, char* argv[]) {
     
       // Launch the indexation
       const OPENTREP::NbOfDBEntries_T lNbOfEntries =
-        opentrepService.fillInFromPORFile();
+        opentrepService.insertIntoDBAndXapian();
 
       //
       std::cout << lNbOfEntries << " entries have been processed" << std::endl;

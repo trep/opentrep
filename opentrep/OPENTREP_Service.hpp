@@ -45,15 +45,6 @@ namespace OPENTREP {
                                        LocationList_T&);
 
     /**
-     * Build the Xapian database (index) from the file with the ORI-maintained
-     * list of POR (points of reference).
-     *
-     * @return NbOfDBEntries_T Number of documents indexed by the Xapian
-     *         database/index.
-     */
-    NbOfDBEntries_T buildSearchIndex();
-
-    /**
      * Match the given string, thanks to a full-text search on the
      * underlying Xapian index (named "database").
      *
@@ -132,12 +123,35 @@ namespace OPENTREP {
     OPENTREP::shouldIndexNonIATAPOR_T toggleShouldIncludeAllPORFlag();
 
     /**
-     * Insert all the POR (points of reference) into the SQL database from
-     * the file with the ORI-maintained list of POR (points of reference).
+     * Toggle the flag stating whether to add the POR in the Xapian index
+     *
+     * @return OPENTREP::shouldIndexPORInXapian_T New value of the flag
+     */
+    OPENTREP::shouldIndexPORInXapian_T toggleShouldIndexPORInXapianFlag();
+
+    /**
+     * Toggle the flag stating whether to add the POR in the SQL database
+     *
+     * @return OPENTREP::shouldAddPORInSQLDB_T New value of the flag
+     */
+    OPENTREP::shouldAddPORInSQLDB_T toggleShouldAddPORInSQLDBFlag();
+
+    /**
+     * From the file of OPTD-maintained POR (points of reference):
+     * <ul>
+     *   <li>Add the relevant POR into the SQL database,
+     *       if the corresponding flag is set</li>
+     *   <li>Add the relevant POR into the Xapian index,
+     *       if the corresponding flag is set</li>
+     * </ul>
+     * The relevant POR are by default only the IATA-referenced ones.
+     * If the corresponding flag is set, then all the POR are relevant.
+     * All the above-mentioned flags are specified in the
+     * underlying OPENTREP_ServiceContext object.
      *
      * @return NbOfDBEntries_T Number of documents of the file (stream).
      */
-    NbOfDBEntries_T fillInFromPORFile();
+    NbOfDBEntries_T insertIntoDBAndXapian();    
 
     /**
      * Retrieve the number of POR (points of reference)

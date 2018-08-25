@@ -63,6 +63,18 @@ namespace OPENTREP {
   const bool DEFAULT_OPENTREP_INCLUDE_NONIATA_POR (false);
 
   /**
+   * Whether or not to add the POR, or list of POR, in the Xapian index.
+   * By default, index the POR in Xapian.
+   */
+  const bool DEFAULT_OPENTREP_INDEX_IN_XAPIAN (true);
+
+  /**
+   * Whether or not to add the POR, or list of POR, in the SQL database.
+   * By default, insert the POR in the SQL database.
+   */
+  const bool DEFAULT_OPENTREP_ADD_IN_DB (true);
+
+  /**
    * Default date-time with std::tm structure as type.
    */
   const std::tm DEFAULT_DATE_TM =
