@@ -107,13 +107,57 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries:
          * -------------------------------------------
-         drop user if exists 'trep'@'localhost';
+         -- Universal procedure for 'drop user if exists', as that feature
+         -- has been available on MySQL from 5.6 only (and CentOS 6
+         -- has MySQL 5.0)
+         -- https://stackoverflow.com/a/12502107/798053
+         DELIMITER $$
+
+         DROP PROCEDURE IF EXISTS `DropUserIfExistsAdvanced`$$
+
+         CREATE DEFINER=`root`@`localhost` PROCEDURE `DropUserIfExistsAdvanced`(
+         MyUserName VARCHAR(100)
+         , MyHostName VARCHAR(100)
+         )
+         BEGIN
+         DECLARE pDone INT DEFAULT 0;
+         DECLARE mUser VARCHAR(100);
+         DECLARE mHost VARCHAR(100);
+         DECLARE recUserCursor CURSOR FOR
+         SELECT `User`, `Host` FROM `mysql`.`user` WHERE `User` = MyUserName;
+         DECLARE CONTINUE HANDLER FOR NOT FOUND SET pDone = 1;
+
+         IF (MyHostName IS NOT NULL) THEN
+         -- 'username'@'hostname' exists
+         IF (EXISTS(SELECT NULL FROM `mysql`.`user` WHERE `User` = MyUserName AND `Host` = MyHostName)) THEN
+         SET @SQL = (SELECT mResult FROM (SELECT GROUP_CONCAT("DROP USER ", "'", MyUserName, "'@'", MyHostName, "'") AS mResult) AS Q LIMIT 1);
+         PREPARE STMT FROM @SQL;
+         EXECUTE STMT;
+         DEALLOCATE PREPARE STMT;
+         END IF;
+         ELSE
+         -- check whether MyUserName exists (MyUserName@'%' , MyUserName@'localhost' etc)
+         OPEN recUserCursor;
+         REPEAT
+         FETCH recUserCursor INTO mUser, mHost;
+         IF NOT pDone THEN
+         SET @SQL = (SELECT mResult FROM (SELECT GROUP_CONCAT("DROP USER ", "'", mUser, "'@'", mHost, "'") AS mResult) AS Q LIMIT 1);
+         PREPARE STMT FROM @SQL;
+         EXECUTE STMT;
+         DEALLOCATE PREPARE STMT;
+         END IF;
+         UNTIL pDone END REPEAT;
+         END IF;
+         FLUSH PRIVILEGES;
+         END$$
+         DELIMITER ;
+
+         call DropUserIfExistsAdvanced('trep', NULL);
          create user 'trep'@'localhost' identified by 'trep';
          grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
          ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
          CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
 
-         drop user if exists 'trep'@'%';
          create user 'trep'@'%' identified by 'trep';
          grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
          ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
@@ -127,53 +171,109 @@ namespace OPENTREP {
            collate utf8_unicode_ci;
         */
 
-        // Drop user (if it exists) 'trep'@'localhost'
+        // Procedure DropUserIfExistsAdvanced
+        std::ostringstream lSQLDropUserProcedureStr;
+        lSQLDropUserProcedureStr << "DELIMITER $$" << std::endl;
+        lSQLDropUserProcedureStr << "DROP PROCEDURE IF EXISTS ";
+        lSQLDropUserProcedureStr << "`DropUserIfExistsAdvanced`$$" << std::endl;
+        lSQLDropUserProcedureStr << "CREATE DEFINER=`root`@`localhost` ";
+        lSQLDropUserProcedureStr << "PROCEDURE `DropUserIfExistsAdvanced`("
+                                 << std::endl;
+        lSQLDropUserProcedureStr << "MyUserName VARCHAR(100), ";
+        lSQLDropUserProcedureStr << "MyHostName VARCHAR(100)" << std::endl
+                                 << ")" << std::endl;
+        lSQLDropUserProcedureStr << "BEGIN" << std::endl;
+        lSQLDropUserProcedureStr << "DECLARE pDone INT DEFAULT 0;" << std::endl;
+        lSQLDropUserProcedureStr << "DECLARE mUser VARCHAR(100);" << std::endl;
+        lSQLDropUserProcedureStr << "DECLARE mHost VARCHAR(100);" << std::endl;
+        lSQLDropUserProcedureStr << "DECLARE recUserCursor CURSOR FOR"
+                                 << std::endl;
+        lSQLDropUserProcedureStr << "SELECT `User`, `Host` FROM `mysql`.`user` ";
+        lSQLDropUserProcedureStr << "WHERE `User` = MyUserName;" << std::endl;
+        lSQLDropUserProcedureStr << "DECLARE CONTINUE HANDLER FOR NOT FOUND ";
+        lSQLDropUserProcedureStr << "SET pDone = 1;" << std::endl;
+        lSQLDropUserProcedureStr << "IF (MyHostName IS NOT NULL) THEN"
+                                 << std::endl;
+        lSQLDropUserProcedureStr << "IF (EXISTS(SELECT NULL FROM `mysql`.`user`";
+        lSQLDropUserProcedureStr << "WHERE `User` = MyUserName AND ";
+        lSQLDropUserProcedureStr << "`Host` = MyHostName)) THEN" << std::endl;
+        lSQLDropUserProcedureStr << "SET @SQL = (SELECT mResult FROM ";
+        lSQLDropUserProcedureStr << "(SELECT GROUP_CONCAT(\"DROP USER \", ";
+        lSQLDropUserProcedureStr << "\"'\", MyUserName, \"'@'\", MyHostName, ";
+        lSQLDropUserProcedureStr << "\"'\") AS mResult) AS Q LIMIT 1);"
+                                 << std::endl;
+        lSQLDropUserProcedureStr << "PREPARE STMT FROM @SQL;" << std::endl;
+        lSQLDropUserProcedureStr << "EXECUTE STMT;" << std::endl;
+        lSQLDropUserProcedureStr << "DEALLOCATE PREPARE STMT;" << std::endl;
+        lSQLDropUserProcedureStr << "END IF;" << std::endl;
+        lSQLDropUserProcedureStr << "ELSE" << std::endl;
+        lSQLDropUserProcedureStr << "OPEN recUserCursor;" << std::endl;
+        lSQLDropUserProcedureStr << "REPEAT" << std::endl;
+        lSQLDropUserProcedureStr << "FETCH recUserCursor INTO mUser, mHost;"
+                                 << std::endl;
+        lSQLDropUserProcedureStr << "IF NOT pDone THEN" << std::endl;
+        lSQLDropUserProcedureStr << "SET @SQL = (SELECT mResult FROM ";
+        lSQLDropUserProcedureStr << "(SELECT GROUP_CONCAT(\"DROP USER \", ";
+        lSQLDropUserProcedureStr << "\"'\", mUser, \"'@'\", mHost, \"'\") ";
+        lSQLDropUserProcedureStr << "AS mResult) AS Q LIMIT 1);" << std::endl;
+        lSQLDropUserProcedureStr << "PREPARE STMT FROM @SQL;" << std::endl;
+        lSQLDropUserProcedureStr << "EXECUTE STMT;" << std::endl;
+        lSQLDropUserProcedureStr << "DEALLOCATE PREPARE STMT;" << std::endl;
+        lSQLDropUserProcedureStr << "END IF;" << std::endl;
+        lSQLDropUserProcedureStr << "UNTIL pDone END REPEAT;" << std::endl;
+        lSQLDropUserProcedureStr << "END IF;" << std::endl;
+        lSQLDropUserProcedureStr << "FLUSH PRIVILEGES;" << std::endl;
+        lSQLDropUserProcedureStr << "END$$" << std::endl;
+        lSQLDropUserProcedureStr << "DELIMITER ;" << std::endl;
+        lSociSession << lSQLDropUserProcedureStr.str();
+        
+        // Drop user (if it exists) 'trep'@'localhost' and 'trep'@'%'
         std::ostringstream lSQLDropTrepLocalStr;
-        lSQLDropTrepLocalStr
-          << "drop user if exists 'trep'@'localhost';";
+        lSQLDropTrepLocalStr << "call DropUserIfExistsAdvanced('trep', NULL);";
         lSociSession << lSQLDropTrepLocalStr.str();
+
         // Create user 'trep'@'localhost'
         std::ostringstream lSQLCreateTrepLocalStr;
-        lSQLCreateTrepLocalStr
-          << "create user 'trep'@'localhost' identified by 'trep';";
+        lSQLCreateTrepLocalStr << "create user 'trep'@'localhost' ";
+        lSQLCreateTrepLocalStr << "identified by 'trep';";
         lSociSession << lSQLCreateTrepLocalStr.str();
-        //
+
+        // Grant privileges to 'trep'@'localhost'
         std::ostringstream lSQLGrantTrepLocalStr;
-        lSQLGrantTrepLocalStr
-          << "grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX,";
-        lSQLGrantTrepLocalStr
-          << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
-        lSQLGrantTrepLocalStr
-          << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
+        lSQLGrantTrepLocalStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
+        lSQLGrantTrepLocalStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
+        lSQLGrantTrepLocalStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
+        lSQLGrantTrepLocalStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
+        lSQLGrantTrepLocalStr << "ALTER ROUTINE, EXECUTE ON *.*";
         lSQLGrantTrepLocalStr << " to 'trep'@'localhost';";
         lSociSession << lSQLGrantTrepLocalStr.str();
 
-        // Drop user (if it exists) 'trep'@'%'
-        std::ostringstream lSQLDropTrepAllStr;
-        lSQLDropTrepAllStr << "drop user if exists 'trep'@'%';";
-        lSociSession << lSQLDropTrepAllStr.str();
         // Create user 'trep'@'%'
         std::ostringstream lSQLCreateTrepAllStr;
         lSQLCreateTrepAllStr << "create user 'trep'@'%' identified by 'trep';";
         lSociSession << lSQLCreateTrepAllStr.str();
-        //
+
+        // Grant privileges to 'trep'@'%'
         std::ostringstream lSQLGrantTrepAllStr;
-        lSQLGrantTrepAllStr
-          << "grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX,";
-        lSQLGrantTrepAllStr
-          << " ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW,";
-        lSQLGrantTrepAllStr << " CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.*";
+        lSQLGrantTrepAllStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
+        lSQLGrantTrepAllStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
+        lSQLGrantTrepAllStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
+        lSQLGrantTrepAllStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
+        lSQLGrantTrepAllStr << "ALTER ROUTINE, EXECUTE ON *.*";
         lSQLGrantTrepAllStr << " to 'trep'@'%';";
         lSociSession << lSQLGrantTrepAllStr.str();
-        //
+
+        // Flush privileges
         std::ostringstream lSQLFlushPrivilegesStr;
         lSQLFlushPrivilegesStr << "flush privileges;";
         lSociSession << lSQLFlushPrivilegesStr.str();
-        //
+
+        // Drop the 'trep_trep' database, if existing
         std::ostringstream lSQLDropDBStr;
         lSQLDropDBStr << "drop database if exists trep_trep;";
         lSociSession << lSQLDropDBStr.str();
-        //
+
+        // Create the 'trep_trep' database
         std::ostringstream lSQLCreateDBStr;
         lSQLCreateDBStr << "create database if not exists trep_trep";
         lSQLCreateDBStr << " default character set utf8";
