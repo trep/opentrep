@@ -363,6 +363,37 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  OPENTREP::DeploymentNumber_T OPENTREP_Service::toggleDeploymentNumber() {
+    DeploymentNumber_T oDeploymentNumber = 0;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the deployment number/version
+    oDeploymentNumber = lOPENTREP_ServiceContext.getDeploymentNumber();
+
+    // Toggle the number
+    ++oDeploymentNumber;
+    if (oDeploymentNumber >= DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE) {
+      oDeploymentNumber = DEFAULT_OPENTREP_DEPLOYMENT_NUMBER;
+    }
+
+    // Store back the toggled flag
+    lOPENTREP_ServiceContext.setDeploymentNumber (oDeploymentNumber);
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The new deployment number/version is: "
+                        << oDeploymentNumber << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oDeploymentNumber;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   OPENTREP::shouldIndexNonIATAPOR_T OPENTREP_Service::
   toggleShouldIncludeAllPORFlag() {
     shouldIndexNonIATAPOR_T oShouldIndexNonIATAPOR = false;

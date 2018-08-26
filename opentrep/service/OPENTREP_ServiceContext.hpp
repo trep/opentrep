@@ -70,6 +70,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the number/version of the current deployment.
+     */
+    const DeploymentNumber_T& getDeploymentNumber() const {
+      return _deploymentNumber;
+    }
+    
+    /**
      * Get the flag stating whether or not all the POR should be indexed.
      */
     const shouldIndexNonIATAPOR_T& getShouldIncludeAllPORFlag() const {
@@ -130,8 +137,15 @@ namespace OPENTREP {
     /**
      * Set the SQL database connection string.
      */
-    void setSQLDBConnectionString(const std::string& iSQLDBConnStr) {
+    void setSQLDBConnectionString (const std::string& iSQLDBConnStr) {
       _sqlDBConnectionString = SQLDBConnectionString_T (iSQLDBConnStr);
+    }
+    
+    /**
+     * Set the number/version of the current deployment.
+     */
+    void setDeploymentNumber (const DeploymentNumber_T& iDeploymentNumber) {
+      _deploymentNumber = iDeploymentNumber;
     }
     
     /**
@@ -254,6 +268,34 @@ namespace OPENTREP {
      */
     SQLDBConnectionString_T _sqlDBConnectionString;
 
+    /**
+     * Number/version of the current deployment.
+     *
+     * The idea is to have at least two pieces of infrastructure (SQL
+     * database, Xapian index) in parallel:
+     * <ul>
+     *   <li>one is used by the production;</li>
+     *   <li>the other one used as a staging platform in order to test and
+     * validate a new version.</li>
+     *   <li>Once the new version has been validated, the two pieces
+     *       of infrastructure can then be interverted, ie, the production
+     *       becomes the new version, and the older version ends up in
+     *       staging.</li>
+     *   <li>It means that all programs have to choose which version they
+     *       want to work on. That version may even be toggled in live.</li>
+     *   <li>That method to deploy in production through a staging process
+     *       is even more needed by the fact that indexing a new POR data file
+     *       takes up to 30 minutes in the worst case. So, we cannot afford
+     *       30-45 minutes of downtime everytime a new POR data file is
+     *       released (potentially every day).</li>
+     *   <li>With that staging process, it is even possible to fully automate
+     *       the re-indexing after a new POR data file release:
+     *       once the new release has been cleared by QA on staging,
+     *       it becomes production.</li>
+     * </ul>
+     */
+    DeploymentNumber_T _deploymentNumber;
+  
     /**
      * Whether or not the non-IATA-referenced POR should be included
      * (and indexed).

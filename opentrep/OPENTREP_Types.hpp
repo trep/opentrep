@@ -59,12 +59,6 @@ namespace OPENTREP {
       : std::string (iValue) { }
   };
 
-  /**
-   * Whether or not the SQLite3 database should be filled
-   * at the same time as the Xapian index.
-   */
-  typedef bool FillSQLDB_T;
-
   /** 
    * SQLite database file-path, corresponding to the (potentially relative)
    * directory name (on the filesystem) where SQLite stores its database.
@@ -86,12 +80,40 @@ namespace OPENTREP {
   };
 
   /**
+   * Number/version of the current deployment.
+   *
+   * The idea is to have at least two pieces of infrastructure (SQL
+   * database, Xapian index) in parallel:
+   * <ul>
+   *   <li>one is used by the production;</li>
+   *   <li>the other one used as a staging platform in order to test and
+   * validate a new version.</li>
+   *   <li>Once the new version has been validated, the two pieces
+   *       of infrastructure can then be interverted, ie, the production
+   *       becomes the new version, and the older version ends up in
+   *       staging.</li>
+   *   <li>It means that all programs have to choose which version they
+   *       want to work on. That version may even be toggled in live.</li>
+   *   <li>That method to deploy in production through a staging process
+   *       is even more needed by the fact that indexing a new POR data file
+   *       takes up to 30 minutes in the worst case. So, we cannot afford
+   *       30-45 minutes of downtime everytime a new POR data file is
+   *       released (potentially every day).</li>
+   *   <li>With that staging process, it is even possible to fully automate
+   *       the re-indexing after a new POR data file release:
+   *       once the new release has been cleared by QA on staging,
+   *       it becomes production.</li>
+   * </ul>
+   */
+  typedef unsigned short DeploymentNumber_T;
+  
+  /**
    * Whether or not the non-IATA-referenced POR should be included
    * (and indexed).
    *
    * By default, and historically, only the POR, which are referenced
-   * by IATA (ie, which have a specific IATA code) are indexed (and may
-   * be searched for) in OpenTREP.
+   * by IATA (ie, which have a specific IATA code), are indexed (and
+   * may be searched for) in OpenTREP.
    *
    * POR are also referenced by other international organizations,
    * such as ICAO or UN/LOCODE, and may not be referenced by IATA

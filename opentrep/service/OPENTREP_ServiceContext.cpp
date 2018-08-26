@@ -19,6 +19,7 @@ namespace OPENTREP {
       _travelDBFilePath (DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH),
       _sqlDBType (DEFAULT_OPENTREP_SQL_DB_TYPE),
       _sqlDBConnectionString (DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
+      _deploymentNumber (DEFAULT_OPENTREP_DEPLOYMENT_NUMBER),
       _shouldIndexNonIATAPOR (DEFAULT_OPENTREP_INCLUDE_NONIATA_POR),
       _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
       _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
@@ -34,6 +35,7 @@ namespace OPENTREP {
       _porFilePath (DEFAULT_OPENTREP_POR_FILEPATH),
       _travelDBFilePath (iTravelDBFilePath),
       _sqlDBType (iSQLDBType), _sqlDBConnectionString (iSQLDBConnStr),
+      _deploymentNumber (DEFAULT_OPENTREP_DEPLOYMENT_NUMBER),
       _shouldIndexNonIATAPOR (DEFAULT_OPENTREP_INCLUDE_NONIATA_POR),
       _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
       _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
@@ -49,6 +51,7 @@ namespace OPENTREP {
     : _world (NULL), _porFilePath (iPORFilePath),
       _travelDBFilePath (iTravelDBFilePath),
       _sqlDBType (iSQLDBType), _sqlDBConnectionString (iSQLDBConnStr),
+      _deploymentNumber (DEFAULT_OPENTREP_DEPLOYMENT_NUMBER),
       _shouldIndexNonIATAPOR (iShouldIndexNonIATAPOR),
       _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
       _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
@@ -72,6 +75,7 @@ namespace OPENTREP {
          << "; Xapian database (directory of the index): " << _travelDBFilePath
          << "; SQL database (" << _sqlDBType.describe()
          << ") connection string: " << _sqlDBConnectionString
+         << "; deployment number/version: " << _deploymentNumber
          << "; should include non-IATA POR: " << _shouldIndexNonIATAPOR
          << "; should index POR in Xapian: " << _shouldIndexNonIATAPOR
          << "; should insert POR into the SQL DB: " << _shouldIndexNonIATAPOR

@@ -85,6 +85,22 @@ namespace OPENTREP {
   extern const std::string DEFAULT_OPENTREP_MYSQL_DB_PORT;
 
   /**
+   * Number/version of the current deployment.
+   *
+   * By default, set to 0. If all the processes use the default deployment
+   * number/version, then the deployment is direct in production,
+   * there is no staging process.
+   */
+  extern const unsigned short DEFAULT_OPENTREP_DEPLOYMENT_NUMBER;
+
+  /**
+   * Size of the pieces of infrastructure for the deployment staging principle.
+   *
+   * By default, set to 2, one for production and one for staging.
+   */
+  extern const unsigned short DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE;
+
+  /**
    * Whether or not the non-IATA-referenced POR should be included
    * (and indexed).
    *
@@ -96,12 +112,14 @@ namespace OPENTREP {
 
   /**
    * Whether or not to add the POR, or list of POR, in the Xapian index.
+   *
    * By default, index the POR in Xapian.
    */
   extern const bool DEFAULT_OPENTREP_INDEX_IN_XAPIAN;
 
   /**
    * Whether or not to add the POR, or list of POR, in the SQL database.
+   *
    * By default, insert the POR in the SQL database.
    */
   extern const bool DEFAULT_OPENTREP_ADD_IN_DB;

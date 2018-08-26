@@ -116,6 +116,13 @@ namespace OPENTREP {
     void createSQLDBIndexes();
 
     /**
+     * Toggle the deployment number/version.
+     *
+     * @return OPENTREP::DeploymentNumber_T New value of the deployment number
+     */
+    OPENTREP::DeploymentNumber_T toggleDeploymentNumber();
+    
+    /**
      * Toggle the flag stating whether to index non-IATA-referenced POR
      *
      * @return OPENTREP::shouldIndexNonIATAPOR_T New value of the flag
