@@ -60,7 +60,7 @@ namespace OPENTREP {
 
 
     /**
-     * Get the file-paths of the Xapian database/index and of the ORI-maintained
+     * Get the file-paths of the Xapian database/index and of the OPTD-maintained
      * POR (points of reference).
      *
      * @return std::pair<const PORFilePath_T,  File-path of the file of POR
@@ -233,9 +233,11 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
+     * @param const DeploymentNumber_T& Deployment number/version.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const TravelDBFilePath_T&,
-                      const DBType&, const SQLDBConnectionString_T&);
+                      const DBType&, const SQLDBConnectionString_T&,
+                      const DeploymentNumber_T&);
 
     /**
      *  Constructor for indexing-related services.
@@ -246,11 +248,12 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
-     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR
+     * @param const DeploymentNumber_T& Deployment number/version.
+     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
-                      const TravelDBFilePath_T&,
-                      const DBType&, const SQLDBConnectionString_T&,
+                      const TravelDBFilePath_T&, const DBType&,
+                      const SQLDBConnectionString_T&, const DeploymentNumber_T&,
                       const shouldIndexNonIATAPOR_T&);
 
     /** 
@@ -277,9 +280,11 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
+     * @param const DeploymentNumber_T& Deployment number/version.
      */
     void init (std::ostream& ioLogStream, const TravelDBFilePath_T&,
-               const DBType&, const SQLDBConnectionString_T&);
+               const DBType&, const SQLDBConnectionString_T&,
+               const DeploymentNumber_T&);
 
     /**
      * Initialise for indexing-related services.
@@ -290,12 +295,13 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database. 
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
-     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR
+     * @param const DeploymentNumber_T& Deployment number/version.
+     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
      */
     void init (std::ostream& ioLogStream, const PORFilePath_T&,
                const TravelDBFilePath_T&,
                const DBType&, const SQLDBConnectionString_T&,
-               const shouldIndexNonIATAPOR_T&);
+               const DeploymentNumber_T&, const shouldIndexNonIATAPOR_T&);
 
     /**
      *  Finalise. 

@@ -624,6 +624,7 @@ namespace OPENTREP {
     bool init (const std::string& iTravelDBFilePath,
                const std::string& iSQLDBTypeStr,
                const std::string& iSQLDBConnStr,
+               const unsigned short& iDeploymentNumber,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
@@ -653,10 +654,12 @@ namespace OPENTREP {
         const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (iTravelDBFilePath);
         const OPENTREP::DBType lSQLDBType (iSQLDBTypeStr);
         const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
+        const OPENTREP::DeploymentNumber_T lDeploymentNumber (iDeploymentNumber);
 
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
                                                  lTravelDBFilePath,
-                                                 lSQLDBType, lSQLDBConnStr);
+                                                 lSQLDBType, lSQLDBConnStr,
+                                                 lDeploymentNumber);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;

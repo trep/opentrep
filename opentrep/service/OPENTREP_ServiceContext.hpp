@@ -124,7 +124,8 @@ namespace OPENTREP {
      * Set the Xapian database name.
      */
     void setTravelDBFilePath (const std::string& iTravelDBFilePath) {
-      _travelDBFilePath = TravelDBFilePath_T (iTravelDBFilePath);
+      _travelDBFilePathPrefix = TravelDBFilePath_T (iTravelDBFilePath);
+      updateXapianAndSQLDBConnectionWithDeploymentNumber();
     }
 
     /**
@@ -138,7 +139,8 @@ namespace OPENTREP {
      * Set the SQL database connection string.
      */
     void setSQLDBConnectionString (const std::string& iSQLDBConnStr) {
-      _sqlDBConnectionString = SQLDBConnectionString_T (iSQLDBConnStr);
+      _sqlDBConnectionStringWPfxDBName = SQLDBConnectionString_T (iSQLDBConnStr);
+      updateXapianAndSQLDBConnectionWithDeploymentNumber();
     }
     
     /**
@@ -146,6 +148,7 @@ namespace OPENTREP {
      */
     void setDeploymentNumber (const DeploymentNumber_T& iDeploymentNumber) {
       _deploymentNumber = iDeploymentNumber;
+      updateXapianAndSQLDBConnectionWithDeploymentNumber();
     }
     
     /**
@@ -198,9 +201,11 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
+     * @param const DeploymentNumber_T& Deployment number.
      */
     OPENTREP_ServiceContext (const TravelDBFilePath_T&,
-                             const DBType&, const SQLDBConnectionString_T&);
+                             const DBType&, const SQLDBConnectionString_T&,
+                             const DeploymentNumber_T&);
 
     /**
      * Main constructor for the indexing-related services.
@@ -210,12 +215,35 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian index/database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
-     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR
+     * @param const DeploymentNumber_T& Deployment number.
+     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
      */
     OPENTREP_ServiceContext (const PORFilePath_T&, const TravelDBFilePath_T&,
                              const DBType&, const SQLDBConnectionString_T&,
+                             const DeploymentNumber_T&,
                              const shouldIndexNonIATAPOR_T&);
 
+    /**
+     * The Xapian index/database file-path and SQL database name are used
+     * as prefix of the actual respective file-path and name. The deployment
+     * number/version is added to the prefix, and that makes the actual
+     * file-path and name.
+     *
+     * For instance, if the current deployment number/version is 0, and:
+     * <ul>
+     *  <li>Xapian file-path (prefix) is '/tmp/opentrep/xapian_traveldb',
+     *      the actual Xapian file-path become
+     *      '/tmp/opentrep/xapian_traveldb0';</li>
+     *  <li>MySQL/MariaDB connection string is
+     *      'db=trep_trep user=trep password=trep', then the actual connection
+     *      string becomes 'db=trep_trep0 user=trep password=trep'</li>
+     *  <li>SQLite connection string is '/tmp/opentrep/sqlite_travel.db',
+     *      then the actual connection string becomes
+     *      '/tmp/opentrep/sqlite_travel.db0'</li>
+     * </ul>
+     */
+    void updateXapianAndSQLDBConnectionWithDeploymentNumber();
+    
     /**
      * Default constructor.
      */
@@ -245,30 +273,6 @@ namespace OPENTREP {
     PORFilePath_T _porFilePath;
 
     /**
-     * Xapian database (directory of the index).
-     */
-    TravelDBFilePath_T _travelDBFilePath;
-
-    /**
-     * Type of the SQL database (NODB means that no SQL database should be used).
-     */
-    DBType _sqlDBType;
-
-    /**
-     * Connection string for the SQL database.
-     *
-     * For now, there is a choice among:
-     * <ul>
-     *  <li>No SQL database</li>
-     *  <li>SQLite3 database. The connection string then consists
-     *      of the corresponding file-path</li>
-     *  <li>MySQL/MariaDB database. The connection string then consists
-     *      of the database parameters (db name, db user, db password)</li>
-     * </ul>
-     */
-    SQLDBConnectionString_T _sqlDBConnectionString;
-
-    /**
      * Number/version of the current deployment.
      *
      * The idea is to have at least two pieces of infrastructure (SQL
@@ -296,6 +300,53 @@ namespace OPENTREP {
      */
     DeploymentNumber_T _deploymentNumber;
   
+    /**
+     * Prefix (directory of) Xapian index/database.
+     */
+    TravelDBFilePath_T _travelDBFilePathPrefix;
+
+    /**
+     * Actual (directory of) Xapian index/database.
+     */
+    TravelDBFilePath_T _travelDBFilePath;
+
+    /**
+     * Type of the SQL database (NODB means that no SQL database should be used).
+     */
+    DBType _sqlDBType;
+
+    /**
+     * Connection string for the SQL database, with a prefix
+     * for the database name.
+     *
+     * For now, there is a choice among:
+     * <ul>
+     *  <li>No SQL database</li>
+     *  <li>SQLite3 database. The connection string then consists
+     *      of the corresponding file-path</li>
+     *  <li>MySQL/MariaDB database. The connection string then consists
+     *      of the database parameters (db name, db user, db password)</li>
+     * </ul>
+     */
+    SQLDBConnectionString_T _sqlDBConnectionStringWPfxDBName;
+
+    /**
+     * Connection string for the SQL database, with the actual
+     * database name.
+     *
+     * Examples of how the actual (SQLite) file-path or (MySQL/MariaDB) database
+     * name is derived from the prefix file-path or database name.
+     * <ul>
+     *  <li>MySQL/MariaDB connection string is
+     *      'db=trep_trep user=trep password=trep', then the actual connection
+     *      string becomes 'db=trep_trep0 user=trep password=trep'</li>
+     *  <li>SQLite connection string is '/tmp/opentrep/sqlite_travel.db',
+     *      then the actual connection string becomes
+     *      '/tmp/opentrep/sqlite_travel.db0'</li>
+     * </ul>
+     */
+    SQLDBConnectionString_T _sqlDBConnectionString;
+
     /**
      * Whether or not the non-IATA-referenced POR should be included
      * (and indexed).

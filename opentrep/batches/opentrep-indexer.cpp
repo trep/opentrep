@@ -13,7 +13,9 @@
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/CityDetails.hpp>
+#include <opentrep/DBType.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 
 
@@ -52,6 +54,7 @@ int readConfiguration (int argc, char* argv[],
                        std::string& ioXapianDBFilepath,
                        std::string& ioSQLDBTypeString,
                        std::string& ioSQLDBConnectionString,
+                       unsigned short& ioDeploymentNumber,
                        bool& ioIncludeNonIATAPOR,
                        std::string& ioLogFilename) {
 
@@ -78,6 +81,9 @@ int readConfiguration (int argc, char* argv[],
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+    ("deploymentnb,m",
+     boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
+     "Deployment number (from to N, where N=1 normally)")
     ("noniata,n",
      boost::program_options::value<bool>(&ioIncludeNonIATAPOR)->default_value(K_OPENTREP_DEFAULT_POR_INCLUDING), 
      "Whether or not to include POR not referenced by IATA (0 = only IATA-referenced POR, 1 = all POR are included)")
@@ -136,10 +142,15 @@ int readConfiguration (int argc, char* argv[],
     std::cout << "POR file-path is: " << ioPORFilepath << std::endl;
   }
 
+  if (vm.count ("deploymentnb")) {
+    ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
+    std::cout << "Deployment number " << ioDeploymentNumber << std::endl;
+  }
+
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
     std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
-              << std::endl;
+              << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("sqldbtype")) {
@@ -150,7 +161,12 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("sqldbconx")) {
     ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
-    std::cout << "SQL database connection string is: " << ioSQLDBConnectionString
+    const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+    const std::string& lSQLDBConnString =
+      OPENTREP::parseAndDisplayConnectionString (lDBType,
+                                                 ioSQLDBConnectionString,
+                                                 ioDeploymentNumber);
+    std::cout << "SQL database connection string is: " << lSQLDBConnString
               << std::endl;
   }
 
@@ -184,14 +200,17 @@ int main (int argc, char* argv[]) {
   // SQL database connection string
   std::string lSQLDBConnectionStr;
 
+  // Deployment number/version
+  OPENTREP::DeploymentNumber_T lDeploymentNumber;
+  
   // Whether or not to include non-IATA-referenced POR
   bool lIncludeNonIATAPOR;
 
   // Call the command-line option parser
   const int lOptionParserStatus =
     readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
-                       lSQLDBTypeStr, lSQLDBConnectionStr, lIncludeNonIATAPOR,
-                       lLogFilename);
+                       lSQLDBTypeStr, lSQLDBConnectionStr, lDeploymentNumber,
+                       lIncludeNonIATAPOR, lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -215,7 +234,8 @@ int main (int argc, char* argv[]) {
   const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
                                               lXapianDBName, lDBType,
-                                              lSQLDBConnStr, lIncludeNonIATAPOR);
+                                              lSQLDBConnStr, lDeploymentNumber,
+                                              lIncludeNonIATAPOR);
 
   // Launch the indexation
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =

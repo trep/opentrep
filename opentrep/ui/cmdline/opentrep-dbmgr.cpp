@@ -17,6 +17,7 @@
 #include <opentrep/Location.hpp>
 #include <opentrep/CityDetails.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
 #include <opentrep/service/Logger.hpp>
 
@@ -30,20 +31,6 @@ typedef std::vector<std::string> WordList_T;
  * Default name and location for the log file.
  */
 const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-dbmgr.log");
-
-/**
- * Default flag for the including (or not) of the non-IATA-referenced POR.
- * By default, only POR which are referenced by IATA are included.
- * If the flag is set up at 1, then also the POR referenced by other
- * international organizations (such ICAO or UN/LOCODE) are included.
- *  <br>
- *  <ul>
- *    <li>0 = Do not include non-IATA-referenced POR</li>
- *    <li>1 = Include non-IATA-referenced POR (eg, POR referenced by ICAO
- *        or UN/LOCODE)</li>
- *  </ul>
- */
-const bool K_OPENTREP_DEFAULT_POR_INCLUDING = false;
 
 
 // ///////// Parsing of Options & Configuration /////////
@@ -103,6 +90,7 @@ int readConfiguration (int argc, char* argv[],
                        std::string& ioXapianDBFilepath,
                        std::string& ioSQLDBTypeString,
                        std::string& ioSQLDBConnectionString,
+                       unsigned short& ioDeploymentNumber,
                        bool& ioIncludeNonIATAPOR,
                        std::string& ioLogFilename) {
 
@@ -129,8 +117,11 @@ int readConfiguration (int argc, char* argv[],
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+    ("deploymentnb,m",
+     boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
+     "Deployment number (from to N, where N=1 normally)")
     ("noniata,n",
-     boost::program_options::value<bool>(&ioIncludeNonIATAPOR)->default_value(K_OPENTREP_DEFAULT_POR_INCLUDING), 
+     boost::program_options::value<bool>(&ioIncludeNonIATAPOR)->default_value(OPENTREP::DEFAULT_OPENTREP_INCLUDE_NONIATA_POR),
      "Whether or not to include POR not referenced by IATA (0 = only IATA-referenced POR, 1 = all POR are included)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
@@ -186,8 +177,15 @@ int readConfiguration (int argc, char* argv[],
     ioPORFilepath = vm["porfile"].as< std::string >();
   }
 
+  if (vm.count ("deploymentnb")) {
+    ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
+    std::cout << "Deployment number " << ioDeploymentNumber << std::endl;
+  }
+
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
+    std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
+              << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("sqldbtype")) {
@@ -196,6 +194,13 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("sqldbconx")) {
     ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
+    const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+    const std::string& lSQLDBConnString =
+      OPENTREP::parseAndDisplayConnectionString (lDBType,
+                                                 ioSQLDBConnectionString,
+                                                 ioDeploymentNumber);
+    std::cout << "SQL database connection string is: " << lSQLDBConnString
+              << std::endl;
   }
 
   std::cout << "Are non-IATA-referenced POR included? "
@@ -507,12 +512,10 @@ int main (int argc, char* argv[]) {
   std::string lSQLDBConnectionStr;
 
   // Deployment number/version
-  OPENTREP::DeploymentNumber_T
-    lDeploymentNumber (OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER);
+  OPENTREP::DeploymentNumber_T lDeploymentNumber;
   
   // Whether or not to include non-IATA-referenced POR
-  OPENTREP::shouldIndexNonIATAPOR_T
-    lIncludeNonIATAPOR (OPENTREP::DEFAULT_OPENTREP_INCLUDE_NONIATA_POR);
+  OPENTREP::shouldIndexNonIATAPOR_T lIncludeNonIATAPOR;
 
   // Whether or not to index the POR in Xapian
   OPENTREP::shouldIndexPORInXapian_T
@@ -525,8 +528,8 @@ int main (int argc, char* argv[]) {
   // Call the command-line option parser
   const int lOptionParserStatus =
     readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
-                       lSQLDBTypeStr, lSQLDBConnectionStr, lIncludeNonIATAPOR,
-                       lLogFilename);
+                       lSQLDBTypeStr, lSQLDBConnectionStr, lDeploymentNumber,
+                       lIncludeNonIATAPOR, lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -546,6 +549,7 @@ int main (int argc, char* argv[]) {
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
                                               lXapianDBName,
                                               lDBType, lSQLDBConnStr,
+                                              lDeploymentNumber,
                                               lIncludeNonIATAPOR);
 
   // DEBUG
@@ -669,6 +673,7 @@ int main (int argc, char* argv[]) {
         opentrepService.getFilePaths();
       const OPENTREP::OPENTREP_Service::DBFilePathPair_T& lDBFPPair =
         lFPSet.second;
+      const OPENTREP::TravelDBFilePath_T& lXapianDBFP = lDBFPPair.first;
       const OPENTREP::SQLDBConnectionString_T& lSQLConnStr = lDBFPPair.second;
       std::cout << std::endl;
       std::cout << "Log file-path: " << "\t\t\t\t\t" << lLogFilename
@@ -677,6 +682,8 @@ int main (int argc, char* argv[]) {
                 << std::endl;
       std::cout << "SQL database type: " << "\t\t\t\t" << lDBType.describe()
                 << std::endl;
+      std::cout << "Xapian index/database file-path: " << "\t\t"
+                << lXapianDBFP << std::endl;
       std::cout << "SQL database connection string: " << "\t\t" << lSQLConnStr
                 << std::endl;
       std::cout << "Deployment number/version: " << "\t\t\t"

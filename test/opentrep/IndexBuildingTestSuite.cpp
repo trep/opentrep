@@ -68,6 +68,11 @@ const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
 const std::string X_SQL_DB_STR ("");
 
 /**
+ * Deployment number/version.
+ */
+const OPENTREP::DeploymentNumber_T X_DEPLOYMENT_NUMBER (0);
+
+/**
  * Do not include non-IATA-referenced POR.
  */
 const bool K_ALL_POR = false;
@@ -100,10 +105,12 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
   const OPENTREP::DBType lDBType (OPENTREP::DBType::NODB);
   const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (X_SQL_DB_STR);
+  const OPENTREP::DeploymentNumber_T lDeploymentNumber (X_DEPLOYMENT_NUMBER);
   const OPENTREP::shouldIndexNonIATAPOR_T lShouldIndexNonIATAPOR (K_ALL_POR);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilePath,
                                               lTravelDBFilePath,
                                               lDBType, lSQLDBConnStr,
+                                              lDeploymentNumber,
                                               lShouldIndexNonIATAPOR);
   
   // Query the Xapian database (index)

@@ -316,6 +316,19 @@ namespace OPENTREP {
   };
 
   /**
+   * The parsing of the connection string fails for the SQL database.
+   */
+  class SQLDatabaseConnectionStringParsingException
+    : public SQLDatabaseException {
+  public:
+    /**
+     * Constructor.
+     */
+    SQLDatabaseConnectionStringParsingException (const std::string& iWhat)
+      : SQLDatabaseException (iWhat) {}
+  };
+
+  /**
    * The connection fails with the SQL database.
    */
   class SQLDatabaseImpossibleConnectionException : public SQLDatabaseException {

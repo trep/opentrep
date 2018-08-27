@@ -45,11 +45,13 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
+     * @param const DeploymentNumber_T& Deployment number.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
     OPENTREP_ServiceContext& create (const TravelDBFilePath_T&,
                                      const DBType&,
-                                     const SQLDBConnectionString_T&);
+                                     const SQLDBConnectionString_T&,
+                                     const DeploymentNumber_T&);
 
     /**
      * Create a new OPENTREP_ServiceContext object for indexing-related services.
@@ -60,13 +62,15 @@ namespace OPENTREP {
      * @param const TravelDBFilePath_T& File-path of the Xapian database.
      * @param const DBType& SQL database type (can be no database at all).
      * @param const SQLDBConnectionString_T& SQL DB connection string.
-     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR
+     * @param const DeploymentNumber_T& Deployment number.
+     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
     OPENTREP_ServiceContext& create (const PORFilePath_T&,
                                      const TravelDBFilePath_T&,
                                      const DBType&,
                                      const SQLDBConnectionString_T&,
+                                     const DeploymentNumber_T&,
                                      const shouldIndexNonIATAPOR_T&);
 
 
