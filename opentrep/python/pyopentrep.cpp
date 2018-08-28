@@ -624,15 +624,20 @@ namespace OPENTREP {
     bool init (const std::string& iTravelDBFilePath,
                const std::string& iSQLDBTypeStr,
                const std::string& iSQLDBConnStr,
-               const unsigned short& iDeploymentNumber,
+               const DeploymentNumber_T& iDeploymentNumber,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
       try {
+
+	// Add the deployment number/version to the Xapian file-path
+	std::ostringstream oXFP;
+	oXFP << iTravelDBFilePath << iDeploymentNumber;
+	const std::string lXapianFP = oXFP.str();
         
         // Check that the file-path exist and are accessible
-        boost::filesystem::path lXapianFilePath (iTravelDBFilePath.begin(),
-                                                 iTravelDBFilePath.end());
+        boost::filesystem::path lXapianFilePath (lXapianFP.begin(),
+                                                 lXapianFP.end());
         if (!(boost::filesystem::exists (lXapianFilePath)
               && boost::filesystem::is_directory (lXapianFilePath))) {
           isEverythingOK = false;
