@@ -15,6 +15,8 @@
 #include <soci/mysql/soci-mysql.h>
 // OpenTrep
 #include <opentrep/Location.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/bom/World.hpp>
 #include <opentrep/bom/Place.hpp>
 #include <opentrep/bom/Result.hpp>
@@ -31,7 +33,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   bool DBManager::
   createSQLDBUser (const DBType& iDBType,
-                   const SQLDBConnectionString_T& iSQLDBConnStr) {
+                   const SQLDBConnectionString_T& iSQLDBConnStr,
+                   const DeploymentNumber_T& iDeploymentNumber) {
     bool oCreationSuccessful = true;
 
     // DEBUG
@@ -87,10 +90,13 @@ namespace OPENTREP {
                           << "') has been cleared and re-created");
       
     } else if (iDBType == DBType::MYSQL) {
-
       // DEBUG
-      OPENTREP_LOG_DEBUG ("Create the 'trep' user and 'trep_trep' database "
-                          << "in MySQL ('" << iSQLDBConnStr << "')");
+      OPENTREP_LOG_DEBUG ("Create the '"
+                          << DEFAULT_OPENTREP_MYSQL_DB_USER
+                          << "' user and '" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                          << iDeploymentNumber
+                          << "' database in MySQL/MariaDB ('" << iSQLDBConnStr
+                          << "')");
 
       // Connection to the MySQL/MariaDB database
       soci::session* lSociSession_ptr = NULL;      
@@ -137,8 +143,9 @@ namespace OPENTREP {
 
        flush privileges;
 
-       drop database if exists trep_trep;
-       create database if not exists trep_trep
+       -- <N> is the deployment number
+       drop database if exists trep_trep<N>;
+       create database if not exists trep_trep<N>
        default character set utf8
        collate utf8_unicode_ci;
       */
@@ -146,21 +153,23 @@ namespace OPENTREP {
       try {
         // Drop user 'trep'@'localhost'
         std::ostringstream lSQLDropTrepLocalStr;
-        lSQLDropTrepLocalStr << "drop user 'trep'@'localhost';";
+        lSQLDropTrepLocalStr << "drop user '"
+                             << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'"
+                             << DEFAULT_OPENTREP_MYSQL_DB_HOST << "';";
         lSociSession << lSQLDropTrepLocalStr.str();
         
         // Drop user 'trep'@'%'
         std::ostringstream lSQLDropTrepAllStr;
-        lSQLDropTrepAllStr << "drop user 'trep'@'%';";
+        lSQLDropTrepAllStr << "drop user '"
+                           << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'%';";
         lSociSession << lSQLDropTrepAllStr.str();
 
       } catch (soci::mysql_soci_error const& lSociException) {
         std::ostringstream issueStr;
-        issueStr << "Issue when trying to drop MySQL/MariaDB 'trep' user. "
-                 << "Most probably the user did not exist before. "
-                 << std::endl
-                 << "SOCI error message: " << lSociException.what()
-                 << std::endl
+        issueStr << "Issue when trying to drop MySQL/MariaDB '"
+                 << DEFAULT_OPENTREP_MYSQL_DB_USER << "' user. "
+                 << "Most probably the user did not exist before. " << std::endl
+                 << "SOCI error message: " << lSociException.what() << std::endl
                  << "The database users should however be created without "
                  << "any issue ";
         OPENTREP_LOG_DEBUG (issueStr.str());
@@ -168,11 +177,13 @@ namespace OPENTREP {
       }
 
       try {
-
         // Create user 'trep'@'localhost'
         std::ostringstream lSQLCreateTrepLocalStr;
-        lSQLCreateTrepLocalStr << "create user 'trep'@'localhost' ";
-        lSQLCreateTrepLocalStr << "identified by 'trep';";
+        lSQLCreateTrepLocalStr << "create user '"
+                               << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'"
+                               << DEFAULT_OPENTREP_MYSQL_DB_HOST << "' ";
+        lSQLCreateTrepLocalStr << "identified by '"
+                               << DEFAULT_OPENTREP_MYSQL_DB_PASSWD << "';";
         lSociSession << lSQLCreateTrepLocalStr.str();
 
         // Grant privileges to 'trep'@'localhost'
@@ -182,12 +193,16 @@ namespace OPENTREP {
         lSQLGrantTrepLocalStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
         lSQLGrantTrepLocalStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
         lSQLGrantTrepLocalStr << "ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepLocalStr << " to 'trep'@'localhost';";
+        lSQLGrantTrepLocalStr << " to '" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                              << "'@'" << DEFAULT_OPENTREP_MYSQL_DB_HOST << "';";
         lSociSession << lSQLGrantTrepLocalStr.str();
 
         // Create user 'trep'@'%'
         std::ostringstream lSQLCreateTrepAllStr;
-        lSQLCreateTrepAllStr << "create user 'trep'@'%' identified by 'trep';";
+        lSQLCreateTrepAllStr << "create user '"
+                             << DEFAULT_OPENTREP_MYSQL_DB_USER
+                             << "'@'%' identified by '"
+                             << DEFAULT_OPENTREP_MYSQL_DB_PASSWD << "';";
         lSociSession << lSQLCreateTrepAllStr.str();
 
         // Grant privileges to 'trep'@'%'
@@ -197,7 +212,8 @@ namespace OPENTREP {
         lSQLGrantTrepAllStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
         lSQLGrantTrepAllStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
         lSQLGrantTrepAllStr << "ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepAllStr << " to 'trep'@'%';";
+        lSQLGrantTrepAllStr << " to '" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                            << "'@'%';";
         lSociSession << lSQLGrantTrepAllStr.str();
 
         // Flush privileges
@@ -209,7 +225,8 @@ namespace OPENTREP {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
         errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                 << "'trep' users. Error message: " << lSociException.what();
+                 << "'" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                 << "' user. Error message: " << lSociException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         std::cerr << errorStr.str() << std::endl;
         oCreationSuccessful = false;
@@ -227,12 +244,15 @@ namespace OPENTREP {
       try {
         // Drop the 'trep_trep' database, if existing
         std::ostringstream lSQLDropDBStr;
-        lSQLDropDBStr << "drop database if exists trep_trep;";
+        lSQLDropDBStr << "drop database if exists "
+                      << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
+                      << ";";
         lSociSession << lSQLDropDBStr.str();
 
         // Create the 'trep_trep' database
         std::ostringstream lSQLCreateDBStr;
-        lSQLCreateDBStr << "create database if not exists trep_trep";
+        lSQLCreateDBStr << "create database if not exists "
+                        << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber;
         lSQLCreateDBStr << " default character set utf8mb4";
         lSQLCreateDBStr << " collate utf8mb4_unicode_ci;";
         lSociSession << lSQLCreateDBStr.str();
@@ -241,7 +261,8 @@ namespace OPENTREP {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
         errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                 << "'trep_trep' database with 'utf8mb4' as character set. "
+                 << "'" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
+                 << "' database with 'utf8mb4' as character set. "
                  << "Error message: " << lSociException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         std::cerr << errorStr.str() << std::endl;
@@ -250,12 +271,16 @@ namespace OPENTREP {
         try {
           // Drop the 'trep_trep' database, if existing
           std::ostringstream lSQLDropDBStr;
-          lSQLDropDBStr << "drop database if exists trep_trep;";
+          lSQLDropDBStr << "drop database if exists "
+                        << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
+                        << ";";
           lSociSession << lSQLDropDBStr.str();
 
           // Create the 'trep_trep' database
           std::ostringstream lSQLCreateDBStr;
-          lSQLCreateDBStr << "create database if not exists trep_trep";
+          lSQLCreateDBStr << "create database if not exists "
+                          << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                          << iDeploymentNumber;
           lSQLCreateDBStr << " default character set utf8";
           lSQLCreateDBStr << " collate utf8_unicode_ci;";
           lSociSession << lSQLCreateDBStr.str();
@@ -264,8 +289,9 @@ namespace OPENTREP {
           oCreationSuccessful = false;
           std::ostringstream errorStr;
           errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                   << "'trep_trep' database. Error message: "
-                   << lSociException.what();
+                   << "'" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                   << iDeploymentNumber
+                   << "' database. Error message: " << lSociException.what();
           OPENTREP_LOG_ERROR (errorStr.str());
           std::cerr << errorStr.str() << std::endl;
           oCreationSuccessful = false;
@@ -274,9 +300,11 @@ namespace OPENTREP {
       }
 
       // DEBUG
-      OPENTREP_LOG_DEBUG ("The 'trep' user and 'trep_trep' database have been "
-                          << "created in MySQL/MariaDB ('" << iSQLDBConnStr
-                          << "')");
+      OPENTREP_LOG_DEBUG ("The '" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                          << "' user and '" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                          << iDeploymentNumber
+                          << "' database have been created in MySQL/MariaDB ('"
+                          << iSQLDBConnStr << "')");
       
     } else if (iDBType == DBType::NODB || iDBType == DBType::SQLITE3) {
       // Do nothing

@@ -55,10 +55,12 @@ namespace OPENTREP {
      * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
      * @param const SQLDBConnectionString_T& Connection string for the SQL
      *                                       database.
+     * @param const const DeploymentNumber_T& Deployment number
      * @return bool Whether or not the creation of the SQL database user
      *              and DB was successful.
      */
-    static bool createSQLDBUser (const DBType&, const SQLDBConnectionString_T&);
+    static bool createSQLDBUser (const DBType&, const SQLDBConnectionString_T&,
+                                 const DeploymentNumber_T&);
 
     /**
      * Create a connection to a SQL database.

@@ -26,15 +26,16 @@ def usage (script_name):
     print "The default output is short."
     print
     print "Options:"
-    print "  -h, --help      : outputs this help and exits"
-    print "  -i, --index     : performs the indexation with Xapian"
-    print "  -g, --generate= : randomly draws the documents from Xapian"
-    print "  -d, --xapiandb= : specifies the path to the Xapian DB (index)"
-    print "  -t, --sqldbtype=: specifies the type of SQL DB (noDB, sqlite, mysql)"
-    print "  -s, --sqldbconx=: specifies the connection string for the SQL DB"
-    print "  -f, --format=   : format of the output: Short (S, default),"
-    print "                    Full (F), raw JSON (J), "
-    print "                    Interpretation from JSON (I) or from Protobuf (P)"
+    print "  -h, --help         : outputs this help and exits"
+    print "  -i, --index        : performs the indexation with Xapian"
+    print "  -g, --generate=    : randomly draws the documents from Xapian"
+    print "  -d, --xapiandb=    : file-path to the Xapian index/database"
+    print "  -t, --sqldbtype=   : type of the SQL DB (noDB, sqlite, mysql)"
+    print "  -s, --sqldbconx=   : specifies the connection string for the SQL DB"
+    print "  -m, --deploymentdb=: deployment number/version"
+    print "  -f, --format=      : format of the output: Short (S, default),"
+    print "                       Full (F), raw JSON (J), "
+    print "                       Interpretation from JSON (I) or from Protobuf (P)"
     print
 
 # Conversion of a string into a boolean
@@ -44,9 +45,9 @@ def str2bool (v):
 # Handle command-line options
 def handle_opt():
     try:
-        opts, args = getopt.getopt (sys.argv[1:], "hif:d:t:s:g:",
+        opts, args = getopt.getopt (sys.argv[1:], "hif:d:t:s:g:m:",
                         ["help", "index", "format=", "xapiandb=", "sqldbtype=",
-                         "sqldbconx=", "generate="])
+                         "sqldbconx=", "generate=", "deploymentnb="])
     except getopt.GetoptError, err:
         # Print help information and exit. It will print something like
         # "option -a not recognized"
@@ -72,6 +73,7 @@ def handle_opt():
     xapianDBPath = "/tmp/opentrep/xapian_traveldb"
     sqlDBType = "nodb"
     sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
+    lDeploymentNumber = 0
     for o, a in opts:
         if o in ("-h", "--help"):
             usage (sys.argv[0])
@@ -89,9 +91,12 @@ def handle_opt():
         elif o in ("-g", "--generate"):
             command = "generate"
             nbOfDraws = int (a)
+        elif o in ("-m", "--deploymentnb"):
+            deploymentNumber = int (a)
         else:
             assert False, "Unhandled option"
-    return (command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, searchString, nbOfDraws)
+    return (command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr,
+            deploymentNumber, searchString, nbOfDraws)
 
 # Parser helpers
 def getMain (locations):
@@ -423,12 +428,14 @@ def search (openTrepLibrary, searchString, outputFormat):
 # Main
 ############################
 if __name__ == '__main__':
-    command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, searchString, nbOfDraws = handle_opt()
+    command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, \
+        deploymentNumber, searchString, nbOfDraws = handle_opt()
 
     # Initialise the OpenTrep C++ library
     import libpyopentrep
     openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr, 'pyopentrep.log')
+    initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
+                                   deploymentNumber, 'pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         raise Exception (errorMsg)

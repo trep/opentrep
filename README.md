@@ -198,7 +198,7 @@ $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TREP_LIB
 $ $INSTALL_BASEDIR/opentrep-$TREP_VER/bin/opentrep-{dbmgr,indexer,searcher}
 ```
 
-## Underlying (relational) database, SQLite or MySQL, if any
+## Underlying (relational) database, SQLite or MySQL/MariaDB, if any
 OpenTREP may use, if so configured, a relational database. For now,
 two database products are supported, SQLite3 and MySQL/MariaDB.
 The database accelerates the look up of POR by (IATA, ICAO, FAA) codes
@@ -209,19 +209,18 @@ OpenTREP search interface on top of it, thanks to the opentrep-dbmgr utility,
 which is detailed below.
 
 # Indexing the POR data
-## Filling the (relational) database, SQLite or MySQL, if any
+## Filling the (relational) database, SQLite or MySQL/MariaDB, if any
 Here, for clarity reason, we use the local version. It is easy (see above)
 to derive the same commands with the installed version.
 The following command prompts a shell:
 ```bash
 $ ./opentrep/opentrep-dbmgr -t sqlite
 ```
-Then, within the opentrep> shell, a typical sequence for SQLite would be:
+Then, within the ```opentrep>``` shell, a typical sequence for SQLite would be:
 ```bash
+ info
  create_user
- create_tables
  fill_from_por_file
- create_indexes
  list_nb
  list_by_iata nce
  list_by_icao lfmn
@@ -233,14 +232,13 @@ The following command prompts a shell:
 ```bash
 ./opentrep/opentrep-dbmgr -t mysql
 ```
-Then, within the ```opentrep>``` shell, a typical sequence for MySQL/MariaDB would be:
+Then, within the ```opentrep>``` shell, a typical sequence for MySQL/MariaDB
+would be:
 ```bash
  reset_connection_string db=mysql user=root password=<passwd>
  create_user
  reset_connection_string db=trep_trep user=trep password=trep
- create_tables
  fill_from_por_file
- create_indexes
  list_nb
  list_by_iata nce
  list_by_icao lfmn
@@ -257,26 +255,14 @@ Xapian indexing without any relational database:
 $ ./opentrep/opentrep-indexer
 ```
 
-(Optional) Filling and indexing the SQLite database:
+Xapian indexing and filling and indexing the SQLite database:
 ```bash
-$ ./opentrep/opentrep-dbmgr -t sqlite
-    create_user
-    create_tables
-    fill_from_por_file
-    create_indexes
-    quit
+$ ./opentrep/opentrep-indexer -t sqlite
 ```
 
-(Optional) Filling and indexing the MySQL/MariaDB database:
+Xapian indexing and filling and indexing the MySQL/MariaDB database:
 ```bash
-$ ./opentrep/opentrep-dbmgr -t mysql
-    reset_connection_string db=mysql user=root password=<passwd>
-    create_user
-    reset_connection_string db=trep_trep user=trep password=trep
-    create_tables
-    fill_from_por_file
-    create_indexes
-    quit
+$ ./opentrep/opentrep-indexer -t mysql
 ```
 
 ## Xapian indexing for an ad hoc deployed Web application
@@ -289,9 +275,7 @@ $ ./opentrep/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb
 ```bash
 $ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db
     create_user
-    create_tables
     fill_from_por_file
-    create_indexes
     quit
 ```
 
@@ -311,18 +295,27 @@ Searching with MySQL/MariaDB:
 $ ./opentrep/opentrep-searcher -t mysql -q nce sfo
 ```
 
-Searching with SQLite (with Xapian and SQLite DB in a webapps directory):
+Searching with SQLite (with Xapian and SQLite DB in a ```webapps``` directory):
 ```bash
 $ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -q nce sfo
 ```
 
 
 # Checking that the Python module works
+* With the standard installation:
 ```bash
-PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python/opentrep/ \
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
  python -c "import libpyopentrep; \
  openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
- initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb/', 'nodb', '', 'pyopentrep.log'); \
+ initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, 'pyopentrep.log'); \
+ print openTrepLibrary.search ('S', 'los las')"
+```
+* With an ad hoc installation:
+```bash
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
+ python -c "import libpyopentrep; \
+ openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
+ initOK = openTrepLibrary.init ('/var/www/webapps/opentrep/trep/traveldb', 'mysql', 'db=trep_trep user=trep password=trep', 0, 'pyopentrep.log'); \
  print openTrepLibrary.search ('S', 'los las')"
 ```
 
@@ -338,8 +331,7 @@ $ cd gui/django/opentrep
 $ # The first time, the database must be initialised:
 $ #./manage.py syncdb localhost:8000
 $ # Add the Python library directories to PYTHONPATH:
-$ export PYTHONPATH=$PYTHONPATH:$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
-$ export PYTHONPATH=$PYTHONPATH:$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX/python/opentrep
+$ export PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep
 $ # Start the Django Web application server
 $ ./manage.py runserver localhost:8000
 $ # In another Shell, check that everything went fine with, for instance:
