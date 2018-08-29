@@ -33,10 +33,11 @@ namespace OPENTREP {
                     const TravelDBFilePath_T& iTravelDBFilePath,
                     const DBType& iSQLDBType,
                     const SQLDBConnectionString_T& iSQLDBConnStr,
+                    const DeploymentNumber_T& iDeploymentNumber,
                     const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR)
     : _opentrepServiceContext (NULL) {
-    init (ioLogStream, iPORFilepath, iTravelDBFilePath,
-          iSQLDBType, iSQLDBConnStr, iShouldIndexNonIATAPOR);
+    init (ioLogStream, iPORFilepath, iTravelDBFilePath, iSQLDBType,
+          iSQLDBConnStr, iDeploymentNumber, iShouldIndexNonIATAPOR);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -44,9 +45,11 @@ namespace OPENTREP {
   OPENTREP_Service (std::ostream& ioLogStream,
                     const TravelDBFilePath_T& iTravelDBFilePath,
                     const DBType& iSQLDBType,
-                    const SQLDBConnectionString_T& iSQLDBConnStr)
+                    const SQLDBConnectionString_T& iSQLDBConnStr,
+                    const DeploymentNumber_T& iDeploymentNumber)
     : _opentrepServiceContext (NULL) {
-    init (ioLogStream, iTravelDBFilePath, iSQLDBType, iSQLDBConnStr);
+    init (ioLogStream, iTravelDBFilePath, iSQLDBType, iSQLDBConnStr,
+          iDeploymentNumber);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -90,7 +93,8 @@ namespace OPENTREP {
   void OPENTREP_Service::init (std::ostream& ioLogStream,
                                const TravelDBFilePath_T& iTravelDBFilePath,
                                const DBType& iSQLDBType,
-                               const SQLDBConnectionString_T& iSQLDBConnStr) {
+                               const SQLDBConnectionString_T& iSQLDBConnStr,
+                               const DeploymentNumber_T& iDeploymentNumber) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
@@ -101,7 +105,8 @@ namespace OPENTREP {
     // Initialise the context
     OPENTREP_ServiceContext& lOPENTREP_ServiceContext = 
       FacOpenTrepServiceContext::instance().create (iTravelDBFilePath,
-                                                    iSQLDBType, lSQLDBConnStr);
+                                                    iSQLDBType, lSQLDBConnStr,
+                                                    iDeploymentNumber);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
@@ -116,6 +121,7 @@ namespace OPENTREP {
         const TravelDBFilePath_T& iTravelDBFilePath,
         const DBType& iSQLDBType,
         const SQLDBConnectionString_T& iSQLDBConnStr,
+        const DeploymentNumber_T& iDeploymentNumber,
         const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
@@ -129,6 +135,7 @@ namespace OPENTREP {
       FacOpenTrepServiceContext::instance().create (iPORFilepath,
                                                     iTravelDBFilePath,
                                                     iSQLDBType, lSQLDBConnStr,
+                                                    iDeploymentNumber,
                                                     iShouldIndexNonIATAPOR);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
@@ -245,6 +252,10 @@ namespace OPENTREP {
     const SQLDBConnectionString_T& lSQLDBConnectionString =
       lOPENTREP_ServiceContext.getSQLDBConnectionString();
       
+    // Retrieve the deployment number/version
+    const DeploymentNumber_T& lDeploymentNumber =
+      lOPENTREP_ServiceContext.getDeploymentNumber();
+
     // Delegate the database creation to the dedicated command
     BasChronometer lDBCreationChronometer;
     lDBCreationChronometer.start();
@@ -252,7 +263,8 @@ namespace OPENTREP {
     // Create the SQL database user ('trep' on MySQL database)
     // and database ('trep_trep' on MySQL database)
     oCreationSuccessful =
-      DBManager::createSQLDBUser (lSQLDBType, lSQLDBConnectionString);
+      DBManager::createSQLDBUser (lSQLDBType, lSQLDBConnectionString,
+                                  lDeploymentNumber);
 
     const double lDBCreationMeasure = lDBCreationChronometer.elapsed();
       
@@ -363,6 +375,37 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  OPENTREP::DeploymentNumber_T OPENTREP_Service::toggleDeploymentNumber() {
+    DeploymentNumber_T oDeploymentNumber = 0;
+    
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the deployment number/version
+    oDeploymentNumber = lOPENTREP_ServiceContext.getDeploymentNumber();
+
+    // Toggle the number
+    ++oDeploymentNumber;
+    if (oDeploymentNumber >= DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE) {
+      oDeploymentNumber = DEFAULT_OPENTREP_DEPLOYMENT_NUMBER;
+    }
+
+    // Store back the toggled flag
+    lOPENTREP_ServiceContext.setDeploymentNumber (oDeploymentNumber);
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The new deployment number/version is: "
+                        << oDeploymentNumber << " - "
+                        << lOPENTREP_ServiceContext.display());
+
+    return oDeploymentNumber;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   OPENTREP::shouldIndexNonIATAPOR_T OPENTREP_Service::
   toggleShouldIncludeAllPORFlag() {
     shouldIndexNonIATAPOR_T oShouldIndexNonIATAPOR = false;
@@ -412,7 +455,8 @@ namespace OPENTREP {
     oShouldIndexPORInXapian = !(oShouldIndexPORInXapian);
 
     // Store back the toggled flag
-    lOPENTREP_ServiceContext.setShouldIndexPORInXapianFlag (oShouldIndexPORInXapian);
+    lOPENTREP_ServiceContext.
+      setShouldIndexPORInXapianFlag (oShouldIndexPORInXapian);
       
     // DEBUG
     OPENTREP_LOG_DEBUG ("The new index-in-Xapian-POR flag is: "

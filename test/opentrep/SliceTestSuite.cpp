@@ -62,6 +62,10 @@ const std::string X_XAPIAN_DB_FP (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH)
  */
 const std::string X_SQL_DB_STR ("");
 
+/*
+ * Deployment number/version.
+ */
+const OPENTREP::DeploymentNumber_T X_DEPLOYMENT_NUMBER (0);
 
 // /////////////// Main: Unit Test Suite //////////////
 
@@ -89,8 +93,10 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
   const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (X_XAPIAN_DB_FP);
   const OPENTREP::DBType lDBType (OPENTREP::DBType::NODB);
   const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (X_SQL_DB_STR);
+  const OPENTREP::DeploymentNumber_T lDeploymentNumber (X_DEPLOYMENT_NUMBER);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath,
-                                              lDBType, lSQLDBConnStr);
+                                              lDBType, lSQLDBConnStr,
+                                              lDeploymentNumber);
   
   // A few sample strings
   const std::string lLax1Str = "los angeles";
@@ -109,8 +115,11 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
    * Direct access
    */
 
-  // Open the Xapian database
-  Xapian::Database lXapianDatabase (lTravelDBFilePath);
+  // Open the Xapian database (the deployment number/version is added to the
+  // file-path
+  std::ostringstream oStr;
+  oStr << lTravelDBFilePath << lDeploymentNumber;
+  Xapian::Database lXapianDatabase (oStr.str());
 
   // Create a Unicode transliterator
   const OPENTREP::OTransliterator lTransliterator;

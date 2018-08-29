@@ -7,10 +7,15 @@
 // STL
 #include <string>
 #include <vector>
+#include <map>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
+#include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 
 namespace OPENTREP {
+
+  // Forward declarations
+  struct DBType;
   
   /**
    * Split a string into a list of tokens.
@@ -31,5 +36,61 @@ namespace OPENTREP {
                                         const NbOfWords_T iSplitIdx = 0,
                                         const bool iFromBeginningFlag = true);
 
+  /**
+   * Map for character strings
+   */
+  typedef std::map<const std::string, std::string> StringMap_T;
+
+  /**
+   * Parse the connection string.
+   *
+   * Typically, the SQL connection string is like
+   * 'db=trep_trep user=trep password=trep'.
+   *
+   * <ul>
+   *   <li>First, split the connection string by the space character (' '),
+   *       which leads to key-value pairs.</li>
+   *   <li>Then, split each of those key-value pairs by the equal sign ('='),
+   *       which leads to the key and the corresponding value.</li>
+   * </ul>
+   *
+   * @param const SQLDBConnectionString_T& Connection string for MySQL/MariaDB
+   * @return StringMap_T Connection details to the MySQL/MariaDB
+   */
+  StringMap_T parseMySQLConnectionString (const SQLDBConnectionString_T&);
+  
+  /**
+   * Recompose the connection string.
+   *
+   * For instance, 'db=trep_trep0 user=trep password=trep'
+   *
+   * @param const StringMap_T& Connection details to the MySQL/MariaDB
+   * @param const const DeploymentNumber_T& Deployment number
+   * @return SQLDBConnectionString_T Connection string for MySQL/MariaDB
+   */
+  SQLDBConnectionString_T buildMySQLConnectionString (const StringMap_T&,
+                                                      const DeploymentNumber_T&);
+
+  /**
+   *
+   * @param const StringMap_T& Connection details to the MySQL/MariaDB
+   * @param const const DeploymentNumber_T& Deployment number
+   * @return std::string String displaying the connection string
+   */
+  std::string displayMySQLConnectionString (const StringMap_T&,
+                                            const DeploymentNumber_T& iDN = DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE);
+
+  /**
+   * Parse the connection string, and re-build it taking into account
+   * the deployment number/version.
+   *
+   * @param const SQLDBConnectionString_T& Connection string for MySQL/MariaDB
+   * @param const const DeploymentNumber_T& Deployment number
+   * @return std::string String displaying the connection string
+   */
+  std::string parseAndDisplayConnectionString (const DBType&,
+                                               const std::string& iSQLDBConnStr,
+                                               const DeploymentNumber_T&);
+  
 }
 #endif // __OPENTREP_BAS_UTILITIES_HPP

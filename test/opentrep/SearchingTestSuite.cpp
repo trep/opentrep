@@ -78,6 +78,9 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
   // Travel query
   std::string lTravelQuery ("nce");
     
+  // Deployment number/version
+  OPENTREP::DeploymentNumber_T lDeploymentNumber (0);
+  
   // Set the log parameters
   std::ofstream logOutputFile;
   // Open and clean the log outputfile
@@ -89,7 +92,8 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_search) {
   const OPENTREP::DBType lDBType (OPENTREP::DBType::NODB);
   const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (X_SQL_DB_STR);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lTravelDBFilePath,
-                                              lDBType, lSQLDBConnStr);
+                                              lDBType, lSQLDBConnStr,
+                                              lDeploymentNumber);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;

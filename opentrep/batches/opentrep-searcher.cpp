@@ -12,7 +12,9 @@
 #include <boost/program_options.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/DBType.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/CityDetails.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
@@ -106,6 +108,7 @@ int readConfiguration (int argc, char* argv[],
                        std::string& ioXapianDBFilepath,
                        std::string& ioSQLDBTypeString,
                        std::string& ioSQLDBConnectionString,
+                       unsigned short& ioDeploymentNumber,
                        std::string& ioLogFilename,
                        unsigned short& ioSearchType) {
 
@@ -141,6 +144,9 @@ int readConfiguration (int argc, char* argv[],
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+    ("deploymentnb,m",
+     boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
+     "Deployment number (from to N, where N=1 normally)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
@@ -197,10 +203,15 @@ int readConfiguration (int argc, char* argv[],
     return K_OPENTREP_EARLY_RETURN_STATUS;
   }
 
+  if (vm.count ("deploymentnb")) {
+    ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
+    std::cout << "Deployment number " << ioDeploymentNumber << std::endl;
+  }
+
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
     std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
-              << std::endl;
+              << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("sqldbtype")) {
@@ -211,7 +222,12 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("sqldbconx")) {
     ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
-    std::cout << "SQL database connection string is: " << ioSQLDBConnectionString
+    const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+    const std::string& lSQLDBConnString =
+      OPENTREP::parseAndDisplayConnectionString (lDBType,
+                                                 ioSQLDBConnectionString,
+                                                 ioDeploymentNumber);
+    std::cout << "SQL database connection string is: " << lSQLDBConnString
               << std::endl;
   }
 
@@ -319,11 +335,14 @@ int main (int argc, char* argv[]) {
   // SQL database connection string
   std::string lSQLDBConnectionStr;
 
+  // Deployment number/version
+  OPENTREP::DeploymentNumber_T lDeploymentNumber;
+  
   // Call the command-line option parser
   const int lOptionParserStatus = 
     readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
                        lXapianDBNameStr, lSQLDBTypeStr, lSQLDBConnectionStr,
-                       lLogFilename, lSearchType);
+                       lDeploymentNumber, lLogFilename, lSearchType);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -341,7 +360,8 @@ int main (int argc, char* argv[]) {
     const OPENTREP::DBType lDBType (lSQLDBTypeStr);
     const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
     OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lXapianDBName,
-                                                lDBType, lSQLDBConnStr);
+                                                lDBType, lSQLDBConnStr,
+                                                lDeploymentNumber);
 
     // Parse the query and retrieve the places from Xapian only
     const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);

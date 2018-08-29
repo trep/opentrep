@@ -624,14 +624,20 @@ namespace OPENTREP {
     bool init (const std::string& iTravelDBFilePath,
                const std::string& iSQLDBTypeStr,
                const std::string& iSQLDBConnStr,
+               const DeploymentNumber_T& iDeploymentNumber,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
       try {
+
+	// Add the deployment number/version to the Xapian file-path
+	std::ostringstream oXFP;
+	oXFP << iTravelDBFilePath << iDeploymentNumber;
+	const std::string lXapianFP = oXFP.str();
         
         // Check that the file-path exist and are accessible
-        boost::filesystem::path lXapianFilePath (iTravelDBFilePath.begin(),
-                                                 iTravelDBFilePath.end());
+        boost::filesystem::path lXapianFilePath (lXapianFP.begin(),
+                                                 lXapianFP.end());
         if (!(boost::filesystem::exists (lXapianFilePath)
               && boost::filesystem::is_directory (lXapianFilePath))) {
           isEverythingOK = false;
@@ -653,10 +659,12 @@ namespace OPENTREP {
         const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (iTravelDBFilePath);
         const OPENTREP::DBType lSQLDBType (iSQLDBTypeStr);
         const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
+        const OPENTREP::DeploymentNumber_T lDeploymentNumber (iDeploymentNumber);
 
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
                                                  lTravelDBFilePath,
-                                                 lSQLDBType, lSQLDBConnStr);
+                                                 lSQLDBType, lSQLDBConnStr,
+                                                 lDeploymentNumber);
 
         // DEBUG
         *_logOutputStream << "Python wrapper initialised" << std::endl;
