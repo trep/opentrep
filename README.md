@@ -117,6 +117,7 @@ $ dnf -y install doxygen ghostscript "tex(latex)"
 ```bash
 $ brew install boost boost-python boost-python3 cmake libedit \
   xapian sqlite mysql icu4c protobuf protobuf-c doxygen
+$ brew install homebrew/portable-ruby/portable-readline
 ```
  
 #### SOCI
@@ -157,6 +158,7 @@ the standard place. So, the ``cmake`` command becomes:
 $ export CMAKE_CXX_FLAGS="-Wno-mismatched-new-delete"; \
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
    -DREADLINE_ROOT=/usr/local/opt/portable-readline \
+   -DREADLINE_INCLUDE_DIR=/usr/local/opt/portable-readline/include \
    -DREADLINE_LIBRARY=/usr/local/opt/libedit/lib/libedit.dylib \
    -DICU_ROOT=/usr/local/opt/icu4c \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
