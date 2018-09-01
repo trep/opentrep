@@ -107,7 +107,7 @@ $ dnf -y install git-all bash-completion gcc-c++ cmake boost-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
  sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
 $ # Python development (the package names may vary)
-$ dnf -y install python-devel python34-devel
+$ dnf -y install python-devel python34-devel python-pip
 $ # Documentation tools
 $ dnf -y install doxygen ghostscript "tex(latex)"
 ```
@@ -299,28 +299,51 @@ Searching with SQLite (with Xapian and SQLite DB in a ```webapps``` directory):
 $ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -q nce sfo
 ```
 
+# Installing a Python virtual environment
+## General
+```bash
+$ pip install --upgrade pip
+$ pip install virtualenv
+```
+
+## Python 2
+```bash
+$ cd ~/dev
+$ virtualenv -p python2 venv2.7
+$ ln -s venv2.7 venv2
+$ source ~/dev/venv2/bin/activate
+```
+
+## Python 3
+```bash
+$ cd ~/dev
+$ python3.7 -m venv venv3.7
+$ ln -s venv3.7 venv3
+$ source ~/dev/venv3/bin/activate
+```
 
 # Checking that the Python module works
 * With the standard installation:
 ```bash
-PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
  python -c "import libpyopentrep; \
  openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
  initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, 'pyopentrep.log'); \
- print openTrepLibrary.search ('S', 'los las')"
+ print (openTrepLibrary.search ('S', 'los las'))"
 ```
+
 * With an ad hoc installation:
 ```bash
-PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
  python -c "import libpyopentrep; \
  openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
  initOK = openTrepLibrary.init ('/var/www/webapps/opentrep/trep/traveldb', 'mysql', 'db=trep_trep user=trep password=trep', 0, 'pyopentrep.log'); \
- print openTrepLibrary.search ('S', 'los las')"
+ print (openTrepLibrary.search ('S', 'los las'))"
 ```
 
 # Running the Django-based application server
 ```bash
-$ export TREP_LIB=$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
+$ export TREP_LIB=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}
 ```
 # Optional:
 ```bash
@@ -330,7 +353,7 @@ $ cd gui/django/opentrep
 $ # The first time, the database must be initialised:
 $ #./manage.py syncdb localhost:8000
 $ # Add the Python library directories to PYTHONPATH:
-$ export PYTHONPATH=${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-$TREP_VER/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep
+$ export PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep
 $ # Start the Django Web application server
 $ ./manage.py runserver localhost:8000
 $ # In another Shell, check that everything went fine with, for instance:
