@@ -335,18 +335,18 @@ $ source ~/dev/venv3/bin/activate
 # Checking that the Python module works
 * With the standard installation:
 ```bash
-PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
- python -c "import libpyopentrep; \
- openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python3.7/site-packages/pyopentrep \
+ python -c "import pyopentrep; \
+ openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
  initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, 'pyopentrep.log'); \
  print (openTrepLibrary.search ('S', 'los las'))"
 ```
 
 * With an ad hoc installation:
 ```bash
-PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
- python -c "import libpyopentrep; \
- openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
+PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/python3.7/site-packages/pyopentrep \
+ python -c "import pyopentrep; \
+ openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
  initOK = openTrepLibrary.init ('/var/www/webapps/opentrep/trep/traveldb', 'mysql', 'db=trep_trep user=trep password=trep', 0, 'pyopentrep.log'); \
  print (openTrepLibrary.search ('S', 'los las'))"
 ```
@@ -364,7 +364,7 @@ $ cd gui/django/opentrep
 $ # The first time, the database must be initialised:
 $ #./manage.py syncdb localhost:8000
 $ # Add the Python library directories to PYTHONPATH:
-$ export PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep
+$ export PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python3.7/site-packages/pyopentrep
 $ # Start the Django Web application server
 $ ./manage.py runserver localhost:8000
 $ # In another Shell, check that everything went fine with, for instance:
