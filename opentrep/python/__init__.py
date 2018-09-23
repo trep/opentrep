@@ -1,1 +1,1 @@
-from libpyopentrep import *
+from pyopentrep import *
