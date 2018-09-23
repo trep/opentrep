@@ -501,7 +501,7 @@ macro (get_python)
 	message (STATUS "Found PythonLibs ${PYTHONLIBS_VERSION}")
 
 	# Set the Python installation directory
-	set (INSTALL_PY_LIB_DIR ${INSTALL_LIB_DIR}/python${PYTHONLIBS_VERSION}/site-packages/libpy${PROJECT_NAME}
+	set (INSTALL_PY_LIB_DIR ${INSTALL_LIB_DIR}/python${PYTHONLIBS_VERSION}/site-packages/py${PROJECT_NAME}
 	  CACHE PATH "Installation directory for Python libraries")
 
 	# Update the list of include directories for the project
@@ -605,7 +605,7 @@ macro (get_boost)
   set (Boost_USE_STATIC_RUNTIME OFF)
   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
     date_time random iostreams serialization filesystem system
-	locale python27 python36 regex)
+	locale python37 regex)
   set (BOOST_REQUIRED_COMPONENTS_FOR_BIN program_options)
   set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
   set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
