@@ -721,7 +721,7 @@ namespace OPENTREP {
 }
 
 // /////////////////////////////////////////////////////////////
-BOOST_PYTHON_MODULE(libpyopentrep) {
+BOOST_PYTHON_MODULE(pyopentrep) {
   boost::python::class_<OPENTREP::OpenTrepSearcher> ("OpenTrepSearcher")
     .def ("index", &OPENTREP::OpenTrepSearcher::index)
     .def ("search", &OPENTREP::OpenTrepSearcher::search)
