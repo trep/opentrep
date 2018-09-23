@@ -9,33 +9,33 @@ import Travel_pb2
 # Usage
 def usage (script_name):
     print
-    print "That script searches for, against a Xapian-indexed database of"
-    print "travel-related terms, place key words. It allows for some"
-    print "mis-spelling. For instance: 'sna francicso rio de janero lso angles reykyavki'"
-    print "will retrieve the details of San Francisco, CA,"
-    print "Rio de Janeiro, Brasil, Los Angeles, CA and Reykjavik, Iceland."
+    print ("That script searches for, against a Xapian-indexed database of")
+    print ("travel-related terms, place key words. It allows for some")
+    print ("mis-spelling. For instance: 'sna francicso rio de janero lso angles reykyavki'")
+    print ("will retrieve the details of San Francisco, CA,")
+    print ("Rio de Janeiro, Brasil, Los Angeles, CA and Reykjavik, Iceland.")
     print
-    print "The output is a mere string giving the retrieved place codes"
-    print "associated to their correspondong matching weights. It can:"
-    print " - be a single line with only the place codes and matching weigths;"
-    print " - give the full details, as returned by the C++ library;"
-    print " - return a JSON-formatted string with all the details"
+    print ("The output is a mere string giving the retrieved place codes")
+    print ("associated to their correspondong matching weights. It can:")
+    print (" - be a single line with only the place codes and matching weigths;")
+    print (" - give the full details, as returned by the C++ library;")
+    print (" - return a JSON-formatted string with all the details")
     print
-    print "Usage: %s [options] \"search string\"" % script_name
+    print ("Usage: %s [options] \"search string\"" % script_name)
     print
-    print "The default output is short."
+    print ("The default output is short.")
     print
-    print "Options:"
-    print "  -h, --help         : outputs this help and exits"
-    print "  -i, --index        : performs the indexation with Xapian"
-    print "  -g, --generate=    : randomly draws the documents from Xapian"
-    print "  -d, --xapiandb=    : file-path to the Xapian index/database"
-    print "  -t, --sqldbtype=   : type of the SQL DB (noDB, sqlite, mysql)"
-    print "  -s, --sqldbconx=   : specifies the connection string for the SQL DB"
-    print "  -m, --deploymentdb=: deployment number/version"
-    print "  -f, --format=      : format of the output: Short (S, default),"
-    print "                       Full (F), raw JSON (J), "
-    print "                       Interpretation from JSON (I) or from Protobuf (P)"
+    print ("Options:")
+    print ("  -h, --help         : outputs this help and exits")
+    print ("  -i, --index        : performs the indexation with Xapian")
+    print ("  -g, --generate=    : randomly draws the documents from Xapian")
+    print ("  -d, --xapiandb=    : file-path to the Xapian index/database")
+    print ("  -t, --sqldbtype=   : type of the SQL DB (noDB, sqlite, mysql)")
+    print ("  -s, --sqldbconx=   : specifies the connection string for the SQL DB")
+    print ("  -m, --deploymentdb=: deployment number/version")
+    print ("  -f, --format=      : format of the output: Short (S, default),")
+    print ("                       Full (F), raw JSON (J), ")
+    print ("                       Interpretation from JSON (I) or from Protobuf (P)")
     print
 
 # Conversion of a string into a boolean
@@ -48,10 +48,10 @@ def handle_opt():
         opts, args = getopt.getopt (sys.argv[1:], "hif:d:t:s:g:m:",
                         ["help", "index", "format=", "xapiandb=", "sqldbtype=",
                          "sqldbconx=", "generate=", "deploymentnb="])
-    except getopt.GetoptError, err:
+    except (getopt.GetoptError, err):
         # Print help information and exit. It will print something like
         # "option -a not recognized"
-        print str(err)
+        print (str(err))
         usage()
         sys.exit(2)
 
@@ -73,7 +73,7 @@ def handle_opt():
     xapianDBPath = "/tmp/opentrep/xapian_traveldb"
     sqlDBType = "nodb"
     sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
-    lDeploymentNumber = 0
+    deploymentNumber = 0
     for o, a in opts:
         if o in ("-h", "--help"):
             usage (sys.argv[0])
@@ -261,11 +261,11 @@ def getPaths (openTrepLibrary):
     filePathList = filePathListString.split(';')
 
     # Report the results
-    print "ORI-maintained list of POR (points of reference): '" + filePathList[0] + "'"
+    print ("ORI-maintained list of POR (points of reference): '" + filePathList[0] + "'")
     if len(filePathList) >= 2:
-        print "Xapian-based travel database/index: '" + filePathList[1] + "'"
+        print ("Xapian-based travel database/index: '" + filePathList[1] + "'")
     if len(filePathList) >= 3:
-        print "SQLite database: '" + filePathList[2] + "'"
+        print ("SQLite database: '" + filePathList[2] + "'")
     #
 
 ##
@@ -273,15 +273,15 @@ def getPaths (openTrepLibrary):
 #
 def index (openTrepLibrary, xapianDBPath):
     # DEBUG
-    print "Perform the indexation of the (Xapian-based) travel database."
-    print "That operation may take several minutes on some slow machines."
-    print "It takes less than 20 seconds on fast ones..."
+    print ("Perform the indexation of the (Xapian-based) travel database.")
+    print ("That operation may take several minutes on some slow machines.")
+    print ("It takes less than 20 seconds on fast ones...")
 
     # Calls the underlying OpenTrep library service
     result = openTrepLibrary.index()
 
     # Report the results
-    print "Done. Indexed " + result + " POR (points of reference)"
+    print ("Done. Indexed " + result + " POR (points of reference)")
 
 
 ##
@@ -291,11 +291,11 @@ def generate (openTrepLibrary, nbOfDraws, outputFormat):
     # If no search string was supplied as arguments of the command-line,
     # ask the user for some
     if nbOfDraws <= 0:
-        print 'Can not generate ' + str(nbOfDraws) + ' locations'
+        print ('Can not generate ' + str(nbOfDraws) + ' locations')
         return
 
     # DEBUG
-    print 'Number of locations to generate: ' + str(nbOfDraws)
+    print ('Number of locations to generate: ' + str(nbOfDraws))
 
     ##
     # Call the OpenTrep C++ library.
@@ -315,41 +315,41 @@ def generate (openTrepLibrary, nbOfDraws, outputFormat):
     # parsed accordingly.
     if (outputFormat == 'S'):
         parsedStruct = compactResultParser (result)
-        print 'Compact format => recognised place (city/airport) codes:'
-        print parsedStruct
-        print '------------------'
+        print ('Compact format => recognised place (city/airport) codes:')
+        print (parsedStruct)
+        print ('------------------')
 
     # When the full details have been requested, the result string is
     # potentially big and complex, and is not aimed to be
     # parsed. So, the result string is just displayed/dumped as is.
     elif (outputFormat == 'F'):
-        print 'Raw result from the OpenTrep library:'
-        print result
-        print '------------------'
+        print ('Raw result from the OpenTrep library:')
+        print (result)
+        print ('------------------')
 
     # When the raw JSON format has been requested, no handling is necessary.
     elif (outputFormat == 'J'):
-        print 'Raw (JSON) result from the OpenTrep library:'
-        print result
-        print '------------------'
+        print ('Raw (JSON) result from the OpenTrep library:')
+        print (result)
+        print ('------------------')
 
     # The interpreted JSON format is an example of how to extract relevant
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'I'):
         interpretedString = interpretFromJSON (result)
-        print 'JSON format => recognised place (city/airport) codes:'
-        print interpretedString
-        print '------------------'
+        print ('JSON format => recognised place (city/airport) codes:')
+        print (interpretedString)
+        print ('------------------')
 
     # The interpreted Protobuf format is an example of how to extract relevant
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'P'):
         unmatchedKeywords, interpretedString = interpretFromProtobuf (result)
-        print 'Protobuf format => recognised place (city/airport) codes:'
-        print interpretedString
-        print '------------------'
+        print ('Protobuf format => recognised place (city/airport) codes:')
+        print (interpretedString)
+        print ('------------------')
 
 
 ##
@@ -365,7 +365,7 @@ def search (openTrepLibrary, searchString, outputFormat):
         searchString = 'rio de janero sna francisco'
 
     # DEBUG
-    print "searchString: " + searchString
+    print ("searchString: " + searchString)
 
     ##
     # Call the OpenTrep C++ library.
@@ -385,43 +385,43 @@ def search (openTrepLibrary, searchString, outputFormat):
     # parsed accordingly.
     if (outputFormat == 'S'):
         parsedStruct = compactResultParser (result)
-        print 'Compact format => recognised place (city/airport) codes:'
-        print parsedStruct
-        print '------------------'
+        print ('Compact format => recognised place (city/airport) codes:')
+        print (parsedStruct)
+        print ('------------------')
 
     # When the full details have been requested, the result string is
     # potentially big and complex, and is not aimed to be
     # parsed. So, the result string is just displayed/dumped as is.
     elif (outputFormat == 'F'):
-        print 'Raw result from the OpenTrep library:'
-        print result
-        print '------------------'
+        print ('Raw result from the OpenTrep library:')
+        print (result)
+        print ('------------------')
 
     # When the raw JSON format has been requested, no handling is necessary.
     elif (outputFormat == 'J'):
-        print 'Raw (JSON) result from the OpenTrep library:'
-        print result
-        print '------------------'
+        print ('Raw (JSON) result from the OpenTrep library:')
+        print (result)
+        print ('------------------')
 
     # The interpreted JSON format is an example of how to extract relevant
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'I'):
         interpretedString = interpretFromJSON (result)
-        print 'JSON format => recognised place (city/airport) codes:'
-        print interpretedString
-        print '------------------'
+        print ('JSON format => recognised place (city/airport) codes:')
+        print (interpretedString)
+        print ('------------------')
 
     # The interpreted Protobuf format is an example of how to extract relevant
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'P'):
         unmatchedKeywords, interpretedString = interpretFromProtobuf (result)
-        print 'Protobuf format => recognised place (city/airport) codes:'
-        print interpretedString
-        print 'Unmatched keywords:'
-        print unmatchedKeywords
-        print '------------------'
+        print ('Protobuf format => recognised place (city/airport) codes:')
+        print (interpretedString)
+        print ('Unmatched keywords:')
+        print (unmatchedKeywords)
+        print ('------------------')
 
 
 ############################
