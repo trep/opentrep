@@ -152,6 +152,16 @@ $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 ```
+
+* For an ad hoc installation:
+```bash
+INSTALL_DIR=/var/www/webapps/opentrep/trep
+
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF \
+   -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+```
+
 * On MacOS, a few software (e.g., ICU and Readline) are not in
 the standard place. So, the ``cmake`` command becomes:
 ```bash
@@ -334,7 +344,7 @@ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BAS
 
 * With an ad hoc installation:
 ```bash
-PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
+PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/python2.7/site-packages/libpyopentrep \
  python -c "import libpyopentrep; \
  openTrepLibrary = libpyopentrep.OpenTrepSearcher(); \
  initOK = openTrepLibrary.init ('/var/www/webapps/opentrep/trep/traveldb', 'mysql', 'db=trep_trep user=trep password=trep', 0, 'pyopentrep.log'); \
@@ -345,6 +355,7 @@ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BAS
 ```bash
 $ export TREP_LIB=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}
 ```
+
 # Optional:
 ```bash
 $ export TREP_TRAVELDB=/tmp/opentrep/traveldb
