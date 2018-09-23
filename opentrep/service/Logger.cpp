@@ -1,11 +1,10 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
-#include <assert.h>
 // STL
+#include <cassert>
 #include <iostream>
-// Opentrep Logger
+// OpenTREP Logger
 #include <opentrep/factory/FacSupervisor.hpp>
 #include <opentrep/service/Logger.hpp>
 

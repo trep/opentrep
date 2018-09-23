@@ -4,12 +4,13 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// C
-#include <assert.h>
 // STL
+#include <cassert>
 #include <sstream>
 #include <string>
-// OPENTREP
+// Boost Date-Time
+#include <boost/date_time.hpp>
+// OpenTREP
 #include <opentrep/OPENTREP_Types.hpp>
 
 // /////////////// LOG MACROS /////////////////
@@ -39,55 +40,85 @@
 
 namespace OPENTREP {
 
-  /** Class holding the stream for logs. 
-      <br>Note that the error logs are seen as standard output logs, 
-      but with a higher level of visibility. */
+  /**
+   * Class managing the stream for logs. 
+   *
+   * Note that the error logs are seen as standard output logs, 
+   * but with a higher level of visibility.
+   */
   class Logger {
     // Friend classes
     friend class FacSupervisor;
   public:
     
-    /** Main log entry. */
+    /**
+     * Main log entry.
+     */
     template <typename T>
     void log (const LOG::EN_LogLevel iLevel, const int iLineNumber,
               const std::string& iFileName, const T& iToBeLogged) {
       if (iLevel <= _level) {
         assert (_logStream != NULL);
-        *_logStream << iFileName << ":" << iLineNumber
-                    << ": " << iToBeLogged << std::endl;
+        
+        // Get the current time in UTC Timezone
+	boost::posix_time::ptime lTimeUTC =
+          boost::posix_time::second_clock::universal_time();
+
+        // Add some context and write down the log element
+        *_logStream << "[" << lTimeUTC << "][" << iFileName << "#"
+                    << iLineNumber << "]:" << iToBeLogged << std::endl;
       }
     }
     
-    /** Get the log level. */
+    /**
+     * Get the log level.
+     */
     LOG::EN_LogLevel getLogLevel();
     
-    /** get the log stream. */
+    /**
+     * Get the log stream.
+     */
     std::ostream& getLogStream();
     
-    /** Set the logger parameters (level and stream). */
+    /**
+     * Set the logger parameters (level and stream).
+     */
     void setLogParameters (const LOG::EN_LogLevel iLogLevel, 
                            std::ostream& ioLogStream);
     
-    /** Returns a current Logger instance.*/
+    /**
+     * Returns a current Logger instance.
+     */
     static Logger& instance();
     
   private:
-    /** Default constructors are private so that only the required 
-        constructor can be used. */
+    /**
+     * Default constructors are private so that only the required 
+     * constructor can be used.
+     */
     Logger ();
     Logger (const Logger&);
     Logger (const LOG::EN_LogLevel iLevel, std::ostream& ioLogStream);
-    /** Destructor. */
+
+    /**
+     * Destructor.
+     */
     ~Logger ();
     
   private:
-    /** Log level. */
+    /**
+     * Log level.
+     */
     LOG::EN_LogLevel _level;
     
-    /** Stream dedicated to the logs. */
+    /**
+     * Stream dedicated to the logs.
+     */
     std::ostream* _logStream;
     
-    /** Instance object.*/
+    /**
+     * Singleton/Instance object.
+     */
     static Logger* _instance;
   };
   
