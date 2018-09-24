@@ -432,8 +432,8 @@ if __name__ == '__main__':
         deploymentNumber, searchString, nbOfDraws = handle_opt()
 
     # Initialise the OpenTrep C++ library
-    import libpyopentrep
-    openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+    import pyopentrep
+    openTrepLibrary = pyopentrep.OpenTrepSearcher()
     initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
                                    deploymentNumber, 'pyopentrep.log')
     if initOK == False:
