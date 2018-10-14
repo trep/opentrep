@@ -263,8 +263,9 @@ int main (int argc, char* argv[]) {
   logOutputFile.clear();
 
   //
-  std::cout << "Creating the Xapian index/database may take a few minutes "
-            << "on some architectures (and a few seconds on fastest ones)..."
+  std::cout << "Parsing and indexing the OpenTravelData POR data file (into "
+            << "Xapian and/or SQL databases) may take a few tens of minutes "
+            << "on some architectures (and a few minutes on fastest ones)..."
             << std::endl;
     
   // Initialise the context
