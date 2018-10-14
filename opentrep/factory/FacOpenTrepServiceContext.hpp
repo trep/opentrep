@@ -64,6 +64,8 @@ namespace OPENTREP {
      * @param const SQLDBConnectionString_T& SQL DB connection string.
      * @param const DeploymentNumber_T& Deployment number.
      * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
+     * @param const DeploymentNumber_T& Deployment number/version.
+     * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
      * @return OPENTREP_ServiceContext& The newly created object.
      */
     OPENTREP_ServiceContext& create (const PORFilePath_T&,
@@ -71,7 +73,9 @@ namespace OPENTREP {
                                      const DBType&,
                                      const SQLDBConnectionString_T&,
                                      const DeploymentNumber_T&,
-                                     const shouldIndexNonIATAPOR_T&);
+                                     const shouldIndexNonIATAPOR_T&,
+                                     const shouldIndexPORInXapian_T&,
+                                     const shouldAddPORInSQLDB_T&);
 
 
   protected:

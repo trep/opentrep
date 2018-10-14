@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <locale>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
@@ -92,5 +93,28 @@ namespace OPENTREP {
                                                const std::string& iSQLDBConnStr,
                                                const DeploymentNumber_T&);
   
+  /**
+   * Class implementing the separators for display of integers (rather than
+   * relying on the locale).
+   * See command/IndexBuilder::buildSearchIndex() for an example.
+   */
+  class NumSep : public std::numpunct<char> {
+  protected:
+    /**
+     * Separator character for the thousands
+     */
+    virtual char do_thousands_sep() const {
+      return ',';
+    }
+    
+    /**
+     * Group numbers together
+     */
+    virtual std::string do_grouping() const {
+      return "\03";
+    }
+  };
+
+
 }
 #endif // __OPENTREP_BAS_UTILITIES_HPP

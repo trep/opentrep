@@ -205,6 +205,7 @@ namespace OPENTREP {
       
       // Progress status
       if (oNbOfEntries % 1000 == 0) {
+        std::cout.imbue( std::locale (std::locale::classic(), new NumSep));
         std::cout << "Number of actually parsed records: " << oNbOfEntries
                   << ", out of " << oNbOfEntriesInPORFile
                   << " records in the POR data file so far" << std::endl;
@@ -355,21 +356,24 @@ namespace OPENTREP {
       lXapianDatabase_ptr->close();
     }
 
-    /**
-     *            7. Index the SQL database
-     */
-    if (!(iSQLDBType == DBType::NODB)) {
-      assert (lSociSession_ptr != NULL);
-      DBManager::createSQLDBIndexes (*lSociSession_ptr);
-    }
+
+    if (iShouldAddPORInSQLDB) {
+      /**
+       *            7. Index the SQL database
+       */
+      if (!(iSQLDBType == DBType::NODB)) {
+        assert (lSociSession_ptr != NULL);
+        DBManager::createSQLDBIndexes (*lSociSession_ptr);
+      }
     
-    /**
-     *            8. Close the connection to the SQL database
-     */
-    if (!(iSQLDBType == DBType::NODB)) {
-      assert (lSociSession_ptr != NULL);
-      DBManager::terminateSQLDBSession (iSQLDBType, iSQLDBConnStr,
-                                        *lSociSession_ptr);
+      /**
+       *            8. Close the connection to the SQL database
+       */
+      if (!(iSQLDBType == DBType::NODB)) {
+        assert (lSociSession_ptr != NULL);
+        DBManager::terminateSQLDBSession (iSQLDBType, iSQLDBConnStr,
+                                          *lSociSession_ptr);
+      }
     }
     
     return oNbOfEntries;
