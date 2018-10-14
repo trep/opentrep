@@ -92,6 +92,8 @@ int readConfiguration (int argc, char* argv[],
                        std::string& ioSQLDBConnectionString,
                        unsigned short& ioDeploymentNumber,
                        bool& ioIncludeNonIATAPOR,
+                       bool& ioIndexPORInXapian,
+                       bool& ioAddPORInDB,
                        std::string& ioLogFilename) {
 
   // Declare a group of options that will be allowed only on command line
@@ -115,7 +117,7 @@ int readConfiguration (int argc, char* argv[],
      boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
      "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
     ("sqldbconx,s",
-     boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
+     boost::program_options::value< std::string >(&ioSQLDBConnectionString),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("deploymentnb,m",
      boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
@@ -123,11 +125,17 @@ int readConfiguration (int argc, char* argv[],
     ("noniata,n",
      boost::program_options::value<bool>(&ioIncludeNonIATAPOR)->default_value(OPENTREP::DEFAULT_OPENTREP_INCLUDE_NONIATA_POR),
      "Whether or not to include POR not referenced by IATA (0 = only IATA-referenced POR, 1 = all POR are included)")
+    ("xapianindex,x",
+     boost::program_options::value<bool>(&ioIndexPORInXapian)->default_value(OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
+     "Whether or not to index the POR in Xapian (0 = do not touch the Xapian index, 1 = re-index all the POR in Xapian)")
+    ("dbadd,a",
+     boost::program_options::value<bool>(&ioAddPORInDB)->default_value(OPENTREP::DEFAULT_OPENTREP_ADD_IN_DB),
+     "Whether or not to add and index the POR in the SQL-based database (0 = do not touch the SQL-based database, 1 = add and re-index all the POR in the SQL-based database)")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
     ;
-
+  
   // Hidden options, will be allowed both on command line and
   // in config file, but will not be shown to the user.
   boost::program_options::options_description hidden ("Hidden options");
@@ -184,27 +192,54 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
-    std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
+    std::cout << "Xapian index/database filepath is: " << ioXapianDBFilepath
               << ioDeploymentNumber << std::endl;
   }
 
+  // Parse the SQL database type, if any is given
   if (vm.count ("sqldbtype")) {
     ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
+    std::cout << "SQL database type is: " << ioSQLDBTypeString
+              << std::endl;
   }
 
+  // Derive the detault connection string depending on the SQL database type
+  const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+  if (lDBType == OPENTREP::DBType::NODB) {
+    ioSQLDBConnectionString = "";
+    
+  } else if (lDBType == OPENTREP::DBType::SQLITE3) {
+    ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
+
+  } else if (lDBType == OPENTREP::DBType::MYSQL) {
+    ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_MYSQL_CONN_STRING;
+  }
+
+  // Set the SQL database connection string, if any is given
   if (vm.count ("sqldbconx")) {
-    ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
-    const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+    ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();    
+  }
+
+  // Reporting of the SQL database connection string
+  if (lDBType == OPENTREP::DBType::SQLITE3
+      || lDBType == OPENTREP::DBType::MYSQL) {
     const std::string& lSQLDBConnString =
       OPENTREP::parseAndDisplayConnectionString (lDBType,
                                                  ioSQLDBConnectionString,
                                                  ioDeploymentNumber);
+    //
     std::cout << "SQL database connection string is: " << lSQLDBConnString
               << std::endl;
   }
 
   std::cout << "Are non-IATA-referenced POR included? "
             << ioIncludeNonIATAPOR << std::endl;
+  
+  std::cout << "Index the POR in Xapian? "
+            << ioIndexPORInXapian << std::endl;
+  
+  std::cout << "Add and re-index the POR in the SQL-based database? "
+            << ioAddPORInDB << std::endl;
   
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
@@ -518,18 +553,17 @@ int main (int argc, char* argv[]) {
   OPENTREP::shouldIndexNonIATAPOR_T lIncludeNonIATAPOR;
 
   // Whether or not to index the POR in Xapian
-  OPENTREP::shouldIndexPORInXapian_T
-    lShouldIndexPORInXapian (OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN);
+  OPENTREP::shouldIndexPORInXapian_T lShouldIndexPORInXapian;
   
   // Whether or not to insert the POR in the SQL database
-  OPENTREP::shouldAddPORInSQLDB_T
-    lShouldAddPORInSQLDB (OPENTREP::DEFAULT_OPENTREP_INDEX_IN_XAPIAN);
+  OPENTREP::shouldAddPORInSQLDB_T lShouldAddPORInSQLDB;
 
   // Call the command-line option parser
   const int lOptionParserStatus =
     readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
                        lSQLDBTypeStr, lSQLDBConnectionStr, lDeploymentNumber,
-                       lIncludeNonIATAPOR, lLogFilename);
+                       lIncludeNonIATAPOR, lShouldIndexPORInXapian,
+                       lShouldAddPORInSQLDB, lLogFilename);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -550,7 +584,9 @@ int main (int argc, char* argv[]) {
                                               lXapianDBName,
                                               lDBType, lSQLDBConnStr,
                                               lDeploymentNumber,
-                                              lIncludeNonIATAPOR);
+                                              lIncludeNonIATAPOR,
+                                              lShouldIndexPORInXapian,
+                                              lShouldAddPORInSQLDB);
 
   // DEBUG
   OPENTREP_LOG_DEBUG ("====================================================");
@@ -680,10 +716,10 @@ int main (int argc, char* argv[]) {
                 << std::endl;
       std::cout << "POR file-path: " << "\t\t\t\t\t" << lPORFilepathStr
                 << std::endl;
-      std::cout << "SQL database type: " << "\t\t\t\t" << lDBType.describe()
-                << std::endl;
       std::cout << "Xapian index/database file-path: " << "\t\t"
                 << lXapianDBFP << std::endl;
+      std::cout << "SQL database type: " << "\t\t\t\t" << lDBType.describe()
+                << std::endl;
       std::cout << "SQL database connection string: " << "\t\t" << lSQLConnStr
                 << std::endl;
       std::cout << "Deployment number/version: " << "\t\t\t"
@@ -746,12 +782,25 @@ int main (int argc, char* argv[]) {
       // ////////////////////////////// List Number /////////////////////////
     case Command_T::LIST_NB: {
       // Call the underlying OpenTREP service
-      const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.getNbOfPORFromDB();
+      if (lDBType == OPENTREP::DBType::NODB) {
+        const OPENTREP::NbOfDBEntries_T nbOfEntries =
+          opentrepService.getIndexSize();
 
-      //
-      std::cout << nbOfMatches << " (geographical) location(s) have been found."
-                << std::endl;
+        // Reporting
+        std::cout << nbOfEntries
+                  << " POR (points of reference) have been found in the Xapian "
+                  << "index. Type 'info' to know where that Xapian index is "
+                  "located." << std::endl;
+
+      } else {
+        const OPENTREP::NbOfDBEntries_T nbOfEntries =
+          opentrepService.getNbOfPORFromDB();
+
+        // Reporting
+        std::cout << nbOfEntries
+                  << " POR (points of reference) have been found in the "
+                  << lDBType.describe() << " database" << std::endl;
+      }
 
       break;
     }

@@ -75,7 +75,17 @@ const OPENTREP::DeploymentNumber_T X_DEPLOYMENT_NUMBER (0);
 /**
  * Do not include non-IATA-referenced POR.
  */
-const bool K_ALL_POR = false;
+const OPENTREP::shouldIndexNonIATAPOR_T K_ALL_POR = false;
+
+/**
+ * Index the POR in Xapian.
+ */
+const OPENTREP::shouldIndexPORInXapian_T K_XAPIAN_IDX = true;
+
+/**
+ * Do not add the POR in the SQL database.
+ */
+const OPENTREP::shouldAddPORInSQLDB_T K_SQLDB_ADD = false;
 
 
 // /////////////// Main: Unit Test Suite //////////////
@@ -107,11 +117,15 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
   const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (X_SQL_DB_STR);
   const OPENTREP::DeploymentNumber_T lDeploymentNumber (X_DEPLOYMENT_NUMBER);
   const OPENTREP::shouldIndexNonIATAPOR_T lShouldIndexNonIATAPOR (K_ALL_POR);
+  const OPENTREP::shouldIndexPORInXapian_T lShouldIndexPORInXapian(K_XAPIAN_IDX);
+  const OPENTREP::shouldAddPORInSQLDB_T lShouldAddPORInSQLDB (K_SQLDB_ADD);
   OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilePath,
                                               lTravelDBFilePath,
                                               lDBType, lSQLDBConnStr,
                                               lDeploymentNumber,
-                                              lShouldIndexNonIATAPOR);
+                                              lShouldIndexNonIATAPOR,
+                                              lShouldIndexPORInXapian,
+                                              lShouldAddPORInSQLDB);
   
   // Query the Xapian database (index)
   OPENTREP::WordList_T lNonMatchedWordList;

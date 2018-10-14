@@ -123,7 +123,9 @@ namespace OPENTREP {
                            const DBType& iSQLDBType,
                            const SQLDBConnectionString_T& iSQLDBConnStr,
                            const DeploymentNumber_T& iDeploymentNumber,
-                           const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR)
+                           const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR,
+                           const shouldIndexPORInXapian_T& iShouldIdxPORInXapian,
+                           const shouldAddPORInSQLDB_T& iShouldAddPORInSQLDB)
     : _world (NULL), _porFilePath (iPORFilePath),
       _deploymentNumber (iDeploymentNumber),
       _travelDBFilePathPrefix (iTravelDBFilePath),
@@ -131,8 +133,8 @@ namespace OPENTREP {
       _sqlDBConnectionStringWPfxDBName (iSQLDBConnStr),
       _sqlDBConnectionString (iSQLDBConnStr),
       _shouldIndexNonIATAPOR (iShouldIndexNonIATAPOR),
-      _shouldIndexPORInXapian (DEFAULT_OPENTREP_INDEX_IN_XAPIAN),
-      _shouldAddPORInSQLDB (DEFAULT_OPENTREP_ADD_IN_DB) {
+      _shouldIndexPORInXapian (iShouldIdxPORInXapian),
+      _shouldAddPORInSQLDB (iShouldAddPORInSQLDB) {
     updateXapianAndSQLDBConnectionWithDeploymentNumber();
   }
 
@@ -161,8 +163,8 @@ namespace OPENTREP {
          << "); Connection string with actual DB name: "
          << _sqlDBConnectionString
          << "; should include non-IATA POR: " << _shouldIndexNonIATAPOR
-         << "; should index POR in Xapian: " << _shouldIndexNonIATAPOR
-         << "; should insert POR into the SQL DB: " << _shouldIndexNonIATAPOR
+         << "; should index POR in Xapian: " << _shouldIndexPORInXapian
+         << "; should insert POR into the SQL DB: " << _shouldAddPORInSQLDB
          << std::endl;
     return oStr.str();
   }

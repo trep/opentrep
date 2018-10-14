@@ -250,11 +250,15 @@ namespace OPENTREP {
      * @param const SQLDBConnectionString_T& SQL DB connection string.
      * @param const DeploymentNumber_T& Deployment number/version.
      * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
+     * @param const shouldIndexPORInXapian_T& Whether to index POR in Xapian.
+     * @param const shouldAddPORInSQLDB_T& Whether to add POR in SQL database.
      */
     OPENTREP_Service (std::ostream& ioLogStream, const PORFilePath_T&,
                       const TravelDBFilePath_T&, const DBType&,
                       const SQLDBConnectionString_T&, const DeploymentNumber_T&,
-                      const shouldIndexNonIATAPOR_T&);
+                      const shouldIndexNonIATAPOR_T&,
+                      const shouldIndexPORInXapian_T&,
+                      const shouldAddPORInSQLDB_T&);
 
     /** 
      * Destructor. 
@@ -297,11 +301,14 @@ namespace OPENTREP {
      * @param const SQLDBConnectionString_T& SQL DB connection string.
      * @param const DeploymentNumber_T& Deployment number/version.
      * @param const shouldIndexNonIATAPOR_T& Whether to include non-IATA POR.
+     * @param const shouldIndexPORInXapian_T& Whether to index POR in Xapian.
+     * @param const shouldAddPORInSQLDB_T& Whether to add POR in SQL database.
      */
     void init (std::ostream& ioLogStream, const PORFilePath_T&,
                const TravelDBFilePath_T&,
                const DBType&, const SQLDBConnectionString_T&,
-               const DeploymentNumber_T&, const shouldIndexNonIATAPOR_T&);
+               const DeploymentNumber_T&, const shouldIndexNonIATAPOR_T&,
+               const shouldIndexPORInXapian_T&, const shouldAddPORInSQLDB_T&);
 
     /**
      *  Finalise. 
