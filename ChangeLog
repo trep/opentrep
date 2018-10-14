@@ -1,15 +1,26 @@
-  * Sun Jun 28 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.6
-  - The Python libraries are now installed into standard directory
+	* Sun Oct 14 2018 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.7.0
+	- Support of several deployment stages (allowing staging new versions
+	before activating them in production when QA-cleared)
+	- Full support of MacOS
+	- Full revamping of the options for the
+	``opentrep-{indexer,dbmgr,searcher}`` command-line programs,
+	supporting server-side deployments
+	- Full support of the new OpenTravelData data files, which also
+	reference non-IATA POR (points of reference). Hence, ICAO-
+	and UN/LOCODE-referenced POR may now be indexed
+
+	* Sun Jun 28 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.6
+	- The Python libraries are now installed into standard directory
 
 	* Sun Apr 19 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.5
 	- The POR reference data file has been renamed, from ORI
 	to OPTD (standing for Open Travel Data, i.e., the name of the
 	project maintaining that file). The new location is now
-	http://bit.ly/1FXmQdl	and the file is named optd_por_public.csv.
+	http://bit.ly/1FXmQdl and the file is named optd_por_public.csv.
 	- When only (IATA, ICAO) codes are used in the query string,
 	the POR are retrieved from the underlying database, when existing
 	(and from the classical free-text search when no database is
-  available).
+	available).
 	- The US DOT World Area Code (WAC) has been added to the POR
 	reference data file, and is now retrieved by OpenTREP.
 

@@ -86,7 +86,7 @@ $ git checkout trunk
 GitHub generates tar-balls on the fly for every tagged release:
 https://github.com/trep/opentrep/releases. For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.06.6.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.0.tar.gz
 ```
 Note that SourceForge also stores some
 [older archived tar-balls](http://sourceforge.net/project/showfiles.php?group_id=252803).

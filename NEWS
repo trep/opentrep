@@ -1,3 +1,15 @@
+* 2018-10-14:
+- Version 0.7.0
+- Support of several deployment stages (allowing staging new versions
+  before activating them in production when QA-cleared)
+- Full support of MacOS
+- Full revamping of the options for the
+  ``opentrep-{indexer,dbmgr,searcher}`` command-line programs,
+  supporting server-side deployments
+- Full support of the new OpenTravelData data files, which also
+  reference non-IATA POR (points of reference). Hence, ICAO-
+  and UN/LOCODE-referenced POR may now be indexed
+
 * 2015-06-28:
 - Version 0.6.6
 - The Python libraries are now installed into standard directory
@@ -14,7 +26,6 @@
   available).
 - The US DOT World Area Code (WAC) has been added to the POR
   reference data file, and is now retrieved by OpenTREP.
-
 
 * 2014-04-13:
 - Version 0.6.1
@@ -35,6 +46,7 @@
   and #8 (http://github.com/trep/opentrep/issues/8):
   Fixed the ORI POR data file
   (http://github.com/opentraveldata/optd/refdata/ORI).
+
 * 2014-02-01:
 - Version 0.6.0
 - Issue #1 (http://github.com/trep/opentrep/issues/1):
