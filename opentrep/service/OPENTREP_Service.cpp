@@ -34,10 +34,13 @@ namespace OPENTREP {
                     const DBType& iSQLDBType,
                     const SQLDBConnectionString_T& iSQLDBConnStr,
                     const DeploymentNumber_T& iDeploymentNumber,
-                    const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR)
+                    const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR,
+                    const shouldIndexPORInXapian_T& iShouldIndexPORInXapian,
+                    const shouldAddPORInSQLDB_T& iShouldAddPORInSQLDB)
     : _opentrepServiceContext (NULL) {
     init (ioLogStream, iPORFilepath, iTravelDBFilePath, iSQLDBType,
-          iSQLDBConnStr, iDeploymentNumber, iShouldIndexNonIATAPOR);
+          iSQLDBConnStr, iDeploymentNumber, iShouldIndexNonIATAPOR,
+          iShouldIndexPORInXapian, iShouldAddPORInSQLDB);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -122,7 +125,9 @@ namespace OPENTREP {
         const DBType& iSQLDBType,
         const SQLDBConnectionString_T& iSQLDBConnStr,
         const DeploymentNumber_T& iDeploymentNumber,
-        const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
+        const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR,
+        const shouldIndexPORInXapian_T& iShouldIndexPORInXapian,
+        const shouldAddPORInSQLDB_T& iShouldAddPORInSQLDB) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
@@ -136,7 +141,9 @@ namespace OPENTREP {
                                                     iTravelDBFilePath,
                                                     iSQLDBType, lSQLDBConnStr,
                                                     iDeploymentNumber,
-                                                    iShouldIndexNonIATAPOR);
+                                                    iShouldIndexNonIATAPOR,
+                                                    iShouldIndexPORInXapian,
+                                                    iShouldAddPORInSQLDB);
     _opentrepServiceContext = &lOPENTREP_ServiceContext;
 
     // Instanciate an empty World object
@@ -248,6 +255,16 @@ namespace OPENTREP {
     // Retrieve the SQL database type
     const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
       
+    // Sanity check: no need to perform any action when the current option
+    // is to not use any SQL database
+    if (lSQLDBType == DBType::NODB) {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The current option is to not use any SQL database. "
+                          << "Hence nothing is done at that stage. "
+                          << " - " << lOPENTREP_ServiceContext.display());
+      return oCreationSuccessful;
+    }
+      
     // Retrieve the SQL database connection string
     const SQLDBConnectionString_T& lSQLDBConnectionString =
       lOPENTREP_ServiceContext.getSQLDBConnectionString();
@@ -304,6 +321,16 @@ namespace OPENTREP {
 
     // Retrieve the SQL database type
     const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+
+    // Sanity check: no need to perform any action when the current option
+    // is to not use any SQL database
+    if (lSQLDBType == DBType::NODB) {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The current option is to not use any SQL database. "
+                          << "Hence nothing is done at that stage. "
+                          << " - " << lOPENTREP_ServiceContext.display());
+      return;
+    }
       
     // Retrieve the SQL database connection string
     const SQLDBConnectionString_T& lSQLDBConnectionString =
@@ -344,6 +371,16 @@ namespace OPENTREP {
 
     // Retrieve the SQL database type
     const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Sanity check: no need to perform any action when the current option
+    // is to not use any SQL database
+    if (lSQLDBType == DBType::NODB) {
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The current option is to not use any SQL database. "
+                          << "Hence nothing is done at that stage. "
+                          << " - " << lOPENTREP_ServiceContext.display());
+      return;
+    }
       
     // Retrieve the SQL database connection string
     const SQLDBConnectionString_T& lSQLDBConnectionString =

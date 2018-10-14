@@ -256,24 +256,24 @@ namespace OPENTREP {
                                    const std::string& iSQLDBConnStr,
                                    const DeploymentNumber_T& iDeploymentNumber) {
     std::ostringstream oStr;
-    oStr << iSQLDBConnStr;
-    const SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
 
     if (iDBType == DBType::NODB) {
       // Do nothing at this stage
+      oStr << "";
 
     } else if (iDBType == DBType::SQLITE3) {
-      oStr << iDeploymentNumber;
+      oStr << iSQLDBConnStr << iDeploymentNumber;
 
     } else if (iDBType == DBType::MYSQL) {
       // Parse the connection string
+      const SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
       const StringMap_T& lStrMap = parseMySQLConnectionString (lSQLDBConnStr);
 
       // Re-build the new connection string, taking into account the
       // deployment number/version
-      const std::string& lSQLDBConnStr =
+      const std::string& lNewSQLDBConnStr =
         displayMySQLConnectionString (lStrMap, iDeploymentNumber);
-      oStr << lSQLDBConnStr;
+      oStr << lNewSQLDBConnStr;
     }
 
     //

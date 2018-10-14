@@ -54,13 +54,17 @@ namespace OPENTREP {
           const TravelDBFilePath_T& iTravelDBFilePath, const DBType& iSQLDBType,
           const SQLDBConnectionString_T& iSQLDBConnStr,
           const DeploymentNumber_T& iDeploymentNumber,
-          const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR) {
+          const shouldIndexNonIATAPOR_T& iShouldIndexNonIATAPOR,
+          const shouldIndexPORInXapian_T& iShouldIndexPORInXapian,
+          const shouldAddPORInSQLDB_T& iShouldAddPORInSQLDB) {
     OPENTREP_ServiceContext* aOPENTREP_ServiceContext_ptr = NULL;
 
     aOPENTREP_ServiceContext_ptr =
       new OPENTREP_ServiceContext (iPORFilePath, iTravelDBFilePath, iSQLDBType,
                                    iSQLDBConnStr, iDeploymentNumber,
-                                   iShouldIndexNonIATAPOR);
+                                   iShouldIndexNonIATAPOR,
+                                   iShouldIndexPORInXapian,
+                                   iShouldAddPORInSQLDB);
     assert (aOPENTREP_ServiceContext_ptr != NULL);
 
     // The new object is added to the Service pool

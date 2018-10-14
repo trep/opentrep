@@ -73,7 +73,7 @@ namespace OPENTREP {
    * (and indexed).
    *
    * By default, and historically, only the POR, which are referenced
-   * by IATA (ie, which have a specific IATA code) are indexed (and may
+   * by IATA (ie, which have a specific IATA code), are indexed (and may
    * be searched for) in OpenTREP.
    */
   const bool DEFAULT_OPENTREP_INCLUDE_NONIATA_POR (false);
@@ -88,9 +88,9 @@ namespace OPENTREP {
   /**
    * Whether or not to add the POR, or list of POR, in the SQL database.
    *
-   * By default, insert the POR in the SQL database.
+   * By default, do not insert the POR in the SQL database.
    */
-  const bool DEFAULT_OPENTREP_ADD_IN_DB (true);
+  const bool DEFAULT_OPENTREP_ADD_IN_DB (false);
 
   /**
    * Default date-time with std::tm structure as type.
