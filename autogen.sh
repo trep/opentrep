@@ -42,7 +42,7 @@ do
 done
 
 #
-PROJECT_NAME=stdair
+PROJECT_NAME=opentrep
 PROJECT_NAME_STRING=`grep "set_project_names" CMakeLists.txt | sed -e "s/set_project_names.*(\([a-z]\+\).*).*/\1/"`
 if [ "x${PROJECT_NAME_STRING}" != "x" ]
 then
