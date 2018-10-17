@@ -518,7 +518,7 @@ endmacro (get_python)
 
 # ~~~~~~~~~~ ICU ~~~~~~~~~
 macro (get_icu)
-  cmake_policy(SET CMP0074 NEW)
+  # cmake_policy(SET CMP0074 NEW)
   unset (_required_version)
   if (${ARGC} GREATER 0)
     set (_required_version ${ARGV0})
