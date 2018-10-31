@@ -203,15 +203,28 @@ int readConfiguration (int argc, char* argv[],
               << std::endl;
   }
 
-  // Derive the detault connection string depending on the SQL database type
+  /**
+   * Derive, from the SQL database type:
+   * <ul>
+   *   <li>The detault connection string</li>
+   *   <li>Whether or not the POR should be added to that SQL database.
+   *       It is assumed that when the SQL database type is specified
+   *       (and not null), the POR should be added into it, and conversely,
+   *       when ``nodb`` is specified, the POR should not be added to any
+   *       SQL database.</li>
+   * </ul>
+   */
   const OPENTREP::DBType lDBType (ioSQLDBTypeString);
   if (lDBType == OPENTREP::DBType::NODB) {
+    ioAddPORInDB = false;
     ioSQLDBConnectionString = "";
     
   } else if (lDBType == OPENTREP::DBType::SQLITE3) {
+    ioAddPORInDB = true;
     ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
 
   } else if (lDBType == OPENTREP::DBType::MYSQL) {
+    ioAddPORInDB = true;
     ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_MYSQL_CONN_STRING;
   }
 

@@ -142,7 +142,7 @@ int readConfiguration (int argc, char* argv[],
      boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
      "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
     ("sqldbconx,s",
-     boost::program_options::value< std::string >(&ioSQLDBConnectionString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH),
+     boost::program_options::value< std::string >(&ioSQLDBConnectionString),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("deploymentnb,m",
      boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
@@ -220,13 +220,31 @@ int readConfiguration (int argc, char* argv[],
               << std::endl;
   }
 
+  // Derive the detault connection string depending on the SQL database type
+  const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+  if (lDBType == OPENTREP::DBType::NODB) {
+    ioSQLDBConnectionString = "";
+    
+  } else if (lDBType == OPENTREP::DBType::SQLITE3) {
+    ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
+
+  } else if (lDBType == OPENTREP::DBType::MYSQL) {
+    ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_MYSQL_CONN_STRING;
+  }
+
+  // Set the SQL database connection string, if any is given
   if (vm.count ("sqldbconx")) {
     ioSQLDBConnectionString = vm["sqldbconx"].as< std::string >();
-    const OPENTREP::DBType lDBType (ioSQLDBTypeString);
+  }
+
+  // Reporting of the SQL database connection string
+  if (lDBType == OPENTREP::DBType::SQLITE3
+      || lDBType == OPENTREP::DBType::MYSQL) {
     const std::string& lSQLDBConnString =
       OPENTREP::parseAndDisplayConnectionString (lDBType,
                                                  ioSQLDBConnectionString,
                                                  ioDeploymentNumber);
+    //
     std::cout << "SQL database connection string is: " << lSQLDBConnString
               << std::endl;
   }
