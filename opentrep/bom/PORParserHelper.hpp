@@ -74,6 +74,16 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed UIC code. */
+    struct storeUICCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeUICCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int iUICCode,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed Geonames ID. */
     struct storeGeonamesID : public ParserSemanticAction {
       /** Actor Constructor. */

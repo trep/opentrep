@@ -109,6 +109,13 @@ namespace OPENTREP {
       return _location.getUNLOCodeList();
     }
 
+    /**
+     * Get the list of UIC codes.
+     */
+    const UICCodeList_T& getUICCodeList() const {
+      return _location.getUICCodeList();
+    }
+
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -560,6 +567,13 @@ namespace OPENTREP {
      */
     void addUNLOCode (const std::string& iUNLOCode) {
       _location.addUNLOCode (iUNLOCode);
+    }
+
+    /**
+     * Add a UIC code to the underlying list.
+     */
+    void addUICCode (const UICCode_T& iUICCode) {
+      _location.addUICCode (iUICCode);
     }
 
     /** 
