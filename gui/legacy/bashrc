@@ -12,17 +12,9 @@ export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 alias dir='ls -laFh --color'
 alias grep='grep --color'
 
-#
-alias cddeliv='cd ~/dev/deliveries'
-alias cdopentraveldata='cd ~/dev/geo/opentraveldatagit'
-alias cdairports='cd /var/www/webapps/airports'
-alias cdmeije='cd ~/dev/meijegit/meije'
-alias cdstdairgit='cd ~/dev/sim/stdair/stdairgit'
-alias cdtvlsimgit='cd ~/dev/sim/tvlsim/tvlsimgit'
-
 # OpenTREP
 TREP_DIR=/var/www/webapps/opentrep/trep
-alias trepCMake='cmake -DCMAKE_INSTALL_PREFIX=$TREP_DIR -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF -DRUN_GCOV:BOOL=OFF ..'
+alias trepCMake='cmake3 -DCMAKE_INSTALL_PREFIX=$TREP_DIR -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF -DRUN_GCOV:BOOL=OFF ..'
 alias cdtrep='cd /opt/trep/opentrep'
 alias trepIndex='$TREP_DIR/bin/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb'
 alias trepDBMgrSL='$TREP_DIR/bin/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db'
