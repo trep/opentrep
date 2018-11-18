@@ -199,6 +199,19 @@ namespace OPENTREP {
 
     /**
      * Get the POR (point of reference), from the SQL database, corresponding
+     * to the given UIC code.
+     *
+     * @param const SQLDBConnectionString_T& Connection string to the SQL DB.
+     * @param const UICCode_T& The UIC code (key) of the POR to be retrieved.
+     * @param LocationList_T& List of (geographical) locations, if any,
+     *                        matching the given key.
+     * @return NbOfDBEntries_T Number of documents of the SQL database.
+     */
+    static NbOfDBEntries_T getPORByUICCode (soci::session&, const UICCode_T&,
+                                            LocationList_T&);
+
+    /**
+     * Get the POR (point of reference), from the SQL database, corresponding
      * to the given IATA code.
      *
      * @param const SQLDBConnectionString_T& Connection string to the SQL DB.
@@ -316,6 +329,18 @@ namespace OPENTREP {
     prepareSelectBlobOnUNLOCodeStatement (soci::session&, soci::statement&,
                                           const UNLOCode_T&,
                                           std::string& ioSerialisedPlaceStr);
+    /**
+     * Prepare (parse and put in cache) the SQL statement.
+     *
+     * @param soci::session& SOCI session handler.
+     * @param soci::statement& SOCI SQL statement handler.
+     * @param const UICCode_T& The UIC code of the place to be retrieved.
+     * @param std::string& The serialised place to be retrieved.
+     */
+    static void
+    prepareSelectBlobOnUICCodeStatement (soci::session&, soci::statement&,
+                                         const UICCode_T&,
+                                         std::string& ioSerialisedPlaceStr);
     /**
      * Prepare (parse and put in cache) the SQL statement.
      *

@@ -16,11 +16,11 @@ ENV XAPIANDB $TREP_BASE_DIR/xapiandb
 ENV DB_RUN_DIR /opt/mysql/run
 
 # House keeping
-RUN yum clean all
-RUN yum -y install epel-release
-RUN yum -y update
-RUN yum -y install initscripts
-RUN yum -y install htop less file rpmconf git-all bash-completion
+RUN yum clean all && \
+    yum -y update && \
+    yum -y install epel-release && \
+    yum -y install initscripts \
+        htop less file rpmconf git-all bash-completion
 
 # C++ development
 RUN yum -y install gcc-c++ cmake cmake3 boost-devel xapian-core-devel \
