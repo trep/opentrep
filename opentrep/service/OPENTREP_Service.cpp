@@ -773,6 +773,53 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   NbOfMatches_T OPENTREP_Service::
+  listByUICCode (const UICCode_T& iUICCode, LocationList_T& ioLocationList) {
+    NbOfMatches_T nbOfMatches = 0;
+
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the SQL database type
+    const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();
+      
+    // Retrieve the SQL database connection string
+    const SQLDBConnectionString_T& lSQLDBConnectionString =
+      lOPENTREP_ServiceContext.getSQLDBConnectionString();
+      
+    // Delegate the database look up to the dedicated command
+    BasChronometer lDBListChronometer;
+    lDBListChronometer.start();
+
+    // Connect to the SQLite3/MySQL database
+    soci::session* lSociSession_ptr =
+      DBManager::initSQLDBSession (lSQLDBType, lSQLDBConnectionString);
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+      
+    // Get the list of POR corresponding to the given UIC code
+    nbOfMatches =
+      DBManager::getPORByUICCode (lSociSession, iUICCode, ioLocationList);
+
+    // Release the SQL database connection
+    DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
+                                      lSociSession);
+
+    const double lDBListMeasure = lDBListChronometer.elapsed();
+      
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Look up in the SQL database: " << lDBListMeasure
+                        << " - " << lOPENTREP_ServiceContext.display());
+
+    //
+    return nbOfMatches;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  NbOfMatches_T OPENTREP_Service::
   listByGeonameID (const GeonamesID_T& iGeonameID,
                    LocationList_T& ioLocationList) {
     NbOfMatches_T nbOfMatches = 0;

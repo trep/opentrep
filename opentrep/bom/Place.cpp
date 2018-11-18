@@ -528,9 +528,9 @@ namespace OPENTREP {
     }
 
     // Add the UN/LOCODE codes
-    const UNLOCodeList_T& lUNCodeList = _location.getUNLOCodeList();
-    for (UNLOCodeList_T::const_iterator itUNLOCode = lUNCodeList.begin();
-         itUNLOCode != lUNCodeList.end(); ++itUNLOCode) {
+    const UNLOCodeList_T& lUNLOCodeList = _location.getUNLOCodeList();
+    for (UNLOCodeList_T::const_iterator itUNLOCode = lUNLOCodeList.begin();
+         itUNLOCode != lUNLOCodeList.end(); ++itUNLOCode) {
       const UNLOCode_T& lUNLOCode = *itUNLOCode;
       if (lUNLOCode.empty() == false) {
         lWeightedTermSet.insert (lUNLOCode);
@@ -539,6 +539,24 @@ namespace OPENTREP {
         // Add the (UN/LOCODE code, feature name) to the Xapian index, where the
         // feature name is derived from the feature code.
         addNameToXapianSets (lPageRank, lUNLOCode, lFeatureCode);
+      }
+    }
+
+    // Add the UIC codes
+    const UICCodeList_T& lUICCodeList = _location.getUICCodeList();
+    for (UICCodeList_T::const_iterator itUICCode = lUICCodeList.begin();
+         itUICCode != lUICCodeList.end(); ++itUICCode) {
+      const UICCode_T& lUICCode = *itUICCode;
+      if (lUICCode != 0) {
+        std::stringstream oStr;
+        oStr << lUICCode;
+        const std::string lUICCodeStr = oStr.str();
+        lWeightedTermSet.insert (lUICCodeStr);
+        _spellingSet.insert (lUICCodeStr);
+
+        // Add the (UIC code, feature name) to the Xapian index, where the
+        // feature name is derived from the feature code.
+        addNameToXapianSets (lPageRank, lUICCodeStr, lFeatureCode);
       }
     }
 

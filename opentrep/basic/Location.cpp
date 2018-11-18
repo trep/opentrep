@@ -17,6 +17,7 @@ namespace OPENTREP {
   Location::Location() :
     _key (IATACode_T (""), IATAType::LAST_VALUE, 0),
     _icaoCode (ICAOCode_T ("")), _faaCode (FAACode_T ("")),
+    _unLOCodeList(), _uicCodeList(),
     _commonName (CommonName_T ("NotAvailable")),
     _asciiName (ASCIIName_T ("NotAvailable")),
     _altNameShortListString (AltNameShortListString_T ("NotAvailable")),
@@ -56,6 +57,7 @@ namespace OPENTREP {
     _key (iLocation._key),
     _icaoCode (iLocation._icaoCode), _faaCode (iLocation._faaCode),
     _unLOCodeList (iLocation._unLOCodeList),
+    _uicCodeList (iLocation._uicCodeList),
     _commonName (iLocation._commonName), _asciiName (iLocation._asciiName),
     _altNameShortListString (iLocation._altNameShortListString),
     _tvlPORListString (iLocation._tvlPORListString),
@@ -213,6 +215,7 @@ namespace OPENTREP {
          << ", " << _commonName << ", " << _asciiName
          << ", " << _icaoCode << ", " << _faaCode
          << ", " << describeUNLOCodeList()
+         << ", " << describeUICCodeList()
          << ", " << _envelopeID
          << ", " << _dateFrom << ", " << _dateEnd << ", " << _comment
          << ", " << describeCityDetailsList()
@@ -321,6 +324,22 @@ namespace OPENTREP {
       }
       const UNLOCode_T& lUNLOCode = *itUNLOCode;
       oStr << lUNLOCode;
+    }
+
+    return oStr.str();
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string Location::describeUICCodeList() const {
+    std::ostringstream oStr;
+    unsigned short idx = 0;
+    for (UICCodeList_T::const_iterator itUICCode = _uicCodeList.begin();
+         itUICCode != _uicCodeList.end(); ++itUICCode, ++idx) {
+      if (idx != 0) {
+        oStr << ",";
+      }
+      const UICCode_T& lUICCode = *itUICCode;
+      oStr << lUICCode;
     }
 
     return oStr.str();

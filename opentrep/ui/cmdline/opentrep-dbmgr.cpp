@@ -66,6 +66,7 @@ struct Command_T {
     LIST_BY_ICAO,
     LIST_BY_FAA,
     LIST_BY_UNLOCODE,
+    LIST_BY_UICCODE,
     LIST_BY_GEONAMEID,
     LIST_NB,
     LIST_ALL,
@@ -290,6 +291,7 @@ void initReadline (swift::SReadline& ioInputReader) {
   Completers.push_back ("list_by_icao %icao_code");
   Completers.push_back ("list_by_faa %faa_code");
   Completers.push_back ("list_by_unlocode %unlocode_code");
+  Completers.push_back ("list_by_uiccode %uic_code");
   Completers.push_back ("list_by_geonameid %geoname_id");
   Completers.push_back ("list_nb");
   Completers.push_back ("list_all");
@@ -357,6 +359,9 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "list_by_unlocode") {
       oCommandType = Command_T::LIST_BY_UNLOCODE;
+
+    } else if (lCommand == "list_by_uiccode") {
+      oCommandType = Command_T::LIST_BY_UICCODE;
 
     } else if (lCommand == "list_by_geonameid") {
       oCommandType = Command_T::LIST_BY_GEONAMEID;
@@ -515,6 +520,20 @@ TokenList_T extractTokenListForUNLOCode (const TokenList_T& iTokenList) {
    *   unlocode_code:  word ((alpha|digit){5})
    */
   const std::string lRegEx ("^(([[:alpha:]]|[[:digit:]]){5})$");
+
+  //
+  const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
+  return oTokenList;
+}    
+
+// /////////////////////////////////////////////////////////
+TokenList_T extractTokenListForUICCode (const TokenList_T& iTokenList) {
+  /**
+   * Expected format:
+   *   line:      uic_code
+   *   uic_code:  number (digit{1,11})
+   */
+  const std::string lRegEx ("^([[:digit:]]{1,11})$");
 
   //
   const TokenList_T& oTokenList = extractTokenList (iTokenList, lRegEx);
@@ -709,6 +728,9 @@ int main (int argc, char* argv[]) {
       std::cout << " list_by_unlocode" << "\t\t\t"
                 << "List all the entries for a given UN/LOCODE code"
                 << std::endl;
+      std::cout << " list_by_uiccode" << "\t\t\t"
+                << "List all the entries for a given UIC code"
+                << std::endl;
       std::cout << " list_by_geonameid" << "\t\t"
                 << "List all the entries for a given Geoname ID"
                 << std::endl;
@@ -772,6 +794,7 @@ int main (int argc, char* argv[]) {
       std::cout << " list_by_icao lfmn" << std::endl;
       std::cout << " list_by_faa jfk" << std::endl;
       std::cout << " list_by_unlocode deham" << std::endl;
+      std::cout << " list_by_uiccode 87775007" << std::endl;
       std::cout << " list_by_geonameid 6299418" << std::endl;
       std::cout << std::endl;
       std::cout << "    --------    " << std::endl;
@@ -1005,6 +1028,57 @@ int main (int argc, char* argv[]) {
       break;
     }
 
+      // //////////////////////// List by UIC code //////////////////////
+    case Command_T::LIST_BY_UICCODE: {
+      //
+      TokenList_T lTokenList = extractTokenListForUICCode(lTokenListByReadline);
+
+      // Parse the parameters given by the user, giving default values
+      // in case the user does not specify some (or all) of them
+      std::string lUICCodeStr ("87775007");
+      parsePlaceKey (lTokenList, lUICCodeStr);
+
+      // Convert the string into an integer
+      OPENTREP::UICCode_T lUICCode;
+
+      try {
+
+        lUICCode = boost::lexical_cast<OPENTREP::UICCode_T> (lUICCodeStr);
+
+      } catch (boost::bad_lexical_cast& eCast) {
+        lUICCode = 87775007;
+        std::cerr << "The UIC code ('" << lUICCodeStr
+                  << "') cannot be understood. The default value ("
+                  << lUICCode << ") is kept." << std::endl;
+      }
+
+      // Call the underlying OpenTREP service
+      OPENTREP::LocationList_T lLocationList;
+      const OPENTREP::NbOfMatches_T nbOfMatches =
+        opentrepService.listByUICCode (lUICCode, lLocationList);
+
+      //
+      std::cout << nbOfMatches << " (geographical) location(s) have been found "
+                << "matching the UIC code ('" << lUICCodeStr << "')."
+                << std::endl;
+      
+      if (nbOfMatches != 0) {
+        OPENTREP::NbOfMatches_T idx = 1;
+        for (OPENTREP::LocationList_T::const_iterator itLocation =
+               lLocationList.begin();
+             itLocation != lLocationList.end(); ++itLocation, ++idx) {
+          const OPENTREP::Location& lLocation = *itLocation;
+          std::cout << " [" << idx << "]: " << lLocation << std::endl;
+        }
+
+      } else {
+        std::cout << "List of unmatched words:" << std::endl;
+        std::cout << " [" << 1 << "]: " << lUICCodeStr << std::endl;
+      }
+
+      break;
+    }
+
       // ////////////////////////// List by Geoname ID ////////////////////////
     case Command_T::LIST_BY_GEONAMEID: {
       //
@@ -1016,7 +1090,7 @@ int main (int argc, char* argv[]) {
       std::string lGeonameIDStr ("6299418");
       parsePlaceKey (lTokenList, lGeonameIDStr);
 
-      // Call the underlying OpenTREP service
+      // Convert the string into an integer
       OPENTREP::GeonamesID_T lGeonameID;
 
       try {
@@ -1030,6 +1104,7 @@ int main (int argc, char* argv[]) {
                   << lGeonameID << ") is kept." << std::endl;
       }
 
+      // Call the underlying OpenTREP service
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
         opentrepService.listByGeonameID (lGeonameID, lLocationList);
