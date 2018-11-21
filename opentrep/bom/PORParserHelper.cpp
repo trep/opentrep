@@ -104,6 +104,21 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeUICCode::storeUICCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeUICCode::operator() (unsigned int iUICCode,
+                                   bsq::unused_type, bsq::unused_type) const {
+
+      _location.addUICCode (iUICCode);
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("UIC codes: " << _location.describeUICCodeList());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeGeonamesID::storeGeonamesID (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -334,7 +349,7 @@ namespace OPENTREP {
     
     // //////////////////////////////////////////////////////////////////
     void storeDateEnd::operator() (bsq::unused_type,
-                                     bsq::unused_type, bsq::unused_type) const {
+                                   bsq::unused_type, bsq::unused_type) const {
       const OPENTREP::Date_T& lDateEnd = _location.calculateDate();
       _location.setDateEnd (lDateEnd);
 
@@ -1057,6 +1072,7 @@ namespace OPENTREP {
        -- wac_name          : The US DOT world area name (of the country/state)
        -- ccy_code          : Currency code (of the country)
        -- unlc_list         : List of UN/LOCODE codes. varchar(100)
+       -- uic_list          : List of UIC codes. varchar(100)
        --
        -- Continents:
        -- -----------
@@ -1069,9 +1085,11 @@ namespace OPENTREP {
        -- AN Antarctica      6255152
        --
        -- Samples:
-       -- CDG^LFPG^^Y^6269554^^Paris - Charles-de-Gaulle^Paris - Charles-de-Gaulle^49.012779^2.55^S^AIRP^0.650357283214^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^95^Département du Val-d'Oise^Departement du Val-d'Oise^^^0^119^106^Europe/Paris^1.0^2.0^1.0^2008-07-09^PAR^Paris^Paris^^A^http://en.wikipedia.org/wiki/Paris-Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|^427^France
-       -- PAR^ZZZZ^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^1.0^^^^FR^^France^Europe^A8^Île-de-France^Ile-de-France^75^Paris^Paris^751^75056^2138551^^42^Europe/Paris^1.0^2.0^1.0^2012-08-19^PAR^Paris^Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XEX,XGB,XHP,XJY,XPG,XTT^^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=fr|Paris|p^427^France
-       -- HDQ^ZZZZ^^N^0^^Headquarters ZZ^Headquarters ZZ^^^X^XXXX^^^^^ZZ^^Not relevant/available^Not relevant/available^^^^^^^^^^^^^^^^-1^HDQ^Headquarters ZZ^Headquarters ZZ^^^O^^^^
+       -- CDG^LFPG^^Y^6269554^^Paris Charles de Gaulle Airport^Paris Charles de Gaulle Airport^49.01278^2.55^S^AIRP^0.4212379291256919^^^^FR^^France^Europe^11^Île-de-France^Ile-de-France^95^Département du Val-d’Oise^Departement du Val-d'Oise^952^95527^0^119^106^Europe/Paris^1.0^2.0^1.0^2018-04-05^PAR^Paris^PAR|2988507|Paris|Paris^^IDF^A^http://en.wikipedia.org/wiki/Charles_de_Gaulle_Airport^es|París - Charles de Gaulle|p=|Roissy Charles de Gaulle|^427^France^FRCDG|^
+       -- PAR^^^Y^2988507^^Paris^Paris^48.85341^2.3488^P^PPLC^0.6748395156936545^^^^FR^^France^Europe^11^Île-de-France^Ile-de-France^75^Paris^Paris^^^2138551^^42^Europe/Paris^1.0^2.0^1.0^2018-11-06^PAR^Paris^PAR|2988507|Paris|Paris^BVA,CDG,JDP,JPU,LBG,ORY,POX,TNF,VIY,XCR,XED,XEX,XGB,XHP,XJY,XPG,XTT^IDF^C^http://en.wikipedia.org/wiki/Paris^la|Lutetia Parisorum|=fr|Lutece|h=fr|Ville-Lumière|c=eo|Parizo|=es|París|ps=de|Paris|=en|Paris|p=af|Parys|=als|Paris|=fr|Paris|p^427^France^FRPAR|^
+       -- HDQ^^^Y^2637052^^Stansted Mountfitchet^Stansted Mountfitchet^51.9^0.2^P^PPL^^^^^GB^^United Kingdom^Europe^ENG^England^England^E4^Essex^Essex^22UQ^22UQ046^5429^^83^Europe/London^0.0^1.0^0.0^2018-07-03^HDQ^Stansted Mountfitchet^HDQ|2637052|Stansted Mountfitchet|Stansted Mountfitchet^HDQ^ENG^O^http://en.wikipedia.org/wiki/Stansted_Mountfitchet^|Stansted|=en|Stansted Mountfitchet|p=en|Headquarters|=|Stansted Mountfitchet|^493^United Kingdom^GBP^^
+       -- ^LFLG^^Y^6694498^^Grenoble-Le Versoud^Grenoble-Le Versoud^45.219^5.85^S^AIRF^^^^^FR^^France^Europe^84^Auvergne-Rhône-Alpes^Auvergne-Rhone-Alpes^38^Département de l'Isère^Departement de l'Isere^381^38538^0^^216^Europe/Paris^1.0^2.0^1.0^2016-02-18^^^^^ARA^A^http://en.wikipedia.org/wiki/Grenoble_%E2%80%93_Le_Versoud_Aerodrome^^427^France^EUR^^
+       -- ^^^Y^8288215^^Gare de Grenoble^Gare de Grenoble^45.19149^5.71422^S^RSTN^^^^^FR^^France^Europe^84^Auvergne-Rhône-Alpes^Auvergne-Rhone-Alpes^38^Département de l'Isère^Departement de l'Isere^381^38185^0^^217^Europe/Paris^1.0^2.0^1.0^2018-10-13^^^^^ARA^R^http://en.wikipedia.org/wiki/Gare_de_Grenoble^fr|Gare de Grenoble|=en|Gare de Grenoble|=zh|格勒诺布尔站|=nl|Station Grenoble|=it|Stazione di Grenoble|=wkdt|Q2545346|^427^France^EUR^FRGNB|^87747006|
        --
 
        iata_code          varchar(3)
@@ -1122,6 +1140,7 @@ namespace OPENTREP {
        wac_name           varchar(200)
        ccy_code           varchar(3)
        unlc_list          varchar(100)
+       uic_list           varchar(100)
 
        iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
@@ -1137,7 +1156,7 @@ namespace OPENTREP {
        state_code^location_type^wiki_link^
        alt_name_section^
        wac^wac_name^ccy_code^
-       unlc_list
+       unlc_list^uic_list
     */ 
 
     /**
@@ -1212,7 +1231,8 @@ namespace OPENTREP {
         // >> '^' >> -alt_name_short_list[storeAltNameShortListString(_location)]
 
         por_details_additional =
-          wac >> '^' >> wac_name >> '^' >> -ccy_code >> '^' >> -unlc_section
+          wac >> '^' >> wac_name >> '^' >> -ccy_code
+              >> '^' >> -unlc_section >> '^' >> -uic_section
           ;
 
         iata_code =
@@ -1421,6 +1441,18 @@ namespace OPENTREP {
           bsq::repeat(1,2)[bsu::char_("hp")]
           ;
 
+        uic_section = uic_details % '=';
+
+        uic_details =
+          uic_code >> '|' >> -uic_qualifiers
+          ;
+
+        uic_code = uint1_9_p[storeUICCode(_location)];
+
+        uic_qualifiers =
+          bsq::repeat(1,2)[bsu::char_("hp")]
+          ;
+
         por_type =
           bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
@@ -1545,6 +1577,10 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (unlc_details);
         BOOST_SPIRIT_DEBUG_NODE (unlocode_code);
         BOOST_SPIRIT_DEBUG_NODE (unlc_qualifiers);
+        BOOST_SPIRIT_DEBUG_NODE (uic_section);
+        BOOST_SPIRIT_DEBUG_NODE (uic_details);
+        BOOST_SPIRIT_DEBUG_NODE (uic_code);
+        BOOST_SPIRIT_DEBUG_NODE (uic_qualifiers);
       }
 
       // Instantiation of rules
@@ -1571,7 +1607,8 @@ namespace OPENTREP {
         alt_lang_code, alt_lang_code_ftd, alt_name, alt_name_qualifiers,
         lang_code_opt, lang_code_2char, lang_code_ext, lang_code_hist,
         por_details_additional, wac, wac_name, ccy_code,
-        unlc_section, unlc_details, unlocode_code, unlc_qualifiers;
+        unlc_section, unlc_details, unlocode_code, unlc_qualifiers,
+        uic_section, uic_details, uic_code, uic_qualifiers;
       
       // Parser Context
       Location& _location;

@@ -214,6 +214,17 @@ namespace OPENTREP {
 
     /**
      * List all the POR (points of reference) corresponding
+     * to the given UIC code.
+     *
+     * @param const UICCode_T& The given UIC code (key).
+     * @param LocationList_T& List of (geographical) locations, if any,
+     *                        matching the given key.
+     * @return NbOfMatches_T Number of matches. 
+     */
+    NbOfMatches_T listByUICCode (const UICCode_T&, LocationList_T&);
+
+    /**
+     * List all the POR (points of reference) corresponding
      * to the given Geoname ID.
      *
      * @param const GeonamesID_T& The given Geoname ID (key).

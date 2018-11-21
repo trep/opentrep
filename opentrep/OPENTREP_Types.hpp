@@ -116,15 +116,15 @@ namespace OPENTREP {
    * may be searched for) in OpenTREP.
    *
    * POR are also referenced by other international organizations,
-   * such as ICAO or UN/LOCODE, and may not be referenced by IATA
-   * (in which case their IATA code is left empty).
+   * such as ICAO, UN/LOCODE or UIC, and may not be referenced by
+   * IATA (in which case their IATA code is left empty).
    *
    * As of August 2018, there are around 110,000 POR in OpenTravelData (OPTD),
    * the reference data source for OpenTREP:
    * <ul>
    *  <li>Around 20,000 POR are referenced by IATA</li>
    *  <li>Around 90,000 POR are not referenced by IATA, but referenced
-   *      by other international organizations (eg, ICAO, UN/LOCODE)</li>
+   *      by other international organizations (eg, ICAO, UN/LOCODE, UIC)</li>
    * </ul>
    *
    * Indexing 20,000 POR takes already a few minutes on standard hardware.
@@ -227,6 +227,19 @@ namespace OPENTREP {
     explicit UNLOCode_T (const std::string& iValue) : std::string (iValue) { }
   };  
   typedef std::list<UNLOCode_T> UNLOCodeList_T;
+
+  /**
+   * UIC code (e.g., 87747006).
+   *
+   * UIC is the
+   * [International Union of Railways (Union Internationale des Chemins de fer in French)](http://en.wikipedia.org/wiki/International_Union_of_Railways)
+   * The corresponding alternate name code in Geonames is ``uicn``.
+   */
+  typedef unsigned int UICCode_T;
+  /**
+   * List of UIC codes.
+   */
+  typedef std::list<UICCode_T> UICCodeList_T;
 
   /**
    * Location name (e.g., Nice Côte d'Azur).

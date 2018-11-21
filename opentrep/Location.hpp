@@ -81,6 +81,13 @@ namespace OPENTREP {
       return _unLOCodeList;
     }
 
+    /**
+     * Get the list of UIC codes.
+     */
+    const UICCodeList_T& getUICCodeList() const {
+      return _uicCodeList;
+    }
+
     /** 
      * Get the common name (usually in American English, but not necessarily
      * in ASCII).
@@ -490,6 +497,13 @@ namespace OPENTREP {
      */
     void addUNLOCode (const std::string& iUNLOCode) {
       _unLOCodeList.push_back (UNLOCode_T (iUNLOCode));
+    }
+
+    /**
+     * Add a UIC code to the underlying list.
+     */
+    void addUICCode (const UICCode_T& iUICCode) {
+      _uicCodeList.push_back (iUICCode);
     }
 
     /** 
@@ -960,6 +974,15 @@ namespace OPENTREP {
     std::string describeUNLOCodeList() const;
 
     /** 
+     * Display of the list of UIC codes.
+     *
+     * For instance,
+     * for [Gare de Grenoble](http://www.geonames.org/8288215),
+     * Auvergne-Rhône-Alpes (ARA), France (FR), it displays "87747006"
+     */
+    std::string describeUICCodeList() const;
+
+    /** 
      * Display of the served cities.
      *
      * For instance,
@@ -1051,6 +1074,14 @@ namespace OPENTREP {
      * See UNLOCode_T for more details.
      */
     UNLOCodeList_T _unLOCodeList;
+
+    /**
+     * List of UIC codes (e.g., 87747006).
+     *
+     *
+     * See UICCode_T for more details.
+     */
+    UICCodeList_T _uicCodeList;
 
     /** 
      * Common name (usually in American English, but not necessarily in ASCII).
