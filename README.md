@@ -48,8 +48,8 @@ a Python-based software able to access any travel-related data source.
 OpenTREP makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the
 [Boost](http://www.boost.org)(C++ Standard Extensions),
-[Xapian](http://xapian.org) and [SOCI](http://soci.sourceforge.net) libraries
-are used.
+[Xapian](http://xapian.org) and [SOCI](http://soci.sourceforge.net)
+libraries are used.
 
 # Use Docker images
 Docker images are ready to use on Docker Hub: https://hub.docker.com/r/opentrep/search-travel/
@@ -68,8 +68,8 @@ $ dnf -y install opentrep opentrep-doc
 
 You can also get the RPM packages (which may work on Linux
 distributions like Novel Suse and Mandriva) from the Fedora repository
-(e.g., for Fedora 28,
-http://fr2.rpmfind.net/linux/fedora/releases/28/Everything/)
+(e.g., for Fedora 29,
+http://fr2.rpmfind.net/linux/fedora/releases/29/Everything/)
 
 ## Installation from the sources
 ### Clone the Git repository
@@ -79,14 +79,15 @@ $ mkdir -p ~/dev/geo
 $ cd ~/dev/geo
 $ git clone https://github.com/trep/opentrep.git
 $ cd opentrep
-$ git checkout trunk
+$ git checkout trunk # on CentOS
+$ git checkout trunk_4_py3 # on MacOS or Fedora
 ```
 
 ### Alternatively, download and extract the tar-ball
 GitHub generates tar-balls on the fly for every tagged release:
 https://github.com/trep/opentrep/releases. For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.06.6.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.0.tar.gz
 ```
 Note that SourceForge also stores some
 [older archived tar-balls](http://sourceforge.net/project/showfiles.php?group_id=252803).
@@ -133,7 +134,7 @@ $ brew install homebrew/portable-ruby/portable-readline
 ```
  
 #### SOCI
-* On MacOS, as of mid-2018, SOCI 4.0 has still not been released,
+* On MacOS, as of end of 2018, SOCI 4.0 has still not been released,
   and ``soci-mysql`` is no longer available. Hence, SOCI must be built
   from the sources. The following shows how to do that:
 ```bash
@@ -141,7 +142,7 @@ $ mkdir -p ~/dev/infra/soci && cd ~/dev/infra/soci
 $ git clone https://github.com/SOCI/soci.git
 $ cd soci
 $ mkdir build && cd build
-$ cmake ..
+$ cmake -DSOCI_TESTS=OFF ..
 $ make
 $ sudo make install
 ```
@@ -165,7 +166,7 @@ $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 ```
 
-* For an *ad hoc* installation:
+* For an _ad hoc_ installation:
 ```bash
 INSTALL_DIR=/var/www/webapps/opentrep/trep
 
