@@ -1744,12 +1744,12 @@ macro (module_library_add_specific
   endif (${_lib_short_name} STREQUAL ${MODULE_NAME})
 
   if ("${_lib_prefix}" STREQUAL "py")
-     # no 'lib' prefix
-     set_target_properties (${_lib_target} PROPERTIES
-	     PREFIX "")
-     # must be .so (even on MacOS, not .dylib)
-     set_target_properties (${_lib_target} PROPERTIES
-	     SUFFIX ".so")
+    # no 'lib' prefix
+    set_target_properties (${_lib_target} PROPERTIES
+           PREFIX "")
+    # must be .so (even on MacOS, not .dylib)
+    set_target_properties (${_lib_target} PROPERTIES
+           SUFFIX ".so")
   endif ("${_lib_prefix}" STREQUAL "py")
 
   ##
