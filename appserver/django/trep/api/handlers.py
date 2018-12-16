@@ -12,9 +12,9 @@ trep_lib_dir = environ.get ('TREP_LIB', failobj='/usr/lib')
 # started), the OpenTrep library has to be initialised
 path.append (trep_lib_dir)
 
-import libpyopentrep
-openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-openTrepLibrary.init (traveldb_path, trep_log_path)
+import pyopentrep
+openTrepLibrary = pyopentrep.OpenTrepSearcher()
+openTrepLibrary.init (traveldb_path, 'nodb', '', 0, trep_log_path)
 
 #
 class TrepHandler (BaseHandler):	

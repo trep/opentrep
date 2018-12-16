@@ -4,7 +4,7 @@ import sys, getopt, os
 import simplejson as json
 sys.path.append ('/var/www/webapps/opentrep/trep/lib')
 sys.path.append ('/var/www/webapps/opentrep/trep/lib/python/opentrep')
-import libpyopentrep
+import pyopentrep
 import Travel_pb2
 
 def searchsimple (request, query_string = None):
@@ -14,7 +14,7 @@ def searchsimple (request, query_string = None):
 
     # Initialise the OpenTrep C++ library
     xapianDBPath = "/tmp/opentrep/traveldb"
-    openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+    openTrepLibrary = pyopentrep.OpenTrepSearcher()
     initOK = openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import socket
 
@@ -10,5 +10,5 @@ hostname = socket.gethostname()
 main_name = hostname.split('.')[0]
 
 traveldb_path = '/var/www/webapps/opentrep/trep/traveldb'
-libpyopentrep_path = '/var/www/webapps/opentrep/trep/lib'
+pyopentrep_path = '/var/www/webapps/opentrep/trep/lib64'
 

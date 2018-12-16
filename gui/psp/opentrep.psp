@@ -32,9 +32,9 @@ if queryStringForm.has_key('data'):
 		pass
 	else:
 		# Use the OpenTrep library
-		libpyopentrep_proxy = apache.import_module('libpyopentrep_proxy', path=[local_path])
-		libpyopentrep = libpyopentrep_proxy.import_libpyopentrep(localize.libpyopentrep_path)
-		mySearch = libpyopentrep.OpenTrepSearcher()
+		pyopentrep_proxy = apache.import_module('pyopentrep_proxy', path=[local_path])
+		pyopentrep = pyopentrep_proxy.import_pyopentrep(localize.pyopentrep_path)
+		mySearch = pyopentrep.OpenTrepSearcher()
 		mySearch.init(localize.traveldb_path, localize.tmp_trep_log_filename)
 
 		# Delegate the interpretation to the underlying
