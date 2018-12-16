@@ -1,0 +1,104 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ff8cc92..614ebe8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -66,7 +66,7 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
+ ##            Dependencies            ##
+ ########################################
+ #
+-get_external_libs (git "python 2.6" "boost 1.48" "icu 4.2" protobuf readline
++get_external_libs (git "python 3.4" "boost 1.48" "icu 4.2" protobuf readline
+   "xapian 1.0" "soci 3.0" "sqlite 3.0" "mysql 5.1" doxygen)
+ 
+ 
+diff --git a/config/project_config_embeddable.cmake b/config/project_config_embeddable.cmake
+index 3bd7896..819f3c7 100644
+--- a/config/project_config_embeddable.cmake
++++ b/config/project_config_embeddable.cmake
+@@ -501,7 +501,7 @@ macro (get_python)
+ 	message (STATUS "Found PythonLibs ${PYTHONLIBS_VERSION}")
+ 
+ 	# Set the Python installation directory
+-	set (INSTALL_PY_LIB_DIR ${INSTALL_LIB_DIR}/python${PYTHONLIBS_VERSION}/site-packages/libpy${PROJECT_NAME}
++	set (INSTALL_PY_LIB_DIR ${INSTALL_LIB_DIR}/python${PYTHONLIBS_VERSION}/site-packages/py${PROJECT_NAME}
+ 	  CACHE PATH "Installation directory for Python libraries")
+ 
+ 	# Update the list of include directories for the project
+@@ -606,7 +606,7 @@ macro (get_boost)
+   set (Boost_USE_STATIC_RUNTIME OFF)
+   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
+     date_time random iostreams serialization filesystem system
+-	locale python27 python36 regex)
++	locale python34 regex)
+   set (BOOST_REQUIRED_COMPONENTS_FOR_BIN program_options)
+   set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
+   set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
+@@ -1449,7 +1449,7 @@ macro (set_install_directories)
+   set (exec_prefix   ${prefix})
+   set (bindir        ${exec_prefix}/bin)
+   set (libdir        ${exec_prefix}/${LIBDIR})
+-  set (pylibdir	     ${libdir}/python${PYTHONLIBS_VERSION}/site-packages/libpy${PACKAGE})
++  set (pylibdir	     ${libdir}/python${PYTHONLIBS_VERSION}/site-packages/py${PACKAGE})
+   set (libexecdir    ${exec_prefix}/libexec)
+   set (sbindir       ${exec_prefix}/sbin)
+   set (sysconfdir    ${prefix}/etc)
+@@ -1693,6 +1693,8 @@ macro (module_library_add_specific
+   # Derive the library (CMake) target from its name
+   set (_lib_target ${_lib_short_name}lib)
+ 
++  string (SUBSTRING ${_lib_short_name} 0 2 _lib_prefix)
++
+   # Register the (CMake) target for the library
+   add_library (${_lib_target} SHARED ${_lib_sources})
+ 
+@@ -1741,6 +1743,15 @@ macro (module_library_add_specific
+     add_dependencies (${_lib_target} hdr_cfg_${MODULE_NAME})
+   endif (${_lib_short_name} STREQUAL ${MODULE_NAME})
+ 
++  if ("${_lib_prefix}" STREQUAL "py")
++    # no 'lib' prefix
++    set_target_properties (${_lib_target} PROPERTIES
++           PREFIX "")
++    # must be .so (even on MacOS, not .dylib)
++    set_target_properties (${_lib_target} PROPERTIES
++           SUFFIX ".so")
++  endif ("${_lib_prefix}" STREQUAL "py")
++
+   ##
+   # Library name (and soname)
+   if (WIN32)
+diff --git a/opentrep/python/__init__.py b/opentrep/python/__init__.py
+index 8083852..376d42b 100644
+--- a/opentrep/python/__init__.py
++++ b/opentrep/python/__init__.py
+@@ -1 +1 @@
+-from libpyopentrep import *
++from pyopentrep import *
+diff --git a/opentrep/python/pyopentrep.cpp b/opentrep/python/pyopentrep.cpp
+index 30dc0a9..2439aa3 100644
+--- a/opentrep/python/pyopentrep.cpp
++++ b/opentrep/python/pyopentrep.cpp
+@@ -721,7 +721,7 @@ namespace OPENTREP {
+ }
+ 
+ // /////////////////////////////////////////////////////////////
+-BOOST_PYTHON_MODULE(libpyopentrep) {
++BOOST_PYTHON_MODULE(pyopentrep) {
+   boost::python::class_<OPENTREP::OpenTrepSearcher> ("OpenTrepSearcher")
+     .def ("index", &OPENTREP::OpenTrepSearcher::index)
+     .def ("search", &OPENTREP::OpenTrepSearcher::search)
+diff --git a/opentrep/python/pyopentrep.in b/opentrep/python/pyopentrep.in
+index a1b44db..b9cd066 100755
+--- a/opentrep/python/pyopentrep.in
++++ b/opentrep/python/pyopentrep.in
+@@ -432,8 +432,8 @@ if __name__ == '__main__':
+         deploymentNumber, searchString, nbOfDraws = handle_opt()
+ 
+     # Initialise the OpenTrep C++ library
+-    import libpyopentrep
+-    openTrepLibrary = libpyopentrep.OpenTrepSearcher()
++    import pyopentrep
++    openTrepLibrary = pyopentrep.OpenTrepSearcher()
+     initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
+                                    deploymentNumber, 'pyopentrep.log')
+     if initOK == False:
