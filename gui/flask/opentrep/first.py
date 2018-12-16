@@ -2,7 +2,6 @@ from flask import Flask
 from flask_restful import Api, Resource
 from flask import request
 from flask_cors import CORS
-import libpyopentrep, Travel_pb2
 
 def checkCorrectSyntax(query):
     elements = query.split(" ")

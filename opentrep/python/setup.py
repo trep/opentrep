@@ -42,9 +42,9 @@ Usage
 Examples below show how to use ``opentrep``
 
     import Travel_pb2
-    import libpyopentrep
-    openTrepLibrary = libpyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'nodb', '', 'pyopentrep.log')
+    import pyopentrep
+    openTrepLibrary = pyopentrep.OpenTrepSearcher()
+    initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'nodb', '', 0, 'pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         raise Exception (errorMsg)

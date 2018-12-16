@@ -8,9 +8,9 @@ import sys, getopt, os, math
 import simplejson as json
 import logging
 # Potentially add the following two pathes to the PYTHONPATH environment variable
-# 1. Path to the OpenTrep C++ library of the Python wrapper (libpyopentrep.so)
+# 1. Path to the OpenTrep C++ library of the Python wrapper (pyopentrep.so)
 # 2. Path to the OpenTrep ProtoBuf stubs (Travel_pb2.py)
-import libpyopentrep, Travel_pb2
+import pyopentrep, Travel_pb2
 
 # 404 - Page not found
 def custom_404_view (request):
@@ -70,7 +70,7 @@ def initOpenTrep():
   sqlDBType = "mysql"
   sqlDBConnStr = "db=trep_trep user=trep password=trep"
   deploymentNb = 0
-  openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+  openTrepLibrary = pyopentrep.OpenTrepSearcher()
   initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
                                  deploymentNb,
                                  '/var/log/webapps/search/pyopentrep.log')

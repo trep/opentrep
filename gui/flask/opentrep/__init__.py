@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask import request
 from flask_cors import CORS
 import json
-import libpyopentrep, Travel_pb2
+import pyopentrep, Travel_pb2
 
 # Initialise the OpenTrep C++ library
 # xapianDBPath = "/tmp/opentrep/xapian_traveldb"
@@ -14,7 +14,7 @@ xapianDBPath = "/var/www/webapps/opentrep/trep/traveldb"
 sqlDBType = "mysql"
 sqlDBConnStr = "db=trep_trep user=trep password=trep"
 deploymentNb = 0
-openTrepLibrary = libpyopentrep.OpenTrepSearcher()
+openTrepLibrary = pyopentrep.OpenTrepSearcher()
 #queryAnswer = Travel_pb2.QueryAnswer()
 initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
                                deploymentNb,
