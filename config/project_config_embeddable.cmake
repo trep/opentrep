@@ -518,7 +518,7 @@ endmacro (get_python)
 
 # ~~~~~~~~~~ ICU ~~~~~~~~~
 macro (get_icu)
-  # cmake_policy(SET CMP0074 NEW)
+  cmake_policy (SET CMP0074 NEW)
   unset (_required_version)
   if (${ARGC} GREATER 0)
     set (_required_version ${ARGV0})
@@ -606,7 +606,7 @@ macro (get_boost)
   set (Boost_USE_STATIC_RUNTIME OFF)
   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
     date_time random iostreams serialization filesystem system
-	locale python27 python34 regex)
+	locale python python27 python34 python37 regex)
   set (BOOST_REQUIRED_COMPONENTS_FOR_BIN program_options)
   set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
   set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
