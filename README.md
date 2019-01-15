@@ -516,6 +516,7 @@ provided with that specific Python version.
 # Checking that the Python module works
 * With the standard installation:
 ```bash
+PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
  pipenv run python -c "import pyopentrep; \
  openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
@@ -525,6 +526,7 @@ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BAS
 
 * With an _ad hoc_ installation:
 ```bash
+PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
  pipenv run python -c "import pyopentrep; \
  openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
