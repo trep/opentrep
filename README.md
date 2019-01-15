@@ -93,7 +93,7 @@ $ docker run -t cpppythondevelopment/base:centos7 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
-[build@2..c build (trunk)]$ cmake3 -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+[build@2..c build (trunk)]$ cmake3 -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
 ### Ubuntu 18.04 LTS Bionic Beaver
@@ -103,7 +103,7 @@ $ docker run -t cpppythondevelopment/base:ubuntu1804 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
-[build@2..c build (trunk)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+[build@2..c build (trunk)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
 ### Debian 9 Stretch
@@ -113,7 +113,7 @@ $ docker run -t cpppythondevelopment/base:debian9 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
-[build@2..c build (trunk)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+[build@2..c build (trunk)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
 ### Common to all the above-mentioned Linux distributions
