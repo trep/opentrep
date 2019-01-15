@@ -497,11 +497,19 @@ macro (get_python)
 	# does not seem to provide that version variable.
 	get_filename_component (PYTHONLIBS_LIB_FILENAME ${PYTHON_LIBRARIES} NAME)
 	string (REGEX REPLACE "^libpython([0-9]+.[0-9]+).*$" "\\1"
-      PYTHONLIBS_VERSION "${PYTHONLIBS_LIB_FILENAME}")
-	message (STATUS "Found PythonLibs ${PYTHONLIBS_VERSION}")
+	  PYTHONLIBS_VERSION "${PYTHONLIBS_LIB_FILENAME}")
+
+	if (${PYTHONLIBS_VERSION_STRING} MATCHES "([0-9]).([0-9]).([0-9])")
+	  set (PY_MAJOR_VERSION "${CMAKE_MATCH_1}")
+	  set (PY_MINOR_VERSION "${CMAKE_MATCH_2}")
+	  set (PY_PATCH_VERSION "${CMAKE_MATCH_3}")
+	endif (${PYTHONLIBS_VERSION_STRING} MATCHES "([0-9])\.([0-9])\.([0-9])")
+	
+	message (STATUS "Found PythonLibs ${PYTHONLIBS_VERSION} (${PYTHONLIBS_VERSION_STRING} / ${PY_MAJOR_VERSION}.${PY_MINOR_VERSION}.${PY_PATCH_VERSION})")
 
 	# Set the Python installation directory
-	set (INSTALL_PY_LIB_DIR ${INSTALL_LIB_DIR}/python${PYTHONLIBS_VERSION}/site-packages/py${PROJECT_NAME}
+	set (INSTALL_PY_LIB_DIR
+	  ${INSTALL_LIB_DIR}/python${PYTHONLIBS_VERSION}/site-packages/py${PROJECT_NAME}
 	  CACHE PATH "Installation directory for Python libraries")
 
 	# Update the list of include directories for the project
@@ -603,12 +611,13 @@ macro (get_boost)
   # Note: ${Boost_DATE_TIME_LIBRARY} and ${Boost_PROGRAM_OPTIONS_LIBRARY}
   # are already set by ${SOCIMYSQL_LIBRARIES} and/or ${SOCI_LIBRARIES}.
   #
+  set (python_component_name "python${PY_MAJOR_VERSION}${PY_MINOR_VERSION}")
   set (Boost_USE_STATIC_LIBS OFF)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
     date_time random iostreams serialization filesystem system
-	locale python regex)
+	locale ${python_component_name} regex)
   set (BOOST_REQUIRED_COMPONENTS_FOR_BIN program_options)
   set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
   set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
@@ -2537,6 +2546,7 @@ macro (display_python)
     message (STATUS)
 	message (STATUS "* Python:")
 	message (STATUS "  - PYTHONLIBS_VERSION ............ : ${PYTHONLIBS_VERSION}")
+	message (STATUS "  - PY_{MAJOR,MINOR,PATCH}_VERSION  : ${PY_MAJOR_VERSION}.${PY_MINOR_VERSION}.${PY_PATCH_VERSION}")
 	message (STATUS "  - PYTHON_LIBRARIES .............. : ${PYTHON_LIBRARIES}")
 	message (STATUS "  - PYTHON_INCLUDE_PATH ........... : ${PYTHON_INCLUDE_PATH}")
 	message (STATUS "  - PYTHON_INCLUDE_DIRS ........... : ${PYTHON_INCLUDE_DIRS}")
