@@ -1,99 +1,104 @@
-	* Sun Oct 14 2018 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.7.0
-	- Support of several deployment stages (allowing staging new versions
-	before activating them in production when QA-cleared)
-	- Full support of MacOS
-	- Full revamping of the options for the
-	``opentrep-{indexer,dbmgr,searcher}`` command-line programs,
-	supporting server-side deployments
-	- Full support of the new OpenTravelData data files, which also
-	reference non-IATA POR (points of reference). Hence, ICAO-
-	and UN/LOCODE-referenced POR may now be indexed
+* Web Jan 16 2019 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.1
+- Improved the release of Python libraries and scripts (e.g.,
+following Fedora packaging guidelines, and it works well
+with `pipenv`)
 
-	* Sun Jun 28 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.6
-	- The Python libraries are now installed into standard directory
+* Sun Oct 14 2018 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.0
+- Support of several deployment stages (allowing staging new versions
+before activating them in production when QA-cleared)
+- Full support of MacOS
+- Full revamping of the options for the
+`opentrep-{indexer,dbmgr,searcher}` command-line programs,
+supporting server-side deployments
+- Full support of the new OpenTravelData data files, which also
+reference non-IATA POR (points of reference). Hence, ICAO-
+and UN/LOCODE-referenced POR may now be indexed
 
-	* Sun Apr 19 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.5
-	- The POR reference data file has been renamed, from ORI
-	to OPTD (standing for Open Travel Data, i.e., the name of the
-	project maintaining that file). The new location is now
-	http://bit.ly/1FXmQdl and the file is named optd_por_public.csv.
-	- When only (IATA, ICAO) codes are used in the query string,
-	the POR are retrieved from the underlying database, when existing
-	(and from the classical free-text search when no database is
-	available).
-	- The US DOT World Area Code (WAC) has been added to the POR
-	reference data file, and is now retrieved by OpenTREP.
+* Sun Jun 28 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.06.6
+- The Python libraries are now installed into standard directory
 
-	* Sun Apr 13 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.1
-	Re-wrote the SQL database layer. A new program, namely
-	opentrep-dbmgr, can now create, update and query the SQL
-	database (which can be SQLite3 or MySQL/MariaDB).
-	There is still some work to do to use the SQL database
-	when only codes are detected within the search string.
-	- Issue #6 (http://github.com/trep/opentrep/issues/6):
-		Many POR are also indexed with collateral types.
-		For instance, air bases are also indexed as airports.
-	- Issue #7 (http://github.com/trep/opentrep/issues/7):
-		The punctuation characters are removed. Note that,
-		as the Unicode normalisation procedure is used,
-		there is still an issue when called from Django
-		(for reasons unknown yet).
-	- Issues #4 (http://github.com/trep/opentrep/issues/4)
-		and #8 (http://github.com/trep/opentrep/issues/8):
-		Fixed the ORI POR data file
-		(http://github.com/opentraveldata/optd/refdata/ORI).					  
+* Sun Apr 19 2015 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.06.5
+- The POR reference data file has been renamed, from ORI
+to OPTD (standing for Open Travel Data, i.e., the name of the
+project maintaining that file). The new location is now
+http://bit.ly/1FXmQdl and the file is named optd_por_public.csv.
+- When only (IATA, ICAO) codes are used in the query string,
+the POR are retrieved from the underlying database, when existing
+(and from the classical free-text search when no database is
+available).
+- The US DOT World Area Code (WAC) has been added to the POR
+reference data file, and is now retrieved by OpenTREP.
 
-	* Sun Feb 02 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.6.0
-	- Issue #1 (http://github.com/trep/opentrep/issues/1):
-	The search algorithm is now modular.
-	- Issues #3 (https://github.com/trep/opentrep/issues/3)
-	and #5 (https://github.com/trep/opentrep/issues/5):
-	POR are now indexed with their associated PageRank value
-	(equal to 0.1% when there is no PageRank vallue).
-	- Latest ORI POR data:
-	http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
+* Sun Apr 13 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.06.1
+Re-wrote the SQL database layer. A new program, namely
+opentrep-dbmgr, can now create, update and query the SQL
+database (which can be SQLite3 or MySQL/MariaDB).
+There is still some work to do to use the SQL database
+when only codes are detected within the search string.
+- Issue #6 (http://github.com/trep/opentrep/issues/6):
+	Many POR are also indexed with collateral types.
+	For instance, air bases are also indexed as airports.
+- Issue #7 (http://github.com/trep/opentrep/issues/7):
+	The punctuation characters are removed. Note that,
+	as the Unicode normalisation procedure is used,
+	there is still an issue when called from Django
+	(for reasons unknown yet).
+- Issues #4 (http://github.com/trep/opentrep/issues/4)
+	and #8 (http://github.com/trep/opentrep/issues/8):
+	Fixed the ORI POR data file
+	(http://github.com/opentraveldata/optd/refdata/ORI).					  
 
-	* Sun Feb 24 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.3
-	- Fixed a bug hindering the new slice and dice algorithm to fully work.
-	  That latter now seems to fully work.
+* Sun Feb 02 2014 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.06.0
+- Issue #1 (http://github.com/trep/opentrep/issues/1):
+The search algorithm is now modular.
+- Issues #3 (https://github.com/trep/opentrep/issues/3)
+and #5 (https://github.com/trep/opentrep/issues/5):
+POR are now indexed with their associated PageRank value
+(equal to 0.1% when there is no PageRank vallue).
+- Latest ORI POR data:
+http://github.com/opentraveldata/optd/blob/trunk/refdata/ORI/ori_por_public.csv
 
-	* Sat Feb 16 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.2
-	- The new slice and dice algorithm seems to work now. More thorough tests
-	are needed.
+* Sun Feb 24 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.05.3
+- Fixed a bug hindering the new slice and dice algorithm to fully work.
+That latter now seems to fully work.
 
-	* Sat Feb 16 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.1
-	- Updated the source code to the newest format of the ORI-maintained list
-	  of POR.
-	- Added the Geonames-derived feature names (e.g., "nce city" now returns
-	  the POR for the city of Nice, France).
+* Sat Feb 16 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.05.2
+- The new slice and dice algorithm seems to work now. More thorough tests
+are needed.
 
-	* Sun Oct 14 2012 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.5.0
-	- The search and indexation pieces of algorithm have been completely
-	revamped. Every multi-word string now gives birth to a new C++ structure,
-	namely StringPartition, made of all its partitions in an exhaustive
-	manner. All those string partitions are indexed by Xapian. And an
-	independant search is performed on every one of those string partitions;
-	a global match, made of the combination from several match-based
-	pieces of algorithm, is then assigned to every string partition;
-	the best matching string partition is then selected.
-	That new search algorithm allows, among other things, to combine several
-	independant matching methods, including heuristic ones.
-	- The MySQL database is no longer needed. The ORI-maintained list of POR
-	(points of reference) is now parsed, thanks to Boost.Spirit v2.
-	A copy of that file is kept under the data/por/ sub-directory.
+* Sat Feb 16 2013 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.05.1
+- Updated the source code to the newest format of the ORI-maintained list
+of POR.
+- Added the Geonames-derived feature names (e.g., "nce city" now returns
+the POR for the city of Nice, France).
 
-	* Sat Nov 12 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.1
-	- Added pragmas to have the code compatible with the new
-	Soci-3.1.0 version.
-	- Removed any reference to ExtraCC
+* Sun Oct 14 2012 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.05.0
+- The search and indexation pieces of algorithm have been completely
+revamped. Every multi-word string now gives birth to a new C++ structure,
+namely StringPartition, made of all its partitions in an exhaustive
+manner. All those string partitions are indexed by Xapian. And an
+independant search is performed on every one of those string partitions;
+a global match, made of the combination from several match-based
+pieces of algorithm, is then assigned to every string partition;
+the best matching string partition is then selected.
+That new search algorithm allows, among other things, to combine several
+independant matching methods, including heuristic ones.
+- The MySQL database is no longer needed. The ORI-maintained list of POR
+(points of reference) is now parsed, thanks to Boost.Spirit v2.
+A copy of that file is kept under the data/por/ sub-directory.
 
-	* Tue Nov 01 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.4.0
-	- The build system is now based on CMake (instead of the GNU
-	Autotools).
+* Sat Nov 12 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.04.1
+- Added pragmas to have the code compatible with the new
+Soci-3.1.0 version.
+- Removed any reference to ExtraCC
 
-	* Sun Mar 29 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.3.0
-	- Now relies on the new SOCI RPM.
+* Tue Nov 01 2011 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.04.0
+- The build system is now based on CMake (instead of the GNU
+Autotools).
 
-	* Sun Mar 22 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.2.0
-	- RPM release for Fedora 10
+* Sun Mar 29 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.03.0
+- Now relies on the new SOCI RPM.
+
+* Sun Mar 22 2009 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.02.0
+- RPM release for Fedora 10
 

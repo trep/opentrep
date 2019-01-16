@@ -152,7 +152,7 @@ GitHub generates
 [tar-balls on the fly for every tagged release](https://github.com/trep/opentrep/releases).
 For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.0.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.1.tar.gz
 ```
 
 Note that SourceForge also stores some
