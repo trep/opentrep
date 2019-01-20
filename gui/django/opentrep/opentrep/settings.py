@@ -33,17 +33,18 @@ ALLOWED_HOSTS = ['.search-travel.org',
  '.find-airport.org', '.find-airports.com', '.find-airports.fr',
  '.find-airports.org', '.find-airports.net', '.findairport.fr',
  '.findairport.net', '.findairport.org', '.findairports.fr',
- '.findairports.org', '.search4travel.org',
- '87.98.129.227']
+ '.findairports.org', '.search4travel.org', '.transport-intelligence.com',
+ '.transport-search.org', 
+ '37.187.88.109', '87.98.129.227', '91.121.51.176']
 
 # Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# https://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'Europe/Paris'
 
 # Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
+# https://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
@@ -65,7 +66,7 @@ MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+# Examples: "https://media.lawrence.com/media/", "https://example.com/media/"
 MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
@@ -75,7 +76,7 @@ MEDIA_URL = ''
 STATIC_ROOT = '/var/www/webapps/search/static/'
 
 # URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+# Example: "https://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
@@ -145,7 +146,7 @@ INSTALLED_APPS = (
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
+# See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
