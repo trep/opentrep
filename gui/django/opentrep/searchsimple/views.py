@@ -15,7 +15,7 @@ def searchsimple (request, query_string = None):
     # Initialise the OpenTrep C++ library
     xapianDBPath = "/tmp/opentrep/traveldb"
     openTrepLibrary = pyopentrep.OpenTrepSearcher()
-    initOK = openTrepLibrary.init (xapianDBPath, 'pyopentrep.log')
+    initOK = openTrepLibrary.init (xapianDBPath, 'nodb', '', 0, 'pyopentrep.log')
     if initOK == False:
         errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
         raise Http404

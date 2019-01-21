@@ -70,7 +70,7 @@
 		  {% endif %}
         'Geonames ID: '+
 		  {% if place.geonames_id.id != 0 %}
-		  '<a href="http://geonames.org/{{place.geonames_id.id}}">'+
+		  '<a href="https://geonames.org/{{place.geonames_id.id}}">'+
 		  '{{place.geonames_id.id}}</a><br/>'+
 		  {% else %}
 		  'None<br/>'+
@@ -103,7 +103,7 @@
       });
 
 	  // Creating a closure to retain the correct data
-	  // See http://www.svennerberg.com/2012/03/adding-multiple-markers-to-google-maps-from-json/ for the trick
+	  // See https://www.svennerberg.com/2012/03/adding-multiple-markers-to-google-maps-from-json/ for the trick
 	  (function (marker, contentString) {
 	    // Attaching a click event to the current marker
         google.maps.event.addListener (marker, 'click', function() {
@@ -146,7 +146,7 @@
 	function loadScript() {
 	  var script = document.createElement ("script");
 	  script.type = "text/javascript";
-	  script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+	  script.src = "https://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
 	  document.body.appendChild (script);
 	}
 
