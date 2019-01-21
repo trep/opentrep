@@ -1,0 +1,115 @@
+<% print "Content-Type: text/html; charset=utf-8\n\n" %>
+
+<%
+import os
+from mod_python import apache
+
+local_path = '/var/www/webapps/opentrep'
+localize = apache.import_module('localize', path=[local_path])
+log_service = apache.import_module('log_service', path=[local_path])
+
+# Parser helpers
+def getMain(locations):
+	return locations[:3]
+
+# defaults
+msg, form_value, original_form_value, unrecognized = '', '', '', ''
+language = 'en'
+quiet = True
+
+# Sample of result string to be parsed:
+# 'nce/100,sfo/100-emb/98-jcc/97,yvr/100-cxh/83-xea/83-ydt/83;niznayou'
+# parsing: recognize sequence of three-letter codes
+codes = []
+locations = []
+alter_locations = []
+queryStringForm = form
+if queryStringForm.has_key('data'):
+	form_value = queryStringForm['data']
+	original_form_value = form_value
+	quiet = False
+	if form_value.rstrip(' ') == '':
+		pass
+	else:
+		# Use the OpenTrep library
+		pyopentrep_proxy = apache.import_module('pyopentrep_proxy', path=[local_path])
+		pyopentrep = pyopentrep_proxy.import_pyopentrep(localize.pyopentrep_path)
+		mySearch = pyopentrep.OpenTrepSearcher()
+		mySearch.init(localize.traveldb_path, localize.tmp_trep_log_filename)
+
+		# Delegate the interpretation to the underlying
+		# OpenTrep library
+		output_format = 'S'
+		str_matches = mySearch.search(output_format, form_value)
+
+		# Parsing begins
+		# 1. First, strip out the unrecongised keywords
+		if ';' in str_matches:
+			str_matches, unrecognized = str_matches.split(';')
+			msg = 'unrecognized: %s. ' % unrecognized
+		str_value = unrecognized
+
+		if str_matches != '':
+			# 2. Then, for each matching location, the
+			#    alternate matches have to be stored aside
+			alter_locations = [x for x in str_matches.split(',')]
+			locations = [getMain(x) for x in alter_locations]
+		for alter_location_list in alter_locations:
+			alter_location_list = [x for x in alter_location_list.split('-')]
+			for extra_location_list in alter_location_list:
+				extra_location_list = [x for x in extra_location_list.split(':')]
+				
+		codes = [x[:3].upper() for x in alter_locations]
+
+		# Re-build the form entry text from the location codes
+		if len(codes) > 0:
+			form_value = ' '.join(codes)
+
+		# Append the unrecognised items at the end
+		if str_value != '':
+			form_value += ' ' + str_value
+	
+	# Logging
+	log_service.log(localize.www_log_filename, req, queryStringForm['data'], codes, unrecognized)
+	os.system('cat %s >> %s' % (localize.tmp_trep_log_filename, localize.trep_log_filename))
+
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= language %>" lang="<%= language %>">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+  <title>OpenTREP</title>
+</head>
+
+<body>
+<div align="center">
+<a href="opentrep.psp"><img src="/icons/opentrep.png" height="80px" border=0></a>
+</div>
+<br>
+
+<div align="center">
+<table border="0">
+  <tr>
+    <td>
+      <form value="queryStringForm" action="opentrep.psp" method="post">
+        <input type="text" size=80% name="data" value="<%= form_value%>">
+        <input type="submit" value="Send">
+      </form>
+    </td>
+  </tr>
+</table>
+</div>
+
+<p style="font-size:small;">
+  <%= msg %>
+</p>
+
+<p style="font-size:small;">
+    Test to display UTF8-encoded text: Ивано-Франковск (ru_RU) - Івано-Франківськ (uk_UA)
+<br>Original form value: <%= original_form_value %>
+</p>
+
+</body>
+</html>
