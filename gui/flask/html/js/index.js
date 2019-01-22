@@ -35,7 +35,7 @@ function draw(locations) {
 
 $("#search").click(function(evt) {
   var query = $("#query").val()
-  $.get("https://transport-search.org/api/v1/geo?query=" + query)
+  $.get("https://www2.transport-search.org/api/v1/geo?query=" + query)
     .then(function(data) {
       draw(data.result.locations);
     })
@@ -43,7 +43,7 @@ $("#search").click(function(evt) {
 $("#omnibox").submit(function(evt) {
   var query = $("#query").val()
   evt.preventDefault()
-  $.get("https://transport-search.org/api/v1/geo?query=" + query)
+  $.get("https://www2.transport-search.org/api/v1/geo?query=" + query)
     .then(function(data) {
       draw(data.result.locations);
     })
@@ -51,14 +51,14 @@ $("#omnibox").submit(function(evt) {
 
 
 $("#random-airport").click(function(evt) {
-  $.get("https://transport-search.org/api/v1/randomairport")
+  $.get("https://www2.transport-search.org/api/v1/randomairport")
   .then(function(data) {
     draw(data.result.locations);
   })
 })
 
 $("#random-route").click(function(evt) {
-  $.get("https://transport-search.org/api/v1/randomroute")
+  $.get("https://www2.transport-search.org/api/v1/randomroute")
   .then(function(data) {
     draw(data.result.locations);
   })
