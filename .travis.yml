@@ -9,11 +9,11 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install locales
   - sudo locale-gen $LANG
-  - sudo apt-get -y install zlib1g-dev libbz2-dev lsb-release libgmp-dev
-  - sudo apt-get -y install libgmp-dev gcc g++ clang cppcheck cmake
+  - sudo apt-get -y install gcc g++ clang cppcheck cmake
+  - sudo apt-get -y install zlib1g-dev libbz2-dev libgmp-dev
   - sudo apt-get -y install libboost-all-dev libxapian-dev graphviz
   - sudo apt-get -y install libreadline-dev libncurses5-dev
-  - sudo apt-get -y install libczmq-dev libzmq3-dev libssl-dev libffi-dev
+  - sudo apt-get -y install libzmqpp-dev libssl-dev libffi-dev
   - sudo apt-get -y install sqlite3 libsqlite3-dev libmariadb-dev libmysql++-dev
   - sudo apt-get -y install postgresql-server-dev-all
   - sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
