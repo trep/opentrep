@@ -1,0 +1,27 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7798b45..861742f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,6 +13,8 @@
+ cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
+ 
+ project(SOCI)
++include(GNUInstallDirs)
++message (STATUS "CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}")
+ 
+ ###############################################################################
+ # Build features and variants
+@@ -134,11 +136,7 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+ ###############################################################################
+ 
+ if(NOT DEFINED SOCI_LIBDIR)
+-  if(APPLE OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+-    set(SOCI_LIBDIR "lib")
+-  else()
+-    set(SOCI_LIBDIR "lib64")
+-  endif()
++  set(SOCI_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+ endif()
+ 
+ set(BINDIR "bin" CACHE PATH "The directory to install binaries into.")
+

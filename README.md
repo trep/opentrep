@@ -206,14 +206,18 @@ $ yum -y install doxygen ghostscript "tex(latex)"
 ```
 
 ##### Debian/Ubuntu
+* Various C++ and Python packages:
 ```bash
-$ apt-get -y install git-all bash-completion gcc-c++ cmake boost-devel \
- xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
- sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
-$ # Python development (the package names may vary)
-$ apt-get -y install python-devel python-pip
-$ # Documentation tools
-$ apt-get -y install doxygen ghostscript "tex(latex)"
+$ apt-get -y install locales && locale-gen "en_US.UTF-8"
+$ apt-get -y install zlib1g-dev libbz2-dev lsb-release libgmp-dev \
+   libgmp-dev gcc g++ clang cppcheck cmake libboost-all-dev libxapian-dev graphviz \
+   libreadline-dev libncurses5-dev libczmq-dev libzmq3-dev libssl-dev libffi-dev \
+   sqlite3 libsqlite3-dev libmariadb-dev libmysql++-dev postgresql-server-dev-all \
+   libicu-dev libprotobuf-dev protobuf-compiler
+# Python development (the package names may vary)
+$ apt-get -y install python libpython-dev python3 libpython3-dev
+# Documentation tools
+$ apt-get -y install doxygen ghostscript texlive-latex-recommended
 ```
 
 ### On MacOS
@@ -225,18 +229,20 @@ $ brew install homebrew/portable-ruby/portable-readline
 ```
  
 #### SOCI
-* On Debian, Ubuntu and MacOS, as of end of 2018, SOCI 4.0 has still
+* On Debian, Ubuntu and MacOS, as of mid-2019, SOCI 4.0 has still
   not been released, and `soci-mysql` is no longer available.
   Hence, SOCI must be built from the sources. The following shows
   how to do that on MacOS (on Debian/Ubuntu, one can have a look at
   the part installing SOCI on the
   [C++/Python Docker files](https://github.com/cpp-projects-showcase/docker-images)):
 ```bash
-$ mkdir -p ~/dev/infra/soci && cd ~/dev/infra/soci
-$ git clone https://github.com/SOCI/soci.git
-$ cd soci
+$ mkdir -p ~/dev/infra
+$ git clone https://github.com/SOCI/soci.git ~/dev/infra/soci
+$ cp ci-scripts/soci-debian-cmake.patch ~/dev/infra/soci
+$ cd ~/dev/infra/soci
+$ patch -p1 < ./soci-debian-cmake.patch
 $ mkdir build && cd build
-$ cmake -DSOCI_TESTS=OFF ..
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON -DSOCI_TESTS=OFF ..
 $ make
 $ sudo make install
 ```

@@ -1,0 +1,40 @@
+language: cpp
+sudo: required
+dist: trusty
+compiler:
+  - gcc
+os:
+  - linux
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install locales
+  - sudo locale-gen $LANG
+  - sudo apt-get -y install zlib1g-dev libbz2-dev lsb-release libgmp-dev
+  - sudo apt-get -y install libgmp-dev gcc g++ clang cppcheck cmake
+  - sudo apt-get -y install libboost-all-dev libxapian-dev graphviz
+  - sudo apt-get -y install libreadline-dev libncurses5-dev
+  - sudo apt-get -y install libczmq-dev libzmq3-dev libssl-dev libffi-dev
+  - sudo apt-get -y install sqlite3 libsqlite3-dev libmariadb-dev libmysql++-dev
+  - sudo apt-get -y install postgresql-server-dev-all
+  - sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
+  - sudo apt-get -y install python libpython-dev python3 libpython3-dev
+  - sudo apt-get -y install doxygen ghostscript texlive-latex-recommended
+  - mkdir -p /opt
+  - git clone https://github.com/SOCI/soci.git /opt/soci
+  - cp ci-scripts/soci-debian-cmake.patch /opt/soci
+  - ./ci-scripts/soci-install-debian.sh
+script:
+  - mkdir build
+  - pushd build
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:STRING=Release -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+  - sudo make install
+  - /usr/bin/opentrep-indexer
+  - /usr/bin/opentrep-searcher
+branches:
+  only:
+  - trunk
+  - "/^opentrep-\\d+\\./"
+env:
+ - LANG="en_US.UTF-8"
+ - LC_ALL="en_US.UTF-8"
+
