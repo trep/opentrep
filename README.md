@@ -1,6 +1,9 @@
 Open Travel Request Parser (TREP)
 =================================
 
+[![Build Status](https://travis-ci.com/trep/opentrep.svg?branch=trunk)](https://travis-ci.com/trep/opentrep)
+[![Docker](https://github.com/trep/opentrep/blob/trunk/status.svg?organization=trep&repository=opentrep)](https://cloud.docker.com/u/opentrep/repository/docker/opentrep/search-travel)
+
 # Overview
 OpenTREP aims at providing a clean API, and the corresponding C++
 implementation, for parsing travel-/transport-focused requests.
