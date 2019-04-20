@@ -29,7 +29,7 @@ RUN yum -y install gcc-c++ cmake cmake3 boost-devel xapian-core-devel \
     libicu-devel protobuf-devel protobuf-compiler
 
 # Python development
-RUN yum -y install python-devel python34-devel
+RUN yum -y install python-devel python36-devel
 
 # Documentation tools
 RUN yum -y install doxygen ghostscript "tex(latex)"
