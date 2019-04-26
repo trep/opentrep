@@ -1,29 +1,40 @@
-language: go
-
-go:
-  - '1.11.x'
-
-services:
-  - docker
-
-jobs:
-  include:
-    - stage: Integration Tests
-      before_script:
-        # Download and install kubectl
-        - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-        
-        # Download and install KinD
-        - go get sigs.k8s.io/kind
-        # It's possible to download and install KinD using curl, similar as for kubectl
-        # This is useful in cases when Go toolchain isn't available or you prefer running stable version
-        # Binaries for KinD are available on GitHub Releases: https://github.com/kubernetes-sigs/kind/releases
-        # - curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/0.0.1/kind-linux-amd64 && chmod +x kind && sudo mv kind /usr/local/bin/
-        
-        # Create a new Kubernetes cluster using KinD
-        - kind create cluster
-
-        # Set KUBECONFIG environment variable
-        - export KUBECONFIG="$(kind get kubeconfig-path)"
-      script: ./ci-scripts/integration_tests.sh
+language: cpp
+sudo: required
+dist: xenial
+compiler:
+  - gcc
+os:
+  - linux
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install locales
+  - sudo locale-gen $LANG
+  - sudo apt-get -y install gcc g++ clang cppcheck cmake
+  - sudo apt-get -y install zlib1g-dev libbz2-dev libgmp-dev
+  - sudo apt-get -y install libboost-all-dev libxapian-dev graphviz
+  - sudo apt-get -y install libreadline-dev libncurses5-dev
+  - sudo apt-get -y install libzmqpp-dev libssl-dev libffi-dev
+  - sudo apt-get -y install sqlite3 libsqlite3-dev libmysql++-dev
+  - sudo apt-get -y install postgresql-server-dev-all
+  - sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
+  - sudo apt-get -y install python libpython-dev python3 libpython3-dev
+  - sudo apt-get -y install doxygen ghostscript texlive-latex-recommended
+  - mkdir -p /opt
+  - git clone https://github.com/SOCI/soci.git /opt/soci
+  - cp ci-scripts/soci-debian-cmake.patch /opt/soci
+  - ./ci-scripts/soci-install-debian.sh
+script:
+  - mkdir build
+  - pushd build
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+  - sudo make install
+  - /usr/bin/opentrep-indexer
+  - /usr/bin/opentrep-searcher
+branches:
+  only:
+  - trunk
+  - "/^opentrep-\\d+\\./"
+env:
+ - LANG="en_US.UTF-8"
+ - LC_ALL="en_US.UTF-8"
 
