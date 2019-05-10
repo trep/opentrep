@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['.search-travel.org',
  '.findairport.net', '.findairport.org', '.findairports.fr',
  '.findairports.org', '.search4travel.org', '.transport-intelligence.com',
  '.transport-search.org', 
- '37.187.88.109', '87.98.129.227', '91.121.51.176']
+ '37.187.88.109', '10.30.1.105', '87.98.129.227', '91.121.51.176']
 
 # Local time zone for this installation. Choices can be found here:
 # https://en.wikipedia.org/wiki/List_of_tz_zones_by_name

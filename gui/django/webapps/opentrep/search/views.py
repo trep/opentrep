@@ -65,10 +65,10 @@ def initOpenTrep():
   # xapianDBPath = "/tmp/opentrep/xapian_traveldb"
   # sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
   xapianDBPath = "/var/www/webapps/opentrep/trep/traveldb"
-  #sqlDBType = "sqlite"
-  #sqlDBConnStr = "/var/www/webapps/opentrep/trep/sqlite_travel.db"
-  sqlDBType = "mysql"
-  sqlDBConnStr = "db=trep_trep user=trep password=trep"
+  sqlDBType = "sqlite"
+  sqlDBConnStr = "/var/www/webapps/opentrep/trep/sqlite_travel.db"
+  #sqlDBType = "mysql"
+  #sqlDBConnStr = "db=trep_trep user=trep password=trep"
   deploymentNb = 0
   openTrepLibrary = pyopentrep.OpenTrepSearcher()
   initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,

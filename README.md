@@ -5,22 +5,22 @@ Open Travel Request Parser (TREP)
 [![Docker](https://github.com/trep/opentrep/blob/trunk/status.svg?organization=trep&repository=opentrep)](https://cloud.docker.com/u/opentrep/repository/docker/opentrep/search-travel)
 
 # Overview
-OpenTREP aims at providing a clean API, and the corresponding C++
+[OpenTREP](https://github.com/trep/opentrep)
+aims at providing a clean API, and the corresponding C++
 implementation, for parsing travel-/transport-focused requests.
-It powers the http://search.transport-intelligence.com Web site (as well
-as its newer and older versions, http://www2.search-travel.org and
-http://search-travel.org respectively).
+It powers the https://transport-search.org Web site (as well
+as its newer version, https://www2.transport-search.org).
 
-OpenTREP uses Xapian (http://www.xapian.org) for the Information Retrieval
+OpenTREP uses Xapian (https://www.xapian.org) for the Information Retrieval
 part, on freely available transport-/travel-related data (e.g., country
-names and codes, city names and codes, airline names and codes, etc.),
+names and codes, city names and codes, airline names and codes, _etc_),
 mainly to be found in the
-[OpenTravelData project](http://github.com/opentraveldata/opentraveldata):
+[OpenTravelData (OPTD) project](https://github.com/opentraveldata/opentraveldata):
 http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata
 
 OpenTREP exposes a simple, clean and object-oriented, API. For instance,
 the `OPENTREP::interpretTravelRequest()` method:
-* takes, as input, a charcater string containing the travel request;
+* takes, as input, a character string containing the travel request;
 * and yields, as output, the list of the recognized terms,
   as well as their corresponding types.
 
@@ -45,7 +45,10 @@ the request `lviv rivne jitomir kbp kharkiv dnk ods lwo` yields the
 following list of POR: `LWO`, `RWN`, `ZTR`, `KBP`, `HRK`, `DNK`,
 `ODS` and `LWO` again.
 See
-[that request in action on the search.transport-intelligence.com site](http://search.transport-intelligence.com/search/?q=lwo+rwn+ztr+kbp+hrk+dnk+ods+lwo).
+[that request in action on the transport-search.org site](https://transport-search.org/search/?q=lwo+rwn+ztr+kbp+hrk+dnk+ods+lwo)
+or [through the API](https://www2.transport-search.org/api/v1/geo?query=lwo+rwn+ztr+kbp+hrk+dnk+ods+lwo)
+(enable [JSONView](https://github.com/gildas-lormeau/JSONView-for-Chrome) or similar
+for a more confortable reading).
 
 OpenTREP also deals with transport-related requests. For instance,
 `cnshg deham nlrtm uslbg brssz cnshg` correspond to a world tour
@@ -57,7 +60,8 @@ of famous ports:
 * Santos, Brazil (BR)
 * (Back to) Shanghai, China (CN)
 See
-[that request in action on the search.transport-intelligence.com site](http://search.transport-intelligence.com/search/?q=sha+ham+rtm+lgb+ssz+sha).
+[that request in action on the transport-search.org site](https://transport-search.org/search/?q=sha+ham+rtm+lgb+ssz+sha)
+or [through the API](https://www2.transport-search.org/api/v1/geo?query=sha+ham+rtm+lgb+ssz+sha).
 
 The underlying data for the POR is the
 [OpenTravelData `optd_por_public_all.csv` file](http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public_all.csv).
@@ -127,17 +131,16 @@ $ docker run -t cpppythondevelopment/base:debian9 bash
 ```
 
 # Native installation (without Docker)
+
 ## RPM-based distributions (eg, Fedora/CentOS/RedHat)
-Once OpenTREP is approved to become an official package of Fedora/CentOS/RedHat
+Since OpenTREP has been approved as an official package of Fedora/CentOS/RedHat
 (see the
-[review request on Bugzilla for further details](https://bugzilla.redhat.com/show_bug.cgi?id=866265)), just use [DNF](https://fedoraproject.org/wiki/DNF) (or
+[review request on Bugzilla for further details](https://bugzilla.redhat.com/show_bug.cgi?id=866265)),
+just use [DNF](https://fedoraproject.org/wiki/DNF) (or
 [Yum](https://fedoraproject.org/wiki/Yum) for the older distributions):
 ```bash
 $ dnf -y install opentrep opentrep-doc
 ```
-
-In the meantime, some RPM packages may be available on
-[Fedora People](https://denisarnaud.fedorapeople.org/opentrep/).
 
 ## Installation from the sources
 ### Clone the Git repository
@@ -146,8 +149,7 @@ The GitHub repository may be cloned as following:
 $ mkdir -p ~/dev/geo && cd ~/dev/geo
 $ git clone https://github.com/trep/opentrep.git
 $ cd opentrep
-$ git checkout trunk # on CentOS or Debian/Ubuntu
-$ git checkout trunk_4_py3 # on MacOS or Fedora
+$ git checkout trunk
 ```
 
 ### Alternatively, download and extract the tar-ball
@@ -168,7 +170,7 @@ hand side, Debian/Ubuntu names on the right hand side; names for other
 Linux distributions may vary):
 * `cmake` (or `cmake3` on CentOS)
 * `gcc-c++` / `gcc`, `g++`
-* `boost-devel` (or `boost148-devel` on CentOS) / `libboost-all-dev`
+* `boost-devel` (or `boost169-devel` on CentOS) / `libboost-all-dev`
 * `xapian-core-devel` / `libxapian-dev`
 * `python-devel` / `python`, `libpython-dev`
 * `libicu-devel` / `libicu-dev`
@@ -187,24 +189,34 @@ For instance, the following subsections show respective installation commands
 for a few famous Linux distributions.
 
 ##### Fedora
+* General C++-base stack:
 ```bash
 $ dnf -y install git-all bash-completion gcc-c++ cmake boost-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
  sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
-$ # Python development (the package names may vary)
+```
+* Python development (the package names may vary):
+```bash
 $ dnf -y install python-devel python-pip
-$ # Documentation tools
+```
+* Documentation tools:
+```bash
 $ dnf -y install doxygen ghostscript "tex(latex)"
 ```
 
 ##### CentOS
+* General C++-based stack:
 ```bash
-$ yum -y install git-all bash-completion gcc-c++ cmake boost-devel \
+$ yum -y install git-all bash-completion gcc-c++ cmake boost169-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
  sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
-$ # Python development (the package names may vary)
+```
+* Python development (the package names may vary):
+```bash
 $ yum -y install python-devel python-pip
-$ # Documentation tools
+```
+* Documentation tools:
+```bash
 $ yum -y install doxygen ghostscript "tex(latex)"
 ```
 
@@ -217,9 +229,13 @@ $ apt-get -y install zlib1g-dev libbz2-dev lsb-release libgmp-dev \
    libreadline-dev libncurses5-dev libczmq-dev libzmq3-dev libssl-dev libffi-dev \
    sqlite3 libsqlite3-dev libmariadb-dev libmysql++-dev postgresql-server-dev-all \
    libicu-dev libprotobuf-dev protobuf-compiler
-# Python development (the package names may vary)
+```
+* Python development (the package names may vary)
+```bash
 $ apt-get -y install python libpython-dev python3 libpython3-dev
-# Documentation tools
+```
+* Documentation tools
+```bash
 $ apt-get -y install doxygen ghostscript texlive-latex-recommended
 ```
 
@@ -229,6 +245,30 @@ $ apt-get -y install doxygen ghostscript texlive-latex-recommended
 $ brew install boost boost-python boost-python3 cmake libedit \
   xapian sqlite mysql icu4c protobuf protobuf-c doxygen
 $ brew install homebrew/portable-ruby/portable-readline
+```
+
+#### Boost
+* On CentOS, the version of Boost is often outdated, for instance
+  [Boost 1.53 on CentOS 7](https://git.centos.org/rpms/boost/releases).
+  It may have adversarial effects, for instance on CentOS 7, where
+  [Python 3 libraries have been upgraded from Python 3.4 to
+  Python 3.6](https://lists.fedoraproject.org/archives/list/epel-announce@lists.fedoraproject.org/thread/EGUMKAIMPK2UD5VSHXM53BH2MBDGDWMO/),
+  but where Boost 1.53 Python libraries have not been upgraded accordingly,
+  leading for the least to [linking errors](https://bugzilla.redhat.com/show_bug.cgi?id=1702242).
+* Hopefully, [EPEL](https://fedoraproject.org/wiki/EPEL) provides
+  more recent Boost releases, for instance
+  [Boost 1.69 on RHEL/CentOS 7](https://src.fedoraproject.org/rpms/boost169/tree/epel7).
+* Those additional specific Boost packages may be installed in parallel
+  to the officiial Boost packages.
+  CMake has however to be made aware of that additional Boost package and,
+  equally importantly, of its location on the file-system.
+* Example of additional CMake configuration variables for
+  [Boost 1.69 on CentOS 7](https://src.fedoraproject.org/rpms/boost169/tree/epel7):
+```bash
+$ cmake3 [...] \
+  -DBOOST_LIBRARYDIR=/usr/lib64/boost169 -DBOOST_INCLUDEDIR=/usr/include/boost169 \
+  -DBoost_ADDITIONAL_VERSIONS="1.69 1.69.0" \
+  [...]
 ```
  
 #### SOCI
@@ -264,9 +304,20 @@ Then, as usual:
 * To configure the project, type something like:
 ```bash
 $ mkdir build && cd build
-$ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
-   -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
-   -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+$ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
+   -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+```
+
+* With a specific version of Boost, say
+  [Boost 1.69](https://src.fedoraproject.org/rpms/boost169)
+  installed in a parallel way (for instance, as an optional module):
+```bash
+$ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
+        -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
+        -DBOOST_LIBRARYDIR=/usr/lib64/boost169 -DBOOST_INCLUDEDIR=/usr/include/boost169 \
+        -DBoost_ADDITIONAL_VERSIONS="1.69 1.69.0" \
+        -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 ```
 
 * For an _ad hoc_ installation:
