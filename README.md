@@ -2,7 +2,7 @@ Open Travel Request Parser (TREP)
 =================================
 
 [![Build Status](https://travis-ci.com/trep/opentrep.svg?branch=trunk)](https://travis-ci.com/trep/opentrep)
-[![Docker](https://github.com/trep/opentrep/blob/trunk/status.svg?organization=trep&repository=opentrep)](https://cloud.docker.com/u/opentrep/repository/docker/opentrep/search-travel)
+[![Docker Repository on Quay](https://quay.io/repository/trep/opentrep/status "Docker Repository on Quay")](https://quay.io/repository/trep/opentrep)
 
 # Overview
 [OpenTREP](https://github.com/trep/opentrep)
