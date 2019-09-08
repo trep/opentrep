@@ -26,9 +26,6 @@ macro (set_project_names _project_name_param)
   # Set the uppercase project name
   string (TOUPPER "${_project_name_param}" _package_name_tmp)
   set (PACKAGE_NAME "${_package_name_tmp}" CACHE INTERNAL "Description")
-
-  # Set the project name
-  project (${PACKAGE})
 endmacro (set_project_names)
 
 ##
@@ -636,6 +633,7 @@ macro (get_boost)
     # Boost.Python library
     message (STATUS "  + Boost_PYTHON_LIBRARY: ${Boost_PYTHON_LIBRARY}")
     message (STATUS "  + Boost_PYTHON3_LIBRARY: ${Boost_PYTHON3_LIBRARY}")
+    message (STATUS "  + Boost_PYTHON37_LIBRARY: ${Boost_PYTHON37_LIBRARY}")
     message (STATUS "  + Boost_PYTHON38_LIBRARY: ${Boost_PYTHON38_LIBRARY}")
 
     # Update the list of include directories for the project
