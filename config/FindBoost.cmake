@@ -247,7 +247,9 @@ include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 
 # Save project's policies
 cmake_policy(PUSH)
-cmake_policy(SET CMP0057 NEW) # if IN_LIST
+if (${CMAKE_VERSION} VERSION_GREATER 3.15)
+  cmake_policy(SET CMP0057 NEW) # if IN_LIST
+endif (${CMAKE_VERSION} VERSION_GREATER 3.15)
 
 function(_boost_get_existing_target component target_var)
   set(names "${component}")
