@@ -13,7 +13,7 @@ namespace OPENTREP {
    * Default file-path for the OPTD-maintained POR (points of reference) file.
    */
   const std::string DEFAULT_OPENTREP_POR_FILEPATH (OPENTREP_POR_DATA_DIR
-                                                   "/optd_por_public.csv");
+                                                   "/test_optd_por_public.csv");
   
   /**
    * Default file-path for the Xapian database/index.
