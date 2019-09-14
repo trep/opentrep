@@ -26,9 +26,6 @@ macro (set_project_names _project_name_param)
   # Set the uppercase project name
   string (TOUPPER "${_project_name_param}" _package_name_tmp)
   set (PACKAGE_NAME "${_package_name_tmp}" CACHE INTERNAL "Description")
-
-  # Set the project name
-  project (${PACKAGE})
 endmacro (set_project_names)
 
 ##
@@ -375,6 +372,10 @@ macro (get_external_libs)
       get_soci (${_arg_version})
     endif (${_arg_lower} STREQUAL "soci")
 
+    if (${_arg_lower} STREQUAL "optd")
+      get_optd (${_arg_version})
+    endif (${_arg_lower} STREQUAL "optd")
+
     if (${_arg_lower} STREQUAL "stdair")
       get_stdair (${_arg_version})
     endif (${_arg_lower} STREQUAL "stdair")
@@ -634,8 +635,10 @@ macro (get_boost)
 
   if (Boost_FOUND)
     # Boost.Python library
+    message (STATUS "  + Boost_PYTHON_VERSION: ${Boost_PYTHON_VERSION}")
     message (STATUS "  + Boost_PYTHON_LIBRARY: ${Boost_PYTHON_LIBRARY}")
     message (STATUS "  + Boost_PYTHON3_LIBRARY: ${Boost_PYTHON3_LIBRARY}")
+    message (STATUS "  + Boost_PYTHON37_LIBRARY: ${Boost_PYTHON37_LIBRARY}")
     message (STATUS "  + Boost_PYTHON38_LIBRARY: ${Boost_PYTHON38_LIBRARY}")
 
     # Update the list of include directories for the project
@@ -912,6 +915,29 @@ macro (get_mysql)
   endif (MYSQL_FOUND)
 
 endmacro (get_mysql)
+
+# ~~~~~~~~~~ OpenTravelData (OPTD) ~~~~~~~~~
+macro (get_optd)
+  set (__optd_por_file optd_por_public_all.csv)
+  
+  find_path (OPTD_POR_DIR
+    NAMES "opentraveldata/share/opentraveldata/data/por/${__optd_por_file}"
+    PATHS "${WITH_OPENTRAVELDATA_PREFIX}"
+    DOC "Full path to the OpenTravelData (OPTD) file")
+  
+  if (OPTD_POR_DIR-NOTFOUND)
+    set (ERROR_MSG "The OPTD POR data dir cannot be found. If OPTD is")
+    set (ERROR_MSG "${ERROR_MSG} in a non standard directory, just invoke")
+    set (ERROR_MSG "${ERROR_MSG} 'cmake' specifying the -DWITH_OPENTRAVELDATA_PREFIX=")
+    set (ERROR_MSG "${ERROR_MSG}<OPTD install path> variable.")
+    message (STATUS "${ERROR_MSG}")
+    #message (FATAL_ERROR "${ERROR_MSG}")
+  else (OPTD_POR_DIR-NOTFOUND)
+    #
+    message (STATUS "Found OPTD POR data dir: ${OOPTD_POR_DIR}")
+  endif (OPTD_POR_DIR-NOTFOUND)
+
+endmacro (get_optd)
 
 # ~~~~~~~~~~ SOCI ~~~~~~~~~~
 macro (get_soci)
@@ -2586,6 +2612,7 @@ macro (display_boost)
     message (STATUS "  - Boost_LIB_VERSION ............. : ${Boost_LIB_VERSION}")
     message (STATUS "  - Boost_HUMAN_VERSION ........... : ${Boost_HUMAN_VERSION}")
     message (STATUS "  - Boost_INCLUDE_DIRS ............ : ${Boost_INCLUDE_DIRS}")
+    message (STATUS "  - Boost_PYTHON_VERSION .......... : ${Boost_PYTHON_VERSION}")
     message (STATUS "  - Boost required components ..... : ${BOOST_REQUIRED_COMPONENTS}")
     message (STATUS "  - Boost required libraries ...... : ${BOOST_REQUIRED_LIBS}")
     message (STATUS "  - Boost required libs for lib ... : ${PROJ_DEP_LIBS_FOR_LIB}")
@@ -2678,6 +2705,15 @@ macro (display_soci)
     message (STATUS "  - SOCISQLITE_LIBRARIES .......... : ${SOCISQLITE_LIBRARIES}")
   endif (SOCI_FOUND)
 endmacro (display_soci)
+
+# OpenTravelData (OPTD)
+macro (display_optd)
+  if (OPTD_POR_DIR)
+    message (STATUS)
+    message (STATUS "* OPTD:")
+    message (STATUS "    - OPTD_POR_DIR ................ : ${OPTD_POR_DIR}")
+  endif (OPTD_POR_DIR)
+endmacro (display_optd)
 
 # StdAir
 macro (display_stdair)
@@ -2984,6 +3020,7 @@ macro (display_status)
   display_sqlite ()
   display_mysql ()
   display_soci ()
+  display_optd ()
   display_stdair ()
   display_sevmgr ()
   display_trademgen ()

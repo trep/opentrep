@@ -7,6 +7,7 @@ include (config/project_config_embeddable.cmake)
 
 ##
 # Project info
+project (opentrep)
 set_project_names (opentrep OpenTREP)
 set_project_brief ("C++ Open Travel Request Parsing Library")
 set_project_versions (0 07 1)
@@ -67,7 +68,7 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ########################################
 #
 get_external_libs (git "python 3.4" "boost 1.48" "icu 4.2" protobuf readline
-  "xapian 1.0" "soci 3.0" "sqlite 3.0" "mysql 5.1" doxygen)
+  optd "xapian 1.0" "soci 3.0" "sqlite 3.0" "mysql 5.1" doxygen)
 
 
 ##############################################
