@@ -24,9 +24,9 @@
 
  \b -p, \b --porfile <POR-file-path><br>
     Path (directory and file name) of the file of POR (points of reference).
-	Usually, the file is ori_por_public.csv, for which the latest version
+	Usually, the file is optd_por_public.csv, for which the latest version
 	may be found in the OpenTravelData project on GitHub:
-	http://github.com/opentraveldata/optd/tree/trunk/refdata/ORI
+	https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata
 
  \b -d, \b --xapiandb <Xapian-travel-database-path><br>
     Path (directory) to the Xapian travel database.
@@ -60,7 +60,7 @@ Please report any bugs to http://github.com/trep/opentrep/issues
 
 \section sec_copyright_indexer COPYRIGHT
 
-Copyright © 2009-2016 Denis Arnaud
+Copyright © 2009-2019 Denis Arnaud
 
 See the COPYING file for more information on the (LGPLv2+) license, or
 directly on Internet:<br>
