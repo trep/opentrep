@@ -239,7 +239,7 @@ $ apt-get -y install python libpython-dev python3 libpython3-dev
 $ apt-get -y install doxygen ghostscript texlive-latex-recommended
 ```
 
-### On MacOS
+#### On MacOS
 * With [Homebrew](http://brew.sh):
 ```bash
 $ brew install boost boost-python boost-python3 cmake libedit \
@@ -247,7 +247,33 @@ $ brew install boost boost-python boost-python3 cmake libedit \
 $ brew install homebrew/portable-ruby/portable-readline
 ```
 
-#### Boost
+### ICU
+* Install ICU with Homebrew
+```bash
+$ brew install icu4c
+```
+
+### Boost
+
+#### MacOS
+* Prepare the build and install directories:
+```bash
+$ BOOST_VER="1_71_0"
+$ BOOST_VER_DOT="$(echo ${BOOST_VER}|sed -e s/_/./g)"
+$ sudo mkdir -p /opt/boost && chown -R ${USER} /opt/boost
+$ sudo mkdir -p /usr/local/boost_${BOOST_VER} && chown -R ${USER} /usr/local/boost_${BOOST_VER}
+$ cd /opt/boost
+$ sudo wget https://dl.bintray.com/boostorg/release/${BOOST_VER_DOT}/source/boost_${BOOST_VER}.tar.bz2
+```
+
+```bash
+$ cmake -DCMAKE_BUILD_TYPE=Debug -DSOCI_ASAN=ON -DCMAKE_VERBOSE_MAKEFILE=OFF \
+  -DSOCI_TESTS=OFF -DSOCI_STATIC=OFF -DSOCI_DB2=OFF -DSOCI_EMPTY=ON \
+  -DSOCI_FIREBIRD=OFF -DSOCI_MYSQL=ON -DSOCI_ODBC=OFF -DSOCI_ORACLE=OFF \
+  -DSOCI_POSTGRESQL=ON -DSOCI_SQLITE3=ON ../..
+```
+
+#### CentOS
 * On CentOS, the version of Boost is often outdated, for instance
   [Boost 1.53 on CentOS 7](https://git.centos.org/rpms/boost/releases).
   It may have adversarial effects, for instance on CentOS 7, where
@@ -271,21 +297,46 @@ $ cmake3 [...] \
   [...]
 ```
  
-#### SOCI
+### SOCI
 * On Debian, Ubuntu and MacOS, as of mid-2019, SOCI 4.0 has still
   not been released, and `soci-mysql` is no longer available.
   Hence, SOCI must be built from the sources. The following shows
   how to do that on MacOS (on Debian/Ubuntu, one can have a look at
   the part installing SOCI on the
-  [C++/Python Docker files](https://github.com/cpp-projects-showcase/docker-images)):
+  [C++/Python Docker files](https://github.com/cpp-projects-showcase/docker-images))
+
+* Download and prepare SOCI:
 ```bash
-$ mkdir -p ~/dev/infra
-$ git clone https://github.com/SOCI/soci.git ~/dev/infra/soci
-$ cp ci-scripts/soci-debian-cmake.patch ~/dev/infra/soci
-$ cd ~/dev/infra/soci
-$ patch -p1 < ./soci-debian-cmake.patch
-$ mkdir build && cd build
+$ sudo mkdir -p /opt/soci && chown -R ${USER} /opt/soci
+$ git clone https://github.com/SOCI/soci.git /opt/soci/socigit
+```
+
+#### General Unix/Linux
+```bash
+$ cd /opt/soci/socigit
+$ mkdir -p build/head && cd build/head
 $ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON -DSOCI_TESTS=OFF ..
+```
+
+#### Debian
+```bash
+$ wget https://github.com/trep/opentrep/raw/trunk/ci-scripts/soci-debian-cmake.patch -O /opt/soci/soci-debian-cmake.patch
+$ cd /opt/soci/socigit
+$ patch -p1 < ./soci-debian-cmake.patch
+$ mkdir -p build/head && cd build/head
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON -DSOCI_TESTS=OFF ..
+```
+
+#### MacOS
+* Configure SOCI:
+```bash
+$ mkdir /opt/soci/build/head && cd /opt/soci/build/head
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_BUILD_TYPE=Debug -DSOCI_CXX_C11=ON \
+  -DSOCI_ASAN=ON -DCMAKE_VERBOSE_MAKEFILE=OFF \
+  -DSOCI_TESTS=OFF -DSOCI_STATIC=OFF -DSOCI_DB2=OFF -DSOCI_EMPTY=ON \
+  -DSOCI_FIREBIRD=OFF -DSOCI_MYSQL=ON -DSOCI_ODBC=OFF -DSOCI_ORACLE=OFF \
+  -DSOCI_POSTGRESQL=ON -DSOCI_SQLITE3=ON ../..
 $ make
 $ sudo make install
 ```
@@ -294,9 +345,9 @@ $ sudo make install
 To customize OpenTREP to your environment, you can alter
 the installation directory:
 ```bash
-export INSTALL_BASEDIR=$HOME/dev/deliveries
-export TREP_VER=99.99.99
-if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
+export INSTALL_BASEDIR="${HOME}/dev/deliveries"
+export TREP_VER="99.99.99"
+if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
 
@@ -363,6 +414,22 @@ $ make dist
 ```bash
 $ make package
 ```
+
+* Install the latest
+  [OpenTravelData (OPTD) POR data file](https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public_all.csv).
+  Note that OpenTREP no longer ships with (full) OPTD data files;
+  only [test files](https://github.com/trep/opentrep/raw/trunk/data/por/test_optd_por_public.csv)
+  are shipped.
+  The OPTD POR data file (`optd_por_public_all.csv`) has therefore
+  to be downloaded aside, usually renamed as `optd_por_public.csv`,
+  and the OpenTREP binaries have then to be referred to the file-path
+  of that POR data file.
+```bash
+$ wget \
+  https://github.com/opentraveldata/opentraveldata/raw/master/opentraveldata/optd_por_public_all.csv \
+  -O ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
+```
+
 * To run the local binary version:
 ```bash
 $ ./opentrep/opentrep-{dbmgr,indexer,searcher}
@@ -370,9 +437,9 @@ $ ./opentrep/opentrep-{dbmgr,indexer,searcher}
 * To run the installed version (the first following line must be done once
   per session):
 ```bash
-$ export TREP_LIB=$INSTALL_BASEDIR/opentrep-$TREP_VER/lib$LIBSUFFIX
-$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TREP_LIB
-$ $INSTALL_BASEDIR/opentrep-$TREP_VER/bin/opentrep-{dbmgr,indexer,searcher}
+$ export TREP_LIB="${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}"
+$ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${TREP_LIB}"
+$ ${INSTALL_BASEDIR}/opentrep-${TREP_VER}/bin/opentrep-{dbmgr,indexer,searcher}
 ```
 
 ## Underlying (relational) database, SQLite or MySQL/MariaDB, if any
@@ -381,7 +448,7 @@ two database products are supported, SQLite3 and MySQL/MariaDB.
 The database accelerates the look up of POR by (IATA, ICAO, FAA) codes
 and of Geonames ID. When OpenTREP is configured to run without database,
 those codes and Geonames ID are full-text searched directly with Xapian.
-Note that the database can be managed directly, i.e., without the
+Note that the database can be managed directly, _i.e._, without the
 OpenTREP search interface on top of it, thanks to the `opentrep-dbmgr`
 utility, which is detailed below.
 
@@ -392,7 +459,7 @@ to derive the same commands with the installed version.
 
 * The following command prompts a Shell:
 ```bash
-$ ./opentrep/opentrep-dbmgr -t sqlite
+$ ./opentrep/opentrep-dbmgr -t sqlite -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 * Then, within the `opentrep>` shell, a typical sequence for SQLite would be:
@@ -409,11 +476,11 @@ $ ./opentrep/opentrep-dbmgr -t sqlite
 
 * The following command prompts a shell:
 ```bash
-./opentrep/opentrep-dbmgr -t mysql
+./opentrep/opentrep-dbmgr -t mysql -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 * Then, within the `opentrep>` shell, a typical sequence for MySQL/MariaDB
-would be:
+  would be:
 ```bash
  reset_connection_string db=mysql user=root password=<passwd>
  create_user
@@ -433,17 +500,17 @@ as seen above.
 
 * Xapian indexing without any relational database:
 ```bash
-$ ./opentrep/opentrep-indexer
+$ ./opentrep/opentrep-indexer -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 * Xapian indexing and filling and indexing the SQLite database:
 ```bash
-$ ./opentrep/opentrep-indexer -t sqlite
+$ ./opentrep/opentrep-indexer -t sqlite -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 * Xapian indexing and filling and indexing the MySQL/MariaDB database:
 ```bash
-$ ./opentrep/opentrep-indexer -t mysql
+$ ./opentrep/opentrep-indexer -t mysql -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 * There is an option to not even touch Xapian at all, for instance to check
@@ -451,18 +518,18 @@ $ ./opentrep/opentrep-indexer -t mysql
   [OpenTravelData (OPTD) POR data file](http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public_all.csv)
   is well-formed:
 ```bash
-$ ./opentrep/opentrep-indexer -x 0
+$ ./opentrep/opentrep-indexer -x 0 -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 ## Xapian indexing for an ad hoc deployed Web application
 * Xapian indexing without any relational database:
 ```bash
-$ ./opentrep/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb
+$ ./opentrep/opentrep-indexer -d /var/www/webapps/opentrep/trep/traveldb -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
 ```
 
 * (Optional) Filling and indexing the SQLite database:
 ```bash
-$ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db
+$ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -p ${INSTALL_BASEDIR}/share/opentrep/data/por/optd_por_public.csv
     create_user
     fill_from_por_file
     quit
@@ -471,22 +538,22 @@ $ ./opentrep/opentrep-dbmgr -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_t
 # Searching
 * Searching without any relational database support:
 ```bash
-$ ./opentrep/opentrep-searcher -q nce sfo
+$ ./opentrep/opentrep-searcher -q "nce sfo"
 ```
 
 * Searching with SQLite (note that it should be quicker than without a database):
 ```bash
-$ ./opentrep/opentrep-searcher -t sqlite -q nce sfo
+$ ./opentrep/opentrep-searcher -t sqlite -q "nce sfo"
 ```
 
 * Searching with MySQL/MariaDB:
 ```bash
-$ ./opentrep/opentrep-searcher -t mysql -q nce sfo
+$ ./opentrep/opentrep-searcher -t mysql -q "nce sfo"
 ```
 
 * Searching with SQLite (with Xapian and SQLite DB in a `webapps` directory):
 ```bash
-$ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -q nce sfo
+$ ./opentrep/opentrep-searcher -d /var/www/webapps/opentrep/trep/traveldb -t sqlite -s /var/www/webapps/opentrep/trep/sqlite_travel.db -q "nce sfo"
 ```
 
 # Deployment stages
