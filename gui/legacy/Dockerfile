@@ -20,7 +20,7 @@ RUN yum clean all && \
     yum -y update && \
     yum -y install epel-release && \
     yum -y install initscripts \
-        htop less file rpmconf git-all bash-completion
+        htop less file sudo rpmconf git-all bash-completion
 
 # C++ development
 RUN yum -y install gcc-c++ cmake cmake3 boost-devel xapian-core-devel \
@@ -33,19 +33,6 @@ RUN yum -y install python-devel python36-devel
 
 # Documentation tools
 RUN yum -y install doxygen ghostscript "tex(latex)"
-
-#
-VOLUME ["/sys/fs/cgroup", "/run", "/tmp"]
-
-# Set up and start Maria (MySQL) database
-RUN yum -y install mariadb-server
-RUN mkdir -p $DB_RUN_DIR && chown -R mysql.mysql $DB_RUN_DIR
-RUN mysql_install_db
-ADD my.cnf /etc/
-RUN chown -R mysql.mysql /var/lib/mysql
-WORKDIR /usr
-RUN /usr/bin/mysqld_safe --datadir='/var/lib/mysql' --nowatch
-#RUN mysqladmin -u root password '$DB_PASS'
 
 # User environment
 ADD bashrc $HOME/
@@ -72,8 +59,6 @@ RUN ./opentrep/opentrep-indexer --xapiandb $XAPIANDB
 RUN ./opentrep/opentrep-searcher --xapiandb $XAPIANDB -q nce sfo
 
 #
-RUN echo "root:root"|chpasswd
-#CMD ["/usr/sbin/init"]
 CMD ["/bin/bash"]
 
 
