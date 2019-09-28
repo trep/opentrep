@@ -5,7 +5,7 @@ See now http://github.com/trep/opentrep/issues/
 
 * [25/06/2010] For date parsing, RememberTheMilk (RTM) gathers on a page
   all the formats supported by its parser:
-  http://www.rememberthemilk.com/help/answers/basics/dateformat.rtm 
+  http://www.rememberthemilk.com/help/answers/basics/dateformat.rtm
 
 * [06/09/2009] Add the data type (e.g., "GEO", "TIM", "AIR", "PAX")
   in front of the Xapian document data (when indexing).
@@ -19,7 +19,7 @@ See now http://github.com/trep/opentrep/issues/
   [06/06/2009] Alter the parser so that when a suggestion is made for
   a string, and when the suggestion for the same string minus a word
   is different, the Levenshtein distance between the original suppresed
-  word and the "suggested" one (defined as the difference between the 
+  word and the "suggested" one (defined as the difference between the
   suggestions for the two strings) is something like nb_of_letters/3.
 
 * DONE
