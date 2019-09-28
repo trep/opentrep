@@ -1,3 +1,11 @@
+* Sat Sep 28 2019 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.2
+- Merged the trunk and releases branches to master, so as to get
+a standard setup
+- The default branch is now master
+- The versionning scheme follows the one on the releases branch before,
+i.e., the version number is incremented just before tagging
+the Git repository
+
 * Web Jan 16 2019 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.1
 - Improved the release of Python libraries and scripts (e.g.,
 following Fedora packaging guidelines, and it works well

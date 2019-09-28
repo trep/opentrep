@@ -1,3 +1,12 @@
+* 2019-09-28:
+- Version 0.07.2
+- Merged the trunk and releases branches to master, so as to get
+  a standard setup
+- The default branch is now master
+- The versionning scheme follows the one on the releases branch before,
+  i.e., the version number is incremented just before tagging
+  the Git repository
+
 * 2019-01-16:
 - Version 0.07.1
 - Improved the release of Python libraries and scripts (e.g.,
