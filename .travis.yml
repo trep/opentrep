@@ -32,7 +32,7 @@ script:
   - /usr/bin/opentrep-searcher
 branches:
   only:
-  - trunk
+  - master
   - "/^opentrep-\\d+\\./"
 env:
  - LANG="en_US.UTF-8"
