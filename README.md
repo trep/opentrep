@@ -1,8 +1,51 @@
 Open Travel Request Parser (TREP)
 =================================
 
-[![Build Status](https://travis-ci.com/trep/opentrep.svg?branch=trunk)](https://travis-ci.com/trep/opentrep)
+[![Build Status](https://travis-ci.com/trep/opentrep.svg?branch=master)](https://travis-ci.com/trep/opentrep)
 [![Docker Repository on Quay](https://quay.io/repository/trep/opentrep/status "Docker Repository on Quay")](https://quay.io/repository/trep/opentrep)
+
+# Table of content
+- [Overview](#overview)
+- [Docker images](#docker-images)
+  * [OpenTREP Docker images](#opentrep-docker-images)
+  * [General purpose C++/Python Docker images](#general-purpose-c---python-docker-images)
+    + [CentOS 7](#centos-7)
+    + [Ubuntu 18.04 LTS Bionic Beaver](#ubuntu-1804-lts-bionic-beaver)
+    + [Debian 9 Stretch](#debian-9-stretch)
+    + [Common to all the above-mentioned Linux distributions](#common-to-all-the-above-mentioned-linux-distributions)
+- [Native installation (without Docker)](#native-installation--without-docker-)
+  * [RPM-based distributions (eg, Fedora/CentOS/RedHat)](#rpm-based-distributions--eg--fedora-centos-redhat-)
+  * [Installation from the sources](#installation-from-the-sources)
+    + [Clone the Git repository](#clone-the-git-repository)
+    + [Alternatively, download and extract the tar-ball](#alternatively--download-and-extract-the-tar-ball)
+    + [Installation of the dependencies](#installation-of-the-dependencies)
+      - [On Linux](#on-linux)
+        * [Fedora](#fedora)
+        * [CentOS](#centos)
+        * [Debian/Ubuntu](#debian-ubuntu)
+      - [On MacOS](#on-macos)
+    + [ICU](#icu)
+    + [Boost](#boost)
+      - [MacOS](#macos)
+      - [CentOS](#centos-1)
+    + [SOCI](#soci)
+      - [General Unix/Linux](#general-unix-linux)
+      - [Debian](#debian)
+      - [MacOS](#macos-1)
+    + [Building the library and test binary](#building-the-library-and-test-binary)
+  * [Underlying (relational) database, SQLite or MySQL/MariaDB, if any](#underlying--relational--database--sqlite-or-mysql-mariadb--if-any)
+- [Indexing the POR data](#indexing-the-por-data)
+  * [Filling the (relational) database, SQLite or MySQL/MariaDB, if any](#filling-the--relational--database--sqlite-or-mysql-mariadb--if-any)
+  * [Xapian indexing with standard installation](#xapian-indexing-with-standard-installation)
+  * [Xapian indexing for an ad hoc deployed Web application](#xapian-indexing-for-an-ad-hoc-deployed-web-application)
+- [Searching](#searching)
+- [Deployment stages](#deployment-stages)
+- [Index, or not, non-IATA POR](#index--or-not--non-iata-por)
+- [Installing a Python virtual environment](#installing-a-python-virtual-environment)
+- [Checking that the Python module works](#checking-that-the-python-module-works)
+- [(Optional) Running the Django-based application server](#-optional--running-the-django-based-application-server)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 # Overview
 [OpenTREP](https://github.com/trep/opentrep)
@@ -12,14 +55,17 @@ It powers the https://transport-search.org Web site (as well
 as its newer version, https://www2.transport-search.org).
 
 OpenTREP uses Xapian (https://www.xapian.org) for the Information Retrieval
-part, on freely available transport-/travel-related data (e.g., country
+part, on freely available transport-/travel-related data (_e.g._, country
 names and codes, city names and codes, airline names and codes, _etc_),
 mainly to be found in the
-[OpenTravelData (OPTD) project](https://github.com/opentraveldata/opentraveldata):
+[OpenTravelData (OPTD)
+project](https://github.com/opentraveldata/opentraveldata):
 http://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata
 
 OpenTREP exposes a simple, clean and object-oriented, API. For instance,
-the `OPENTREP::interpretTravelRequest()` method:
+the
+[`OPENTREP::interpretTravelRequest()`
+method](https://github.com/trep/opentrep/blob/master/opentrep/OPENTREP_Service.hpp#L58):
 * takes, as input, a character string containing the travel request;
 * and yields, as output, the list of the recognized terms,
   as well as their corresponding types.
@@ -47,8 +93,8 @@ following list of POR: `LWO`, `RWN`, `ZTR`, `KBP`, `HRK`, `DNK`,
 See
 [that request in action on the transport-search.org site](https://transport-search.org/search/?q=lwo+rwn+ztr+kbp+hrk+dnk+ods+lwo)
 or [through the API](https://www2.transport-search.org/api/v1/geo?query=lwo+rwn+ztr+kbp+hrk+dnk+ods+lwo)
-(enable [JSONView](https://github.com/gildas-lormeau/JSONView-for-Chrome) or similar
-for a more confortable reading).
+(enable [JSONView](https://github.com/gildas-lormeau/JSONView-for-Chrome)
+or similar for a more confortable reading).
 
 OpenTREP also deals with transport-related requests. For instance,
 `cnshg deham nlrtm uslbg brssz cnshg` correspond to a world tour
@@ -79,13 +125,15 @@ libraries are used.
 
 ## OpenTREP Docker images
 Docker images provide ready-to-use environments, and are available on
-[Docker Cloud](https://cloud.docker.com/u/opentrep/repository/docker/opentrep/search-travel):
+[Docker Cloud](https://cloud.docker.com/u/opentrep/repository/docker/opentrep/search-travel)
+and [Quay.io](https://quay.io/repository/trep/opentrep):
 ```bash
-$ docker pull opentrep/search-travel:legacy
+$ docker pull opentrep/search-travel:legacy # for Docker.io
+$ docker pull quay.io/trep/opentrep # for Quay.io
 $ docker run --rm -it opentrep/search-travel:legacy bash
 ```
 
-See https://github.com/trep/opentrep/tree/trunk/gui/legacy for more details.
+See https://github.com/trep/opentrep/tree/master/gui/legacy for more details.
 
 ## General purpose C++/Python Docker images
 General purpose Docker images for C++/Python development are also available from
@@ -100,7 +148,7 @@ $ docker run -t cpppythondevelopment/base:centos7 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
-[build@2..c build (trunk)]$ cmake3 -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+[build@2..c build (master)]$ cmake3 -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
 ### Ubuntu 18.04 LTS Bionic Beaver
@@ -110,7 +158,7 @@ $ docker run -t cpppythondevelopment/base:ubuntu1804 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
-[build@2..c build (trunk)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+[build@2..c build (master)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
 ### Debian 9 Stretch
@@ -120,14 +168,14 @@ $ docker run -t cpppythondevelopment/base:debian9 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
-[build@2..c build (trunk)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+[build@2..c build (master)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
 ### Common to all the above-mentioned Linux distributions
 ```bash
-[build@2..c build (trunk)]$ make install
-[build@2..c build (trunk)]$ ./opentrep/opentrep-indexer
-[build@2..c build (trunk)]$ ./opentrep/opentrep-searcher -q "nice san francisco"
+[build@2..c build (master)]$ make install
+[build@2..c build (master)]$ ./opentrep/opentrep-indexer
+[build@2..c build (master)]$ ./opentrep/opentrep-searcher -q "nice san francisco"
 ```
 
 # Native installation (without Docker)
@@ -149,7 +197,7 @@ The GitHub repository may be cloned as following:
 $ mkdir -p ~/dev/geo && cd ~/dev/geo
 $ git clone https://github.com/trep/opentrep.git
 $ cd opentrep
-$ git checkout trunk
+$ git checkout master
 ```
 
 ### Alternatively, download and extract the tar-ball
@@ -320,7 +368,7 @@ $ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON
 
 #### Debian
 ```bash
-$ wget https://github.com/trep/opentrep/raw/trunk/ci-scripts/soci-debian-cmake.patch -O /opt/soci/soci-debian-cmake.patch
+$ wget https://github.com/trep/opentrep/raw/master/ci-scripts/soci-debian-cmake.patch -O /opt/soci/soci-debian-cmake.patch
 $ cd /opt/soci/socigit
 $ patch -p1 < ./soci-debian-cmake.patch
 $ mkdir -p build/head && cd build/head
@@ -421,7 +469,7 @@ $ make package
 * Install the latest
   [OpenTravelData (OPTD) POR data file](https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public_all.csv).
   Note that OpenTREP no longer ships with (full) OPTD data files;
-  only [test files](https://github.com/trep/opentrep/raw/trunk/data/por/test_optd_por_public.csv)
+  only [test files](https://github.com/trep/opentrep/raw/master/data/por/test_optd_por_public.csv)
   are shipped.
   The OPTD POR data file (`optd_por_public_all.csv`) has therefore
   to be downloaded aside, usually renamed as `optd_por_public.csv`,
