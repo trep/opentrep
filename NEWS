@@ -1,4 +1,8 @@
 * 2019-09-28:
+- Version 0.07.3
+- OPENTREP_SAMPLE_DIR is now exported
+
+* 2019-09-28:
 - Version 0.07.2
 - Merged the trunk and releases branches to master, so as to get
   a standard setup

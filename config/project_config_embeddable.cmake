@@ -61,16 +61,16 @@ endmacro (set_project_versions)
 #  * CMAKE_INSTALL_RPATH_USE_LINK_PATH
 #                         - Whether or not to set the run-path/rpath within
 #                           the (executable and library) binaries
-#  * ENABLE_TEST         - Whether or not to build and check the unit tests
-#  * INSTALL_DOC         - Whether or not to build and install the documentation
-#  * INSTALL_LIB_DIR     - Installation directory for the libraries
-#  * INSTALL_PY_LIB_DIR  - Installation directory for the Python libraries
-#  * INSTALL_BIN_DIR     - Installation directory for the binaries
-#  * INSTALL_LIBEXEC_DIR - Installation directory for the internal executables
-#  * INSTALL_INCLUDE_DIR - Installation directory for the header files
-#  * INSTALL_DATA_DIR    - Installation directory for the data files
-#  * INSTALL_SAMPLE_DIR  - Installation directory for the (CSV) sample files
-#  * RUN_GCOV            - Whether or not to perform code coverage
+#  * ENABLE_TEST          - Whether or not to build and check the unit tests
+#  * INSTALL_DOC          - Whether or not to build and install the documentation
+#  * INSTALL_LIB_DIR      - Installation directory for the libraries
+#  * INSTALL_PY_LIB_DIR   - Installation directory for the Python libraries
+#  * INSTALL_BIN_DIR      - Installation directory for the binaries
+#  * INSTALL_LIBEXEC_DIR  - Installation directory for the internal executables
+#  * INSTALL_INCLUDE_DIR  - Installation directory for the header files
+#  * INSTALL_DATA_DIR     - Installation directory for the data files
+#  * INSTALL_SAMPLE_DIR   - Installation directory for the (CSV) sample files
+#  * RUN_GCOV             - Whether or not to perform code coverage
 #
 macro (set_project_options _build_doc _enable_tests _run_gcov)
   # C++ standard (C++-11)
@@ -152,6 +152,11 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
   if ("${PROJECT_NAME}" STREQUAL "stdair")
     set (STDAIR_SAMPLE_DIR ${INSTALL_SAMPLE_DIR})
   endif ("${PROJECT_NAME}" STREQUAL "stdair")
+
+  # Define OPENTREP_SAMPLE_DIR if the project is OPENTREP
+  if ("${PROJECT_NAME}" STREQUAL "opentrep")
+    set (OPENTREP_SAMPLE_DIR ${INSTALL_DATA_DIR}/${PACKAGE}/data)
+  endif ("${PROJECT_NAME}" STREQUAL "opentrep")
 
   ##
   # Basic documentation (i.e., AUTHORS, NEWS, README, INSTALL)
@@ -2498,8 +2503,12 @@ macro (install_dev_helper_files)
   set (${PACKAGE_NAME}_LIB_DIR "${INSTALL_LIB_DIR}")
   set (${PACKAGE_NAME}_LIBEXEC_DIR "${INSTALL_LIBEXEC_DIR}")
   set (${PACKAGE_NAME}_PY_LIB_DIR "${INSTALL_PY_LIB_DIR}")
-  set (${PACKAGE_NAME}_SAMPLE_DIR "${INSTALL_SAMPLE_DIR}")
   set (${PACKAGE_NAME}_CMAKE_DIR "${LIB_DEPENDENCY_EXPORT_PATH}")
+  # When the project is OpenTREP, OPENTREP_SAMPLE_DIR has
+  # already been defined before
+  if (NOT "${PROJECT_NAME}" STREQUAL "opentrep")
+    set (${PACKAGE_NAME}_SAMPLE_DIR "${INSTALL_SAMPLE_DIR}")
+  endif (NOT "${PROJECT_NAME}" STREQUAL "opentrep")
   configure_file (${PROJECT_NAME}-config.cmake.in
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake" @ONLY)
   configure_file (${PROJECT_NAME}-config-version.cmake.in
