@@ -939,7 +939,7 @@ macro (get_optd)
     #message (FATAL_ERROR "${ERROR_MSG}")
   else (OPTD_POR_DIR-NOTFOUND)
     #
-    message (STATUS "Found OPTD POR data dir: ${OOPTD_POR_DIR}")
+    message (STATUS "Found OPTD POR data dir: ${OPTD_POR_DIR}")
   endif (OPTD_POR_DIR-NOTFOUND)
 
 endmacro (get_optd)
