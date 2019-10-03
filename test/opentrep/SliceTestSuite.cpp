@@ -55,7 +55,7 @@ struct UnitTestConfig {
 /**
  * Xapian database/index file-path (directory containing the index).
  */
-const std::string X_XAPIAN_DB_FP (OPENTREP::DEFAULT_OPENTREP_XAPIAN_DB_FILEPATH);
+const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
 
 /**
  * SQL database connection string.
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE (slice_small_string) {
                       << lAnotherQuerySlices.describe());
 
   //
-  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 1,
+  BOOST_CHECK_MESSAGE (lAnotherQuerySlices.size() == 3,
                        "The query ('" << lChelseaStr
                        << "') should contain 1 slice."
                        << " However, its size is " << lAnotherQuerySlices.size()
