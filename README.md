@@ -355,7 +355,7 @@ $ cmake3 [...] \
 
 * Download and prepare SOCI:
 ```bash
-$ sudo mkdir -p /opt/soci && chown -R ${USER} /opt/soci
+$ sudo mkdir -p /opt/soci && sudo chown -R ${USER} /opt/soci
 $ git clone https://github.com/SOCI/soci.git /opt/soci/socigit
 ```
 
@@ -378,8 +378,8 @@ $ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON
 #### MacOS
 * Configure SOCI:
 ```bash
-$ mkdir /opt/soci/build/head && cd /opt/soci/build/head
-$ cmake -DCMAKE_INSTALL_PREFIX=/usr \
+$ mkdir -p /opt/soci/socigit/build/head && cd /opt/soci/socigit/build/head
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
   -DCMAKE_BUILD_TYPE=Debug -DSOCI_CXX_C11=ON \
   -DSOCI_ASAN=ON -DCMAKE_VERBOSE_MAKEFILE=OFF \
   -DSOCI_TESTS=OFF -DSOCI_STATIC=OFF -DSOCI_DB2=OFF -DSOCI_EMPTY=ON \
