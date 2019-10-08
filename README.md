@@ -295,6 +295,10 @@ $ brew install boost boost-python boost-python3 cmake libedit \
 $ brew install homebrew/portable-ruby/portable-readline
 ```
 
+* Note that, as of October 2019, the Hombrew recipe for Boost (1.71)
+  does not provide the CMake support files for the Python modules.
+  Hence, it must be installed from the source on MacOS.
+
 ### ICU
 * Install ICU with Homebrew
 ```bash
@@ -304,6 +308,8 @@ $ brew install icu4c
 ### Boost
 
 #### MacOS
+* Reference: https://blog.the-pans.com/boost-darwin/
+
 * Prepare the build and install directories:
 ```bash
 $ BOOST_VER="1_71_0"
@@ -315,10 +321,14 @@ $ sudo wget https://dl.bintray.com/boostorg/release/${BOOST_VER_DOT}/source/boos
 ```
 
 ```bash
-$ cmake -DCMAKE_BUILD_TYPE=Debug -DSOCI_ASAN=ON -DCMAKE_VERBOSE_MAKEFILE=OFF \
-  -DSOCI_TESTS=OFF -DSOCI_STATIC=OFF -DSOCI_DB2=OFF -DSOCI_EMPTY=ON \
-  -DSOCI_FIREBIRD=OFF -DSOCI_MYSQL=ON -DSOCI_ODBC=OFF -DSOCI_ORACLE=OFF \
-  -DSOCI_POSTGRESQL=ON -DSOCI_SQLITE3=ON ../..
+$ cd /opt/boost/boost_${BOOST_VER}
+$ ./b2 cxxflags="-std=c++14" install
+clang-darwin.compile.c++ bin.v2/libs/graph/build/clang-darwin-11.0/release/threading-multi/visibility-hidden/graphml.o
+clang-darwin.compile.c++ bin.v2/libs/graph/build/clang-darwin-11.0/release/threading-multi/visibility-hidden/read_graphviz_new.o
+clang-darwin.link.dll bin.v2/libs/graph/build/clang-darwin-11.0/release/threading-multi/visibility-hidden/libboost_graph.dylib
+common.copy /usr/local/boost_${BOOST_VER}/lib/libboost_graph.dylib
+boost-install.generate-cmake-variant- /usr/local/boost_${BOOST_VER}/lib/cmake/boost_graph-${BOOST_VER_DOT}/libboost_graph-variant-shared.cmake
+...updated 1311 targets...
 ```
 
 #### CentOS
