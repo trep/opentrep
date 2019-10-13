@@ -722,6 +722,30 @@ PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/pyt
  print (openTrepLibrary.search ('S', 'los las'))"
 ```
 
+# Trouble-shooting Python issues on MacOS
+
+## Interceptors not installed / late
+* On some versions of MacOS (_e.g._, with 10.15 aka Catalina),
+  there may be some strange issue related to interceptors:
+```bash
+$ ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
+==217==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+"interceptors not installed" && 0Abort trap: 6
+```
+
+* A work around is to explicitly use the MacOS native Python interpreter:
+```bash
+$ /usr/local/Cellar/python/3.7.4_1/Frameworks/Python.framework/Versions/3.7/Resources/Python.app/Contents/MacOS/Python ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
+OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-0.07.3/share/opentrep/data/por/test_optd_por_public.csv'
+Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
+SQLite database: '/tmp/opentrep/sqlite_travel.db'
+searchString: nce sfo
+Compact format => recognised place (city/airport) codes:
+NCE SFO
+------------------
+```
+
 # (Optional) Running the Django-based application server
 ```bash
 $ export TREP_LIB=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}

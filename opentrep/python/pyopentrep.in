@@ -261,7 +261,7 @@ def getPaths (openTrepLibrary):
     filePathList = filePathListString.split(';')
 
     # Report the results
-    print ("ORI-maintained list of POR (points of reference): '" + filePathList[0] + "'")
+    print ("OPTD-maintained list of POR (points of reference): '" + filePathList[0] + "'")
     if len(filePathList) >= 2:
         print ("Xapian-based travel database/index: '" + filePathList[1] + "'")
     if len(filePathList) >= 3:
