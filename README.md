@@ -291,7 +291,7 @@ $ apt-get -y install doxygen ghostscript texlive-latex-recommended
 * With [Homebrew](http://brew.sh):
 ```bash
 $ brew install boost boost-python boost-python3 cmake libedit \
-  xapian sqlite mysql icu4c protobuf protobuf-c doxygen
+  xapian sqlite mysql mysql-client icu4c protobuf protobuf-c doxygen
 $ brew install homebrew/portable-ruby/portable-readline
 ```
 
