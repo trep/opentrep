@@ -314,21 +314,51 @@ $ brew install icu4c
 ```bash
 $ BOOST_VER="1_71_0"
 $ BOOST_VER_DOT="$(echo ${BOOST_VER}|sed -e s/_/./g)"
-$ sudo mkdir -p /opt/boost && chown -R ${USER} /opt/boost
-$ sudo mkdir -p /usr/local/boost_${BOOST_VER} && chown -R ${USER} /usr/local/boost_${BOOST_VER}
+$ sudo mkdir -p /opt/boost/archives && chown -R ${USER} /opt/boost
 $ cd /opt/boost
-$ sudo wget https://dl.bintray.com/boostorg/release/${BOOST_VER_DOT}/source/boost_${BOOST_VER}.tar.bz2
+$ wget https://dl.bintray.com/boostorg/release/${BOOST_VER_DOT}/source/boost_${BOOST_VER}.tar.bz2
+$ tar jxf boost_${BOOST_VER}.tar.bz2 && mv boost_${BOOST_VER}.tar.bz2 archives
 ```
 
+* (Optionally, if needed,) Inject the new `boost/timer/progress_display.hpp`
+  header file:
 ```bash
 $ cd /opt/boost/boost_${BOOST_VER}
-$ ./b2 cxxflags="-std=c++14" install
+$ wget https://raw.githubusercontent.com/boostorg/timer/c221a60102ed618a82116f84407de3f1713aa10f/include/boost/timer/progress_display.hpp -O boost/timer/progress_display.hpp
+```
+
+* Initialize the build environment:
+```bash
+$ cd /opt/boost/boost_${BOOST_VER}
+$ pyenv global 3.7.4 # Only if you use pyenv to manage your Python environment / Adap for your own environment
+$ ./bootstrap.sh
+```
+
+* If needed, specify the Python location in the `project-config.jam` file,
+  which may look like the following (for Python 3.7.4 installed with `pyenv`):
+```yaml
+import python ;
+if ! [ python.configured ]
+{
+    using python
+        : 3.7m     # Version
+        : "<home-dir>/.pyenv/versions/3.7.4" # Python path
+        : "<home-dir>/.pyenv/versions/3.7.4/include/python3.7m" # include path
+        : "<home-dir>/.pyenv/versions/3.7.4/lib/python3.7" # lib path
+        ;
+}
+```
+
+* Launch the build and installation:
+```bash
+$ ./b2 cxxflags="-std=c++14"
 clang-darwin.compile.c++ bin.v2/libs/graph/build/clang-darwin-11.0/release/threading-multi/visibility-hidden/graphml.o
 clang-darwin.compile.c++ bin.v2/libs/graph/build/clang-darwin-11.0/release/threading-multi/visibility-hidden/read_graphviz_new.o
 clang-darwin.link.dll bin.v2/libs/graph/build/clang-darwin-11.0/release/threading-multi/visibility-hidden/libboost_graph.dylib
 common.copy /usr/local/boost_${BOOST_VER}/lib/libboost_graph.dylib
 boost-install.generate-cmake-variant- /usr/local/boost_${BOOST_VER}/lib/cmake/boost_graph-${BOOST_VER_DOT}/libboost_graph-variant-shared.cmake
 ...updated 1311 targets...
+$ sudo ./b2 cxxflags="-std=c++14" install
 ```
 
 #### CentOS
