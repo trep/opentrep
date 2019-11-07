@@ -341,10 +341,10 @@ import python ;
 if ! [ python.configured ]
 {
     using python
-        : 3.7m     # Version
-        : "<home-dir>/.pyenv/versions/3.7.4" # Python path
-        : "<home-dir>/.pyenv/versions/3.7.4/include/python3.7m" # include path
-        : "<home-dir>/.pyenv/versions/3.7.4/lib/python3.7" # lib path
+        : 3.7     # Version
+        : "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7" # Python path
+        : "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/include/python3.7m" # include path
+        : "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7" # lib path
         ;
 }
 ```
