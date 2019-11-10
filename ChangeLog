@@ -1,3 +1,6 @@
+* Sun Nov 10 2019 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.4
+- FindBoost.cmake now supports older CMake versions
+
 * Sat Sep 28 2019 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.3
 - OPENTREP_SAMPLE_DIR is now exported
 
