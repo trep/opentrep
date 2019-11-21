@@ -17,14 +17,14 @@ namespace OPENTREP {
   // Parser structure helper
   //
   // ////////////////////////////////////////////////////////////////////
-  /** Date & time element parser. */
+  /** Date and time element parser. */
   template <int MIN = 0, int MAX = 0>
   struct date_time_element {
     unsigned int _value;
 
     // ////////// Constructors ///////////
     /** Default constructor. */
-    date_time_element () { }
+    date_time_element () : _value (0) { }
     /** Default copy constructor. */
     date_time_element (const date_time_element& t) : _value (t._value) { }
     /** Constructor. */
