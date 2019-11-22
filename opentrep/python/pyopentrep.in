@@ -11,7 +11,7 @@ def usage (script_name):
     print
     print ("That script searches for, against a Xapian-indexed database of")
     print ("travel-related terms, place key words. It allows for some")
-    print ("mis-spelling. For instance: 'sna francicso rio de janero lso angles reykyavki'")
+    print ("mis-spelling. For instance: 'sna francisco rio de janero los angeles reykyavki'")
     print ("will retrieve the details of San Francisco, CA,")
     print ("Rio de Janeiro, Brasil, Los Angeles, CA and Reykjavik, Iceland.")
     print
@@ -65,7 +65,7 @@ def handle_opt():
     nbOfDraws = 1
 
     # Default search string
-    searchString = 'sna francicso rio de janero lso angles reykyavki'
+    searchString = 'sna francisco rio de janero los angeles reykyavki'
     if len (args) >= 1:
         searchString = ' '.join (args)
 

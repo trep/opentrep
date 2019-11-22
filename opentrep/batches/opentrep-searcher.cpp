@@ -33,7 +33,7 @@ const std::string K_OPENTREP_DEFAULT_LOG_FILENAME ("opentrep-searcher.log");
 /**
  * Default travel query string, to be seached against the Xapian database.
  */
-const std::string K_OPENTREP_DEFAULT_QUERY_STRING ("sna francicso rio de janero lso angles reykyavki");
+const std::string K_OPENTREP_DEFAULT_QUERY_STRING ("sna francisco rio de janero los angeles reykyavki");
 
 /**
  * Default type for the search request.
@@ -143,7 +143,8 @@ int readConfiguration (int argc, char* argv[],
      "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString),
-     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, "
+     "\"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("deploymentnb,m",
      boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
      "Deployment number (from to N, where N=1 normally)")
@@ -155,7 +156,9 @@ int readConfiguration (int argc, char* argv[],
      "Type of search request (0 = full text, 1 = coordinates)")
     ("query,q",
      boost::program_options::value< WordList_T >(&lWordList)->multitoken(),
-     "Travel query word list (e.g. sna francicso rio de janero lso anglese reykyavki), which sould be located at the end of the command line (otherwise, the other options would be interpreted as part of that travel query word list)")
+     "Travel query word list (e.g. sna francisco rio de janero los angeles reykyavki), "
+     "which sould be located at the end of the command line (otherwise, "
+     "the other options would be interpreted as part of that travel query word list)")
     ;
 
   // Hidden options, will be allowed both on command line and
