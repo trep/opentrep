@@ -94,7 +94,7 @@ std::string createStringFromWordList (const WordList_T& iWordList) {
 // A helper function to simplify the main part.
 template<class T> std::ostream& operator<< (std::ostream& os,
                                             const std::vector<T>& v) {
-  std::copy (v.begin(), v.end(), std::ostream_iterator<T> (std::cout, " ")); 
+  std::copy (v.begin(), v.end(), std::ostream_iterator<T> (os, " ")); 
   return os;
 }
 
@@ -110,7 +110,8 @@ int readConfiguration (int argc, char* argv[],
                        std::string& ioSQLDBConnectionString,
                        unsigned short& ioDeploymentNumber,
                        std::string& ioLogFilename,
-                       unsigned short& ioSearchType) {
+                       unsigned short& ioSearchType,
+                       std::ostringstream& oStr) {
 
   // Initialise the travel query string, if that one is empty
   if (ioQueryString.empty() == true) {
@@ -208,19 +209,18 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("deploymentnb")) {
     ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
-    std::cout << "Deployment number " << ioDeploymentNumber << std::endl;
+    oStr << "Deployment number " << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
-    std::cout << "Xapian database filepath is: " << ioXapianDBFilepath
-              << ioDeploymentNumber << std::endl;
+    oStr << "Xapian database filepath is: " << ioXapianDBFilepath
+         << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("sqldbtype")) {
     ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
-    std::cout << "SQL database type is: " << ioSQLDBTypeString
-              << std::endl;
+    oStr << "SQL database type is: " << ioSQLDBTypeString << std::endl;
   }
 
   // Derive the detault connection string depending on the SQL database type
@@ -248,22 +248,22 @@ int readConfiguration (int argc, char* argv[],
                                                  ioSQLDBConnectionString,
                                                  ioDeploymentNumber);
     //
-    std::cout << "SQL database connection string is: " << lSQLDBConnString
-              << std::endl;
+    oStr << "SQL database connection string is: " << lSQLDBConnString
+         << std::endl;
   }
 
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
-    std::cout << "Log filename is: " << ioLogFilename << std::endl;
+    oStr << "Log filename is: " << ioLogFilename << std::endl;
   }
 
-  std::cout << "The type of search is: " << ioSearchType << std::endl;
+  oStr << "The type of search is: " << ioSearchType << std::endl;
   
-  std::cout << "The spelling error distance is: " << ioSpellingErrorDistance
+  oStr << "The spelling error distance is: " << ioSpellingErrorDistance
             << std::endl;
 
   ioQueryString = createStringFromWordList (lWordList);
-  std::cout << "The travel query string is: " << ioQueryString << std::endl;
+  oStr << "The travel query string is: " << ioQueryString << std::endl;
   
   return 0;
 }
@@ -284,7 +284,7 @@ std::string parseQuery (OPENTREP::OPENTREP_Service& ioOpentrepService,
 
   oStr << nbOfMatches << " (geographical) location(s) have been found "
        << "matching your query (`" << iTravelQuery << "'). "
-       << lNonMatchedWordList.size() << " words were left unmatched."
+       << lNonMatchedWordList.size() << " word(s) was/were left unmatched."
        << std::endl;
       
   if (nbOfMatches != 0) {
@@ -315,26 +315,6 @@ std::string parseQuery (OPENTREP::OPENTREP_Service& ioOpentrepService,
 // /////////////// M A I N /////////////////
 int main (int argc, char* argv[]) {
 
-  /*
-    const OPENTREP::NbOfLetters_T lScaleArray[5] = {3, 6, 9, 14, 19};
-
-    const OPENTREP::DistanceErrorScaleArray_T lScaleBoostArray =
-    { {3, 6, 9, 14, 19} };
-    
-    OPENTREP::DistanceErrorRule lScale (5, lScaleArray);
-    OPENTREP::DistanceErrorRule lScaleBoost (lScaleBoostArray);
-
-    std::cout << "Standard array: " << lScale << std::endl;
-    std::cout << "Boost array: " << lScaleBoost << std::endl;
-
-    for (int idx = 0; idx != 20; ++idx) {
-    std::cout << "For " << idx << " letters => "
-    << lScale.getAllowedDistanceError(idx) << std::endl;
-    }
-    
-    return 0;
-  */
-    
   // Travel query
   OPENTREP::TravelQuery_T lTravelQuery;
 
@@ -359,11 +339,14 @@ int main (int argc, char* argv[]) {
   // Deployment number/version
   OPENTREP::DeploymentNumber_T lDeploymentNumber;
   
+  // Log stream for the introduction part
+  std::ostringstream oIntroStr;
+
   // Call the command-line option parser
   const int lOptionParserStatus = 
     readConfiguration (argc, argv, lSpellingErrorDistance, lTravelQuery,
                        lXapianDBNameStr, lSQLDBTypeStr, lSQLDBConnectionStr,
-                       lDeploymentNumber, lLogFilename, lSearchType);
+                       lDeploymentNumber, lLogFilename, lSearchType, oIntroStr);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -375,6 +358,19 @@ int main (int argc, char* argv[]) {
   logOutputFile.open (lLogFilename.c_str());
   logOutputFile.clear();
 
+  // Report the parameters
+  std::cout << oIntroStr.str();
+
+  // DEBUG
+  // Get the current time in UTC Timezone
+  boost::posix_time::ptime lTimeUTC =
+    boost::posix_time::second_clock::universal_time();
+  logOutputFile << "[" << lTimeUTC << "][" << __FILE__ << "#"
+                << __LINE__ << "]:Parameters:" << std::endl
+                <<  oIntroStr.str() << std::endl;
+
+  //
+  std::ostringstream oStr;
   if (lSearchType == 0) {
     // Initialise the context
     const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
@@ -386,13 +382,21 @@ int main (int argc, char* argv[]) {
 
     // Parse the query and retrieve the places from Xapian only
     const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
-    std::cout << lOutput;
+    oStr << lOutput;
 
   } else {
-    std::cout << "Finding the airports closest to: " << lTravelQuery
-              << std::endl;
+    oStr << "Finding the airports closest to: " << lTravelQuery << std::endl;
   }
-    
+  
+  //  
+  std::cout << oStr.str();
+
+  // Get the current time in UTC Timezone
+  lTimeUTC = boost::posix_time::second_clock::universal_time();
+  logOutputFile << "[" << lTimeUTC << "][" << __FILE__ << "#"
+                << __LINE__ << "]:Results:" << std::endl
+                <<  oStr.str() << std::endl;
+
   // Close the Log outputFile
   logOutputFile.close();
 

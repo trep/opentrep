@@ -58,7 +58,8 @@ int readConfiguration (int argc, char* argv[],
                        bool& ioIncludeNonIATAPOR,
                        bool& ioIndexPORInXapian,
                        bool& ioAddPORInDB,
-                       std::string& ioLogFilename) {
+                       std::string& ioLogFilename,
+                       std::ostringstream& oStr) {
 
   // Declare a group of options that will be allowed only on command line
   boost::program_options::options_description generic ("Generic options");
@@ -147,25 +148,24 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("porfile")) {
     ioPORFilepath = vm["porfile"].as< std::string >();
-    std::cout << "POR file-path is: " << ioPORFilepath << std::endl;
+    oStr << "POR file-path is: " << ioPORFilepath << std::endl;
   }
 
   if (vm.count ("deploymentnb")) {
     ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
-    std::cout << "Deployment number " << ioDeploymentNumber << std::endl;
+    oStr << "Deployment number " << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("xapiandb")) {
     ioXapianDBFilepath = vm["xapiandb"].as< std::string >();
-    std::cout << "Xapian index/database filepath is: " << ioXapianDBFilepath
-              << ioDeploymentNumber << std::endl;
+    oStr << "Xapian index/database filepath is: " << ioXapianDBFilepath
+         << ioDeploymentNumber << std::endl;
   }
 
   // Parse the SQL database type, if any is given
   if (vm.count ("sqldbtype")) {
     ioSQLDBTypeString = vm["sqldbtype"].as< std::string >();
-    std::cout << "SQL database type is: " << ioSQLDBTypeString
-              << std::endl;
+    oStr << "SQL database type is: " << ioSQLDBTypeString << std::endl;
   }
 
   /**
@@ -206,22 +206,21 @@ int readConfiguration (int argc, char* argv[],
                                                  ioSQLDBConnectionString,
                                                  ioDeploymentNumber);
     //
-    std::cout << "SQL database connection string is: " << lSQLDBConnString
-              << std::endl;
+    oStr << "SQL database connection string is: " << lSQLDBConnString
+         << std::endl;
   }
 
-  std::cout << "Are non-IATA-referenced POR included? "
-            << ioIncludeNonIATAPOR << std::endl;
+  oStr << "Are non-IATA-referenced POR included? " << ioIncludeNonIATAPOR
+       << std::endl;
   
-  std::cout << "Index the POR in Xapian? "
-            << ioIndexPORInXapian << std::endl;
+  oStr << "Index the POR in Xapian? " << ioIndexPORInXapian << std::endl;
   
-  std::cout << "Add and re-index the POR in the SQL-based database? "
-            << ioAddPORInDB << std::endl;
+  oStr << "Add and re-index the POR in the SQL-based database? " << ioAddPORInDB
+       << std::endl;
   
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
-    std::cout << "Log filename is: " << ioLogFilename << std::endl;
+    oStr << "Log filename is: " << ioLogFilename << std::endl;
   }
 
   return 0;
@@ -258,12 +257,15 @@ int main (int argc, char* argv[]) {
   // Whether or not to insert the POR in the SQL database
   OPENTREP::shouldAddPORInSQLDB_T lShouldAddPORInSQLDB;
 
+  // Log stream for the introduction part
+  std::ostringstream oIntroStr;
+
   // Call the command-line option parser
   const int lOptionParserStatus =
     readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
                        lSQLDBTypeStr, lSQLDBConnectionStr, lDeploymentNumber,
                        lIncludeNonIATAPOR, lShouldIndexPORInXapian,
-                       lShouldAddPORInSQLDB, lLogFilename);
+                       lShouldAddPORInSQLDB, lLogFilename, oIntroStr);
 
   if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
     return 0;
@@ -276,11 +278,20 @@ int main (int argc, char* argv[]) {
   logOutputFile.clear();
 
   //
-  std::cout << "Parsing and indexing the OpenTravelData POR data file (into "
+  oIntroStr << "Parsing and indexing the OpenTravelData POR data file (into "
             << "Xapian and/or SQL databases) may take a few tens of minutes "
             << "on some architectures (and a few minutes on fastest ones)..."
             << std::endl;
+  std::cout << oIntroStr.str();
     
+  // DEBUG
+  // Get the current time in UTC Timezone
+  boost::posix_time::ptime lTimeUTC =
+    boost::posix_time::second_clock::universal_time();
+  logOutputFile << "[" << lTimeUTC << "][" << __FILE__ << "#"
+                << __LINE__ << "]:Parameters:" << std::endl
+                <<  oIntroStr.str() << std::endl;
+
   // Initialise the context
   const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
   const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
@@ -297,11 +308,18 @@ int main (int argc, char* argv[]) {
   const OPENTREP::NbOfDBEntries_T lNbOfEntries =
     opentrepService.insertIntoDBAndXapian();
 
+  //
+  std::ostringstream oStr;
+  oStr << lNbOfEntries << " entries have been processed" << std::endl;
+  std::cout << oStr.str();
+
+  // Get the current time in UTC Timezone
+  lTimeUTC = boost::posix_time::second_clock::universal_time();
+  logOutputFile << "[" << lTimeUTC << "][" << __FILE__ << "#"
+                << __LINE__ << "]:" <<  oStr.str() << std::endl;
+  
   // Close the Log outputFile
   logOutputFile.close();
-    
-  //
-  std::cout << lNbOfEntries << " entries have been processed" << std::endl;
-
+  
   return 0;
 }
