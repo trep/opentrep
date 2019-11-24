@@ -213,7 +213,7 @@ namespace OPENTREP {
    *   <li>Xapian-based full-text match. Score type: XAPIAN_PCT</li>
    *   <li>Schedule-derived PageRank for the point of reference (POR).
    *       Score type: PAGE_RANK</li>
-   *   <li>Heuristic. Score type: Heuristic</li>
+   *   <li>Heuristic. Score type: HEURISTIC</li>
    * </ul>
    * \see ScoreType.hpp for the various types of score.
    *
@@ -270,8 +270,13 @@ namespace OPENTREP {
       const boost::regex lICAOCodeExp ("^([[:alpha:]]|[[:digit:]]){4}$");
       const bool lMatchesWithICAOCode = regex_match (lWord, lICAOCodeExp);
 
-      // Geonames ID: digit{1,11}
-      const boost::regex lGeoIDCodeExp ("^[[:digit:]]{1,11}$");
+      // UN/LOCODE code: alpha{2}(alpha|digit){3}
+      const boost::regex
+        lUNLOCodeExp ("^[[:alpha:]]{2}([[:alpha:]]|[[:digit:]]){3}$");
+      const bool lMatchesWithUNLOCode = regex_match (lWord, lUNLOCodeExp);
+
+      // Geonames ID: digit{1,12}
+      const boost::regex lGeoIDCodeExp ("^[[:digit:]]{1,12}$");
       const bool lMatchesWithGeoID = regex_match (lWord, lGeoIDCodeExp);
 
       // If the word is neither a IATA/ICAO code or a Geonames ID,
@@ -279,7 +284,7 @@ namespace OPENTREP {
       // will have to be fully analysed.
       // Otherwise, we go on analysing the other words.
       if (lMatchesWithIATACode == false && lMatchesWithICAOCode == false
-          && lMatchesWithGeoID == false) {
+          && lMatchesWithUNLOCode == false && lMatchesWithGeoID == false) {
         areAllWordsCodes = false;
         break;
       }
@@ -289,13 +294,39 @@ namespace OPENTREP {
   }
 
   /**
+   * Retrieve the location matching the best, i.e., having the highest score
+   * for some rules. In practice, that score is usually the PageRank value.
+   * When two or morer Location structures have the same highest score,
+   * the first one is taken from the given input list.
+   */
+  // //////////////////////////////////////////////////////////////////////
+  Location getBestMatchingLocation (const LocationList_T& iLocationList) {
+    Location oLocation;
+    PageRank_T lMaxPageRank = 0.0;
+
+    for (LocationList_T::const_iterator itLocation = iLocationList.begin();
+         itLocation != iLocationList.end(); ++itLocation) {
+      const Location& lLocation = *itLocation;
+      
+      // Get the PageRank value
+      const PageRank_T& lPageRank = lLocation.getPageRank();
+      if (lPageRank > lMaxPageRank) {
+        lMaxPageRank = lPageRank;
+        oLocation = lLocation;
+      }
+    }
+
+    return oLocation;
+  }
+  
+  /**
    * Return the list of locations/places corresponding
-   * to the given IATA/ICAO codes or Geonames IDs.
+   * to the given IATA/ICAO/UNLOCODE codes or Geonames IDs.
    *
    * @param const DBType& SQL database type (can be no database at all).
    * @param const SQLDBConnectionString_T& SQL DB connection string.
-   * @param const WordList_T& List of IATA/ICAO codes or Geonames ID (e.g.,
-   *        "sna 5391989 6299418 los chi par rio lso rek lfmn iev mow").
+   * @param const WordList_T& List of IATA/ICAO/UNLOCODE codes or Geonames ID
+   *        (e.g., "sna 5391989 6299418 los chi cnshg lso rek lfmn iev mow").
    * @param LocationList_T& The matching (geographical) locations, if any,
    *                        are added to that list.
    * @param WordList_T& List of non-matched words of the query string.
@@ -356,8 +387,23 @@ namespace OPENTREP {
         continue;
       }
 
-      // Check for Geonames ID: digit{1,11}
-      const boost::regex lGeoIDCodeExp ("^[[:digit:]]{1,11}$");
+      // Check for UN/LOCODE code: alpha{2}(alpha|digit){3}
+      const boost::regex
+        lUNLOCodeExp ("^[[:alpha:]]{2}([[:alpha:]]|[[:digit:]]){3}$");
+      const bool lMatchesWithUNLOCode = regex_match (lWord, lUNLOCodeExp);
+      if (lMatchesWithUNLOCode == true) {
+        // Perform the select statement on the underlying SQL database
+        const UNLOCode_T lUNLOCode (lWord);
+        const bool lUniqueEntry = true;
+        const NbOfDBEntries_T& lNbOfEntries =
+          DBManager::getPORByUNLOCode (*lSociSession_ptr, lUNLOCode,
+                                       ioLocationList, lUniqueEntry);
+        oNbOfMatches += lNbOfEntries;
+        continue;
+      }      
+
+      // Check for Geonames ID: digit{1,12}
+      const boost::regex lGeoIDCodeExp ("^[[:digit:]]{1,12}$");
       const bool lMatchesWithGeoID = regex_match (lWord, lGeoIDCodeExp);
       if (lMatchesWithGeoID == true) {
         try {
@@ -447,7 +493,6 @@ namespace OPENTREP {
         FacResultCombination::instance().create (lTravelQuerySlice);
 
       // DEBUG
-      // DEBUG
       OPENTREP_LOG_DEBUG ("+++++++++++++++++++++");
       OPENTREP_LOG_DEBUG ("Travel query slice: `" << lTravelQuerySlice << "'");
       OPENTREP_LOG_DEBUG ("Partitions: " << lStringPartition);
@@ -464,22 +509,21 @@ namespace OPENTREP {
       NbOfMatches_T lNbOfMatches = 0;
       if (areAllWordsCodes == true && !(iSQLDBType == DBType::NODB)) {
         /**
-         * All the words/items of the travel query are either IATA/ICAO codes
-         * or Geonames ID. The corresponding details will be retrieved directly
-         * from the underlying database, if existing.
-         * The Xapian database/index is not used.
+         * All the words/items of the travel query are either
+         * IATA/ICAO/UNLOCODE codes or Geonames ID. The corresponding details
+         * will be retrieved directly from the underlying database,
+         * if existing. The Xapian database/index is not used.
          */
         // DEBUG
         OPENTREP_LOG_DEBUG ("The travel query string (" << lTravelQuerySlice
-                            << ") is made only of IATA/ICAO codes "
+                            << ") is made only of IATA/ICAO/UNLOCODE codes "
                             << "or Geonames ID. The " << iSQLDBType.describe()
                             << " SQL database (" << iSQLDBConnStr
                             << ") will be used. "
-                            << "The Xapian database will not be used");
+                            << "The Xapian database/index will not be used");
 
-        lNbOfMatches = OPENTREP::getLocationList (iSQLDBType, iSQLDBConnStr,
-                                                  lCodeList,
-                                                  ioLocationList, ioWordList);
+        lNbOfMatches = getLocationList (iSQLDBType, iSQLDBConnStr, lCodeList,
+                                        ioLocationList, ioWordList);
       }
 
       if (lNbOfMatches == 0) {

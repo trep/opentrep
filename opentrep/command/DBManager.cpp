@@ -755,8 +755,8 @@ namespace OPENTREP {
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where iata_code = :place_iata_code",
-                           soci::into (ioSerialisedPlaceStr),
-                           soci::use (lCodeUpper));
+                           soci::use (lCodeUpper),
+                           soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -863,8 +863,8 @@ namespace OPENTREP {
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where unlocode_code = :place_unlocode_code",
-                           soci::into (ioSerialisedPlaceStr),
-                           soci::use (lCodeUpper));
+                           soci::use (lCodeUpper),
+                           soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -1277,6 +1277,12 @@ namespace OPENTREP {
                          << "' IATA code: " << lHighestPRLocation_ptr->getKey());
     }
 
+    // Make the number of retrieved locations consistent with the unicity
+    // requirement (if set)
+    if (oNbOfEntries > 0 && iUniqueEntry == true) {
+      oNbOfEntries = 1;
+    }
+    
     //
     return oNbOfEntries;
   }
@@ -1404,8 +1410,10 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   NbOfDBEntries_T DBManager::getPORByUNLOCode (soci::session& ioSociSession,
                                                const UNLOCode_T& iUNLOCode,
-                                               LocationList_T& ioLocationList) {
+                                               LocationList_T& ioLocationList,
+                                               const bool iUniqueEntry) {
     NbOfDBEntries_T oNbOfEntries = 0;
+    LocationList_T lLocationList;
 
     try {
 
@@ -1443,7 +1451,7 @@ namespace OPENTREP {
           lLocation.setCorrectedKeywords (iUNLOCode);
 
           // Add the new found location to the list
-          ioLocationList.push_back (lLocation);
+          lLocationList.push_back (lLocation);
 
           // Debug
           OPENTREP_LOG_DEBUG ("[" << oNbOfEntries << "] " << lLocation);
@@ -1458,6 +1466,44 @@ namespace OPENTREP {
       throw SQLDatabaseException (errorStr.str());
     }
 
+    // Add the just retrieved Location structure(s) to the list given
+    // as parameter
+    const Location* lHighestPRLocation_ptr = NULL;
+    PageRank_T lHighestPRValue = 0.0;
+    for (LocationList_T::const_iterator itLoc = lLocationList.begin();
+         itLoc != lLocationList.end(); ++itLoc) {
+      const Location& lLocation = *itLoc;
+      const PageRank_T& lPRValue = lLocation.getPageRank();
+
+      // Store (a pointer on) the Location structure with the highest Page Rank
+      if (lPRValue > lHighestPRValue) {
+        lHighestPRLocation_ptr = &lLocation;
+        lHighestPRValue = lPRValue;
+      }
+
+      // Add the Location structure now, only when 
+      if (iUniqueEntry == false) {
+        ioLocationList.push_back (lLocation);
+      }
+    }
+
+    // Add the Location structure with the highest Page Rank value
+    if (iUniqueEntry == true && lHighestPRLocation_ptr != NULL) {
+      assert (lHighestPRLocation_ptr != NULL);
+      ioLocationList.push_back (*lHighestPRLocation_ptr);
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG("Kept the location with the highest PageRank value ("
+                         << lHighestPRValue << ") for '" << iUNLOCode
+                         << "' IATA code: " << lHighestPRLocation_ptr->getKey());
+    }
+
+    // Make the number of retrieved locations consistent with the unicity
+    // requirement (if set)
+    if (oNbOfEntries > 0 && iUniqueEntry == true) {
+      oNbOfEntries = 1;
+    }
+    
     //
     return oNbOfEntries;
   }

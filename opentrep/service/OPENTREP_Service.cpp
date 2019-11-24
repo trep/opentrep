@@ -609,9 +609,9 @@ namespace OPENTREP {
     soci::session& lSociSession = *lSociSession_ptr;
       
     // Get the list of POR corresponding to the given IATA code
-    const bool lSeveralEntries = false;
+    const bool lUniqueEntry = false;
     nbOfMatches = DBManager::getPORByIATACode (lSociSession, iIataCode,
-                                               ioLocationList, lSeveralEntries);
+                                               ioLocationList, lUniqueEntry);
 
     // Release the SQL database connection
     DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,
@@ -754,8 +754,10 @@ namespace OPENTREP {
     soci::session& lSociSession = *lSociSession_ptr;
       
     // Get the list of POR corresponding to the given UN/LOCODE code
+    const bool lUniqueEntry = false;
     nbOfMatches =
-      DBManager::getPORByUNLOCode (lSociSession, iUNLOCode, ioLocationList);
+      DBManager::getPORByUNLOCode (lSociSession, iUNLOCode, ioLocationList,
+                                   lUniqueEntry);
 
     // Release the SQL database connection
     DBManager::terminateSQLDBSession (lSQLDBType, lSQLDBConnectionString,

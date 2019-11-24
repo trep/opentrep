@@ -192,10 +192,12 @@ namespace OPENTREP {
                                 retrieved.
      * @param LocationList_T& List of (geographical) locations, if any,
      *                        matching the given key.
+     * @param const bool States whether a unique entry should be returned.
      * @return NbOfDBEntries_T Number of documents of the SQL database.
      */
     static NbOfDBEntries_T getPORByUNLOCode (soci::session&, const UNLOCode_T&,
-                                             LocationList_T&);
+                                             LocationList_T&,
+                                             const bool iUniqueEntry);
 
     /**
      * Get the POR (point of reference), from the SQL database, corresponding
