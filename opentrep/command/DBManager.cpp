@@ -642,7 +642,8 @@ namespace OPENTREP {
       }
 
       // DEBUG
-      OPENTREP_LOG_DEBUG ("The indices have been created for the SQLite3 database");
+      OPENTREP_LOG_DEBUG ("The indices have been created "
+                          "for the SQLite3 database");
         
     } else if (lDBType == DBType::MYSQL) {
 
@@ -688,7 +689,8 @@ namespace OPENTREP {
       }
 
       // DEBUG
-      OPENTREP_LOG_DEBUG ("The indices have been created for the MySQL/MariaDB database");
+      OPENTREP_LOG_DEBUG ("The indices have been created "
+                          "for the MySQL/MariaDB database");
       
     } else if (lDBType == DBType::NODB) {
       // Do nothing
@@ -739,9 +741,8 @@ namespace OPENTREP {
   void DBManager::
   prepareSelectBlobOnIataCodeStatement (soci::session& ioSociSession,
                                         soci::statement& ioSelectStatement,
-                                        const IATACode_T& iIataCode,
+                                        const std::string& iIataCode,
                                         std::string& ioSerialisedPlaceStr) {
-    std::string oSerialisedPlaceStr;
   
     try {
     
@@ -749,13 +750,10 @@ namespace OPENTREP {
       /**
          select serialised_place from optd_por where iata_code = iIataCode;
       */
-      const std::string lCode = static_cast<std::string> (iIataCode);
-      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
-
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where iata_code = :place_iata_code",
-                           soci::use (lCodeUpper),
+                           soci::use (iIataCode),
                            soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
@@ -775,9 +773,8 @@ namespace OPENTREP {
   void DBManager::
   prepareSelectBlobOnIcaoCodeStatement (soci::session& ioSociSession,
                                         soci::statement& ioSelectStatement,
-                                        const ICAOCode_T& iIcaoCode,
+                                        const std::string& iIcaoCode,
                                         std::string& ioSerialisedPlaceStr) {
-    std::string oSerialisedPlaceStr;
   
     try {
     
@@ -785,14 +782,11 @@ namespace OPENTREP {
       /**
          select serialised_place from optd_por where icao_code = iIcaoCode;
       */
-      const std::string lCode = static_cast<std::string> (iIcaoCode);
-      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
-
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where icao_code = :place_icao_code",
-                           soci::into (ioSerialisedPlaceStr),
-                           soci::use (lCodeUpper));
+                           soci::use (iIcaoCode),
+                           soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -811,9 +805,8 @@ namespace OPENTREP {
   void DBManager::
   prepareSelectBlobOnFaaCodeStatement (soci::session& ioSociSession,
                                        soci::statement& ioSelectStatement,
-                                       const FAACode_T& iFaaCode,
+                                       const std::string& iFaaCode,
                                        std::string& ioSerialisedPlaceStr) {
-    std::string oSerialisedPlaceStr;
   
     try {
     
@@ -821,14 +814,11 @@ namespace OPENTREP {
       /**
          select serialised_place from optd_por where faa_code = iFaaCode;
       */
-      const std::string lCode = static_cast<std::string> (iFaaCode);
-      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
-
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where faa_code = :place_faa_code",
-                           soci::into (ioSerialisedPlaceStr),
-                           soci::use (lCodeUpper));
+                           soci::use (iFaaCode),
+                           soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -847,9 +837,8 @@ namespace OPENTREP {
   void DBManager::
   prepareSelectBlobOnUNLOCodeStatement (soci::session& ioSociSession,
                                         soci::statement& ioSelectStatement,
-                                        const UNLOCode_T& iUNLOCode,
+                                        const std::string& iUNLOCode,
                                         std::string& ioSerialisedPlaceStr) {
-    std::string oSerialisedPlaceStr;
   
     try {
     
@@ -857,13 +846,10 @@ namespace OPENTREP {
       /**
          select serialised_place from optd_por where unlocode_code = iUNLOCode;
       */
-      const std::string lCode = static_cast<std::string> (iUNLOCode);
-      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
-
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where unlocode_code = :place_unlocode_code",
-                           soci::use (lCodeUpper),
+                           soci::use (iUNLOCode),
                            soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
@@ -885,7 +871,6 @@ namespace OPENTREP {
                                        soci::statement& ioSelectStatement,
                                        const UICCode_T& iUICCode,
                                        std::string& ioSerialisedPlaceStr) {
-    std::string oSerialisedPlaceStr;
   
     try {
     
@@ -893,12 +878,11 @@ namespace OPENTREP {
       /**
          select serialised_place from optd_por where uic_code = iUICCode;
       */
-
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where uic_code = :place_uic_code",
-                           soci::into (ioSerialisedPlaceStr),
-                           soci::use (iUICCode));
+                           soci::use (iUICCode),
+                           soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -919,7 +903,6 @@ namespace OPENTREP {
                                           soci::statement& ioSelectStatement,
                                           const GeonamesID_T& iGeonameID,
                                           std::string& ioSerialisedPlaceStr) {
-    std::string oSerialisedPlaceStr;
   
     try {
     
@@ -927,12 +910,11 @@ namespace OPENTREP {
       /**
          select serialised_place from optd_por where iata_code = iIataCode;
       */
-
       ioSelectStatement = (ioSociSession.prepare
                            << "select serialised_place from optd_por "
                            << "where geoname_id = :place_geoname_id",
-                           soci::into (ioSerialisedPlaceStr),
-                           soci::use (iGeonameID));
+                           soci::use (iGeonameID),
+                           soci::into (ioSerialisedPlaceStr));
 
       // Execute the SQL query
       ioSelectStatement.execute();
@@ -1196,12 +1178,18 @@ namespace OPENTREP {
 
     try {
 
+      // Convert the code into uppercase. That way, one can search for codes
+      // irrespective of the case (knwing that codes are stored uppercase
+      // in the database)
+      const std::string& lCode = static_cast<const std::string&> (iIataCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
+      
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (ioSociSession);
       std::string lPlaceRawDataString;
       DBManager::prepareSelectBlobOnIataCodeStatement (ioSociSession,
                                                        lSelectStatement,
-                                                       iIataCode,
+                                                       lCodeUpper,
                                                        lPlaceRawDataString);
 
       /**
@@ -1295,12 +1283,18 @@ namespace OPENTREP {
 
     try {
 
+      // Convert the code into uppercase. That way, one can search for codes
+      // irrespective of the case (knwing that codes are stored uppercase
+      // in the database)
+      const std::string& lCode = static_cast<const std::string&> (iIcaoCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
+      
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (ioSociSession);
       std::string lPlaceRawDataString;
       DBManager::prepareSelectBlobOnIcaoCodeStatement (ioSociSession,
                                                        lSelectStatement,
-                                                       iIcaoCode,
+                                                       lCodeUpper,
                                                        lPlaceRawDataString);
 
       /**
@@ -1355,12 +1349,18 @@ namespace OPENTREP {
 
     try {
 
+      // Convert the code into uppercase. That way, one can search for codes
+      // irrespective of the case (knwing that codes are stored uppercase
+      // in the database)
+      const std::string& lCode = static_cast<const std::string&> (iFaaCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
+      
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (ioSociSession);
       std::string lPlaceRawDataString;
       DBManager::prepareSelectBlobOnFaaCodeStatement (ioSociSession,
                                                       lSelectStatement,
-                                                      iFaaCode,
+                                                      lCodeUpper,
                                                       lPlaceRawDataString);
 
       /**
@@ -1417,12 +1417,18 @@ namespace OPENTREP {
 
     try {
 
+      // Convert the code into uppercase. That way, one can search for codes
+      // irrespective of the case (knwing that codes are stored uppercase
+      // in the database)
+      const std::string& lCode = static_cast<const std::string&> (iUNLOCode);
+      const std::string lCodeUpper = boost::algorithm::to_upper_copy (lCode);
+      
       // Prepare the SQL request corresponding to the select statement
       soci::statement lSelectStatement (ioSociSession);
       std::string lPlaceRawDataString;
       DBManager::prepareSelectBlobOnUNLOCodeStatement (ioSociSession,
                                                        lSelectStatement,
-                                                       iUNLOCode,
+                                                       lCodeUpper,
                                                        lPlaceRawDataString);
 
       /**

@@ -288,48 +288,48 @@ namespace OPENTREP {
      *
      * @param soci::session& SOCI session handler.
      * @param soci::statement& SOCI SQL statement handler.
-     * @param const IATACode_T& The IATA code of the place to be retrieved.
+     * @param const std::string& The IATA code of the place to be retrieved.
      * @param std::string& The serialised place to be retrieved.
      */
     static void
     prepareSelectBlobOnIataCodeStatement (soci::session&, soci::statement&,
-                                          const IATACode_T&,
+                                          const std::string& iIataCode,
                                           std::string& ioSerialisedPlaceStr);
     /**
      * Prepare (parse and put in cache) the SQL statement.
      *
      * @param soci::session& SOCI session handler.
      * @param soci::statement& SOCI SQL statement handler.
-     * @param const ICAOCode_T& The ICAO code of the place to be retrieved.
+     * @param const std::string& The ICAO code of the place to be retrieved.
      * @param std::string& The serialised place to be retrieved.
      */
     static void
     prepareSelectBlobOnIcaoCodeStatement (soci::session&, soci::statement&,
-                                          const ICAOCode_T&,
+                                          const std::string& iIcaoCode,
                                           std::string& ioSerialisedPlaceStr);
     /**
      * Prepare (parse and put in cache) the SQL statement.
      *
      * @param soci::session& SOCI session handler.
      * @param soci::statement& SOCI SQL statement handler.
-     * @param const FAACode_T& The FAA code of the place to be retrieved.
+     * @param const std::string& The FAA code of the place to be retrieved.
      * @param std::string& The serialised place to be retrieved.
      */
     static void
     prepareSelectBlobOnFaaCodeStatement (soci::session&, soci::statement&,
-                                         const FAACode_T&,
+                                         const std::string& iFaaCode,
                                          std::string& ioSerialisedPlaceStr);
     /**
      * Prepare (parse and put in cache) the SQL statement.
      *
      * @param soci::session& SOCI session handler.
      * @param soci::statement& SOCI SQL statement handler.
-     * @param const UNLOCode_T& The UN/LOCODE code of the place to be retrieved.
+     * @param const std::string& The UN/LOCODE code of the place to be retrieved.
      * @param std::string& The serialised place to be retrieved.
      */
     static void
     prepareSelectBlobOnUNLOCodeStatement (soci::session&, soci::statement&,
-                                          const UNLOCode_T&,
+                                          const std::string& iUNLOCode,
                                           std::string& ioSerialisedPlaceStr);
     /**
      * Prepare (parse and put in cache) the SQL statement.
