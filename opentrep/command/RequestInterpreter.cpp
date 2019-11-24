@@ -499,8 +499,8 @@ namespace OPENTREP {
 
 
       /**
-       * 1.0. Check whether the travel query is made only of IATA/ICAO codes
-       *      and Geonames ID.
+       * 1.0. Check whether the travel query is made only
+       *      of IATA/ICAO/UNLOCODE codes and Geonames ID.
        */
       WordList_T lCodeList;
       const bool areAllWordsCodes =
