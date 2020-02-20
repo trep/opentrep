@@ -1242,13 +1242,20 @@ namespace OPENTREP {
       const Location& lLocation = *itLoc;
       const PageRank_T& lPRValue = lLocation.getPageRank();
 
-      // Store (a pointer on) the Location structure with the highest Page Rank
-      if (lPRValue > lHighestPRValue) {
+      // Store (a pointer on) the Location structure with the highest Page Rank.
+      // Normally, when there is no PageRank value, the field should be empty
+      // (empty string). In some rare cases, actually when OPTD is buggy,
+      // the PageRank value may be zero. While it is a bug from OPTD, there is
+      // no reason it should trigger a bug from OpenTREP in turn. So, rather
+      // then ignoring any POR with zero PageRank value, rather the first one
+      // is (randomly) selected
+      if (lPRValue >= lHighestPRValue) {
         lHighestPRLocation_ptr = &lLocation;
         lHighestPRValue = lPRValue;
       }
 
-      // Add the Location structure now, only when 
+      // Add the Location structure now, only when a unique solution
+      // is not expected
       if (iUniqueEntry == false) {
         ioLocationList.push_back (lLocation);
       }
