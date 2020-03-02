@@ -370,6 +370,20 @@ namespace OPENTREP {
     }
 
     /**
+     * Get the Geonames latitude.
+     */
+    const Latitude_T& getGeonameLatitude() const {
+      return _geonameLatitude;
+    }
+
+    /**
+     * Get the Geonames longitude.
+     */
+    const Longitude_T& getGeonameLongitude() const {
+      return _geonameLongitude;
+    }
+    
+    /**
      * Get the map of name lists.
      */
     const NameMatrix& getNameMatrix() const {
@@ -788,6 +802,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Set the Geonames latitude.
+     */
+    void setGeonameLatitude (const Latitude_T& iLatitude) {
+      _geonameLatitude = iLatitude;
+    }
+
+    /**
+     * Set the Geonames longitude.
+     */
+    void setGeonameLongitude (const Longitude_T& iLongitude) {
+      _geonameLongitude = iLongitude;
+    }
+    
+    /**
      * Add a name for that location.
      *
      * @param const LanguageCode_T& Language in which to add the name.
@@ -999,9 +1027,11 @@ namespace OPENTREP {
               const ICAOCode_T&, const FAACode_T&,
               const CommonName_T&, const ASCIIName_T&,
               const EnvelopeID_T&,
-              const Date_T& iDateFrom, const Date_T& iDateEnd, const Comment_T&,
+              const Date_T& iDateFrom, const Date_T& iDateEnd,
+              const Comment_T&,
               const CityDetailsList_T&,
-              const StateCode_T&, const CountryCode_T&, const AltCountryCode_T&,
+              const StateCode_T&,
+              const CountryCode_T&, const AltCountryCode_T&,
               const CountryName_T&, const WAC_T&, const WACName_T&,
               const CurrencyCode_T&,
               const ContinentName_T&,
@@ -1016,7 +1046,9 @@ namespace OPENTREP {
               const TimeZone_T&,
               const GMTOffset_T&, const DSTOffset_T&, const RawOffset_T&,
               const Date_T& iModDate, const TvlPORListString_T&,
-              const WikiLink_T&, const PageRank_T&,
+              const WikiLink_T&,
+              const Latitude_T&, const Longitude_T&,
+              const PageRank_T&,
               const std::string& iOriginalKeywords,
               const std::string& iCorrectedKeywords,
               const MatchingPercentage_T& iPercentage,
@@ -1307,6 +1339,16 @@ namespace OPENTREP {
      * Link on the Wikipedia entry
      */
     WikiLink_T _wikiLink;
+
+    /**
+     * Geonames latitude (e.g., 41.978603).
+     */
+    Latitude_T _geonameLatitude;
+
+    /**
+     * Geonames longitude (e.g., -87.904842).
+     */
+    Longitude_T _geonameLongitude;
 
     /**
      * PageRank/importance (e.g., ATL is 94.66% and BSL is 8.14%).

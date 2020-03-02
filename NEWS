@@ -1,3 +1,8 @@
+* 2020-03-02:
+- Version 0.07.5
+- Updated the code for the new OPTD data format (Geonames coordinates
+have been added)
+
 * 2019-11-10:
 - Version 0.07.4
 - FindBoost.cmake now supports older CMake versions

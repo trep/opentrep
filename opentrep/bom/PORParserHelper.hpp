@@ -555,6 +555,26 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the parsed Geonames latitude value. */
+    struct storeGeonameLatitude : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeGeonameLatitude (Location&);
+      /** Actor Function (functor). */
+      void operator() (double,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const; 
+    };
+    
+    /** Store the parsed Geonames longitude value. */
+    struct storeGeonameLongitude : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeGeonameLongitude (Location&);
+      /** Actor Function (functor). */
+      void operator() (double,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const; 
+    };
+    
     /** Store the full language code of an alternate name. */
     struct storeAltLangCodeFull : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -565,7 +585,9 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the first 2 characters of the language code of an alternate name. */
+    /**
+     * Store the first 2 characters of the language code of an alternate name
+     */
     struct storeAltLangCode2Char : public ParserSemanticAction {
       /** Actor Constructor. */
       storeAltLangCode2Char (Location&);
@@ -575,7 +597,9 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
-    /** Store the country-specific part of the language code of an alternate name. */
+    /**
+     * Store the country-specific part of the language code of an alternate name
+     */
     struct storeAltLangCodeExt : public ParserSemanticAction {
       /** Actor Constructor. */
       storeAltLangCodeExt (Location&);

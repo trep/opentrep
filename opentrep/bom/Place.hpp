@@ -391,6 +391,20 @@ namespace OPENTREP {
     }
     
     /**
+     * Get the Geonames latitude.
+     */
+    const Latitude_T& getGeonameLatitude() const {
+      return _location.getGeonameLatitude();
+    }
+
+    /**
+     * Get the Geonames longitude.
+     */
+    const Longitude_T& getGeonameLongitude() const {
+      return _location.getGeonameLongitude();
+    }
+    
+    /**
      * Get the map of name lists.
      */
     const NameMatrix& getNameMatrix() const {
@@ -841,6 +855,20 @@ namespace OPENTREP {
      */
     void setWikiLink (const std::string& iWikiLink) {
       _location.setWikiLink (iWikiLink);
+    }
+    
+    /**
+     * Set the Geonames latitude.
+     */
+    void setGeonameLatitude (const Latitude_T& iLatitude) {
+      _location.setGeonameLatitude (iLatitude);
+    }
+
+    /**
+     * Set the Geonames longitude.
+     */
+    void setGeonameLongitude (const Longitude_T& iLongitude) {
+      _location.setGeonameLongitude (iLongitude);
     }
     
     /**

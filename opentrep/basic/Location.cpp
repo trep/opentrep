@@ -30,7 +30,7 @@ namespace OPENTREP {
     _currencyCode ("ZZZ"),
     _continentCode (ContinentCode_T ("NA")),
     _continentName (ContinentName_T ("NotAvailable")),
-    _latitude (0), _longitude (0),
+    _latitude (0.0), _longitude (0.0),
     _featClass (FeatureClass_T ("Z")), _featCode (FeatureCode_T ("ZZZZ")),
     _admin1Code (Admin1Code_T ("")),
     _admin1UtfName (Admin1UTFName_T ("")),
@@ -44,6 +44,7 @@ namespace OPENTREP {
     _gmtOffset (0), _dstOffset (0), _rawOffset (0),
     _modificationDate (2000, 01, 01),
     _wikiLink (WikiLink_T ("http://en.wikipedia.org")),
+    _geonameLatitude (0.0), _geonameLongitude (0.0),
     _pageRank (K_DEFAULT_PAGE_RANK),
     _originalKeywords ("NA"), _correctedKeywords ("NA"),
     _percentage (0), _editDistance (0), _allowableEditDistance (0),
@@ -86,7 +87,10 @@ namespace OPENTREP {
     _timeZone (iLocation._timeZone), _gmtOffset (iLocation._gmtOffset),
     _dstOffset (iLocation._dstOffset), _rawOffset (iLocation._rawOffset),
     _modificationDate (iLocation._modificationDate),
-    _wikiLink (iLocation._wikiLink), _pageRank (iLocation._pageRank),
+    _wikiLink (iLocation._wikiLink),
+    _geonameLatitude (iLocation._geonameLatitude),
+    _geonameLongitude (iLocation._geonameLongitude),
+    _pageRank (iLocation._pageRank),
     _nameMatrix (iLocation._nameMatrix),
     _originalKeywords (iLocation._originalKeywords),
     _correctedKeywords (iLocation._correctedKeywords),
@@ -137,6 +141,8 @@ namespace OPENTREP {
                       const Date_T& iModDate,
                       const TvlPORListString_T& iTvlPORListString,
                       const WikiLink_T& iWikiLink, const PageRank_T& iPageRank,
+                      const Latitude_T& iGeonameLatitude,
+                      const Longitude_T& iGeonameLongitude,
                       const std::string& iOriginalKeywords,
                       const std::string& iCorrectedKeywords,
                       const MatchingPercentage_T& iPercentage,
@@ -171,7 +177,9 @@ namespace OPENTREP {
     _timeZone (iTimeZone),
     _gmtOffset (iGMTOffset), _dstOffset (iDSTOffset), _rawOffset (iRawOffset),
     _modificationDate (iModDate),
-    _wikiLink (iWikiLink), _pageRank (iPageRank),
+    _wikiLink (iWikiLink),
+    _geonameLatitude (iGeonameLatitude), _geonameLongitude (iGeonameLongitude),
+    _pageRank (iPageRank),
     _originalKeywords (iOriginalKeywords),
     _correctedKeywords (iCorrectedKeywords),
     _percentage (iPercentage), _editDistance (iEditDistance),
@@ -238,6 +246,7 @@ namespace OPENTREP {
          << ", " << _modificationDate
          << ", " << _tvlPORListString
          << ", " << _wikiLink
+         << ", " << _geonameLatitude << ", " << _geonameLongitude
          << ", " << _originalKeywords << ", " << _correctedKeywords
          << ", " << _percentage << "%"
          << ", " << _editDistance << ", " << _allowableEditDistance;

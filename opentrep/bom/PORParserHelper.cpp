@@ -831,6 +831,35 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeGeonameLatitude::storeGeonameLatitude (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeGeonameLatitude::operator() (double iLatitude,
+                                           bsq::unused_type,
+                                           bsq::unused_type) const {
+      _location.setGeonameLatitude (iLatitude);
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Geoname latitude: " << _location.getGeonameLatitude());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeGeonameLongitude::storeGeonameLongitude (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeGeonameLongitude::operator() (double iLongitude,
+                                            bsq::unused_type,
+                                            bsq::unused_type) const {
+      _location.setGeonameLongitude (iLongitude);
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Geoname longitude: " << _location.getGeonameLongitude());
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeAltLangCodeFull::storeAltLangCodeFull (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
     }
@@ -1141,6 +1170,8 @@ namespace OPENTREP {
        ccy_code           varchar(3)
        unlc_list          varchar(100)
        uic_list           varchar(100)
+       geoname_lat        decimal(10,7)
+       geoname_lon        decimal(10,7)
 
        iata_code^icao_code^faa_code^is_geonames^geoname_id^envelope_id^
        name^asciiname^
@@ -1156,7 +1187,8 @@ namespace OPENTREP {
        state_code^location_type^wiki_link^
        alt_name_section^
        wac^wac_name^ccy_code^
-       unlc_list^uic_list
+       unlc_list^uic_list^
+       geoname_lat^geoname_lon
     */ 
 
     /**
@@ -1233,6 +1265,7 @@ namespace OPENTREP {
         por_details_additional =
           wac >> '^' >> wac_name >> '^' >> -ccy_code
               >> '^' >> -unlc_section >> '^' >> -uic_section
+              >> '^' >> -geoname_lat >> '^' >> -geoname_lon
           ;
 
         iata_code =
@@ -1453,6 +1486,10 @@ namespace OPENTREP {
           bsq::repeat(1,2)[bsu::char_("hp")]
           ;
 
+        geoname_lat = bsq::double_[storeGeonameLatitude(_location)];
+
+        geoname_lon = bsq::double_[storeGeonameLongitude(_location)];        
+
         por_type =
           bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
@@ -1581,6 +1618,8 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (uic_details);
         BOOST_SPIRIT_DEBUG_NODE (uic_code);
         BOOST_SPIRIT_DEBUG_NODE (uic_qualifiers);
+        BOOST_SPIRIT_DEBUG_NODE (geoname_lat);
+        BOOST_SPIRIT_DEBUG_NODE (geoname_lon);
       }
 
       // Instantiation of rules
@@ -1608,7 +1647,8 @@ namespace OPENTREP {
         lang_code_opt, lang_code_2char, lang_code_ext, lang_code_hist,
         por_details_additional, wac, wac_name, ccy_code,
         unlc_section, unlc_details, unlocode_code, unlc_qualifiers,
-        uic_section, uic_details, uic_code, uic_qualifiers;
+        uic_section, uic_details, uic_code, uic_qualifiers,
+        geoname_lat, geoname_lon;
       
       // Parser Context
       Location& _location;
