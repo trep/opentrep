@@ -717,10 +717,15 @@ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/l
 "interceptors not installed" && 0Abort trap: 6
 ```
 
-* A work around is to explicitly use the MacOS native Python interpreter:
+* A work around is to explicitly use the MacOS native Python interpreter.
+  The whole command-line then becomes:
 ```bash
-$ /usr/local/Cellar/python/3.7.4_1/Frameworks/Python.framework/Versions/3.7/Resources/Python.app/Contents/MacOS/Python ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
-OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-0.07.5/share/opentrep/data/por/test_optd_por_public.csv'
+$ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
+  DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
+  ASAN_OPTIONS=detect_container_overflow=0 \
+  /usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/Resources/Python.app/Contents/MacOS/Python \
+  ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
+OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv'
 Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
 SQLite database: '/tmp/opentrep/sqlite_travel.db'
 searchString: nce sfo
