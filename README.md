@@ -290,14 +290,33 @@ $ apt-get -y install doxygen ghostscript texlive-latex-recommended
 #### On MacOS
 * With [Homebrew](http://brew.sh):
 ```bash
-$ brew install boost boost-python boost-python3 cmake libedit \
+$ brew install boost boost-python3 cmake libedit \
   xapian sqlite mysql mysql-client icu4c protobuf protobuf-c doxygen
 $ brew install homebrew/portable-ruby/portable-readline
 ```
 
-* Note that, as of October 2019, the Hombrew recipe for Boost (1.71)
-  does not provide the CMake support files for the Python modules.
-  Hence, it must be installed from the source on MacOS.
+* Note that, as of April 2020, the Hombrew recipe for Python 3.8 (`python@3.8`)
+  is not the default one for Python 3.7 (the default one being 3.7.7).
+  It is not even installed in a default location.
+  + The following setup was necessary:
+```bash
+$ sudo ln -s /usr/local/Cellar/python\@3.8/3.8.2 /usr/local/Cellar/python/3.8.2
+$ sudo ln -s /usr/local/Cellar/python/3.8.2/Frameworks/Python.framework/Versions/3.8 /usr/local/Frameworks/Python.framework/Versions/3.8
+$ sudo unlink /usr/local/Frameworks/Python.framework/Versions/Current
+$ sudo ln -s /usr/local/Cellar/python/3.8.2/Frameworks/Python.framework/Versions/Current /usr/local/Frameworks/Python.framework/Versions/Current
+```
+  + Leading to:
+```bash
+$ ls -lFh /usr/local/Cellar/python/
+total 0
+drwxr-xr-x  13 user  staff   416B Mar 12 11:34 3.7.7/
+lrwxr-xr-x   1 user  staff    34B Apr  7 23:15 3.8.2@ -> /usr/local/Cellar/python@3.8/3.8.2
+$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/
+total 0
+lrwxr-xr-x  1 user  staff    69B Mar 12 11:34 3.7@ -> ../../../Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7
+lrwxr-xr-x  1 user  staff    71B Apr  7 23:17 3.8@ -> /usr/local/Cellar/python/3.8.2/Frameworks/Python.framework/Versions/3.8
+lrwxr-xr-x  1 user  staff    75B Apr  7 23:19 Current@ -> /usr/local/Cellar/python/3.8.2/Frameworks/Python.framework/Versions/Current
+```
 
 ### ICU
 * Install ICU with Homebrew

@@ -610,8 +610,8 @@ macro (get_boost)
   #         'python'. It is now suffixed with the version of Python, and
   #         on some Linux distributions, there is even a '-py' suffix.
   #         On some platform/Boost version combinations, the Python version
-  #         may be just the major version (2 or 3 as of 2019) or the major
-  #         and minor versions (e.g., 27, 28, 34, 36, 37, 38 as of 2019)
+  #         may be just the major version (2 or 3 as of 2020) or the major
+  #         and minor versions (e.g., 27, 28, 34, 36, 37, 38, 39 as of 2020)
   set (python_cpt_name1 "python${Python3_VERSION_MAJOR}")
   set (python_cpt_name2 "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
   set (Boost_USE_STATIC_LIBS OFF)
