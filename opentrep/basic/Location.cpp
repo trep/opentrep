@@ -375,7 +375,9 @@ namespace OPENTREP {
     const CityDetails lCityDetails (IATACode_T (_itCityIataCode),
                                     _itCityGeonamesID,
                                     CityUTFName_T (_itCityUtfName),
-                                    CityASCIIName_T (_itCityAsciiName));
+                                    CityASCIIName_T (_itCityAsciiName),
+                                    CountryCode_T (_itCityCountryCode),
+                                    StateCode_T (_itCityStateCode));
     _cityList.push_back (lCityDetails);
   }
 

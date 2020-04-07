@@ -579,7 +579,7 @@ namespace OPENTREP {
     /**
      * Add a UN/LOCODE five-letter code to the underlying list.
      */
-    void addUNLOCode (const std::string& iUNLOCode) {
+    void addUNLOCode (const UNLOCode_T& iUNLOCode) {
       _location.addUNLOCode (iUNLOCode);
     }
 

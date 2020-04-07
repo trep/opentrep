@@ -509,8 +509,8 @@ namespace OPENTREP {
     /**
      * Add a UN/LOCODE five-letter code to the underlying list.
      */
-    void addUNLOCode (const std::string& iUNLOCode) {
-      _unLOCodeList.push_back (UNLOCode_T (iUNLOCode));
+    void addUNLOCode (const UNLOCode_T& iUNLOCode) {
+      _unLOCodeList.push_back (iUNLOCode);
     }
 
     /**
@@ -1446,6 +1446,8 @@ namespace OPENTREP {
     GeonamesID_T _itCityGeonamesID;
     std::string _itCityUtfName;
     std::string _itCityAsciiName;
+    std::string _itCityCountryCode;
+    std::string _itCityStateCode;
   };
 
 }

@@ -14,8 +14,8 @@ namespace OPENTREP {
   
   /** 
    * @brief A list of cities, for instance the list of cities served
-   * by a travel-related POR (point of reference), such as an airport
-   * or railway station.
+   * by a travel-/transport-related POR (point of reference),
+   * such as an airport, a railway/bus station or a ferry/maritime port.
    *
    * For instance,
    * [Bradley International Airport](http://www.geonames.org/5282636) serves

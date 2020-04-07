@@ -494,6 +494,26 @@ namespace OPENTREP {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the city country code. */
+    struct storeCityCountryCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityCountryCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
+    /** Store the parsed city state code. */
+    struct storeCityStateCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCityStateCode (Location&);
+      /** Actor Function (functor). */
+      void operator() (std::vector<uchar_t>,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
     /** Store the parsed state code. */
     struct storeStateCode : public ParserSemanticAction {
       /** Actor Constructor. */

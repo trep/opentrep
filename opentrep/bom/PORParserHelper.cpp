@@ -97,7 +97,8 @@ namespace OPENTREP {
                                     bsq::unused_type, bsq::unused_type) const {
 
       const std::string lUNLOCodeStr (iChar.begin(), iChar.end());
-      _location.addUNLOCode (lUNLOCodeStr);
+      const OPENTREP::UNLOCode_T lUNLOCode (lUNLOCodeStr);
+      _location.addUNLOCode (lUNLOCode);
 
       // DEBUG
       //OPENTREP_LOG_DEBUG ("UN/LOCODE codes: " << _location.describeUNLOCodeList());
@@ -289,7 +290,7 @@ namespace OPENTREP {
                                         bsq::unused_type,
                                         bsq::unused_type) const {
       const std::string lFeatClassStr (iChar.begin(), iChar.end());
-      const FeatureClass_T lFeatClass (lFeatClassStr);
+      const OPENTREP::FeatureClass_T lFeatClass (lFeatClassStr);
       _location.setFeatureClass (lFeatClass);
 
       // DEBUG
@@ -306,7 +307,7 @@ namespace OPENTREP {
                                        bsq::unused_type,
                                        bsq::unused_type) const {
       const std::string lFeatCodeStr (iChar.begin(), iChar.end());
-      const FeatureClass_T lFeatCode (lFeatCodeStr);
+      const OPENTREP::FeatureClass_T lFeatCode (lFeatCodeStr);
       _location.setFeatureCode (lFeatCode);
 
       // DEBUG
@@ -385,7 +386,7 @@ namespace OPENTREP {
                                        bsq::unused_type,
                                        bsq::unused_type) const {
       const std::string lCountryCodeStr (iChar.begin(), iChar.end());
-      const CountryCode_T lCountryCode (lCountryCodeStr);
+      const OPENTREP::CountryCode_T lCountryCode (lCountryCodeStr);
       _location.setCountryCode (lCountryCode);
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Country code: " << _location.getCountryCode());
@@ -739,6 +740,40 @@ namespace OPENTREP {
        //OPENTREP_LOG_DEBUG("City ASCII name: " << _location._itCityAsciiName);
     }
 
+    // //////////////////////////////////////////////////////////////////
+    storeCityCountryCode::storeCityCountryCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeCityCountryCode::operator() (std::vector<uchar_t> iChar,
+                                           bsq::unused_type,
+                                           bsq::unused_type) const {
+      
+      const std::string lCityCountryCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::CountryCode_T lCityCountryCode (lCityCountryCodeStr);
+      _location._itCityCountryCode = lCityCountryCode;
+      // DEBUG
+      //OPENTREP_LOG_DEBUG("City country code: "<< _location._itCityCountryCode);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeCityStateCode::storeCityStateCode (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCityStateCode::operator() (std::vector<uchar_t> iChar,
+                                         bsq::unused_type,
+                                         bsq::unused_type) const {
+
+      const std::string lCityStateCodeStr (iChar.begin(), iChar.end());
+      const OPENTREP::StateCode_T lCityStateCode (lCityStateCodeStr);
+      _location._itCityStateCode = lCityStateCode;
+       // DEBUG
+       //OPENTREP_LOG_DEBUG ("City state code: " << _location._itCityStateCode);
+    }
+ 
     // //////////////////////////////////////////////////////////////////
     storeStateCode::storeStateCode (Location& ioLocation)
       : ParserSemanticAction (ioLocation) {
@@ -1433,6 +1468,15 @@ namespace OPENTREP {
            - (bsq::eoi|bsq::eol))[storeCityAsciiName(_location)]
           ;
 
+        city_country_code =
+          bsq::repeat(2,3)[bsu::char_("A-Z")][storeCityCountryCode(_location)]
+          ;
+      
+        city_state_code =
+          (bsq::no_skip[+~bsu::char_('^')]
+           - (bsq::eoi|bsq::eol))[storeCityStateCode(_location)]
+          ;      
+
         city_detail_list = city_details[storeCityDetailList(_location)] % '=';
 
         city_details =
@@ -1440,6 +1484,8 @@ namespace OPENTREP {
           >> '|' >> city_geoname_id
           >> '|' >> city_name_utf
           >> '|' >> city_name_ascii
+          >> '|' >> -city_country_code
+          >> '|' >> -city_state_code
           ;
 
         city_geoname_id = uint1_9_p[storeCityGeonamesID(_location)];
@@ -1593,6 +1639,8 @@ namespace OPENTREP {
         BOOST_SPIRIT_DEBUG_NODE (city_code);
         BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
         BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
+        BOOST_SPIRIT_DEBUG_NODE (city_country_code);
+        BOOST_SPIRIT_DEBUG_NODE (city_state_code);
         BOOST_SPIRIT_DEBUG_NODE (state_code);
         BOOST_SPIRIT_DEBUG_NODE (por_type);
         BOOST_SPIRIT_DEBUG_NODE (wiki_link);
@@ -1639,6 +1687,7 @@ namespace OPENTREP {
         mod_date, date,
         city_code_list, city_code,
         city_name_list, city_name_utf, city_name_ascii,
+        city_country_code, city_state_code,
         city_detail_list, city_details, city_geoname_id,
         state_code,
         por_type, wiki_link,

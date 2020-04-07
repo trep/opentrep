@@ -17,12 +17,14 @@ namespace OPENTREP {
   /**
    * @brief Class modelling the elementary details of a city.
    *
-   * The CityDetails structure mainly holds:
+   * The CityDetails structure contains:
    * <ul>
    *  <li>IATA three-letter code</li>
    *  <li>Geonames ID</li>
    *  <li>Most common used name, in UTF8</li>
    *  <li>Most common used name, transliterated in ASCII</li>
+   *  <li>Country code (of the city)</li>
+   *  <li>State (ISO-3166-2) code (of the city)</li>
    * </ul>
    */
   struct CityDetails : public OPENTREP_Abstract {
@@ -57,6 +59,20 @@ namespace OPENTREP {
       return _asciiName;
     }
     
+    /**
+     * Get the country code (of the city).
+     */
+    const CountryCode_T& getCountryCode() const {
+      return _countryCode;
+    }
+    
+    /**
+     * Get the state (ISO-3166-2) code (of the city).
+     */
+    const StateCode_T& getStateCode() const {
+      return _stateCode;
+    }
+    
 
   public:
     // ////////////////// Setters /////////////////
@@ -87,6 +103,20 @@ namespace OPENTREP {
      */
     void setAsciiName (const CityASCIIName_T& iAsciiName) {
       _asciiName = iAsciiName;
+    }
+    
+    /**
+     * Set the country code. 
+     */
+    void setCountryCode (const std::string& iCountryCode) {
+      _countryCode = CountryCode_T (iCountryCode);
+    }
+    
+    /**
+     * Set the state code. 
+     */
+    void setStateCode (const std::string& iStateCode) {
+      _stateCode = StateCode_T (iStateCode);
     }
     
 
@@ -124,7 +154,8 @@ namespace OPENTREP {
      * Main constructor.
      */
     CityDetails (const IATACode_T&, const GeonamesID_T&,
-                 const CityUTFName_T&, const CityASCIIName_T&);
+                 const CityUTFName_T&, const CityASCIIName_T&,
+                 const CountryCode_T&, const StateCode_T&);
 
     /**
      * Default copy constructor.
@@ -182,6 +213,17 @@ namespace OPENTREP {
      * That corresponds to the transliterated version of the Unicode one.
      */
     CityASCIIName_T _asciiName;
+
+    /**
+     * Country code (of the city).
+     */
+    CountryCode_T _countryCode;
+    
+    /**
+     * State (ISO-3166-2) code (of the city).
+     */
+    StateCode_T _stateCode;
+    
   };
 
 }
