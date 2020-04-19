@@ -381,13 +381,16 @@ int main (int argc, char* argv[]) {
                                                 lDeploymentNumber);
 
     // Check the directory of the Xapian database/index exists and is accessible
+    const OPENTREP::OPENTREP_Service::FilePathSet_T& lFPSet =
+      opentrepService.getFilePaths();
+    const OPENTREP::TravelDBFilePath_T& lActualXapianDBDir= lFPSet.second.first;
     const bool lExistXapianDBDir =
-      opentrepService.checkXapianDBOnFileSystem (lXapianDBName);
+      opentrepService.checkXapianDBOnFileSystem (lActualXapianDBDir);
     if (lExistXapianDBDir == false) {
       std::ostringstream errorStr;
       errorStr << "Error - The file-path to the Xapian database/index ('"
-               << lXapianDBName << "') does not exist or is not a directory."
-               << std::endl;
+               << lActualXapianDBDir
+               << "') does not exist or is not a directory." << std::endl;
       errorStr << "\tThat usually means that the OpenTREP indexer "
                << "(opentrep-indexer) has not been launched yet, "
                << "or that it has operated on a different Xapian "
