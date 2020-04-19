@@ -69,7 +69,7 @@ namespace OPENTREP {
 
   private:
     /**
-     * Private wrapper around the indexation use case. 
+     * Private wrapper around the file-path retrieval use case. 
      */
     std::string getPathsImpl() {
       std::ostringstream oPythonLogStr;
@@ -247,6 +247,30 @@ namespace OPENTREP {
           lFilePathSet.second;
         const TravelDBFilePath_T& lTravelDBFilePath = lDBFilePathPair.first;
         const SQLDBConnectionString_T& lSQLDBConnStr = lDBFilePathPair.second;
+
+        // Check the directory of the Xapian database/index exists
+        // and is accessible
+        const OPENTREP::DeploymentNumber_T& lDeploymentNumber =
+          _opentrepService->getDeploymentNumber();
+        const bool lExistXapianDBDir =
+          _opentrepService->checkXapianDBOnFileSystem (lTravelDBFilePath);
+        if (lExistXapianDBDir == false) {
+          std::ostringstream errorStr;
+          *_logOutputStream << "Error - The file-path to the Xapian "
+                            << "database/index ('" << lTravelDBFilePath
+                            << "') does not exist or is not a directory."
+                            << std::endl;
+          *_logOutputStream << "Error - That usually means that the OpenTREP "
+                            << "indexer (opentrep-indexer) has not been "
+                            << "launched yet, or that it has operated on a "
+                            << "different Xapian database/index file-path."
+                            << std::endl;
+          *_logOutputStream << "Error - For instance the Xapian database/index "
+                            << "may have been created with a different "
+                            << "deployment number (" << lDeploymentNumber
+                            << " being the current deployment number)";
+          return oNoDetailedStr.str();
+        }
 
         // DEBUG
         *_logOutputStream << "Xapian travel database/index: '"
@@ -630,20 +654,11 @@ namespace OPENTREP {
 
       try {
 
-	// Add the deployment number/version to the Xapian file-path
-	std::ostringstream oXFP;
-	oXFP << iTravelDBFilePath << iDeploymentNumber;
-	const std::string lXapianFP = oXFP.str();
+        // Add the deployment number/version to the Xapian file-path
+        std::ostringstream oXFP;
+        oXFP << iTravelDBFilePath << iDeploymentNumber;
+        const std::string lXapianFP = oXFP.str();
         
-        // Check that the file-path exist and are accessible
-        boost::filesystem::path lXapianFilePath (lXapianFP.begin(),
-                                                 lXapianFP.end());
-        if (!(boost::filesystem::exists (lXapianFilePath)
-              && boost::filesystem::is_directory (lXapianFilePath))) {
-          isEverythingOK = false;
-          return isEverythingOK;
-        }
-
         // Set the log parameters
         _logOutputStream = new std::ofstream;
         assert (_logOutputStream != NULL);

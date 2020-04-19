@@ -14,7 +14,7 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   bool FileManager::checkSQLiteDirectory (const std::string& iSQLDBConnStr) {
-    bool oExistSQLDBDir = true;
+    bool oExistSQLDBDir = false;
     
     // Retrieve the full file-path of the SQLite3 directory
     boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
@@ -29,6 +29,22 @@ namespace OPENTREP {
       && boost::filesystem::is_directory (lSQLiteDBParentPath);
 
     return oExistSQLDBDir;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool FileManager::
+  checkXapianDBOnFileSystem (const TravelDBFilePath_T& iTravelDBFilePath) {
+    bool oExistXapianDBDir = false;
+
+    // Convert into Boost structure
+    boost::filesystem::path lTravelDBFilePath (iTravelDBFilePath.begin(),
+                                               iTravelDBFilePath.end());
+
+    // Check that the directory exists and is actually a directory
+    oExistXapianDBDir = boost::filesystem::exists (lTravelDBFilePath)
+      && boost::filesystem::is_directory (lTravelDBFilePath);
+
+    return oExistXapianDBDir;
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -49,8 +65,9 @@ namespace OPENTREP {
     if (!(boost::filesystem::exists (lTravelDBFilePath)
           && boost::filesystem::is_directory (lTravelDBFilePath))) {
       std::ostringstream oStr;
-      oStr << "The file-path to the Xapian database/index ('"
-           << lTravelDBFilePath << "') does not exist or is not a directory.";
+      oStr << "The directory for the Xapian database/index ('"
+           << lTravelDBFilePath << "') cannot be created; check file-system "
+           << "permissions and whether the file-system is writable";
       OPENTREP_LOG_ERROR (oStr.str());
       throw FileNotFoundException (oStr.str());
     }

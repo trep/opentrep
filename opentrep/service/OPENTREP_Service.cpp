@@ -16,6 +16,7 @@
 #include <opentrep/basic/BasChronometer.hpp>
 #include <opentrep/factory/FacWorld.hpp>
 #include <opentrep/command/DBManager.hpp>
+#include <opentrep/command/FileManager.hpp>
 #include <opentrep/command/IndexBuilder.hpp>
 #include <opentrep/command/XapianIndexManager.hpp>
 #include <opentrep/command/RequestInterpreter.hpp>
@@ -156,6 +157,22 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  const DeploymentNumber_T& OPENTREP_Service::getDeploymentNumber() const {
+    if (_opentrepServiceContext == NULL) {
+      throw NonInitialisedServiceException ("The OpenTREP service has not been"
+                                            " initialised");
+    }
+    assert (_opentrepServiceContext != NULL);
+    OPENTREP_ServiceContext& lOPENTREP_ServiceContext = *_opentrepServiceContext;
+
+    // Retrieve the deployment number/version
+    const DeploymentNumber_T& lDeploymentNumber =
+      lOPENTREP_ServiceContext.getDeploymentNumber();
+    
+    return lDeploymentNumber;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   OPENTREP_Service::FilePathSet_T OPENTREP_Service::getFilePaths() const {
     if (_opentrepServiceContext == NULL) {
       throw NonInitialisedServiceException ("The OpenTREP service has not been"
@@ -179,6 +196,14 @@ namespace OPENTREP {
                                             lSQLDBConnectionString);
     FilePathSet_T oFilePathSet (lPORFilePath, lDBFilePathPair);
     return oFilePathSet;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool OPENTREP_Service::
+  checkXapianDBOnFileSystem (const TravelDBFilePath_T& iTravelDBFilePath) const {
+    bool oExistXapianDBDir =
+      FileManager::checkXapianDBOnFileSystem (iTravelDBFilePath);
+    return oExistXapianDBDir;
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -972,6 +997,23 @@ namespace OPENTREP {
     // Retrieve the Xapian database name (directorty of the index)
     const TravelDBFilePath_T& lTravelDBFilePath =
       lOPENTREP_ServiceContext.getTravelDBFilePath();
+
+    // Check whether the Xapian database/index is existing
+    const bool lExistXapianDBDir = checkXapianDBOnFileSystem (lTravelDBFilePath);
+    if (lExistXapianDBDir == false) {
+      std::ostringstream errorStr;
+      errorStr << "The file-path to the Xapian database/index ('"
+               << lTravelDBFilePath << "') does not exist or is not a "
+               << "directory." << std::endl;
+      errorStr << "That usually means that the OpenTREP indexer "
+               << "(opentrep-indexer) has not been launched yet, "
+               << "or that it has operated on a different Xapian "
+               << "database/index file-path, for instance with a different "
+               << "deployment number";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw XapianTravelDatabaseWrongPathnameException (errorStr.str());
+      return nbOfMatches;
+    }
       
     // Retrieve the SQL database type
     const DBType& lSQLDBType = lOPENTREP_ServiceContext.getSQLDBType();

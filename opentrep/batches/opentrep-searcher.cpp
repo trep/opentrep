@@ -209,7 +209,7 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("deploymentnb")) {
     ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
-    oStr << "Deployment number " << ioDeploymentNumber << std::endl;
+    oStr << "Deployment number: " << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("xapiandb")) {
@@ -380,6 +380,25 @@ int main (int argc, char* argv[]) {
                                                 lDBType, lSQLDBConnStr,
                                                 lDeploymentNumber);
 
+    // Check the directory of the Xapian database/index exists and is accessible
+    const bool lExistXapianDBDir =
+      opentrepService.checkXapianDBOnFileSystem (lXapianDBName);
+    if (lExistXapianDBDir == false) {
+      std::ostringstream errorStr;
+      errorStr << "Error - The file-path to the Xapian database/index ('"
+               << lXapianDBName << "') does not exist or is not a directory."
+               << std::endl;
+      errorStr << "\tThat usually means that the OpenTREP indexer "
+               << "(opentrep-indexer) has not been launched yet, "
+               << "or that it has operated on a different Xapian "
+               << "database/index file-path." << std::endl;
+      errorStr << "\tFor instance the Xapian database/index may have been "
+               << "created with a different deployment number ("
+               << lDeploymentNumber << " being the current deployment number)";
+      std::cerr << errorStr.str() << std::endl;
+      return -1;
+    }
+    
     // Parse the query and retrieve the places from Xapian only
     const std::string& lOutput = parseQuery (opentrepService, lTravelQuery);
     oStr << lOutput;

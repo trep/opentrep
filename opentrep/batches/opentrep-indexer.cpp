@@ -153,7 +153,7 @@ int readConfiguration (int argc, char* argv[],
 
   if (vm.count ("deploymentnb")) {
     ioDeploymentNumber = vm["deploymentnb"].as< unsigned short >();
-    oStr << "Deployment number " << ioDeploymentNumber << std::endl;
+    oStr << "Deployment number: " << ioDeploymentNumber << std::endl;
   }
 
   if (vm.count ("xapiandb")) {

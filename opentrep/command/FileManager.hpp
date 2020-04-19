@@ -21,6 +21,12 @@ namespace OPENTREP {
     static bool checkSQLiteDirectory (const std::string& iSQLDBConnStr);
 
     /**
+     * Check that the directory hosting the Xapian database/index exists
+     * and is accessible.
+     */
+    static bool checkXapianDBOnFileSystem (const TravelDBFilePath_T&);
+
+    /**
      * Delete and re-create the directory hosting the Xapian index (aka database)
      */
     static void recreateXapianDirectory (const std::string& iTravelDBFilePath);

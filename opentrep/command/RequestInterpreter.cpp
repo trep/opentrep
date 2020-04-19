@@ -449,7 +449,10 @@ namespace OPENTREP {
           && boost::filesystem::is_directory (lTravelDBFilePath))) {
       std::ostringstream oStr;
       oStr << "The file-path to the Xapian database/index ('"
-           << iTravelDBFilePath << "') does not exist or is not a directory.";
+           << iTravelDBFilePath << "') does not exist or is not a directory. ";
+      oStr << "That usually means that the OpenTREP indexer (opentrep-indexer) "
+           << "has not been launched yet, or that it has operated "
+           << "on a different Xapian database/index file-path.";
       OPENTREP_LOG_ERROR (oStr.str());
       throw FileNotFoundException (oStr.str());
     }

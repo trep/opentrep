@@ -7,7 +7,7 @@ import simplejson as json
 import Travel_pb2
 
 # Usage
-def usage (script_name):
+def usage (script_name = 'pyopentrep'):
     print
     print ("That script searches for, against a Xapian-indexed database of")
     print ("travel-related terms, place key words. It allows for some")
@@ -259,14 +259,29 @@ def getPaths (openTrepLibrary):
     # Calls the underlying OpenTrep library service
     filePathListString = openTrepLibrary.getPaths()
     filePathList = filePathListString.split(';')
+    optd_por_filepath = filePathList[0]
+    actual_xapian_db_path = None
+    sqlitedb_filepath = None
 
-    # Report the results
-    print ("OPTD-maintained list of POR (points of reference): '" + filePathList[0] + "'")
-    if len(filePathList) >= 2:
-        print ("Xapian-based travel database/index: '" + filePathList[1] + "'")
-    if len(filePathList) >= 3:
-        print ("SQLite database: '" + filePathList[2] + "'")
     #
+    if len(filePathList) >= 2:
+        actual_xapian_db_path = filePathList[1]
+
+    #
+    if len(filePathList) >= 3:
+        sqlitedb_filepath = filePathList[2]
+    
+    # Report the results
+    print ("OPTD-maintained list of POR (points of reference): '{}'".\
+           format (optd_por_filepath))
+    if len(filePathList) >= 2:
+        print ("Xapian-based travel database/index: '{}'".\
+               format (actual_xapian_db_path))
+    if len(filePathList) >= 3:
+        print ("SQLite database: '{}'".format (sqlitedb_filepath))
+
+    #
+    return (optd_por_filepath, actual_xapian_db_path, sqlitedb_filepath)
 
 ##
 # Indexation
@@ -431,17 +446,18 @@ if __name__ == '__main__':
     command, outputFormat, xapianDBPath, sqlDBType, sqlDBConnStr, \
         deploymentNumber, searchString, nbOfDraws = handle_opt()
 
-    # Initialise the OpenTrep C++ library
+    # Initialize the OpenTrep C++ library
     import pyopentrep
     openTrepLibrary = pyopentrep.OpenTrepSearcher()
     initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
                                    deploymentNumber, 'pyopentrep.log')
     if initOK == False:
-        errorMsg = 'Error: The OpenTrepLibrary cannot be initialised'
+        errorMsg = 'Error: The OpenTrepSearcher cannot be initialized'
         raise Exception (errorMsg)
 
     # Print out the file-path details
-    getPaths (openTrepLibrary)
+    (optd_por_filepath, actual_xapian_db_path, sqlitedb_filepath) = \
+        getPaths (openTrepLibrary)
 
     #
     if command == 'index':
@@ -451,6 +467,20 @@ if __name__ == '__main__':
         generate (openTrepLibrary, nbOfDraws, outputFormat)
 
     else:
+        # Check whether the directory of the Xapian database/index exists
+        doesXapianDirExist = os.path.isdir (actual_xapian_db_path)
+        if doesXapianDirExist == False:
+            print ('Error:\tThe directory of the Xapian database/index ({}) ' \
+                   'does not exist or is not accessible.'\
+                   .format (actual_xapian_db_path))
+            print ('\tEither the indexing process has not run yet, or it has ' \
+                   'run with a different deployment number ({} being the ' \
+                   'current one).'.format (deploymentNumber))
+            print ('\tThe indexer can be re-run by adding the -i option ' \
+                   'to this script.')
+            sys.exit (2)
+
+        #
         search (openTrepLibrary, searchString, outputFormat)
 
 

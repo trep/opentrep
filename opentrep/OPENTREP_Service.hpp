@@ -75,6 +75,22 @@ namespace OPENTREP {
     typedef std::pair<const PORFilePath_T, const DBFilePathPair_T> FilePathSet_T;
     FilePathSet_T getFilePaths() const;
 
+    /**
+     * Get the deployment number.
+     *
+     * @return DeploymentNumber_T& The current deployment number
+     */
+    const DeploymentNumber_T& getDeploymentNumber() const;
+
+    /**
+     * Check that the directory hosting the Xapian database/index exists
+     * and is accessible.
+     *
+     * @return bool Whether the directory of the Xapian database/index exists
+     *              and is accessible
+     */
+    bool checkXapianDBOnFileSystem (const TravelDBFilePath_T&) const;
+
   public:
     // ////////// Interaction with the SQL database //////////
     /**

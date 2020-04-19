@@ -281,7 +281,7 @@ namespace OPENTREP {
   };
 
   /** 
-   * The Xapian travel database file-path has not been set correctly.
+   * The Xapian travel database/index file-path has not been set correctly.
    */
   class XapianTravelDatabaseWrongPathnameException : public XapianException {
   public:

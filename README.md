@@ -296,7 +296,7 @@ $ brew install homebrew/portable-ruby/portable-readline
 ```
 
 * Note that, as of April 2020, the Hombrew recipe for Python 3.8 (`python@3.8`)
-  is not the default one for Python 3.7 (the default one being 3.7.7).
+  is not the default one for Python 3 (the default one being 3.7.7).
   It is not even installed in a default location.
   + The following setup was necessary:
 ```bash
@@ -407,7 +407,7 @@ the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
 export TREP_VER="0.07.5"
-if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; fi
+if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; else LIBSUFFIX=""; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
 
@@ -699,8 +699,8 @@ All the details are explained on a
 [dedicated procedure](http://github.com/machine-learning-helpers/induction-python/tree/master/installation/virtual-env),
 which works for the major Linux distributions and on MacOS.
 
-The procedure first installs a specific version of Python (as of end of 2018,
-3.7.1) thanks to Pyenv, then install `pipenv` thanks to the `pip` utility
+The procedure first installs a specific version of Python (as of April of 2020,
+3.8.2) thanks to Pyenv, then install `pipenv` thanks to the `pip` utility
 provided with that specific Python version.
 
 # Checking that the Python module works
@@ -742,7 +742,7 @@ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/l
 $ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
   DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
   ASAN_OPTIONS=detect_container_overflow=0 \
-  /usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/Resources/Python.app/Contents/MacOS/Python \
+  /usr/local/Cellar/python/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python \
   ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
 OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv'
 Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
