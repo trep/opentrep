@@ -47,8 +47,8 @@ def handle_opt():
     try:
         opts, args = getopt.getopt (sys.argv[1:], "hif:d:t:s:g:m:",
                         ["help", "index", "format=", "xapiandb=", "sqldbtype=",
-                         "sqldbconx=", "generate=", "deploymentnb="])
-    except (getopt.GetoptError, err):
+                         "sqldbconx=", "generate", "deploymentnb="])
+    except getopt.GetoptError as err:
         # Print help information and exit. It will print something like
         # "option -a not recognized"
         print (str(err))
@@ -164,38 +164,16 @@ def compactResultParser (resultString):
 #    matching percentages).
 #
 # Samples of result string to be parsed:
-#  - pyopentrep -f J nice sna francisco
+#  - pyopentrep -fJ "nice sna francisco"
 #    - {'locations':[
 #         {'names':[
-#            {'name': 'nice'}, {'name': 'nice/fr:cote d azur'}],
-#          'city_code': 'nce'},
+#            {'name': 'Nice Airport'}, {'name': 'Nice Côte d'Azur International Airport'}],
+#          'cities': { 'city_details': { 'iata_code': 'NCE' } },
 #         {'names':[
-#            {'name': 'san francisco'}, {'name': 'san francisco/ca/us:intl'}],
-#          'city_code': 'sfo',
-#          'alternates':[
-#               {'names':[
-#                   {'name': 'san francisco emb'},
-#                   {'name': 'san francisco/ca/us:embarkader'}],
-#                   'city_code': 'sfo'},
-#               {'names':[
-#                   {'name': 'san francisco jcc'},
-#                   {'name': 'san francisco/ca/us:china hpt'}],
-#                   'city_code': 'sfo'}
-#         ]}
+#            {'name': 'San Francisco Apt'}, {'name': 'San Francisco Intl. Airport'}],
+#          'cities': { 'city_details': { 'iata_code': 'SFO' } },
 #      ]}
-#  - pyopentrep -f J fr
-#    - {'locations':[
-#         {'names':[
-#            {'name': 'aurillac'}, {'name': 'aurillac/fr'}],
-#          'extras':[
-#            {'names':[
-#               {'name': 'avoriaz'}, {'name': 'avoriaz/fr'}],
-#             'city_code': 'avf'},
-#            {'names':[
-#               {'name': 'barcelonnette'}, {'name': 'barcelonnette/fr'}],
-#             'city_code': 'bae'}
-#         ]}
-#      ]}
+#
 def interpretFromJSON (jsonFormattedResult):
     parsedStruct = json.loads (jsonFormattedResult)
     interpretedString = ''
@@ -204,7 +182,7 @@ def interpretFromJSON (jsonFormattedResult):
         interpretedString += location['icao_code'] + '-' 
         interpretedString += location['geonames_id'] + ' ' 
         interpretedString += '(' + location['page_rank'] + '%) / '
-        interpretedString += location['city_code'] + ": "
+        interpretedString += location['cities']['city_details']['iata_code']+": "
         interpretedString += location['lat'] + ' ' 
         interpretedString += location['lon'] + '; '
 
@@ -217,27 +195,38 @@ def interpretFromJSON (jsonFormattedResult):
 def interpretFromProtobuf (protobufFormattedResult):
     unmatchedKeywordString, interpretedString = '', ''
 
+    # DEBUG
+    #print (f"DEBUG - Protobuf (array of bytes): {protobufFormattedResult}")
+    
     # Protobuf
+    from google.protobuf.message import DecodeError
     queryAnswer = Travel_pb2.QueryAnswer()
-    queryAnswer.ParseFromString (protobufFormattedResult)
+    try:
+        queryAnswer.ParseFromString (protobufFormattedResult)
+    except DecodeError as err:
+        print ('Error in decoding. Will continue though')
+        print ('DEBUG - {}'.format (str(queryAnswer)))
 
     # List of recognised places
     placeList = queryAnswer.place_list
 
     # DEBUG
-    #print 'Result: ' + str(placeList)
+    #print ('DEBUG - Result: ' + str(placeList))
 
     for place in placeList.place:
         airport_code = place.tvl_code
         interpretedString += airport_code.code + '-' 
         icao_code = place.icao_code
         interpretedString += icao_code.code + '-'
-        geoname_id = place.geoname_id
+        geoname_id = place.geonames_id
         interpretedString += str(geoname_id.id) + ' '
         page_rank = place.page_rank
         interpretedString += '(' + str(page_rank.rank) + '%) / '
-        city_code = place.tvl_code
-        interpretedString += city_code.code + ": "
+        city_list = place.city_list.city
+        city = Travel_pb2.City()
+        for svd_city in city_list:
+            city = svd_city
+        interpretedString += str(city.code.code) + ": "
         geo_point = place.coord
         interpretedString += str(geo_point.latitude) + ' ' 
         interpretedString += str(geo_point.longitude) + '; '
@@ -322,9 +311,11 @@ def generate (openTrepLibrary, nbOfDraws, outputFormat):
     # interpreted by the interpretFromJSON() method, just to show how it
     # works
     opentrepOutputFormat = outputFormat
-    if (opentrepOutputFormat == 'I'): opentrepOutputFormat = 'J'
+    if opentrepOutputFormat == 'I': opentrepOutputFormat = 'J'
 
-    result = openTrepLibrary.generate (opentrepOutputFormat, nbOfDraws)
+    result = None
+    if opentrepOutputFormat != 'P':
+        result = openTrepLibrary.generate (opentrepOutputFormat, nbOfDraws)
 
     # When the compact format is selected, the result string has to be
     # parsed accordingly.
@@ -361,6 +352,8 @@ def generate (openTrepLibrary, nbOfDraws, outputFormat):
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'P'):
+        result = openTrepLibrary.generateToPB (nbOfDraws)
+        
         unmatchedKeywords, interpretedString = interpretFromProtobuf (result)
         print ('Protobuf format => recognised place (city/airport) codes:')
         print (interpretedString)
@@ -392,9 +385,11 @@ def search (openTrepLibrary, searchString, outputFormat):
     # interpreted by the interpretFromJSON() method, just to show how it
     # works
     opentrepOutputFormat = outputFormat
-    if (opentrepOutputFormat == 'I'): opentrepOutputFormat = 'J'
+    if opentrepOutputFormat == 'I': opentrepOutputFormat = 'J'
 
-    result = openTrepLibrary.search (opentrepOutputFormat, searchString)
+    result = None
+    if opentrepOutputFormat != 'P':
+        result = openTrepLibrary.search (opentrepOutputFormat, searchString)
 
     # When the compact format is selected, the result string has to be
     # parsed accordingly.
@@ -431,6 +426,7 @@ def search (openTrepLibrary, searchString, outputFormat):
     # information from the corresponding Python structure. That code can be
     # copied/pasted by clients to the OpenTREP library.
     elif (outputFormat == 'P'):
+        result = openTrepLibrary.searchToPB (searchString)
         unmatchedKeywords, interpretedString = interpretFromProtobuf (result)
         print ('Protobuf format => recognised place (city/airport) codes:')
         print (interpretedString)

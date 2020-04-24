@@ -32,8 +32,8 @@ int main (int argc, char* argv[]) {
 
   // Serialise the Location structure with Protobuf
   std::ostringstream oStr;
-  OPENTREP::LocationExchange::exportLocationList (oStr, lLocationList,
-                                                  lNonMatchedWordList);
+  oStr << OPENTREP::LocationExchange::exportLocationList (lLocationList,
+                                                          lNonMatchedWordList);
   const std::string& lSerialisedLocation = oStr.str();
 
   // DEBUG

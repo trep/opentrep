@@ -18,6 +18,9 @@
 #include <opentrep/bom/BomJSONExport.hpp>
 #include <opentrep/bom/LocationExchange.hpp>
 
+//
+namespace bp = boost::python;
+
 namespace OPENTREP {
 
   /** 
@@ -46,7 +49,8 @@ namespace OPENTREP {
     }
 
     /** 
-     * Public wrapper around the random generation use case. 
+     * Public wrapper around the random generation use case
+     * for most of the formats.
      */
     std::string generate (const std::string& iOutputFormatString,
                           const NbOfMatches_T& iNbOfDraws) {
@@ -57,7 +61,28 @@ namespace OPENTREP {
     }
 
     /** 
-     * Public wrapper around the search use case. 
+     * Public wrapper around the random generation use case
+     * for Protobuf.
+     */
+    bp::object generateToPB (const NbOfMatches_T& iNbOfDraws) {
+      const OutputFormat::EN_OutputFormat lOutputFormatEnum =
+        OutputFormat::PROTOBUF;
+      //
+      const std::string& oPBStr = generateImpl (iNbOfDraws, lOutputFormatEnum);
+
+      const ssize_t lPBSize = oPBStr.size();
+      
+      // Convert to a byte array; otherwise Python considers it as a str
+      // (Unicode string in Python 3), and the decoding fails
+      const bp::object& oPBObj =
+        bp::object (bp::handle<> (PyBytes_FromStringAndSize (oPBStr.c_str(),
+                                                             lPBSize)));
+
+      return oPBObj;
+    }
+
+    /** 
+     * Public wrapper around the search use case for most of the formats.
      */
     std::string search (const std::string& iOutputFormatString,
                         const std::string& iTravelQuery) {
@@ -65,6 +90,25 @@ namespace OPENTREP {
       const OutputFormat::EN_OutputFormat& lOutputFormatEnum =
         lOutputFormat.getFormat();
       return searchImpl (iTravelQuery, lOutputFormatEnum);
+    }
+
+    /** 
+     * Public wrapper around the search use case for Protobuf.
+     */
+    bp::object searchToPB (const std::string& iTravelQuery) {
+      const OutputFormat::EN_OutputFormat lOutputFormatEnum =
+        OutputFormat::PROTOBUF;
+      //
+      const std::string& oPBStr = searchImpl (iTravelQuery, lOutputFormatEnum);
+      const ssize_t lPBSize = oPBStr.size();
+      
+      // Convert to a byte array; otherwise Python considers it as a str
+      // (Unicode string in Python 3), and the decoding fails
+      const bp::object& oPBObj =
+        bp::object (bp::handle<> (PyBytes_FromStringAndSize (oPBStr.c_str(),
+                                                             lPBSize)));
+      
+      return oPBObj;
     }
 
   private:
@@ -207,8 +251,8 @@ namespace OPENTREP {
     /**
      * Private wrapper around the search use case. 
      */
-    std::string searchImpl(const std::string& iTravelQuery,
-                           const OutputFormat::EN_OutputFormat& iOutputFormat) {
+    std::string searchImpl (const std::string& iTravelQuery,
+                            const OutputFormat::EN_OutputFormat& iOutputFormat) {
       const std::string oEmptyStr ("");
       std::ostringstream oNoDetailedStr;
       std::ostringstream oDetailedStr;
@@ -255,7 +299,6 @@ namespace OPENTREP {
         const bool lExistXapianDBDir =
           _opentrepService->checkXapianDBOnFileSystem (lTravelDBFilePath);
         if (lExistXapianDBDir == false) {
-          std::ostringstream errorStr;
           *_logOutputStream << "Error - The file-path to the Xapian "
                             << "database/index ('" << lTravelDBFilePath
                             << "') does not exist or is not a directory."
@@ -378,18 +421,9 @@ namespace OPENTREP {
         BomJSONExport::jsonExportLocationList (oJSONStr, lLocationList);
 
         // Export the list of Location objects into a Protobuf-formatted string
-        LocationExchange::exportLocationList (oProtobufStr, lLocationList,
-                                              lNonMatchedWordList);
-
-        // DEBUG
-        *_logOutputStream << "Short version: "
-                          << oNoDetailedStr.str() << std::endl;
-        *_logOutputStream << "Long version: "
-                          << oDetailedStr.str() << std::endl;
-        *_logOutputStream << "JSON version: "
-                          << oJSONStr.str() << std::endl;
-        *_logOutputStream << "Protobuf version: "
-                          << oProtobufStr.str() << std::endl;
+        oProtobufStr << LocationExchange::exportLocationList(lLocationList,
+                                                             lNonMatchedWordList)
+                     << std::flush;
 
       } catch (const RootException& eOpenTrepError) {
         *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()
@@ -406,19 +440,39 @@ namespace OPENTREP {
       // or without details).
       switch (iOutputFormat) {
       case OutputFormat::SHORT: {
-        return oNoDetailedStr.str();
+        // DEBUG
+        const std::string& oNoDetailedString = oNoDetailedStr.str();
+        *_logOutputStream << "Short version ("
+                          << oNoDetailedString.size() << " char): "
+                          << oNoDetailedString << std::endl;
+        return oNoDetailedString;
       }
 
       case OutputFormat::FULL: {
-        return oDetailedStr.str();
+        // DEBUG
+        const std::string& oDetailedString = oDetailedStr.str();
+        *_logOutputStream << "Long version ("
+                          << oDetailedString.size() << " char): "
+                          << oDetailedString << std::endl;
+        return oDetailedString;
       }
 
       case OutputFormat::JSON: {
-        return oJSONStr.str();
+        // DEBUG
+        const std::string& oJSONString = oJSONStr.str();
+        *_logOutputStream << "JSON version ("
+                          << oJSONString.size() << " char): "
+                          << oJSONString << std::endl;
+        return oJSONString;
       }
 
       case OutputFormat::PROTOBUF: {
-        return oProtobufStr.str();
+        // DEBUG
+        const std::string& oProtobufString = oProtobufStr.str();
+        *_logOutputStream << "Protobuf version ("
+                          << oProtobufString.size() << " char): "
+                          << oProtobufString << std::endl;
+        return oProtobufString;
       }
 
       default: {
@@ -565,18 +619,9 @@ namespace OPENTREP {
 
         // Export the list of Location objects into a Protobuf-formatted string
         WordList_T lNonMatchedWordList;
-        LocationExchange::exportLocationList (oProtobufStr, lLocationList,
-                                              lNonMatchedWordList);
-
-        // DEBUG
-        *_logOutputStream << "Short version: "
-                          << oNoDetailedStr.str() << std::endl;
-        *_logOutputStream << "Long version: "
-                          << oDetailedStr.str() << std::endl;
-        *_logOutputStream << "JSON version: "
-                          << oJSONStr.str() << std::endl;
-        *_logOutputStream << "Protobuf version: "
-                          << oProtobufStr.str() << std::endl;
+        oProtobufStr << LocationExchange::exportLocationList(lLocationList,
+                                                             lNonMatchedWordList)
+                     << std::flush;
 
       } catch (const RootException& eOpenTrepError) {
         *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()
@@ -593,19 +638,39 @@ namespace OPENTREP {
       // or without details).
       switch (iOutputFormat) {
       case OutputFormat::SHORT: {
-        return oNoDetailedStr.str();
+        // DEBUG
+        const std::string& oNoDetailedString = oNoDetailedStr.str();
+        *_logOutputStream << "Short version ("
+                          << oNoDetailedString.size() << " char): "
+                          << oNoDetailedString << std::endl;
+        return oNoDetailedString;
       }
 
       case OutputFormat::FULL: {
-        return oDetailedStr.str();
+        // DEBUG
+        const std::string& oDetailedString = oDetailedStr.str();
+        *_logOutputStream << "Long version ("
+                          << oDetailedString.size() << " char): "
+                          << oDetailedString << std::endl;
+        return oDetailedString;
       }
 
       case OutputFormat::JSON: {
-        return oJSONStr.str();
+        // DEBUG
+        const std::string& oJSONString = oJSONStr.str();
+        *_logOutputStream << "JSON version ("
+                          << oJSONString.size() << " char): "
+                          << oJSONString << std::endl;
+        return oJSONString;
       }
 
       case OutputFormat::PROTOBUF: {
-        return oProtobufStr.str();
+        // DEBUG
+        const std::string& oProtobufString = oProtobufStr.str();
+        *_logOutputStream << "Protobuf version ("
+                          << oProtobufString.size() << " char): "
+                          << oProtobufString << std::endl;
+        return oProtobufString;
       }
 
       default: {
@@ -740,7 +805,9 @@ BOOST_PYTHON_MODULE(pyopentrep) {
   boost::python::class_<OPENTREP::OpenTrepSearcher> ("OpenTrepSearcher")
     .def ("index", &OPENTREP::OpenTrepSearcher::index)
     .def ("search", &OPENTREP::OpenTrepSearcher::search)
+    .def ("searchToPB", &OPENTREP::OpenTrepSearcher::searchToPB)
     .def ("generate", &OPENTREP::OpenTrepSearcher::generate)
+    .def ("generateToPB", &OPENTREP::OpenTrepSearcher::generateToPB)
     .def ("getPaths", &OPENTREP::OpenTrepSearcher::getPaths)
     .def ("init", &OPENTREP::OpenTrepSearcher::init)
     .def ("finalize", &OPENTREP::OpenTrepSearcher::finalize);

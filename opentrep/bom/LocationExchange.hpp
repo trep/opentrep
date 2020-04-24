@@ -5,7 +5,7 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <iosfwd>
+#include <string>
 // OpenTrep
 #include <opentrep/OPENTREP_Types.hpp>
 #include <opentrep/LocationList.hpp>
@@ -30,13 +30,13 @@ namespace OPENTREP {
      * Export (dump in the underlying output log stream and in Protobuf format)
      * a list of Location objects.
      *
-     * @param std::ostream& Output stream in which the Location objects
-                            should be logged/dumped.
+     * @return std::string& Output string in which the Location objects
+                            are logged/dumped.
      * @param const LocationList_T& List of Location objects to be exported.
      * @param const WordList_T& The list of non-matching keywords.
      */
-    static void exportLocationList (std::ostream&, const LocationList_T&,
-                                    const WordList_T& iNonMatchedWordList);
+    static std::string exportLocationList(const LocationList_T&,
+                                          const WordList_T& iNonMatchedWordList);
 
     /**
      * Export (dump in the underlying output log stream and in Protobuf format)

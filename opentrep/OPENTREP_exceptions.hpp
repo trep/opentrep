@@ -175,6 +175,17 @@ namespace OPENTREP {
   };
   
   /**
+   * Serialization / Deserialization.
+   */
+  class SerDeException : public RootException { 
+  public:
+    /**
+     * Constructor.
+     */
+    SerDeException (const std::string& iWhat) : RootException (iWhat) {}
+  };
+  
+  /**
    * Parser.
    */
   class ParserException : public RootException { 

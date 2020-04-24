@@ -3,8 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
-// STL
-#include <ostream>
+#include <sstream>
 #include <string>
 // OpenTrep Protobuf
 #include <opentrep/Travel.pb.h>
@@ -16,27 +15,28 @@
 namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
-  void LocationExchange::
-  exportLocationList (std::ostream& oStream,
-                      const LocationList_T& iLocationList,
+  std::string LocationExchange::
+  exportLocationList (const LocationList_T& iLocationList,
                       const WordList_T& iNonMatchedWordList) {
+    std::string oStr ("");
+    
     // Protobuf structure
-    treppb::QueryAnswer oQueryAnswer;
+    treppb::QueryAnswer lQueryAnswer;
     
     // //// 1. Status ////
     const bool kOKStatus = true;
-    oQueryAnswer.set_ok_status (kOKStatus);
+    lQueryAnswer.set_ok_status (kOKStatus);
 
     // //// 2. Error message ////
     /** Uncomment in order to set an error message
     const std::string kEmptyMessage ("");
-    treppb::ErrorMessage* lErrorMessagePtr = oQueryAnswer.mutable_error_msg();
+    treppb::ErrorMessage* lErrorMessagePtr = lQueryAnswer.mutable_error_msg();
     assert (lErrorMessagePtr != NULL);
     lErrorMessagePtr->set_msg (kEmptyMessage);
     */
     
     // //// 3. List of places ////
-    treppb::PlaceList* lPlaceListPtr = oQueryAnswer.mutable_place_list();
+    treppb::PlaceList* lPlaceListPtr = lQueryAnswer.mutable_place_list();
     assert (lPlaceListPtr != NULL);
 
     // Browse the list of Location structures, and fill the Protobuf structure
@@ -56,7 +56,7 @@ namespace OPENTREP {
     // //// 4. List of un-matched keywords ////
     // Create an instance of a Protobuf UnknownKeywordList structure
     treppb::UnknownKeywordList* lUnknownKeywordListPtr =
-      oQueryAnswer.mutable_unmatched_keyword_list();
+      lQueryAnswer.mutable_unmatched_keyword_list();
       assert (lUnknownKeywordListPtr != NULL);
 
     // Browse the list of un-matched keywords, and fill the Protobuf structure
@@ -66,8 +66,16 @@ namespace OPENTREP {
       lUnknownKeywordListPtr->add_word (lWord);
     }
 
-    // Serialise the Protobuf
-    oQueryAnswer.SerializeToOstream (&oStream);
+    // Serialize the Protobuf
+    const bool pbSerialStatus = lQueryAnswer.SerializeToString (&oStr);
+    if (pbSerialStatus == false) {
+      std::ostringstream errStr;
+      errStr << "Error - The OPTD Travel protocol buffer object cannot be "
+             << "serialized into a C++ string";
+      throw SerDeException (errStr.str());
+    }
+    
+    return oStr;
   }
 
   // //////////////////////////////////////////////////////////////////////
