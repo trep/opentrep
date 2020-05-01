@@ -1,11 +1,13 @@
-from django.conf.urls import patterns, include, url
+from django.urls import re_path
 from searchsimple import views
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+app_name = 'searchsimple'
+
+urlpatterns = [
     # Examples:
     # url(r'^$', 'opentrep.views.home', name='home'),
     # url(r'^opentrep/', include('opentrep.foo.urls')),
@@ -17,6 +19,8 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     #
-    url(r'^$', views.searchsimple, name='index'),
-    url(r'^(?P<query_string>[^/]+)/', views.searchsimple, name='index'),
-)
+    re_path(r'^$', views.searchsimple),
+    re_path(r'^(?P<query_string>[^/]+)/', views.searchsimple),
+]
+
+

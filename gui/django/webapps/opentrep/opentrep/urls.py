@@ -1,31 +1,35 @@
-from django.conf.urls import patterns, include, url
-#from search import views
+"""opentrep URL Configuration
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/2.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+#from django.contrib import admin
+from django.urls import path, include
+from search import views
 
-handler404 = 'search.views.custom_404_view'
-handler500 = 'search.views.custom_500_view'
+app_name = "opentrep"
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'opentrep.views.home', name='home'),
-    # url(r'^opentrep/', include('opentrep.foo.urls')),
+#handler404 = 'search.views.custom_404_view'
+#handler500 = 'search.views.custom_500_view'
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
-
+urlpatterns = [
     # Catch-all
-    url(r'^$', include('search.urls', namespace="root")),
+    path('', include('search.urls')),
     # url(r'^$', views.index, name='home'),
 
     # The following two directives do not match if the catch-all directive
     # above is active (not commented)
-    url(r'^searchsimple/', include('searchsimple.urls',
-                                   namespace="searchsimple")),
-    url(r'^search/', include('search.urls', namespace="search")),
-)
+    path('searchsimple/', include('searchsimple.urls')),
+    path('search/', include('search.urls')),
+]
+

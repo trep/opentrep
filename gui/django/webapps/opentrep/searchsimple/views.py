@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import Http404
 import sys, getopt, os
 import simplejson as json
@@ -38,7 +38,7 @@ def searchsimple (request, query_string = None):
     openTrepLibrary.finalize()
 
     #
-    return render_to_response ('searchsimple/index.html',
-                               {'place_list': placeList.place,
-                                'query_string': query_string})
+    return render (request, 'searchsimple/index.html',
+                        {'place_list': placeList.place,
+                         'query_string': query_string})
 

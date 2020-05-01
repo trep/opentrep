@@ -1,21 +1,24 @@
-from django.conf.urls import patterns, url
+from django.urls import re_path
 from search import views
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+app_name = 'search'
+
+urlpatterns = [
     # Examples:
-    # url(r'^$', 'opentrep.views.home', name='home'),
-    # url(r'^opentrep/', include('opentrep.foo.urls')),
+    # path(r'^$', 'opentrep.views.home', name='home'),
+    # path(r'^opentrep/', include('opentrep.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    # path(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    # path(r'^admin/', include(admin.site.urls)),
 
     #
-    url(r'^$', views.index, name='index'),
-)
+    re_path(r'^$', views.index, name='index'),
+]
+

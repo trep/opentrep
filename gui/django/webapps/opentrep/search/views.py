@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.encoding import smart_text, smart_bytes
 from google.protobuf import text_format
-import sys, getopt, os, math
+import sys, getopt, os, math, codecs
 import simplejson as json
 import logging
 # Potentially add the following two pathes to the PYTHONPATH environment variable
@@ -95,7 +95,7 @@ def generateRandomString (nbOfDraws):
     return initOK, False, ''
 
   # Randomly generate one place
-  result = openTrepLibrary.generate ('P', nbOfDraws)
+  result = openTrepLibrary.generateToPB (nbOfDraws)
 
   # Extract the answer
   okStatus, queryAnswer = extractAnswer (result)
@@ -122,7 +122,7 @@ def extract_params (request, query_string = ''):
   search_form = request.GET
 
   # Detect the required action
-  if search_form.has_key('show_airport'):
+  if 'show_airport' in search_form:
     # Randomly generate one place
     initOK, okStatus, query_string = generateRandomString (1)
     if initOK == False:
@@ -133,7 +133,7 @@ def extract_params (request, query_string = ''):
       return render (request, 'search/500.html', {'error_msg': errorMsg})
     result = True
 
-  elif search_form.has_key('show_itinerary'):
+  elif 'show_itinerary' in search_form:
     # Randomly generate three places
     initOK, okStatus, query_string = generateRandomString (3)
     if initOK == False:
@@ -144,25 +144,25 @@ def extract_params (request, query_string = ''):
       return render (request, 'search/500.html', {'error_msg': errorMsg})
     result = True
 
-  elif search_form.has_key('q'):
+  elif 'q' in search_form:
     query_string = search_form['q']
     result = True
 
   # Detect the Google Map parameters (if any)
-  if search_form.has_key('z'):
+  if 'z' in search_form:
     zoom_level = search_form['z']
-  if search_form.has_key('mt'):
+  if 'mt' in search_form:
     map_type_value = search_form['mt']
 
   # Try with POST
   search_form = request.POST
 
   # Detect the required action
-  if search_form.has_key('q'):
+  if 'q' in search_form:
     query_string = search_form['q']
     result = True
 
-  elif search_form.has_key('show_airport'):
+  elif 'show_airport' in search_form:
     # Randomly generate one place
     initOK, okStatus, query_string = generateRandomString (1)
     if initOK == False:
@@ -172,7 +172,7 @@ def extract_params (request, query_string = ''):
       errorMsg = 'Error: The OpenTrepLibrary cannot generate ' + str(nbOfDraws) + ' places'
       return render (request, 'search/500.html', {'error_msg': errorMsg})
     result = True
-  elif search_form.has_key('show_itinerary'):
+  elif 'show_itinerary' in search_form:
     # Randomly generate three places
     initOK, okStatus, query_string = generateRandomString (3)
     if initOK == False:
@@ -184,9 +184,9 @@ def extract_params (request, query_string = ''):
     result = True
 
   # Detect the Google Map parameters (if any)
-  if search_form.has_key('z'):
+  if 'z' in search_form:
     zoom_level = search_form['z']
-  if search_form.has_key('mt'):
+  if 'mt' in search_form:
     map_type_value = search_form['mt']
 
   #
@@ -248,9 +248,9 @@ def display (request, query_string = '',
 
   # Call the underlying C++ OpenTREP library. The input string is converted
   # into UTF-8 (from Unicode), so that the OpenTREP library be happy with it.
-  query_string_str = smart_bytes (query_string, encoding='utf-8',
-                                  strings_only=True, errors='strict')
-  result = openTrepLibrary.search ('P', query_string_str)
+  #query_string_str = smart_bytes (query_string, encoding='utf-8',
+  #                                strings_only=True, errors='strict')
+  result = openTrepLibrary.searchToPB (query_string)
 
   # Extract the answer
   okStatus, queryAnswer = extractAnswer (result)
