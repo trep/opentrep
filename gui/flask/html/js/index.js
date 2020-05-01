@@ -21,6 +21,7 @@ function draw(locations) {
     //Center the view on the markers
   var group = L.featureGroup(markers).addTo(mymap);
   mymap.fitBounds(group.getBounds());
+
   //Create the routes
   coors = locations.map(function(e, i) {
       return new L.LatLng(parseFloat(e.lat), parseFloat(e.lon));
@@ -40,6 +41,7 @@ $("#search").click(function(evt) {
       draw(data.result.locations);
     })
 })
+
 $("#omnibox").submit(function(evt) {
   var query = $("#query").val()
   evt.preventDefault()
@@ -63,3 +65,4 @@ $("#random-route").click(function(evt) {
     draw(data.result.locations);
   })
 })
+
