@@ -24,7 +24,7 @@
 	}
 
 	//
-    function initialize() {
+    window.initMap = function() {
       var mapCenter = new google.maps.LatLng ({{coord_for_GMap_center.lat}},
 	                                          {{coord_for_GMap_center.lon}});
       var myOptions = {
@@ -133,6 +133,7 @@
 
       var flightPath = new google.maps.Polyline({
         path: flightPlanCoordinates,
+	geodesic: true,
         strokeColor: "#FF0000",
         strokeOpacity: 1.0,
         strokeWeight: 2
@@ -141,15 +142,14 @@
       flightPath.setMap (map);
     }
 
-	// Load the JavaScript for the Google Maps API v3 asynchronously
-	function loadScript() {
-	  var script = document.createElement ("script");
-	  script.type = "text/javascript";
-	  script.src = "https://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
-	  document.body.appendChild (script);
-	}
+	// Create the script tag, set the appropriate attributes
+	var script = document.createElement ("script");
+	script.src = "https://maps.googleapis.com/maps/api/js?key=AINTAnActualKey&callback=initMap";
+	script.defer = true;
+	script.async = true;
 
-	window.onload = loadScript;
+	// Append the script element to head
+	document.head.appendChild (script);
   </script>
 {% endblock %}
 
