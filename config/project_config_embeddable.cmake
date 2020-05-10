@@ -512,6 +512,9 @@ macro (get_python)
     # Update the list of dependencies for the project
     list (APPEND PROJ_DEP_LIBS_FOR_LIB ${Python3_LIBRARIES})
 
+    # Python extension
+    find_package (PythonExtensions REQUIRED)
+
   else (Python3_FOUND)
 	message (FATAL_ERROR "Python libraries are missing. Please install them (e.g., 'python-devel' for the Fedora/RedHat package)")
   endif (Python3_FOUND)
