@@ -1,4 +1,7 @@
 tmp
 /build/
+/_skbuild/
+/dist/
+/opentrep.egg-info/
 /build2/
 *.pyc

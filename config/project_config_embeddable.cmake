@@ -1824,6 +1824,7 @@ macro (module_library_add_specific
   if ("${_lib_prefix}" STREQUAL "py")
 	# If the library is Python, install it into a dedicated directory
 	message (STATUS "${_lib_short_name} is assumed to be a Python library")
+	python_extension_module (${_lib_target})
 	install (TARGETS ${_lib_target}
       EXPORT ${LIB_DEPENDENCY_EXPORT}
       LIBRARY DESTINATION "${INSTALL_PY_LIB_DIR}" COMPONENT runtime)

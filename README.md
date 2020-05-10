@@ -754,6 +754,63 @@ NCE SFO
 ------------------
 ```
 
+# OpenTREP as a Python extension
+
+## References
+* Scikit-build (packaging C/C++ Python extensions):
+  + https://scikit-build.readthedocs.io/en/latest/
+  + https://scikit-build.readthedocs.io/en/latest/usage.html#basic-usage-example
+* PyJQ (not using Scikit-build): https://github.com/doloopwhile/pyjq
+
+## Build and package OpenTREP as a Python extension
+* Install Python 3.8.2 if not already done so:
+```bash
+$ pyenv install 3.8.2 && pyenv global 3.8.2 && \
+    python -m pip --user -U pip && python -m pip install pipenv && \
+    pyenv global system
+```
+
+* Install the Python dependencies in a virtual environment:
+```bash
+$ pipenv install --dev
+```
+
+* Launch the Scikit-build build and packaging:
+```bash
+$ pipenv run python setup.py --build-type=Debug build bdist bdist_wheel
+```
+
+* Upload to PyPi:
+```bash
+user@laptop$ PYPIURL="https://test.pypi.org"
+user@laptop$ pipenv run twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
+Uploading distributions to https://test.pypi.org/legacy/
+Uploading opentrep-0.7.5-cp38-cp38-macosx_10_15_x86_64.whl
+100%|██████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:16<00:00, 853kB/s]
+Uploading opentrep-0.7.5.macosx-10.15-x86_64.tar.gz
+100%|██████████████████████████████████████████████████████████████████████| 13.2M/13.2M [00:13<00:00, 993kB/s]
+
+View at:
+https://test.pypi.org/project/opentrep/0.7.5/
+```
+
+* Upload/release the Python packages onto the
+  [PyPi repository](https://pypi.org):
+```bash
+user@laptop$ PYPIURL="https://pypi.org"
+user@laptop$ pipenv run keyring set ${PYPIURL}/ __token__
+Password for '__token__' in '${PYPIURL}/':
+user@laptop$ pipenv run twine upload -u __token__ --non-interactive dist/*
+Uploading distributions to https://upload.pypi.org/legacy/
+Uploading opentrep-0.7.5-cp38-cp38-macosx_10_15_x86_64.whl
+100%|█████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:48<00:00, 293kB/s]
+Uploading opentrep-0.7.5.macosx-10.15-x86_64.tar.gz
+100%|█████████████████████████████████████████████████████████████████████| 13.2M/13.2M [00:49<00:00, 278kB/s]
+
+View at:
+https://pypi.org/project/opentrep/0.7.5/
+```
+
 # (Optional) Running the Django-based application server
 ```bash
 $ export TREP_LIB=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}

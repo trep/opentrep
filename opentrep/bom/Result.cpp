@@ -184,6 +184,12 @@ namespace OPENTREP {
       _documentMap.insert (DocumentMap_T::value_type (lDocID,
                                                       lDocumentPair)).second;
     // Sanity check
+    if (hasInsertBeenSuccessful == false) {
+      std::ostringstream errorStr;
+      errorStr << "Error while inserting the Xapian Document pair into "
+  	       << "the internal STL map";
+      OPENTREP_LOG_DEBUG (errorStr.str());
+    }
     assert (hasInsertBeenSuccessful == true);
   }
 

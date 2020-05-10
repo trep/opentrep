@@ -66,8 +66,10 @@ namespace OPENTREP {
   OutputFormat::
   OutputFormat (const std::string& iFormatStr) {
     // 
+#ifndef NDEBUG
     const size_t lSize = iFormatStr.size();
     assert (lSize == 1);
+#endif
     const char lFormatChar = iFormatStr[0];
     _format = getFormat (lFormatChar);
   }

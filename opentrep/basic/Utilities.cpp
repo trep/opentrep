@@ -138,18 +138,36 @@ namespace OPENTREP {
         } else if (lastKey == keyDBName) {
           const bool isSuccess =
             oStrMap.insert (std::make_pair ("db", keyStr)).second;
+	  if (isSuccess == false) {
+	    std::ostringstream errStr;
+            errStr << "Internal error while inserting the SQL database name ('"
+                   << keyDBName << "') into the internal STL map";
+            OPENTREP_LOG_ERROR (errStr.str());
+	  }
           assert (isSuccess == true);
           continue;
           
         } else if (lastKey == keyDBUser) {
           const bool isSuccess =
             oStrMap.insert (std::make_pair ("user", keyStr)).second;
-          assert (isSuccess == true);
+          if (isSuccess == false) {
+            std::ostringstream errStr;
+            errStr << "Internal error while inserting the SQL database user ('"
+		   << keyDBUser << "') into the internal STL map";
+	    OPENTREP_LOG_ERROR (errStr.str());
+	  }
+	  assert (isSuccess == true);
           continue;
           
         } else if (lastKey == keyDBPasswd) {
           const bool isSuccess =
             oStrMap.insert (std::make_pair ("password", keyStr)).second;
+	  if (isSuccess == false) {
+	    std::ostringstream errStr;
+	    errStr << "Internal error while inserting the SQL database password "
+		   << " into the internal STL map";
+	    OPENTREP_LOG_ERROR (errStr.str());
+	  }
           assert (isSuccess == true);
           continue;
         }
