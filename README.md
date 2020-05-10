@@ -806,7 +806,7 @@ https://pypi.org/project/opentrep/0.7.5/
 ```
 
 ## Use the OpenTREP Python extension
-
+* Create the Xapian index and fill the SQLite database:
 ```bash
 $ /usr/local/bin/opentrep-indexer -t sqlite -a 1
 POR file-path is: ~/dev/geo/opentrep/_skbuild/macosx-10.15-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv
@@ -832,6 +832,59 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0
 'NCE/0,SFO/0'
 >>> openTrepLibrary.search('F', 'nce sfo')
 "1. NCE-C-2990440, 8.16788%, Nice, Nice, , , FRNCE, , 0, 1970-Jan-01, 2999-Dec-31, , NCE|2990440|Nice|Nice|FR|PAC, PAC, FR, , France, 427, France, EUR, NA, Europe, 43.7031, 7.26608, P, PPLA2, 93, Provence-Alpes-Côte d'Azur, Provence-Alpes-Cote d'Azur, 06, Alpes-Maritimes, Alpes-Maritimes, 062, 06088, 338620, 25, 18, Europe/Paris, 1, 2, 1, 2019-Sep-05, NCE, https://en.wikipedia.org/wiki/Nice, 0, 0, NA, nce, 0%, 0, 0\n2. SFO-C-5391959, 32.496%, San Francisco, San Francisco, , , USSFO, , 0, 1970-Jan-01, 2999-Dec-31, , SFO|5391959|San Francisco|San Francisco|US|CA, CA, US, , United States, 91, California, USD, NA, North America, 37.7749, -122.419, P, PPLA2, CA, California, California, 075, City and County of San Francisco, City and County of San Francisco, Z, , 864816, 16, 28, America/Los_Angeles, -8, -7, -8, 2019-Sep-05, SFO, https://en.wikipedia.org/wiki/San_Francisco, 0, 0, NA, sfo, 0%, 0, 0\n"
+>>> quit()
+```
+
+* Install a few more utilities:
+```bash
+$ python3.8 -m pip install -U opentrepwrapper opentraveldata
+```
+
+* Download and use the latest POR data file:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+```
+```python
+>>> import opentraveldata
+>>> myOPTD = opentraveldata.OpenTravelData()
+>>> myOPTD.downloadFilesIfNeeded()
+>>> myOPTD
+OpenTravelData:
+	Local IATA/ICAO POR file: /tmp/opentraveldata/optd_por_public_all.csv
+	Local UN/LOCODE POR file: /tmp/opentraveldata/optd_por_unlc.csv
+>>> myOPTD.fileSizes()
+(44044195, 4888086)
+```
+
+* For now, the Python interface does not allow to specify the file-path of
+  the POR data file. So, the (non-Python) binary has to be used in order
+  to index the full POR data file:
+```bash
+$ /usr/local/bin/opentrep-indexer -p /tmp/opentraveldata/optd_por_public_all.csv 
+POR file-path is: /tmp/opentraveldata/optd_por_public_all.csv
+Deployment number: 0
+Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
+SQL database type is: nodb
+Are non-IATA-referenced POR included? 0
+Index the POR in Xapian? 1
+Add and re-index the POR in the SQL-based database? 0
+Log filename is: opentrep-indexer.log
+Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
+Number of actually parsed records: 1,000, out of 103,393 records in the POR data file so far
+...
+Number of actually parsed records: 20,000, out of 122,393 records in the POR data file so far
+20335 entries have been processed
+```
+
+* Use the OpenTREP wrapper on the full index:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+```python
+>>> from OpenTrepWrapper import main_trep, index_trep
+>>> main_trep (searchString = 'nce sfo', outputFormat = 'S',  xapianDBPath = '/tmp/opentrep/xapian_traveldb',  logFilePath = '/tmp/opentrep/opeentrep-searcher.log',  verbose = False)
+([(173.579, 'NCE'), (390.644, 'SFO')], '')
+>>> main_trep (searchString = 'cnsha deham', outputFormat = 'S',  xapianDBPath = '/tmp/opentrep/xapian_traveldb',  logFilePath = '/tmp/opentrep/opeentrep-searcher.log',  verbose = False)
+([(0.34700699999999995, 'SHA'), (0.128103, 'HAM')], '')
 >>> quit()
 ```
 
