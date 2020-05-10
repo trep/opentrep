@@ -763,21 +763,15 @@ NCE SFO
 * PyJQ (not using Scikit-build): https://github.com/doloopwhile/pyjq
 
 ## Build and package OpenTREP as a Python extension
-* Install Python 3.8.2 if not already done so:
+* Install Python 3.8 modules if not already done so:
 ```bash
-$ pyenv install 3.8.2 && pyenv global 3.8.2 && \
-    python -m pip --user -U pip && python -m pip install pipenv && \
-    pyenv global system
-```
-
-* Install the Python dependencies in a virtual environment:
-```bash
-$ pipenv install --dev
+$ python3.8 -m pip install --user -U pip
+$ python3.8 -m pip install setuptools cmake wheel ninja scikit-build pytest tox twine
 ```
 
 * Launch the Scikit-build build and packaging:
 ```bash
-$ pipenv run python setup.py --build-type=Debug build bdist bdist_wheel
+$ python3.8 setup.py --build-type=Debug build bdist bdist_wheel
 ```
 
 * Upload to PyPi:
@@ -809,6 +803,36 @@ Uploading opentrep-0.7.5.macosx-10.15-x86_64.tar.gz
 
 View at:
 https://pypi.org/project/opentrep/0.7.5/
+```
+
+## Use the OpenTREP Python extension
+
+```bash
+$ /usr/local/bin/opentrep-indexer -t sqlite -a 1
+POR file-path is: ~/dev/geo/opentrep/_skbuild/macosx-10.15-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv
+Deployment number: 0
+Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
+SQL database type is: sqlite
+SQL database connection string is: /tmp/opentrep/sqlite_travel.db0
+Are non-IATA-referenced POR included? 0
+Index the POR in Xapian? 1
+Add and re-index the POR in the SQL-based database? 1
+Log filename is: opentrep-indexer.log
+Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
+9 entries have been processed
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
+  ASAN_OPTIONS=detect_container_overflow=0 \
+  /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+```
+```python
+>>> import pyopentrep
+>>> openTrepLibrary = pyopentrep.OpenTrepSearcher()
+>>> initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, 'pyopentrep.log')
+>>> openTrepLibrary.search('S', 'nce sfo')
+'NCE/0,SFO/0'
+>>> openTrepLibrary.search('F', 'nce sfo')
+"1. NCE-C-2990440, 8.16788%, Nice, Nice, , , FRNCE, , 0, 1970-Jan-01, 2999-Dec-31, , NCE|2990440|Nice|Nice|FR|PAC, PAC, FR, , France, 427, France, EUR, NA, Europe, 43.7031, 7.26608, P, PPLA2, 93, Provence-Alpes-Côte d'Azur, Provence-Alpes-Cote d'Azur, 06, Alpes-Maritimes, Alpes-Maritimes, 062, 06088, 338620, 25, 18, Europe/Paris, 1, 2, 1, 2019-Sep-05, NCE, https://en.wikipedia.org/wiki/Nice, 0, 0, NA, nce, 0%, 0, 0\n2. SFO-C-5391959, 32.496%, San Francisco, San Francisco, , , USSFO, , 0, 1970-Jan-01, 2999-Dec-31, , SFO|5391959|San Francisco|San Francisco|US|CA, CA, US, , United States, 91, California, USD, NA, North America, 37.7749, -122.419, P, PPLA2, CA, California, California, 075, City and County of San Francisco, City and County of San Francisco, Z, , 864816, 16, 28, America/Los_Angeles, -8, -7, -8, 2019-Sep-05, SFO, https://en.wikipedia.org/wiki/San_Francisco, 0, 0, NA, sfo, 0%, 0, 0\n"
+>>> quit()
 ```
 
 # (Optional) Running the Django-based application server
