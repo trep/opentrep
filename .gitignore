@@ -4,5 +4,7 @@ tmp
 /dist/
 /opentrep.egg-info/
 /build2/
+/.tox/
+/MANIFEST
 /.python-version
 *.pyc
