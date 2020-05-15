@@ -763,21 +763,86 @@ NCE SFO
 * PyJQ (not using Scikit-build): https://github.com/doloopwhile/pyjq
 
 ## Build and package OpenTREP as a Python extension
-* Install Python 3.8 modules if not already done so:
+* OpenTREP depends on Boost libraries, including Boost Python C extensions,
+  and on Protobuf Python extensions too. Those Boost and Protobuf C extensions
+  generally come with the system (_e.g._, installed by Homebrew on MacOS,
+  DNF on Fedora/CentOS/RedHat, APT on Debian/Ubuntu).
+
+* Hence, installing a local virtual environment will not work,
+  especially when the Python version of the virtual environment does not match
+  exactly the Python version of the system-installed libraries.
+
+* The simplest approach so far is to use the Python installed by the system.
+  Still, this can be done with `pip`, with that latter potentially installed
+  on the user account only with the `--user` option when upgrading `pip`
+  itself (with `python3 -m pip install --user -U pip`).
+
+* Note that Linux binary wheels cannot be pushed as is onto PyPi.
+  [Manylinux](https://github.com/pypa/manylinux) should be used for that.
+  Scikit-build maintains [some additions on top of Manylinux](https://github.com/scikit-build/manylinux)
+  and the [corresponding Manylinux Docker images](https://hub.docker.com/r/scikitbuild/manylinux2010_x86_64).
+  The way to run those have still to be documented below.
+  In the meantime, the OpenTREP wheel has to be built from the sources, either
+  (see below for the details):
+  + By using the `pip` module of the system-based Python:
+  + By cloning [this OpenTREP Git repository](https://github.com/trep/opentrep)
+
+* Install Python 3 modules if not already done so:
 ```bash
-$ python3.8 -m pip install --user -U pip
-$ python3.8 -m pip install setuptools cmake wheel ninja scikit-build pytest tox twine
+$ pyenv global system
+$ python3 -m pip install --user -U pip
+$ python3 -m pip install setuptools cmake wheel ninja scikit-build
+$ python3 -m pip install pytest tox twine keyrings.alt
 ```
 
-* Launch the Scikit-build build and packaging:
+* Install OpenTREP as a system-based module with system-based Python
+  and `pip`:
 ```bash
-$ python3.8 setup.py --build-type=Debug build bdist bdist_wheel
+$ python3 -m pip install -U opentrep
+Defaulting to user installation because normal site-packages is not writeable
+Collecting opentrep
+  Using cached opentrep-0.7.5.post4.tar.gz (1.7 MB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+    Preparing wheel metadata ... done
+Building wheels for collected packages: opentrep
+  Building wheel for opentrep (PEP 517) ... done
+  Created wheel for opentrep: filename=opentrep-0.7.5.post4-cp38-cp38-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
+  Stored in directory: ~/.cache/pip/wheels/82/b3/7c/f026b883cc204eefab1588f5e68661f78fec25395277bd221d
+Successfully built opentrep
+Installing collected packages: opentrep
+Successfully installed opentrep-0.7.5.post4
 ```
 
-* Upload to PyPi:
+* Build locally the OpenTREP extension with system-based Python
+  and Scikit-build module:
+```bash
+$ pyenv global system
+$ rm -rf _skbuild dist
+$ python3 setup.py --build-type=Debug build sdist bdist_wheel # the build takes a few minutes
+$ ls -lFh _skbuild/linux-x86_64-3.8/ dist/
+dist/:
+total 42M
+-rw-rw-r-- 1 user staff  40M May 15 23:45 opentrep-0.7.5.post4-cp38-cp38-linux_x86_64.whl
+-rw-rw-r-- 1 user staff 1.6M May 15 23:45 opentrep-0.7.5.post4.tar.gz
+
+_skbuild/linux-x86_64-3.8/:
+total 12K
+drwxrwxr-x 8 user staff 4.0K May 15 23:45 cmake-build/
+drwxrwxr-x 6 user staff 4.0K May 15 23:45 cmake-install/
+drwxrwxr-x 3 user staff 4.0K May 15 23:45 setuptools/
+```
+
+* Manylinux:
+```bash
+$ docker pull scikitbuild/manylinux2010_x86_64:09d11d5f8
+$ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinux2010_x86_64:09d11d5f8 linux32 /io/travis/build-wheels.sh
+```
+
+* Upload to PyPi (remember, no Linux binary wheel):
 ```bash
 user@laptop$ PYPIURL="https://test.pypi.org"
-user@laptop$ pipenv run twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
+user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://test.pypi.org/legacy/
 Uploading opentrep-0.7.5-cp38-cp38-macosx_10_15_x86_64.whl
 100%|██████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:16<00:00, 853kB/s]
@@ -792,9 +857,9 @@ https://test.pypi.org/project/opentrep/0.7.5/
   [PyPi repository](https://pypi.org):
 ```bash
 user@laptop$ PYPIURL="https://pypi.org"
-user@laptop$ pipenv run keyring set ${PYPIURL}/ __token__
+user@laptop$ keyring set ${PYPIURL}/ __token__
 Password for '__token__' in '${PYPIURL}/':
-user@laptop$ pipenv run twine upload -u __token__ --non-interactive dist/*
+user@laptop$ twine upload -u __token__ --non-interactive dist/*
 Uploading distributions to https://upload.pypi.org/legacy/
 Uploading opentrep-0.7.5-cp38-cp38-macosx_10_15_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:48<00:00, 293kB/s]
