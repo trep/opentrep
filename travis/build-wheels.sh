@@ -16,6 +16,7 @@ yum install -y boost-devel
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
+    "${PYBIN}/pip" install -U pip
     "${PYBIN}/pip" install -r /io/requirements-dev.txt
     "${PYBIN}/pip" wheel /io/ --no-deps -w wheelhouse/
 done

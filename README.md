@@ -833,10 +833,10 @@ drwxrwxr-x 6 user staff 4.0K May 15 23:45 cmake-install/
 drwxrwxr-x 3 user staff 4.0K May 15 23:45 setuptools/
 ```
 
-* Manylinux:
+* Manylinux (for now, limited to Python2):
 ```bash
 $ docker pull scikitbuild/manylinux2010_x86_64:09d11d5f8
-$ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinux2010_x86_64:09d11d5f8 linux32 /io/travis/build-wheels.sh
+$ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinux2010_x86_64:09d11d5f8 linux64 /io/travis/build-wheels.sh
 ```
 
 * Upload to PyPi (remember, no Linux binary wheel):
