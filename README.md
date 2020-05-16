@@ -801,16 +801,21 @@ NCE SFO
   + By using the `pip` module of the system-based Python:
   + By cloning [this OpenTREP Git repository](https://github.com/trep/opentrep)
 
+### Install Python modules/dependencies
 * Install Python 3 modules if not already done so:
 ```bash
 $ pyenv global system
 $ python3 -m pip install --user -U pip
-$ python3 -m pip install setuptools cmake wheel ninja scikit-build
-$ python3 -m pip install pytest tox twine keyrings.alt
+$ python3 -m pip install -U setuptools cmake wheel ninja scikit-build
+$ python3 -m pip install -U pytest tox twine keyrings.alt
+$ python3 -m pip install -U simplejson protobuf
 ```
 
-* OpenTREP as a system-based module with system-based Python and `pip`
-  + Build from source and install with `pip`:
+### Install OpenTrep Python extension with system-based `pip`
+* OpenTREP extension/module is installed here as a system-based module
+  with system-based Python and `pip`
+
+* Build from source and install with `pip`:
 ```bash
 $ python3 -m pip install -U opentrep
 Defaulting to user installation because normal site-packages is not writeable
@@ -827,34 +832,29 @@ Successfully built opentrep
 Installing collected packages: opentrep
 Successfully installed opentrep-0.7.6.post1
 ```
-  + Test the just installed OpenTREP Pythoh extension:
+
+* Set the `LD_LIBRARY_PATH` and `PYTHONPATH` environment variables:
 ```bash
-$ LD_LIBRARY_PATH=$HOME/.local/lib ~/.local/bin/opentrep-indexer -p ~/.local/share/opentrep/data/por/test_optd_por_public.csv
-POR file-path is: /home/darnaud/.local/share/opentrep/data/por/test_optd_por_public.csv
-Deployment number: 0
-Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
-SQL database type is: nodb
-Are non-IATA-referenced POR included? 0
-Index the POR in Xapian? 1
-Add and re-index the POR in the SQL-based database? 0
-Log filename is: opentrep-indexer.log
-Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
-9 entries have been processed
-$ LD_LIBRARY_PATH=$HOME/.local/lib PYTHONPATH=$HOME/.local/lib/python3.8/site-packages/pyopentrep:$HOME/.local/lib ~/.local/bin/pyopentrep 
-OPTD-maintained list of POR (points of reference): '/tmp/pip-install-kgc08hee/opentrep/_skbuild/linux-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv'
-Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
-SQLite database: '/tmp/opentrep/sqlite_travel.db'
-searchString: sna francisco rio de janero los angeles reykyavki
-Compact format => recognised place (city/airport) codes:
-SFO RIO LAX REK sna
------------------- 
+$ INST_DIR=${HOME}/.local
+$ TREPBINDIR=${INST_DIR}/bin
+$ OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
+$ export LD_LIBRARY_PATH=${INST_DIR}/lib; export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.8/site-packages/pyopentrep
 ```
 
-* Build locally the OpenTREP extension with system-based Python
-  and Scikit-build module:
+* See how to use the newly installed extension
+  in the dedicated sub-section below
+
+### Build the OpenTrep Python extension locally with system-based Scikit-build
+* Set `Pyenv` on the system-based Python, which should be Python 3:
 ```bash
 $ pyenv global system
-$ rm -rf _skbuild dist
+$ python --version
+Python 3.8.2
+```
+
+* Clean potential former builds and launch a new build with Scikit-build:
+```bash
+$ rm -rf _skbuild dist MANIFEST
 $ python3 setup.py --build-type=Debug build sdist bdist_wheel # the build takes a few minutes
 $ ls -lFh _skbuild/linux-x86_64-3.8/ dist/
 dist/:
@@ -869,7 +869,15 @@ drwxrwxr-x 6 user staff 4.0K May 15 23:45 cmake-install/
 drwxrwxr-x 3 user staff 4.0K May 15 23:45 setuptools/
 ```
 
-* Manylinux (for now, limited to Python2):
+* Set the `LD_LIBRARY_PATH` and `PYTHONPATH` environment variables:
+```bash
+$ INST_DIR=${PWD}/_skbuild/macosx-10.15-x86_64-3.8/cmake-install
+$ TREPBINDIR=${INST_DIR}/bin
+$ OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
+$ export LD_LIBRARY_PATH=${INST_DIR}/lib; export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.8/site-packages/pyopentrep
+```
+
+* Manylinux (for now, limited to Python2, so, not working):
 ```bash
 $ docker pull scikitbuild/manylinux2010_x86_64:09d11d5f8
 $ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinux2010_x86_64:09d11d5f8 linux64 /io/travis/build-wheels.sh
@@ -907,10 +915,13 @@ https://pypi.org/project/opentrep/0.7.6/
 ```
 
 ## Use the OpenTREP Python extension
-* Create the Xapian index and fill the SQLite database:
+
+### Initialize Xapian index with test OpenTravelData (OPTD) POR file
+* Initialize the Xapian index with the C++ (non-Python)
+  `opentrep-indexer` utility:
 ```bash
-$ /usr/local/bin/opentrep-indexer -t sqlite -a 1
-POR file-path is: ~/dev/geo/opentrep/_skbuild/macosx-10.15-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv
+$ ${TREPBINDIR}/opentrep-indexer -t sqlite -a 1 -p ${OPTDPOR}
+POR file-path is: ~/.local/share/opentrep/data/por/test_optd_por_public.csv
 Deployment number: 0
 Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
 SQL database type is: sqlite
@@ -921,9 +932,26 @@ Add and re-index the POR in the SQL-based database? 1
 Log filename is: opentrep-indexer.log
 Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
 9 entries have been processed
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
-  ASAN_OPTIONS=detect_container_overflow=0 \
-  /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+```
+
+### Simple search with the OpenTrep Python extension
+* Use a Python wrapper script around the OpenTrep Python extension to search
+  for terms:
+```bash
+$ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
+OPTD-maintained list of POR (points of reference): '/tmp/pip-install-kgc08hee/opentrep/_skbuild/linux-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv'
+Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
+SQLite database: '/tmp/opentrep/sqlite_travel.db'
+searchString: sna francisco rio de janero los angeles reykyavki
+Compact format => recognised place (city/airport) codes:
+SFO RIO LAX REK sna
+------------------ 
+```
+
+* Use the OpenTrep Python extension from a Python interactive shell:
+```bash
+$ python3
+Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
 ```
 ```python
 >>> import pyopentrep
@@ -936,15 +964,23 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0
 >>> quit()
 ```
 
-* Install a few more utilities:
+### Search with the full OPTD POR data file
+* If not already done, install a few more Python modules:
 ```bash
-$ python3.8 -m pip install -U opentrepwrapper opentraveldata
+$ python3 -m pip install -U opentrepwrapper opentraveldata
 ```
 
-* Download and use the latest POR data file:
+* Download and use the latest POR data file
+  + On Linux:
+```bash
+$ python3
+Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
+```
+  + On MacOS:
 ```bash
 $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
 ```
+  + Python interactive shell:
 ```python
 >>> import opentraveldata
 >>> myOPTD = opentraveldata.OpenTravelData()
@@ -961,7 +997,7 @@ OpenTravelData:
   the POR data file. So, the (non-Python) binary has to be used in order
   to index the full POR data file:
 ```bash
-$ /usr/local/bin/opentrep-indexer -p /tmp/opentraveldata/optd_por_public_all.csv 
+$ ${TREPBINDIR}/opentrep-indexer -t sqlite -a 1 -p /tmp/opentraveldata/optd_por_public_all.csv
 POR file-path is: /tmp/opentraveldata/optd_por_public_all.csv
 Deployment number: 0
 Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
@@ -977,9 +1013,17 @@ Number of actually parsed records: 20,000, out of 122,393 records in the POR dat
 20335 entries have been processed
 ```
 
-* Use the OpenTREP wrapper on the full index:
+* Use the OpenTREP wrapper on the full index
+  + On Linux:
+```bash
+$ python3
+Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
+```
+  + On MacOS:
 ```bash
 $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+```
+  + Python interactive shell:
 ```python
 >>> from OpenTrepWrapper import main_trep, index_trep
 >>> main_trep (searchString = 'nce sfo', outputFormat = 'S',  xapianDBPath = '/tmp/opentrep/xapian_traveldb',  logFilePath = '/tmp/opentrep/opeentrep-searcher.log',  verbose = False)
@@ -989,19 +1033,32 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0
 >>> quit()
 ```
 
-# (Optional) Running the Django-based application server
+# (Optional) Running the Django-based application server (needs update)
+* Install Django as a Python module:
 ```bash
-$ export TREP_LIB=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}
+$ python3 -m pip -U django
+```
+
+* Go in the Django directory:
+```bash
 $ export TREP_TRAVELDB=/tmp/opentrep/traveldb
 $ export TREP_LOG=django_trep.log
-$ cd gui/django/opentrep
-$ # The first time, the database must be initialised:
-$ #./manage.py syncdb localhost:8000
-$ # Add the Python library directories to PYTHONPATH:
-$ export PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep
-$ # Start the Django Web application server
-$ ./manage.py runserver localhost:8000
-$ # In another Shell, check that everything went fine with, for instance:
-$ open http://localhost:8000/search?q=rio de janero reykyavik sna francicso
+$ pushd gui/django/webapps/opentrep
+```
+
+* Start the Django Web application server
+  + On Linux:
+```bash
+$ python3 manage.py runserver localhost:8000
+Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
+```
+  + On MacOS:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
+```
+
+* Query OpenTREP with a web browser:
+```bash
+$ open "http://localhost:8000/search?q=rio de janero reykyavik sna francicso"
 ```
 
