@@ -243,7 +243,8 @@ $ dnf -y install git-all bash-completion gcc-c++ cmake boost-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
  sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
 ```
-* Python development (the package names may vary):
+* Python development (the package names may vary; Python 2 is no longer
+  supported):
 ```bash
 $ dnf -y install python-devel python-pip
 ```
@@ -253,19 +254,24 @@ $ dnf -y install doxygen ghostscript "tex(latex)"
 ```
 
 ##### CentOS
+* If DNF is not already installed (_e.g._, on Cent OS 7):
+```bash
+$ yum -y install dnf
+```
+
 * General C++-based stack:
 ```bash
-$ yum -y install git-all bash-completion gcc-c++ cmake boost169-devel \
+$ dnf -y install git-all bash-completion gcc-c++ cmake boost169-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
  sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
 ```
 * Python development (the package names may vary):
 ```bash
-$ yum -y install python-devel python-pip
+$ dnf -y install python3-devel python3-pip
 ```
 * Documentation tools:
 ```bash
-$ yum -y install doxygen ghostscript "tex(latex)"
+$ dnf -y install doxygen ghostscript "tex(latex)"
 ```
 
 ##### Debian/Ubuntu
@@ -280,7 +286,7 @@ $ apt-get -y install zlib1g-dev libbz2-dev lsb-release libgmp-dev \
 ```
 * Python development (the package names may vary)
 ```bash
-$ apt-get -y install python libpython-dev python3 libpython3-dev
+$ apt-get -y install python3 libpython3-dev python3-pip
 ```
 * Documentation tools
 ```bash
@@ -358,7 +364,7 @@ $ cmake3 [...] \
   is also the official maintainer of the SOCI package, that latter
   is usually up-to-date
 
-* On Debian, Ubuntu and MacOS however, as of beginning-2020, SOCI 4.0
+* On Debian, Ubuntu and MacOS however, as of mid-2020, SOCI 4.0
   has still not been released, and `soci-mysql` is no longer available.
   Hence, SOCI must be built from the sources. The following shows
   how to do that on MacOS (on Debian/Ubuntu, one can have a look at
@@ -373,18 +379,26 @@ $ git clone https://github.com/SOCI/soci.git /opt/soci/socigit
 
 #### General Unix/Linux
 ```bash
-$ cd /opt/soci/socigit
-$ mkdir -p build/head && cd build/head
-$ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON -DSOCI_TESTS=OFF ..
+$ mkdir -p /opt/soci/socigit/build/head
+$ pushd /opt/soci/socigit/build/head
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX11=ON -DSOCI_TESTS=OFF ../..
+$ make
+$ sudo make install
+$ popd
 ```
 
 #### Debian
 ```bash
 $ wget https://github.com/trep/opentrep/raw/master/ci-scripts/soci-debian-cmake.patch -O /opt/soci/soci-debian-cmake.patch
-$ cd /opt/soci/socigit
-$ patch -p1 < ./soci-debian-cmake.patch
-$ mkdir -p build/head && cd build/head
-$ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX_C11=ON -DSOCI_TESTS=OFF ..
+$ pushd /opt/soci/socigit
+$ patch -p1 < ../soci-debian-cmake.patch
+$ popd
+$ mkdir -p /opt/soci/socigit/build/head
+$ pushd /opt/soci/socigit/build/head
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSOCI_CXX11=ON -DSOCI_TESTS=OFF ../..
+$ make
+$ sudo make install
+$ popd
 ```
 
 #### MacOS
