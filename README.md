@@ -205,7 +205,7 @@ GitHub generates
 [tar-balls on the fly for every tagged release](https://github.com/trep/opentrep/releases).
 For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.5.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.6.tar.gz
 ```
 
 Note that SourceForge also stores some
@@ -420,7 +420,7 @@ To customize OpenTREP to your environment, you can alter
 the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export TREP_VER="0.07.5"
+export TREP_VER="0.07.6"
 if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; else LIBSUFFIX=""; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
@@ -815,17 +815,17 @@ $ python3 -m pip install pytest tox twine keyrings.alt
 $ python3 -m pip install -U opentrep
 Defaulting to user installation because normal site-packages is not writeable
 Collecting opentrep
-  Using cached opentrep-0.7.5.post4.tar.gz (1.7 MB)
+  Using cached opentrep-0.7.6.post1.tar.gz (1.7 MB)
   Installing build dependencies ... done
   Getting requirements to build wheel ... done
     Preparing wheel metadata ... done
 Building wheels for collected packages: opentrep
   Building wheel for opentrep (PEP 517) ... done
-  Created wheel for opentrep: filename=opentrep-0.7.5.post4-cp38-cp38-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
+  Created wheel for opentrep: filename=opentrep-0.7.6.post1-cp38-cp38-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
   Stored in directory: ~/.cache/pip/wheels/82/b3/7c/f026b883cc204eefab1588f5e68661f78fec25395277bd221d
 Successfully built opentrep
 Installing collected packages: opentrep
-Successfully installed opentrep-0.7.5.post4
+Successfully installed opentrep-0.7.6.post1
 ```
   + Test the just installed OpenTREP Pythoh extension:
 ```bash
@@ -859,8 +859,8 @@ $ python3 setup.py --build-type=Debug build sdist bdist_wheel # the build takes 
 $ ls -lFh _skbuild/linux-x86_64-3.8/ dist/
 dist/:
 total 42M
--rw-rw-r-- 1 user staff  40M May 15 23:45 opentrep-0.7.5.post4-cp38-cp38-linux_x86_64.whl
--rw-rw-r-- 1 user staff 1.6M May 15 23:45 opentrep-0.7.5.post4.tar.gz
+-rw-rw-r-- 1 user staff  40M May 15 23:45 opentrep-0.7.6.post1-cp38-cp38-linux_x86_64.whl
+-rw-rw-r-- 1 user staff 1.6M May 15 23:45 opentrep-0.7.6.post1.tar.gz
 
 _skbuild/linux-x86_64-3.8/:
 total 12K
@@ -880,13 +880,13 @@ $ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinu
 user@laptop$ PYPIURL="https://test.pypi.org"
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://test.pypi.org/legacy/
-Uploading opentrep-0.7.5-cp38-cp38-macosx_10_15_x86_64.whl
+Uploading opentrep-0.7.6-cp38-cp38-macosx_10_15_x86_64.whl
 100%|██████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:16<00:00, 853kB/s]
-Uploading opentrep-0.7.5.macosx-10.15-x86_64.tar.gz
+Uploading opentrep-0.7.6.macosx-10.15-x86_64.tar.gz
 100%|██████████████████████████████████████████████████████████████████████| 13.2M/13.2M [00:13<00:00, 993kB/s]
 
 View at:
-https://test.pypi.org/project/opentrep/0.7.5/
+https://test.pypi.org/project/opentrep/0.7.6/
 ```
 
 * Upload/release the Python packages onto the
@@ -897,13 +897,13 @@ user@laptop$ keyring set ${PYPIURL}/ __token__
 Password for '__token__' in '${PYPIURL}/':
 user@laptop$ twine upload -u __token__ --non-interactive dist/*
 Uploading distributions to https://upload.pypi.org/legacy/
-Uploading opentrep-0.7.5-cp38-cp38-macosx_10_15_x86_64.whl
+Uploading opentrep-0.7.6-cp38-cp38-macosx_10_15_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:48<00:00, 293kB/s]
-Uploading opentrep-0.7.5.macosx-10.15-x86_64.tar.gz
+Uploading opentrep-0.7.6.macosx-10.15-x86_64.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 13.2M/13.2M [00:49<00:00, 278kB/s]
 
 View at:
-https://pypi.org/project/opentrep/0.7.5/
+https://pypi.org/project/opentrep/0.7.6/
 ```
 
 ## Use the OpenTREP Python extension

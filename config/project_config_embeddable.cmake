@@ -2010,7 +2010,14 @@ macro (module_script_add _script_file)
     add_custom_target (${_script_alone}_script ALL DEPENDS ${_full_script_srcs})
 
     # Install the (Shell, Python, Perl, Ruby, etc) script file
-    install (PROGRAMS ${_full_script_path} DESTINATION bin COMPONENT devel)
+	if ("${_script_ext}" STREQUAL "py")
+	  # The Python scripts have to be installed in the Python
+	  # site-package/library dedicated directory
+      install (PROGRAMS ${_full_script_path}
+		DESTINATION "${INSTALL_PY_LIB_DIR}" COMPONENT devel)
+	else ("${_script_ext}" STREQUAL "py")
+      install (PROGRAMS ${_full_script_path} DESTINATION bin COMPONENT devel)
+	endif ("${_script_ext}" STREQUAL "py")
 
   else (EXISTS ${_full_script_src_path})
     message (FATAL_ERROR

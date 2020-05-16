@@ -53,7 +53,7 @@ module_binary_add (ui/cmdline opentrep-dbmgr)
 ##
 # Installing Python scripts
 #python_module_add (python/pyopentrep.py)
-module_script_add (python/pyopentrep)
+module_script_add (python/pyopentrep.py)
 python_module_add (python/__init__.py)
 
 ##

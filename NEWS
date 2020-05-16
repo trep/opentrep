@@ -1,3 +1,7 @@
+* 2020-05-16:
+- Version 0.07.6
+- Improved how the Python module is delivered
+
 * 2020-03-02:
 - Version 0.07.5
 - Updated the code for the new OPTD data format (Geonames coordinates
