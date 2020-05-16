@@ -809,8 +809,8 @@ $ python3 -m pip install setuptools cmake wheel ninja scikit-build
 $ python3 -m pip install pytest tox twine keyrings.alt
 ```
 
-* Install OpenTREP as a system-based module with system-based Python
-  and `pip`:
+* OpenTREP as a system-based module with system-based Python and `pip`
+  + Build from source and install with `pip`:
 ```bash
 $ python3 -m pip install -U opentrep
 Defaulting to user installation because normal site-packages is not writeable
@@ -826,6 +826,28 @@ Building wheels for collected packages: opentrep
 Successfully built opentrep
 Installing collected packages: opentrep
 Successfully installed opentrep-0.7.5.post4
+```
+  + Test the just installed OpenTREP Pythoh extension:
+```bash
+$ LD_LIBRARY_PATH=$HOME/.local/lib ~/.local/bin/opentrep-indexer -p ~/.local/share/opentrep/data/por/test_optd_por_public.csv
+POR file-path is: /home/darnaud/.local/share/opentrep/data/por/test_optd_por_public.csv
+Deployment number: 0
+Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
+SQL database type is: nodb
+Are non-IATA-referenced POR included? 0
+Index the POR in Xapian? 1
+Add and re-index the POR in the SQL-based database? 0
+Log filename is: opentrep-indexer.log
+Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
+9 entries have been processed
+$ LD_LIBRARY_PATH=$HOME/.local/lib PYTHONPATH=$HOME/.local/lib/python3.8/site-packages/pyopentrep:$HOME/.local/lib ~/.local/bin/pyopentrep 
+OPTD-maintained list of POR (points of reference): '/tmp/pip-install-kgc08hee/opentrep/_skbuild/linux-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv'
+Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
+SQLite database: '/tmp/opentrep/sqlite_travel.db'
+searchString: sna francisco rio de janero los angeles reykyavki
+Compact format => recognised place (city/airport) codes:
+SFO RIO LAX REK sna
+------------------ 
 ```
 
 * Build locally the OpenTREP extension with system-based Python
