@@ -1,9 +1,7 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7798b45..861742f 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
+--- a/CMakeLists.txt	2020-05-16 14:08:50.801669540 +0000
++++ b/CMakeLists.txt	2020-05-16 14:09:43.609057340 +0000
 @@ -13,6 +13,8 @@
- cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
+ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
  
  project(SOCI)
 +include(GNUInstallDirs)
@@ -11,7 +9,7 @@ index 7798b45..861742f 100644
  
  ###############################################################################
  # Build features and variants
-@@ -134,11 +136,7 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+@@ -134,11 +136,7 @@
  ###############################################################################
  
  if(NOT DEFINED SOCI_LIBDIR)
@@ -24,4 +22,3 @@ index 7798b45..861742f 100644
  endif()
  
  set(BINDIR "bin" CACHE PATH "The directory to install binaries into.")
-
