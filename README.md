@@ -916,55 +916,7 @@ https://pypi.org/project/opentrep/0.7.6/
 
 ## Use the OpenTREP Python extension
 
-### Initialize Xapian index with test OpenTravelData (OPTD) POR file
-* Initialize the Xapian index with the C++ (non-Python)
-  `opentrep-indexer` utility:
-```bash
-$ ${TREPBINDIR}/opentrep-indexer -t sqlite -a 1 -p ${OPTDPOR}
-POR file-path is: ~/.local/share/opentrep/data/por/test_optd_por_public.csv
-Deployment number: 0
-Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
-SQL database type is: sqlite
-SQL database connection string is: /tmp/opentrep/sqlite_travel.db0
-Are non-IATA-referenced POR included? 0
-Index the POR in Xapian? 1
-Add and re-index the POR in the SQL-based database? 1
-Log filename is: opentrep-indexer.log
-Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
-9 entries have been processed
-```
-
-### Simple search with the OpenTrep Python extension
-* Use a Python wrapper script around the OpenTrep Python extension to search
-  for terms:
-```bash
-$ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
-OPTD-maintained list of POR (points of reference): '/tmp/pip-install-kgc08hee/opentrep/_skbuild/linux-x86_64-3.8/cmake-install/share/opentrep/data/por/test_optd_por_public.csv'
-Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
-SQLite database: '/tmp/opentrep/sqlite_travel.db'
-searchString: sna francisco rio de janero los angeles reykyavki
-Compact format => recognised place (city/airport) codes:
-SFO RIO LAX REK sna
------------------- 
-```
-
-* Use the OpenTrep Python extension from a Python interactive shell:
-```bash
-$ python3
-Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
-```
-```python
->>> import pyopentrep
->>> openTrepLibrary = pyopentrep.OpenTrepSearcher()
->>> initOK = openTrepLibrary.init (\"{$HOME}/.local/share/opentrep/data/por/test_optd_por_public.csv\", '/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, False, True, True, 'pyopentrep.log')
->>> openTrepLibrary.search('S', 'nce sfo')
-'NCE/0,SFO/0'
->>> openTrepLibrary.search('F', 'nce sfo')
-"1. NCE-C-2990440, 8.16788%, Nice, Nice, , , FRNCE, , 0, 1970-Jan-01, 2999-Dec-31, , NCE|2990440|Nice|Nice|FR|PAC, PAC, FR, , France, 427, France, EUR, NA, Europe, 43.7031, 7.26608, P, PPLA2, 93, Provence-Alpes-Côte d'Azur, Provence-Alpes-Cote d'Azur, 06, Alpes-Maritimes, Alpes-Maritimes, 062, 06088, 338620, 25, 18, Europe/Paris, 1, 2, 1, 2019-Sep-05, NCE, https://en.wikipedia.org/wiki/Nice, 0, 0, NA, nce, 0%, 0, 0\n2. SFO-C-5391959, 32.496%, San Francisco, San Francisco, , , USSFO, , 0, 1970-Jan-01, 2999-Dec-31, , SFO|5391959|San Francisco|San Francisco|US|CA, CA, US, , United States, 91, California, USD, NA, North America, 37.7749, -122.419, P, PPLA2, CA, California, California, 075, City and County of San Francisco, City and County of San Francisco, Z, , 864816, 16, 28, America/Los_Angeles, -8, -7, -8, 2019-Sep-05, SFO, https://en.wikipedia.org/wiki/San_Francisco, 0, 0, NA, sfo, 0%, 0, 0\n"
->>> quit()
-```
-
-### Search with the full OPTD POR data file
+### Download the latest OpenTravelData (OPTD) POR data file
 * If not already done, install a few more Python modules:
 ```bash
 $ python3 -m pip install -U opentrepwrapper opentraveldata
@@ -993,26 +945,113 @@ OpenTravelData:
 (44044195, 4888086)
 ```
 
-* For now, the Python interface does not allow to specify the file-path of
-  the POR data file. So, the (non-Python) binary has to be used in order
-  to index the full POR data file:
+### Xapian index initialization
+* Initialize the Xapian index with the `-i` option of `pyopentrep.py`,
+  so as to index the full OpenTravelData (OPTD) POR (points of reference)
+  data file
+  + On Linux:
 ```bash
-$ ${TREPBINDIR}/opentrep-indexer -t sqlite -a 1 -p /tmp/opentraveldata/optd_por_public_all.csv
-POR file-path is: /tmp/opentraveldata/optd_por_public_all.csv
-Deployment number: 0
-Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
-SQL database type is: nodb
-Are non-IATA-referenced POR included? 0
-Index the POR in Xapian? 1
-Add and re-index the POR in the SQL-based database? 0
-Log filename is: opentrep-indexer.log
-Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
-Number of actually parsed records: 1,000, out of 103,393 records in the POR data file so far
+$ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+```
+  + On MacOS:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+```
+```bash
+OPTD-maintained list of POR (points of reference): '/tmp/opentraveldata/optd_por_public_all.csv'
+Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
+SQLite database: '/tmp/opentrep/sqlite_travel.db'
+Perform the indexation of the (Xapian-based) travel database.
+That operation may take several minutes on some slow machines.
+It takes less than 20 seconds on fast ones...
+Number of actually parsed records: 1,000, out of 103,394 records in the POR data file so far
 ...
-Number of actually parsed records: 20,000, out of 122,393 records in the POR data file so far
-20335 entries have been processed
+Number of actually parsed records: 20,000, out of 122,394 records in the POR data file so far
+Done. Indexed 20335 POR (points of reference)
 ```
 
+* The Xapian index may also be initialized with the C++ (non-Python)
+  `opentrep-indexer` utility (that is the former way of initializing
+  the Xapian index, when it was not available from the Python utility):
+```bash
+$ ${TREPBINDIR}/opentrep-indexer -t sqlite -a 1 -p ${OPTDPOR}
+POR file-path is: ~/.local/share/opentrep/data/por/test_optd_por_public.csv
+Deployment number: 0
+Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
+SQL database type is: sqlite
+SQL database connection string is: /tmp/opentrep/sqlite_travel.db0
+Are non-IATA-referenced POR included? 0
+Index the POR in Xapian? 1
+Add and re-index the POR in the SQL-based database? 1
+Log filename is: opentrep-indexer.log
+Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL databases) may take a few tens of minutes on some architectures (and a few minutes on fastest ones)...
+9 entries have been processed
+```
+
+### Search with the OpenTrep Python extension
+* Use a Python wrapper script around the OpenTrep Python extension to search
+  for terms
+  + On Linux:
+```bash
+$ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
+```
+  + On MacOS:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
+```
+```bash
+OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
+Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
+SQLite database: '/tmp/opentrep/sqlite_travel.db'
+searchString: sna francisco rio de janero los angeles reykyavki
+Compact format => recognised place (city/airport) codes:
+SFO RIO LAX REK
+------------------
+```
+
+* When the full POR data file has been indexed
+  + On Linux:
+```bash
+$ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+```
+  + On MacOS:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+```
+```bash
+OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
+Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
+SQLite database: '/tmp/opentrep/sqlite_travel.db'
+searchString: cnsha deham deess
+Raw result from the OpenTrep library:
+1. SHA-A-6301388, 34.7007%, Shanghai Hongqiao International Airport, Shanghai Hongqiao International Airport, ZSSS, , CNSHA, , 0, 1970-Jan-01, 2999-Dec-31, , SHA|1796236|Shanghai|Shanghai|CN|SH, SH, CN, , China, 713, China, CNY, NA, Asia, 31.1979, 121.336, S, AIRP, 23, Shanghai, Shanghai, , , , Z, , 0, 3, 3, Asia/Shanghai, 8, 8, 8, 2014-Aug-01, , https://en.wikipedia.org/wiki/Shanghai_Hongqiao_International_Airport, 31.1979, 121.336, cnsha, cnsha, 34.7007%, 0, 0
+2. HAM-C-2911298, 12.8103%, Hamburg, Hamburg, , , DEHAM, , 0, 1970-Jan-01, 2999-Dec-31, , HAM|2911298|Hamburg|Hamburg|DE|HH, HH, DE, , Germany, 429, Germany, EUR, NA, Europe, 53.5753, 10.0153, P, PPLA, 04, Hamburg, Hamburg, 00, , , 02000, 02000000, 1739117, 0, 2, Europe/Berlin, 1, 2, 1, 2019-Nov-28, HAM,LBC,OBZ,XFW,ZMB, https://en.wikipedia.org/wiki/Hamburg, 53.5507, 9.99302, deham, deham, 12.8103%, 0, 0
+3. ESS-C-2928810, 1.34094%, Essen, Essen, , , DEESS, , 0, 1970-Jan-01, 2999-Dec-31, , ESS|2928810|Essen|Essen|DE|NW, NW, DE, , Germany, 429, Germany, EUR, NA, Europe, 51.4566, 7.01228, P, PPLA3, 07, North Rhine-Westphalia, North Rhine-Westphalia, 051, Düsseldorf District, Duesseldorf District, 05113, 05113000, 593085, 0, 83, Europe/Berlin, 1, 2, 1, 2019-Oct-22, ESS,ESZ, https://en.wikipedia.org/wiki/Essen, 0, 0, deess, deess, 1.34094%, 0, 0
+------------------
+```
+
+* Use the OpenTrep Python extension from a Python interactive shell
+  + On MacOS:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+```
+  + On Linux:
+```bash
+$ python3
+Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
+```
+```python
+>>> import pyopentrep
+>>> openTrepLibrary = pyopentrep.OpenTrepSearcher()
+>>> initOK = openTrepLibrary.init ('/tmp/opentraveldata/optd_por_public.csv', '/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, False, True, True, 'pyopentrep.log')
+>>> openTrepLibrary.search('S', 'nce sfo')
+'NCE/0,SFO/0'
+>>> openTrepLibrary.search('F', 'nce sfo')
+"1. NCE-C-2990440, 8.16788%, Nice, Nice, , , FRNCE, , 0, 1970-Jan-01, 2999-Dec-31, , NCE|2990440|Nice|Nice|FR|PAC, PAC, FR, , France, 427, France, EUR, NA, Europe, 43.7031, 7.26608, P, PPLA2, 93, Provence-Alpes-Côte d'Azur, Provence-Alpes-Cote d'Azur, 06, Alpes-Maritimes, Alpes-Maritimes, 062, 06088, 338620, 25, 18, Europe/Paris, 1, 2, 1, 2019-Sep-05, NCE, https://en.wikipedia.org/wiki/Nice, 0, 0, NA, nce, 0%, 0, 0\n2. SFO-C-5391959, 32.496%, San Francisco, San Francisco, , , USSFO, , 0, 1970-Jan-01, 2999-Dec-31, , SFO|5391959|San Francisco|San Francisco|US|CA, CA, US, , United States, 91, California, USD, NA, North America, 37.7749, -122.419, P, PPLA2, CA, California, California, 075, City and County of San Francisco, City and County of San Francisco, Z, , 864816, 16, 28, America/Los_Angeles, -8, -7, -8, 2019-Sep-05, SFO, https://en.wikipedia.org/wiki/San_Francisco, 0, 0, NA, sfo, 0%, 0, 0\n"
+>>> quit()
+```
+
+### Search with the OpenTrepWrapper package
 * Use the OpenTREP wrapper on the full index
   + On Linux:
 ```bash
