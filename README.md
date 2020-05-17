@@ -833,7 +833,14 @@ Installing collected packages: opentrep
 Successfully installed opentrep-0.7.6.post1
 ```
 
-* Set the `LD_LIBRARY_PATH` and `PYTHONPATH` environment variables:
+* Set the `LD_LIBRARY_PATH` and `PYTHONPATH` environment variables
+  + On MacOS:
+```bash
+$ export INST_DIR=/usr/local
+$ export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.8/site-packages/pyopentrep
+$ export DYLD_LIBRARY_PATH=${INST_DIR}/lib
+```
+  + On Linux:
 ```bash
 $ INST_DIR=${HOME}/.local
 $ TREPBINDIR=${INST_DIR}/bin
@@ -912,6 +919,17 @@ Uploading opentrep-0.7.6.macosx-10.15-x86_64.tar.gz
 
 View at:
 https://pypi.org/project/opentrep/0.7.6/
+```
+
+## Test the OpenTREP Python extension
+* Launch a simple end-to-end test with `pytest`
+  + On Linux:
+```bash
+$ python3 -m pytest test_trep_e2e_simple.py
+```
+  + On MacOS:
+```bash
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python -m pytest test_trep_e2e_simple.py
 ```
 
 ## Use the OpenTREP Python extension
