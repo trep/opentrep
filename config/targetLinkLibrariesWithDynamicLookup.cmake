@@ -1,5 +1,8 @@
 #.rst:
 #
+# Original source:
+#  https://raw.githubusercontent.com/scikit-build/scikit-build/master/skbuild/resources/cmake/targetLinkLibrariesWithDynamicLookup.cmake
+#
 # Public Functions
 # ^^^^^^^^^^^^^^^^
 #
