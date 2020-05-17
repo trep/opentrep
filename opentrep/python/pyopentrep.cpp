@@ -131,7 +131,7 @@ namespace OPENTREP {
         *_logOutputStream << "Get the file-path details" << std::endl;
 
         if (_opentrepService == NULL) {
-          oPythonLogStr << "The OpenTREP service has not been initialised, "
+          oPythonLogStr << "The OpenTREP service has not been initialized, "
                         << "i.e., the init() method has not been called "
                         << "correctly on the OpenTrepSearcher object. Please "
                         << "check that all the parameters are not empty and "
@@ -196,7 +196,7 @@ namespace OPENTREP {
         *_logOutputStream << "Indexation by Xapian" << std::endl;
 
         if (_opentrepService == NULL) {
-          oPythonLogStr << "The OpenTREP service has not been initialised, "
+          oPythonLogStr << "The OpenTREP service has not been initialized, "
                         << "i.e., the init() method has not been called "
                         << "correctly on the OpenTrepSearcher object. Please "
                         << "check that all the parameters are not empty and "
@@ -273,7 +273,7 @@ namespace OPENTREP {
                           << "') search" << std::endl;
 
         if (_opentrepService == NULL) {
-          oNoDetailedStr << "The OpenTREP service has not been initialised, "
+          oNoDetailedStr << "The OpenTREP service has not been initialized, "
                          << "i.e., the init() method has not been called "
                          << "correctly on the OpenTrepSearcher object. Please "
                          << "check that all the parameters are not empty and "
@@ -511,7 +511,7 @@ namespace OPENTREP {
                           << std::endl;
 
         if (_opentrepService == NULL) {
-          oNoDetailedStr << "The OpenTREP service has not been initialised, "
+          oNoDetailedStr << "The OpenTREP service has not been initialized, "
                          << "i.e., the init() method has not been called "
                          << "correctly on the OpenTrepSearcher object. Please "
                          << "check that all the parameters are not empty and "
@@ -708,12 +708,18 @@ namespace OPENTREP {
     }
 
     /** 
-     * Wrapper around the search use case. 
+     * Wrapper around the OPENTREP_Service C++ API.
+     * As the POR file-path is also given as parameter, both index and search
+     * use cases are possible.
      */
-    bool init (const std::string& iTravelDBFilePath,
+    bool init (const std::string& iPORFilePath,
+               const std::string& iTravelDBFilePath,
                const std::string& iSQLDBTypeStr,
                const std::string& iSQLDBConnStr,
-               const DeploymentNumber_T& iDeploymentNumber,
+               const unsigned short& iDeploymentNumber,
+               const bool iDontIndexIATAPOR,
+               const bool iIndexPORInXapian,
+               const bool iAddPORInDB,
                const std::string& iLogFilePath) {
       bool isEverythingOK = true;
 
@@ -733,21 +739,48 @@ namespace OPENTREP {
         _logOutputStream->clear();
 
         // DEBUG
-        *_logOutputStream << "Python wrapper initialisation" << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Python wrapper initialization"
+                          << std::endl;
         
-        // Initialise the context
+        // Initialize the context
         const OPENTREP::TravelDBFilePath_T lTravelDBFilePath (iTravelDBFilePath);
+        const OPENTREP::PORFilePath_T lPORFilePath (iPORFilePath);
         const OPENTREP::DBType lSQLDBType (iSQLDBTypeStr);
         const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
         const OPENTREP::DeploymentNumber_T lDeploymentNumber (iDeploymentNumber);
+        const OPENTREP::shouldIndexNonIATAPOR_T
+          lDontIndexIATAPOR (iDontIndexIATAPOR);
+        const OPENTREP::shouldIndexPORInXapian_T
+          lIndexPORInXapian (iIndexPORInXapian);
+        const OPENTREP::shouldAddPORInSQLDB_T lAddPORInDB (iAddPORInDB);
 
         _opentrepService = new OPENTREP_Service (*_logOutputStream,
+                                                 lPORFilePath,
                                                  lTravelDBFilePath,
                                                  lSQLDBType, lSQLDBConnStr,
-                                                 lDeploymentNumber);
+                                                 lDeploymentNumber,
+                                                 lDontIndexIATAPOR,
+                                                 lIndexPORInXapian,
+                                                 lAddPORInDB);
 
         // DEBUG
-        *_logOutputStream << "Python wrapper initialised" << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Python wrapper initialized."
+                          << " Parameters:" << std::endl;
+        *_logOutputStream << "[pyopentrep][init] POR data file: "
+                          << iPORFilePath << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Xapian DB: "
+                          << iTravelDBFilePath << std::endl;
+        *_logOutputStream << "[pyopentrep][init][DB] Type: " << iSQLDBTypeStr
+                          << " - Connection string: " << iSQLDBConnStr
+                          << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Deployment number: "
+                          << iDeploymentNumber << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Should index non-IATA POR? "
+                          << iDontIndexIATAPOR << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Should index POR in Xapian? "
+                          << iIndexPORInXapian << std::endl;
+        *_logOutputStream << "[pyopentrep][init] Should add POR in database? "
+                          << iAddPORInDB << std::endl;
 
       } catch (const RootException& eOpenTrepError) {
         *_logOutputStream << "OpenTrep error: "  << eOpenTrepError.what()

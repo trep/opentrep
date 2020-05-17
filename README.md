@@ -722,9 +722,9 @@ provided with that specific Python version.
 ```bash
 PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
- pipenv run python -c "import pyopentrep; \
+ python3 -c "import pyopentrep; \
  openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
- initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, 'pyopentrep.log'); \
+ initOK = openTrepLibrary.init (\"${INSTALL_BASEDIR}/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv\", '/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, False, True, True, 'pyopentrep.log'); \
  print (openTrepLibrary.search ('S', 'los las'))"
 ```
 
@@ -732,9 +732,9 @@ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BAS
 ```bash
 PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
- pipenv run python -c "import pyopentrep; \
+ python3 -c "import pyopentrep; \
  openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
- initOK = openTrepLibrary.init ('/var/www/webapps/opentrep/trep/traveldb', 'mysql', 'db=trep_trep user=trep password=trep', 0, 'pyopentrep.log'); \
+ initOK = openTrepLibrary.init (\"${INSTALL_BASEDIR}/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv\", '/var/www/webapps/opentrep/trep/traveldb', 'mysql', 'db=trep_trep user=trep password=trep', 0, False, True, True, 'pyopentrep.log'); \
  print (openTrepLibrary.search ('S', 'los las'))"
 ```
 
@@ -758,7 +758,7 @@ $ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_B
   DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
   ASAN_OPTIONS=detect_container_overflow=0 \
   /usr/local/Cellar/python/3.8.2/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python \
-  ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
+  ./opentrep/python/pyopentrep.py -d /tmp/opentrep/xapian_traveldb "nce sfo"
 OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv'
 Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
 SQLite database: '/tmp/opentrep/sqlite_travel.db'
@@ -956,7 +956,7 @@ Python 3.8.2 (default, Apr 27 2020, 15:53:34)
 ```python
 >>> import pyopentrep
 >>> openTrepLibrary = pyopentrep.OpenTrepSearcher()
->>> initOK = openTrepLibrary.init ('/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, 'pyopentrep.log')
+>>> initOK = openTrepLibrary.init (\"{$HOME}/.local/share/opentrep/data/por/test_optd_por_public.csv\", '/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, False, True, True, 'pyopentrep.log')
 >>> openTrepLibrary.search('S', 'nce sfo')
 'NCE/0,SFO/0'
 >>> openTrepLibrary.search('F', 'nce sfo')

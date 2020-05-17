@@ -1,7 +1,30 @@
 # -*- coding: utf-8 -*-
+#
+# File:
+#   https://github.com/trep/opentrep/blob/master/opentrep/python/pyopentrep.py.in
+# Project:
+#   OpenTREP (https://github.com/trep/opentrep)
+# Description:
+#   * Python wrapper around the OpenTREP C extension (C++ shared library,
+#     based on Boost::Python, usually to be found in the Python site-packages
+#     directory (@INSTALL_PY_LIB_DIR@)
+#   * The OpenTREP C extension shared library is usually named pyopentrep.so,
+#     and has dependencies on the main OpenTREP shared library (libopentrep.so),
+#     itself in the @INSTALL_LIB_DIR@ directory
+#   * The PYTHONPATH and/or LD_LIBRARY_PATH may have to be set accordingly
+#     if those OpenTREP libraries are not located in standard places
+#   * OpenTREP ships with a small ldefault POR (points of refence) data file,
+#     namely test_optd_por_public.csv, usually in the @OPTD_POR_DIR@ directory.
+#   * OpenTravelData (OPTD) (https://github.com/opentraveldata/opentraveldata)
+#     provides fresh POR data files (42 MB):
+#     https://github.com/opentraveldata/opentraveldata/blob/master/opentraveldata/optd_por_public_all.csv?raw=true
+#   * The Python opentraveldata module provides an easy way to download that
+#     latest POR data file into a local directory, then made available
+#     to OpenTREP
+#   * For more details: https://github.com/trep/opentrep/blob/master/README.md
+#
 
-import sys, getopt, os
-import simplejson as json
+import sys, getopt, os, json
 
 # sys.path.append ('@INSTALL_LIB_DIR@')
 # sys.path.append ('@INSTALL_PY_LIB_DIR@')
@@ -32,6 +55,8 @@ def usage(script_name="pyopentrep"):
     print("  -h, --help         : outputs this help and exits")
     print("  -i, --index        : performs the indexation with Xapian")
     print("  -g, --generate=    : randomly draws the documents from Xapian")
+    print("  -p, --porpath=     : file-path of the POR (points of reference)" \
+          " data file")
     print("  -d, --xapiandb=    : file-path to the Xapian index/database")
     print("  -t, --sqldbtype=   : type of the SQL DB (noDB, sqlite, mysql)")
     print("  -s, --sqldbconx=   : specifies the connection string for the SQL DB")
@@ -39,6 +64,7 @@ def usage(script_name="pyopentrep"):
     print("  -f, --format=      : format of the output: Short (S, default),")
     print("                       Full (F), raw JSON (J), ")
     print("                       Interpretation from JSON (I) or from Protobuf (P)")
+    print("  -l, --logfile=     : file-path of where the logs should be streamed")
     print
 
 
@@ -52,16 +78,18 @@ def handle_opt():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "hif:d:t:s:g:m:",
+            "hif:d:t:s:g:p:m:l:",
             [
                 "help",
                 "index",
                 "format=",
+                "porpath=",
                 "xapiandb=",
                 "sqldbtype=",
                 "sqldbconx=",
                 "generate",
                 "deploymentnb=",
+                "logfile=",
             ],
         )
     except getopt.GetoptError as err:
@@ -86,10 +114,12 @@ def handle_opt():
         searchString = " ".join(args)
 
     # Options
+    porPath = "/tmp/opentrep/test_optd_por_public.csv"
     xapianDBPath = "/tmp/opentrep/xapian_traveldb"
     sqlDBType = "nodb"
     sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
     deploymentNumber = 0
+    logPath = "/tmp/opentrep/pyopentrep.log"
     for o, a in opts:
         if o in ("-h", "--help"):
             usage(sys.argv[0])
@@ -98,6 +128,8 @@ def handle_opt():
             command = "index"
         elif o in ("-f", "--format"):
             outputFormat = a
+        elif o in ("-p", "--porpath"):
+            porPath = a
         elif o in ("-d", "--xapiandb"):
             xapianDBPath = a
         elif o in ("-t", "--sqldbtype"):
@@ -109,11 +141,15 @@ def handle_opt():
             nbOfDraws = int(a)
         elif o in ("-m", "--deploymentnb"):
             deploymentNumber = int(a)
+        elif o in ("-l", "--logfile"):
+            logPath = a
         else:
-            assert False, "Unhandled option"
+            assert False, "[pyopentrep][handle_opt] Unhandled option"
     return (
         command,
+        logPath,
         outputFormat,
+        porPath,
         xapianDBPath,
         sqlDBType,
         sqlDBConnStr,
@@ -477,7 +513,9 @@ def search(openTrepLibrary, searchString, outputFormat):
 if __name__ == "__main__":
     (
         command,
+        logPath,
         outputFormat,
+        porPath,
         xapianDBPath,
         sqlDBType,
         sqlDBConnStr,
@@ -489,9 +527,15 @@ if __name__ == "__main__":
     # Initialize the OpenTrep C++ library
     import pyopentrep
 
+    flagDontIndexIATAPOR = False
+    flagIndexPORInXapian = True
+    flagAddPORInDB = True
+
     openTrepLibrary = pyopentrep.OpenTrepSearcher()
     initOK = openTrepLibrary.init(
-        xapianDBPath, sqlDBType, sqlDBConnStr, deploymentNumber, "pyopentrep.log"
+        porPath, xapianDBPath, sqlDBType, sqlDBConnStr, deploymentNumber,
+        flagDontIndexIATAPOR, flagIndexPORInXapian, flagAddPORInDB,
+        logPath
     )
     if initOK == False:
         errorMsg = "Error: The OpenTrepSearcher cannot be initialized"

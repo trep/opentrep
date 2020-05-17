@@ -6,6 +6,7 @@ import json
 import pyopentrep, Travel_pb2
 
 # Initialise the OpenTrep C++ library
+  porPath = f"{trep_dir}/share/opentrep/data/por/test_optd_por_public.csv"
 # xapianDBPath = "/tmp/opentrep/xapian_traveldb"
 # sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
 xapianDBPath = "/var/www/webapps/opentrep/trep/traveldb"
@@ -14,11 +15,17 @@ sqlDBConnStr = "/var/www/webapps/opentrep/trep/sqlite_travel.db"
 #sqlDBType = "mysql"
 #sqlDBConnStr = "db=trep_trep user=trep password=trep"
 deploymentNb = 0
+flagDontIndexIATAPOR = False
+flagIndexPORInXapian = True
+flagAddPORInDB = True
+logPath = "/var/log/webapps/search/pyopentrep.log"
 openTrepLibrary = pyopentrep.OpenTrepSearcher()
 #queryAnswer = Travel_pb2.QueryAnswer()
-initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
+initOK = openTrepLibrary.init (porPath, xapianDBPath, sqlDBType, sqlDBConnStr,
                                deploymentNb,
-                               '/var/log/webapps/search/pyopentrep.log')
+                               flagDontIndexIATAPOR, flagIndexPORInXapian,
+                               flagAddPORInDB,
+                               logPath)
 
 # Generate a query string with random place codes
 def generateRandomString (nbOfDraws):

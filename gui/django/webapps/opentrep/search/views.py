@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.utils.encoding import smart_text, smart_bytes
 from google.protobuf import text_format
 import sys, getopt, os, math, codecs
-import simplejson as json
 import logging
 # Potentially add the following two pathes to the PYTHONPATH environment variable
 # 1. Path to the OpenTrep C++ library of the Python wrapper (pyopentrep.so)
@@ -61,19 +60,27 @@ def get_local_local_flight_duration_hr (place1, place2):
 
 # Initialise the OpenTrep library
 def initOpenTrep():
+  trep_dir = "/var/www/webapps/opentrep/trep"
   # Initialise the OpenTrep C++ library
+  porPath = f"{trep_dir}/share/opentrep/data/por/test_optd_por_public.csv"
   # xapianDBPath = "/tmp/opentrep/xapian_traveldb"
   # sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
-  xapianDBPath = "/var/www/webapps/opentrep/trep/traveldb"
+  xapianDBPath = f"{porPath}/traveldb"
   sqlDBType = "sqlite"
-  sqlDBConnStr = "/var/www/webapps/opentrep/trep/sqlite_travel.db"
+  sqlDBConnStr = f"{porPath}/sqlite_travel.db"
   #sqlDBType = "mysql"
   #sqlDBConnStr = "db=trep_trep user=trep password=trep"
   deploymentNb = 0
+  flagDontIndexIATAPOR = False
+  flagIndexPORInXapian = True
+  flagAddPORInDB = True
+  logPath = "/var/log/webapps/search/pyopentrep.log"
   openTrepLibrary = pyopentrep.OpenTrepSearcher()
-  initOK = openTrepLibrary.init (xapianDBPath, sqlDBType, sqlDBConnStr,
+  initOK = openTrepLibrary.init (porPath, xapianDBPath, sqlDBType, sqlDBConnStr,
                                  deploymentNb,
-                                 '/var/log/webapps/search/pyopentrep.log')
+                                 flagDontIndexIATAPOR, flagIndexPORInXapian,
+                                 flagAddPORInDB,
+                                 logPath)
   return initOK, openTrepLibrary
 
 # Extract the answer from the resulting ProtoBuf
