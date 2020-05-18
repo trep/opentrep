@@ -244,8 +244,9 @@
 # limitations under the License.
 #=============================================================================
 
-find_package(PythonInterp REQUIRED)
-find_package(PythonLibs)
+#find_package(PythonInterp REQUIRED)
+#find_package(PythonLibs)
+find_package (Python3 COMPONENTS Interpreter Development REQUIRED)
 include(targetLinkLibrariesWithDynamicLookup)
 
 set(_command "
@@ -277,7 +278,7 @@ candidates = itertools.chain.from_iterable(candidate_lists)
 for candidate in candidates:
     rel_candidate = os.path.relpath(
       candidate, sys.prefix)
-    if not rel_candidate.startswith(\"..\"):
+    if not rel_candidate.startswith('..'):
         result = candidate
         rel_result = rel_candidate
         break
@@ -286,7 +287,7 @@ ext_suffix_var = 'SO'
 if sys.version_info[:2] >= (3, 5):
     ext_suffix_var = 'EXT_SUFFIX'
 
-sys.stdout.write(\";\".join((
+sys.stdout.write(';'.join((
     os.sep,
     os.pathsep,
     sys.prefix,
@@ -296,7 +297,8 @@ sys.stdout.write(\";\".join((
 )))
 ")
 
-execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "${_command}"
+message (STATUS "Python3 executable: ${Python3_EXECUTABLE}")
+execute_process(COMMAND "${Python3_EXECUTABLE}" -c "${_command}"
                 OUTPUT_VARIABLE _list
                 RESULT_VARIABLE _result)
 
@@ -399,7 +401,7 @@ function(python_extension_module _target)
   endif()
 
   if(NOT _is_non_lib)
-    include_directories("${PYTHON_INCLUDE_DIRS}")
+    include_directories("${Python3_INCLUDE_DIRS}")
   endif()
 
   if(_is_module_lib)
@@ -424,7 +426,7 @@ function(python_extension_module _target)
       endif()
     endif()
 
-    target_link_libraries_with_dynamic_lookup(${_target} ${PYTHON_LIBRARIES})
+    target_link_libraries_with_dynamic_lookup(${_target} ${Python3_LIBRARIES})
     
     if(_is_module_lib)
       _set_python_extension_symbol_visibility(${_target})
@@ -434,7 +436,7 @@ endfunction()
 
 function(python_standalone_executable _target)
   include_directories(${PYTHON_INCLUDE_DIRS})
-  target_link_libraries(${_target} ${PYTHON_LIBRARIES})
+  target_link_libraries(${_target} ${Python3_LIBRARIES})
 endfunction()
 
 function(python_modules_header _name)

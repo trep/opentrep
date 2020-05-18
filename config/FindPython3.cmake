@@ -98,8 +98,8 @@ This module will set the following variables in your project
   Extension suffix for modules.
 
   Information returned by
-  ``distutils.sysconfig.get_config_flag('SOABI')`` or computed from
-  ``distutils.sysconfig.get_config_flag('EXT_SUFFIX')`` or
+  ``distutils.sysconfig.get_config_var('SO')`` or computed from
+  ``distutils.sysconfig.get_config_var('EXT_SUFFIX')`` or
   ``python3-config --extension-suffix``.
 ``Python3_Compiler_FOUND``
   System has the Python 3 compiler.

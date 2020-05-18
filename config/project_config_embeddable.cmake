@@ -310,6 +310,7 @@ macro (get_external_libs)
 
   #
   set (PROJ_DEP_LIBS_FOR_LIB "")
+  set (PROJ_DEP_LIBS_FOR_PYEXT "")
   set (PROJ_DEP_LIBS_FOR_BIN "")
   set (PROJ_DEP_LIBS_FOR_TST "")
   foreach (_arg ${ARGV})
@@ -493,7 +494,11 @@ macro (get_python)
   # The first check searches for the libraries and include paths.
   # However, on some older versions (e.g., on RedHat/CentOS 5.x),
   # only the static library is searched.
-  find_package (Python3 COMPONENTS Interpreter Development REQUIRED)
+  find_package (Python3 COMPONENTS Development REQUIRED)
+
+  # Python extension
+  #find_package (PythonExtensions REQUIRED)
+  include(targetLinkLibrariesWithDynamicLookup)
 
   # The second check is to get the dynamic library for sure.
   #find_package (PythonLibsWrapper ${_required_version} REQUIRED)
@@ -508,12 +513,6 @@ macro (get_python)
 
     # Update the list of include directories for the project
     include_directories (${Python3_INCLUDE_DIRS})
-
-    # Update the list of dependencies for the project
-    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${Python3_LIBRARIES})
-
-    # Python extension
-    find_package (PythonExtensions REQUIRED)
 
   else (Python3_FOUND)
 	message (FATAL_ERROR "Python libraries are missing. Please install them (e.g., 'python-devel' for the Fedora/RedHat package)")
@@ -897,7 +896,7 @@ macro (get_sqlite)
     include_directories (${SQLITE3_INCLUDE_DIR})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SQLITE3_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${SQLITE3_LIBRARIES})
   endif (SQLITE3_FOUND)
 
 endmacro (get_sqlite)
@@ -919,7 +918,7 @@ macro (get_mysql)
     include_directories (${MYSQL_INCLUDE_DIR})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${MYSQL_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${MYSQL_LIBRARIES})
   endif (MYSQL_FOUND)
 
 endmacro (get_mysql)
@@ -1037,7 +1036,7 @@ macro (get_stdair)
     include_directories (${STDAIR_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${STDAIR_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${STDAIR_LIBRARIES})
 
   else (StdAir_FOUND)
     set (ERROR_MSG "The StdAir library cannot be found. If it is installed in")
@@ -1069,7 +1068,7 @@ macro (get_sevmgr)
     include_directories (${SEVMGR_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SEVMGR_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${SEVMGR_LIBRARIES})
 
   else (SEvMgr_FOUND)
     set (ERROR_MSG "The SEvMgr library cannot be found. If it is installed in")
@@ -1101,7 +1100,7 @@ macro (get_trademgen)
     include_directories (${TRADEMGEN_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${TRADEMGEN_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${TRADEMGEN_LIBRARIES})
 
   else (TraDemGen_FOUND)
     set (ERROR_MSG "The TraDemGen library cannot be found. If it is installed in")
@@ -1133,7 +1132,7 @@ macro (get_travelccm)
     include_directories (${TRAVELCCM_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${TRAVELCCM_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${TRAVELCCM_LIBRARIES})
 
   else (TravelCCM_FOUND)
     set (ERROR_MSG "The TravelCCM library cannot be found. If it is installed in")
@@ -1165,7 +1164,7 @@ macro (get_airtsp)
     include_directories (${AIRTSP_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRTSP_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${AIRTSP_LIBRARIES})
 
   else (AirTSP_FOUND)
     set (ERROR_MSG "The AirTSP library cannot be found. If it is installed")
@@ -1197,7 +1196,7 @@ macro (get_airrac)
     include_directories (${AIRRAC_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRRAC_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${AIRRAC_LIBRARIES})
 
   else (AirRAC_FOUND)
     set (ERROR_MSG "The AirRAC library cannot be found. If it is installed in")
@@ -1229,7 +1228,7 @@ macro (get_rmol)
     include_directories (${RMOL_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${RMOL_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${RMOL_LIBRARIES})
 
   else (RMOL_FOUND)
     set (ERROR_MSG "The RMOL library cannot be found. If it is installed in")
@@ -1261,7 +1260,7 @@ macro (get_airinv)
     include_directories (${AIRINV_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRINV_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${AIRINV_LIBRARIES})
 
   else (AirInv_FOUND)
     set (ERROR_MSG "The AirInv library cannot be found. If it is installed in")
@@ -1293,7 +1292,7 @@ macro (get_avlcal)
     include_directories (${AVLCAL_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AVLCAL_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${AVLCAL_LIBRARIES})
 
   else (AvlCal_FOUND)
     set (ERROR_MSG "The AvlCal library cannot be found. If it is installed in")
@@ -1325,7 +1324,7 @@ macro (get_simfqt)
     include_directories (${SIMFQT_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SIMFQT_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${SIMFQT_LIBRARIES})
 
   else (SimFQT_FOUND)
     set (ERROR_MSG "The SimFQT library cannot be found. If it is installed in")
@@ -1357,7 +1356,7 @@ macro (get_simlfs)
     include_directories (${SIMLFS_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SIMLFS_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${SIMLFS_LIBRARIES})
 
   else (SimLFS_FOUND)
     set (ERROR_MSG "The SimLFS library cannot be found. If it is installed in")
@@ -1389,7 +1388,7 @@ macro (get_simcrs)
     include_directories (${SIMCRS_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${SIMCRS_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${SIMCRS_LIBRARIES})
 
   else (SimCRS_FOUND)
     set (ERROR_MSG "The SimCRS library cannot be found. If it is installed in")
@@ -1421,7 +1420,7 @@ macro (get_tvlsim)
     include_directories (${TVLSIM_INCLUDE_DIRS})
 
     # Update the list of dependencies for the project
-    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${TVLSIM_LIBRARIES})
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${TVLSIM_LIBRARIES})
 
   else (TvlSim_FOUND)
     set (ERROR_MSG "The TvlSim library cannot be found. If it is installed in")
@@ -1795,10 +1794,29 @@ macro (module_library_add_specific
   if ("${_lib_prefix}" STREQUAL "py")
     # no 'lib' prefix
     set_target_properties (${_lib_target} PROPERTIES
-           PREFIX "")
+      PREFIX "")
     # must be .so (even on MacOS, not .dylib)
     set_target_properties (${_lib_target} PROPERTIES
-           SUFFIX ".so")
+      SUFFIX ".so")
+
+	# Add the dependencies for Python extensions.
+	#
+	# Python extensions (which are also libraries per se) must not be linked
+	# against libpython3.x.so (which includes the interpreter). On Linux, it is
+	# fine not to link against libpython3.x.so, but on OS X, the compiler
+	# fails, unless the -undefined dynamic_lookup option is passed, which is
+	# what target_link_libraries_with_dynamic_lookup() is doing. That function
+	# is specified in the targetLinkLibrariesWithDynamicLookup.cmake file.
+	#
+	# See also:
+	#  https://blog.tim-smith.us/2015/09/python-extension-modules-os-x/
+	#  https://github.com/scikit-build/scikit-build/blob/master/skbuild/resources/cmake/targetLinkLibrariesWithDynamicLookup.cmake
+	target_link_libraries_with_dynamic_lookup (${_lib_target}
+	  ${Python3_LIBRARIES})
+	#python_extension_module (${_lib_target})
+    set (PROJ_DEP_LIBS_FOR_PYEXT ${_lib_target})
+    set (PROJ_DEP_LIBS_FOR_PYEXT ${PROJ_DEP_LIBS_FOR_PYEXT} PARENT_SCOPE)
+	
   endif ("${_lib_prefix}" STREQUAL "py")
 
   ##
@@ -1827,7 +1845,6 @@ macro (module_library_add_specific
   if ("${_lib_prefix}" STREQUAL "py")
 	# If the library is Python, install it into a dedicated directory
 	message (STATUS "${_lib_short_name} is assumed to be a Python library")
-	python_extension_module (${_lib_target})
 	install (TARGETS ${_lib_target}
       EXPORT ${LIB_DEPENDENCY_EXPORT}
       LIBRARY DESTINATION "${INSTALL_PY_LIB_DIR}" COMPONENT runtime)
@@ -2601,6 +2618,7 @@ macro (display_python)
     message (STATUS "  - Python3_LIBRARIES ............. : ${Python3_LIBRARIES}")
     message (STATUS "  - Python3_LIBRARY_DIRS .......... : ${Python3_LIBRARY_DIRS}")
     message (STATUS "  - Python3_RUNTIME_LIBRARY_DIRS .. : ${Python3_RUNTIME_LIBRARY_DIRS}")
+    message (STATUS "  - Python3 extension/libraries ... : ${PROJ_DEP_LIBS_FOR_PYEXT}")
   endif (Python3_FOUND)
 endmacro (display_python)
 
