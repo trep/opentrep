@@ -1,3 +1,7 @@
+* 2020-05-30:
+- Version 0.07.7
+- The non-Python libraries are not longer linked against Python ones
+
 * 2020-05-16:
 - Version 0.07.6
 - Improved how the Python module is delivered

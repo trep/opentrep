@@ -1,3 +1,6 @@
+* Sat May 30 2020 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.7
+- The non-Python libraries are not longer linked against Python ones
+
 * Sat May 16 2020 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.6
 - Improved how the Python module is delivered
 

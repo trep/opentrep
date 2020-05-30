@@ -577,7 +577,9 @@ macro (get_zeromq)
 endmacro (get_zeromq)
 
 # ~~~~~~~~~~ BOOST ~~~~~~~~~~
-#
+# Derive the names of required Boost libraries, usually something like
+# Boost_CPTNAME_LIBRARY, where CPTNAME is the name of the component
+# (e.g., regex, locale)
 macro (register_boost_lib _boost_lib_list_name _boost_lib_list)
   # Update the list of library dependencies for the project
   foreach (_lib_cpt ${_boost_lib_list})
@@ -619,13 +621,25 @@ macro (get_boost)
   set (Boost_USE_STATIC_LIBS OFF)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
+
+  # Boost components for (non-Python) libraries
   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
-    date_time random iostreams serialization filesystem system
-    locale ${python_cpt_name1} ${python_cpt_name2} regex)
+    date_time random iostreams serialization filesystem system locale regex)
+
+  # Boost components for Python extensions
+  set (BOOST_REQUIRED_COMPONENTS_FOR_PYEXT
+	${python_cpt_name1} ${python_cpt_name2})
+  
+  # Boost components for main (non-test) binaries
   set (BOOST_REQUIRED_COMPONENTS_FOR_BIN program_options)
+
+  # Boost components for test binaries
   set (BOOST_REQUIRED_COMPONENTS_FOR_TST unit_test_framework)
+
+  # Summary for reporting
   set (BOOST_REQUIRED_COMPONENTS ${BOOST_REQUIRED_COMPONENTS_FOR_LIB}
-	${BOOST_REQUIRED_COMPONENTS_FOR_BIN} ${BOOST_REQUIRED_COMPONENTS_FOR_TST})
+	${BOOST_REQUIRED_COMPONENTS_FOR_BIN} ${BOOST_REQUIRED_COMPONENTS_FOR_TST}
+	${BOOST_REQUIRED_COMPONENTS_FOR_PYEXT})
 
   # The first check is for the required components.
   find_package (Boost COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
@@ -642,11 +656,53 @@ macro (get_boost)
 
   if (Boost_FOUND)
     # Boost.Python library
-    message (STATUS "  + Boost_PYTHON_VERSION: ${Boost_PYTHON_VERSION}")
-    message (STATUS "  + Boost_PYTHON_LIBRARY: ${Boost_PYTHON_LIBRARY}")
-    message (STATUS "  + Boost_PYTHON3_LIBRARY: ${Boost_PYTHON3_LIBRARY}")
-    message (STATUS "  + Boost_PYTHON37_LIBRARY: ${Boost_PYTHON37_LIBRARY}")
-    message (STATUS "  + Boost_PYTHON38_LIBRARY: ${Boost_PYTHON38_LIBRARY}")
+	if (${Boost_PYTHON3_FOUND})
+      message (STATUS "  + Boost_PYTHON3_FOUND: ${Boost_PYTHON3_FOUND}")
+	endif (${Boost_PYTHON3_FOUND})
+	#
+	if (${Boost_PYTHON38_FOUND})
+      message (STATUS "  + Boost_PYTHON38_FOUND: ${Boost_PYTHON38_FOUND}")
+	endif (${Boost_PYTHON38_FOUND})
+	#
+	if (${Boost_PYTHON_VERSION})
+      message (STATUS "  + Boost_PYTHON_VERSION: ${Boost_PYTHON_VERSION}")
+	endif (${Boost_PYTHON_VERSION})
+	#
+	if (${Boost_PYTHON_LIBRARY})
+      message (STATUS "  + Boost_PYTHON_LIBRARY: ${Boost_PYTHON_LIBRARY}")
+	endif (${Boost_PYTHON_LIBRARY})
+	#
+	if (${Boost_PYTHON3_LIBRARY})
+      message (STATUS "  + Boost_PYTHON3_LIBRARY: ${Boost_PYTHON3_LIBRARY}")
+	endif (${Boost_PYTHON3_LIBRARY})
+	#
+	if (${Boost_PYTHON36_LIBRARY})
+      message (STATUS "  + Boost_PYTHON36_LIBRARY: ${Boost_PYTHON36_LIBRARY}")
+	endif (${Boost_PYTHON36_LIBRARY})
+	#
+	if (${Boost_PYTHON37_LIBRARY})
+      message (STATUS "  + Boost_PYTHON37_LIBRARY: ${Boost_PYTHON37_LIBRARY}")
+	endif (${Boost_PYTHON37_LIBRARY})
+	#
+	if (${Boost_PYTHON38_LIBRARY})
+      message (STATUS "  + Boost_PYTHON38_LIBRARY: ${Boost_PYTHON38_LIBRARY}")
+	endif (${Boost_PYTHON38_LIBRARY})
+	#
+	if (${Boost_PYTHON39_LIBRARY})
+      message (STATUS "  + Boost_PYTHON39_LIBRARY: ${Boost_PYTHON39_LIBRARY}")
+	endif (${Boost_PYTHON39_LIBRARY})
+
+	# Boost has a single Python library, but its name depends on the
+	# distribution, it can be libboost_python3 or libboost_python3x
+	if (${Boost_PYTHON3_FOUND})
+	  set (BOOST_REQUIRED_COMPONENTS_FOR_PYEXT ${python_cpt_name1})
+	  list (BOOST_REQUIRED_COMPONENTS ${python_cpt_name2})
+	endif (${Boost_PYTHON3_FOUND})
+
+	if (${Boost_PYTHON${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}_FOUND})
+	  set (BOOST_REQUIRED_COMPONENTS_FOR_PYEXT ${python_cpt_name2})
+	  list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name1})
+	endif (${Boost_PYTHON${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}_FOUND})
 
     # Update the list of include directories for the project
     include_directories (${Boost_INCLUDE_DIRS})
@@ -657,6 +713,10 @@ macro (get_boost)
     # Update the list of library dependencies for the project
     register_boost_lib ("PROJ_DEP_LIBS_FOR_LIB"
       "${BOOST_REQUIRED_COMPONENTS_FOR_LIB}")
+
+    # Update the list of Python library dependencies for the project
+    register_boost_lib ("PROJ_DEP_LIBS_FOR_PYEXT"
+      "${BOOST_REQUIRED_COMPONENTS_FOR_PYEXT}")
 
     # Update the list of binary dependencies for the project
     register_boost_lib ("PROJ_DEP_LIBS_FOR_BIN"
@@ -1750,12 +1810,15 @@ macro (module_library_add_specific
   # library target to a dedicated list
   set (_intermodule_dependencies "")
   foreach (_arg_module ${ARGV})
-
     if (NOT "${_lib_dir};${_lib_short_name};${_lib_headers};${_lib_sources}" 
 		MATCHES "${_arg_module}")
       list (APPEND _intermodule_dependencies ${_arg_module}lib)
     endif ()
   endforeach (_arg_module)
+  #
+  if (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
+	set (_intramodule_dependencies ${MODULE_NAME}lib)
+  endif (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
 
   # Add the dependencies:
   #  * on external libraries (Boost, MySQL, SOCI, StdAir), as calculated by 
@@ -1763,9 +1826,6 @@ macro (module_library_add_specific
   #  * on the other module libraries, as provided as paramaters to this macro
   #  * on the main/standard library of the module (when, of course, the
   #    current library is not the main/standard library).
-  if (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
-	set (_intramodule_dependencies ${MODULE_NAME}lib)
-  endif (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
   target_link_libraries (${_lib_target} ${PROJ_DEP_LIBS_FOR_LIB} 
 	${_intermodule_dependencies} ${_intramodule_dependencies})
 
@@ -1791,13 +1851,17 @@ macro (module_library_add_specific
     add_dependencies (${_lib_target} hdr_cfg_${MODULE_NAME})
   endif (${_lib_short_name} STREQUAL ${MODULE_NAME})
 
+  ##
+  # Python extension libraries hase some peculiarities
   if ("${_lib_prefix}" STREQUAL "py")
+	message (STATUS "${_lib_short_name} is assumed to be a Python library:")
+	message (STATUS "  -> Following libraries will be weakly linked: ${Python3_LIBRARIES} ${PROJ_DEP_LIBS_FOR_PYEXT}")
+	
     # no 'lib' prefix
-    set_target_properties (${_lib_target} PROPERTIES
-      PREFIX "")
-    # must be .so (even on MacOS, not .dylib)
-    set_target_properties (${_lib_target} PROPERTIES
-      SUFFIX ".so")
+    set_target_properties (${_lib_target} PROPERTIES PREFIX "")
+
+    # The suffix must be .so (even on MacOS, not .dylib)
+    set_target_properties (${_lib_target} PROPERTIES SUFFIX ".so")
 
 	# Add the dependencies for Python extensions.
 	#
@@ -1812,27 +1876,28 @@ macro (module_library_add_specific
 	#  https://blog.tim-smith.us/2015/09/python-extension-modules-os-x/
 	#  https://github.com/scikit-build/scikit-build/blob/master/skbuild/resources/cmake/targetLinkLibrariesWithDynamicLookup.cmake
 	target_link_libraries_with_dynamic_lookup (${_lib_target}
-	  ${Python3_LIBRARIES})
+	  ${Python3_LIBRARIES} ${PROJ_DEP_LIBS_FOR_PYEXT})
 	#python_extension_module (${_lib_target})
-    set (PROJ_DEP_LIBS_FOR_PYEXT ${_lib_target})
-    set (PROJ_DEP_LIBS_FOR_PYEXT ${PROJ_DEP_LIBS_FOR_PYEXT} PARENT_SCOPE)
 	
   endif ("${_lib_prefix}" STREQUAL "py")
 
   ##
   # Library name (and soname)
   if (WIN32)
+	# MS Windows
     set_target_properties (${_lib_target} PROPERTIES 
       OUTPUT_NAME ${_lib_short_name} 
       VERSION ${GENERIC_LIB_VERSION})
+
   else (WIN32)
+	# Linux and MacOS
     set_target_properties (${_lib_target} PROPERTIES 
       OUTPUT_NAME ${_lib_short_name}
       VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION})
   endif (WIN32)
 
-  # If everything else is not enough for CMake to derive the language to
-  # be used by the linker, it must be told to fall-back on C++
+  # If everything else is not enough for CMake to derive the language
+  # to be used by the linker, it must be told to fall-back on C++
   get_target_property (_linker_lang ${_lib_target} LINKER_LANGUAGE)
   if ("${_linker_lang}" STREQUAL "_linker_lang-NOTFOUND")
     set_target_properties (${_lib_target} PROPERTIES LINKER_LANGUAGE CXX)
@@ -1841,7 +1906,6 @@ macro (module_library_add_specific
 
   ##
   # Installation of the library
-  string (SUBSTRING ${_lib_short_name} 0 2 _lib_prefix)
   if ("${_lib_prefix}" STREQUAL "py")
 	# If the library is Python, install it into a dedicated directory
 	message (STATUS "${_lib_short_name} is assumed to be a Python library")
@@ -2618,7 +2682,6 @@ macro (display_python)
     message (STATUS "  - Python3_LIBRARIES ............. : ${Python3_LIBRARIES}")
     message (STATUS "  - Python3_LIBRARY_DIRS .......... : ${Python3_LIBRARY_DIRS}")
     message (STATUS "  - Python3_RUNTIME_LIBRARY_DIRS .. : ${Python3_RUNTIME_LIBRARY_DIRS}")
-    message (STATUS "  - Python3 extension/libraries ... : ${PROJ_DEP_LIBS_FOR_PYEXT}")
   endif (Python3_FOUND)
 endmacro (display_python)
 
@@ -2657,7 +2720,7 @@ macro (display_boost)
     message (STATUS "  - Boost_PYTHON_VERSION .......... : ${Boost_PYTHON_VERSION}")
     message (STATUS "  - Boost required components ..... : ${BOOST_REQUIRED_COMPONENTS}")
     message (STATUS "  - Boost required libraries ...... : ${BOOST_REQUIRED_LIBS}")
-    message (STATUS "  - Boost required libs for lib ... : ${PROJ_DEP_LIBS_FOR_LIB}")
+    message (STATUS "  - Boost required libs for Py ext. : ${PROJ_DEP_LIBS_FOR_PYEXT}")
     message (STATUS "  - Boost required libs for bin ... : ${PROJ_DEP_LIBS_FOR_BIN}")
     message (STATUS "  - Boost required libs for test .. : ${PROJ_DEP_LIBS_FOR_TST}")
   endif (Boost_FOUND)
@@ -2703,9 +2766,9 @@ macro (display_curses)
   if (CURSES_FOUND)
     message (STATUS)
     message (STATUS "* (N)Curses:")
-    message (STATUS "  - CURSES_VERSION .............. : ${CURSES_VERSION}")
-    message (STATUS "  - CURSES_INCLUDE_DIR .......... : ${CURSES_INCLUDE_DIR}")
-    message (STATUS "  - CURSES_LIBRARY .............. : ${CURSES_LIBRARY}")
+    message (STATUS "  - CURSES_VERSION ................ : ${CURSES_VERSION}")
+    message (STATUS "  - CURSES_INCLUDE_DIR ............ : ${CURSES_INCLUDE_DIR}")
+    message (STATUS "  - CURSES_LIBRARY ................ : ${CURSES_LIBRARY}")
   endif (CURSES_FOUND)
 endmacro (display_curses)
 
@@ -2714,9 +2777,9 @@ macro (display_sqlite)
   if (SQLITE3_FOUND)
     message (STATUS)
     message (STATUS "* SQLite3:")
-    message (STATUS "  - SQLITE3_VERSION ................. : ${SQLITE3_VERSION}")
-    message (STATUS "  - SQLITE3_INCLUDE_DIR ............. : ${SQLITE3_INCLUDE_DIR}")
-    message (STATUS "  - SQLITE3_LIBRARIES ............... : ${SQLITE3_LIBRARIES}")
+    message (STATUS "  - SQLITE3_VERSION ............... : ${SQLITE3_VERSION}")
+    message (STATUS "  - SQLITE3_INCLUDE_DIR ........... : ${SQLITE3_INCLUDE_DIR}")
+    message (STATUS "  - SQLITE3_LIBRARIES ............. : ${SQLITE3_LIBRARIES}")
   endif (SQLITE3_FOUND)
 endmacro (display_sqlite)
 
@@ -2978,6 +3041,12 @@ macro (display_doc_generation)
 endmacro (display_doc_generation)
 
 ##
+macro (display_status_all_external_libraries)
+  message (STATUS)
+  message (STATUS "* All required external libs ...... : ${PROJ_DEP_LIBS_FOR_LIB}")
+endmacro (display_status_all_external_libraries)
+
+##
 macro (display_status)
   message (STATUS)
   message (STATUS "=============================================================")
@@ -3077,6 +3146,7 @@ macro (display_status)
   display_simlfs ()
   display_simcrs ()
   display_tvlsim ()
+  display_status_all_external_libraries ()
   #
   message (STATUS)
   message (STATUS "Change a value with: cmake -D<Variable>=<Value>" )

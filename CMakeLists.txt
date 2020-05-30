@@ -10,7 +10,7 @@ include (config/project_config_embeddable.cmake)
 project (opentrep)
 set_project_names (opentrep OpenTREP)
 set_project_brief ("C++ Open Travel Request Parsing Library")
-set_project_versions (0 07 6)
+set_project_versions (0 07 7)
 
 ##
 # Project options

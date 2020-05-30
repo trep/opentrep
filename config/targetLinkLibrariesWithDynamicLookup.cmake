@@ -577,6 +577,9 @@ function(target_link_libraries_with_dynamic_lookup target)
                           PROPERTIES LINK_FLAGS "${link_props}")
   endif()
 
+  # DEBUG
+  message (STATUS "Python weak link: link_items=${link_items} - link_libs=${link_libs}")
+  
   set(links "${link_items}" "${link_libs}")
   if(links)
     target_link_libraries(${target} "${links}")
