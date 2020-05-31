@@ -1,35 +1,29 @@
 #
-# Config file for the OpenTrep package. It defines the following variables:
-#  OPENTREP_VERSION         - version of OpenTrep
+# Config file for the OpenTREP package. It defines the following variables:
+#  OPENTREP_VERSION         - version of OpenTREP
 #  OPENTREP_BINARY_DIRS     - binary directories for OpenTrep
 #  OPENTREP_INCLUDE_DIRS    - include directories for OpenTrep
 #  OPENTREP_LIBRARY_DIRS    - library directories for OpenTrep
-#  OPENTREP_PY_LIBRARY_DIRS - Python library directories for OpenTrep
 #  OPENTREP_LIBEXEC_DIR     - internal exec directory for OpenTrep
 #  OPENTREP_LIBRARIES       - libraries to link against
-#  OPENTREP_PY_LIBRARIES    - Python libraries to link against
 #  OPENTREP_EXECUTABLES     - binaries/executables
-#  OPENTREP_PY_EXECUTABLES  - Python binaries/executables
 #  OPENTREP_SAMPLE_DIR      - directory for sample data files
 #
 
-# Tell the user project where to find OpenTrep headers and libraries
+# Tell the user project where to find OpenTREP headers and libraries
 set (OPENTREP_VERSION "@PACKAGE_VERSION@")
 set (OPENTREP_BINARY_DIRS "@OPENTREP_BIN_DIR@")
 set (OPENTREP_INCLUDE_DIRS "@OPENTREP_INCLUDE_DIRS@")
 set (OPENTREP_LIBRARY_DIRS "@OPENTREP_LIB_DIR@")
-set (OPENTREP_PY_LIBRARY_DIRS "@OPENTREP_PY_LIB_DIR@")
 set (OPENTREP_LIBEXEC_DIR "@OPENTREP_LIBEXEC_DIR@")
 set (OPENTREP_SAMPLE_DIR "@OPENTREP_SAMPLE_DIR@")
 
-# Library dependencies for OpenTrep (contains definitions for the OpenTrep
+# Library dependencies for OpenTrep (contains definitions for the OpenTREP
 # IMPORTED targets)
 include ("@OPENTREP_CMAKE_DIR@/opentrep-library-depends.cmake")
 
-# These are the OpenTrep IMPORTED targets, created by
+# These are the OpenTREP IMPORTED targets, created by
 # opentrep-library-depends.cmake
 set (OPENTREP_LIBRARIES opentreplib)
-set (OPENTREP_PY_LIBRARIES pyopentreplib)
 set (OPENTREP_EXECUTABLES opentrep)
-set (OPENTREP_PY_EXECUTABLES pyopentrep)
 

@@ -1,0 +1,22 @@
+#
+# Config file for the OpenTREP Python package.
+# It defines the following variables:
+#  OPENTREP_VERSION         - version of OpenTREP
+#  OPENTREP_PY_LIBRARY_DIRS - Python library directories for OpenTrep
+#  OPENTREP_PY_LIBRARIES    - Python libraries to link against
+#  OPENTREP_PY_EXECUTABLES  - Python binaries/executables
+#
+
+# Tell the user project where to find OpenTREP Python libraries
+set (OPENTREP_VERSION "@PACKAGE_VERSION@")
+set (OPENTREP_PY_LIBRARY_DIRS "@OPENTREP_PY_LIB_DIR@")
+
+# Library dependencies for OpenTrep (contains definitions for the OpenTREP
+# IMPORTED targets)
+include ("@OPENTREP_CMAKE_DIR@/opentrep-python-library-depends.cmake")
+
+# These are the OpenTREP IMPORTED targets, created by
+# opentrep-python-library-depends.cmake
+set (OPENTREP_PY_LIBRARIES pyopentreplib)
+set (OPENTREP_PY_EXECUTABLES pyopentrep)
+
