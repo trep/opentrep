@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
-from django.utils.encoding import smart_text, smart_bytes
+from urllib.parse import unquote_plus
+from django.utils.encoding import smart_str, force_str, smart_bytes, force_bytes
 from google.protobuf import text_format
 import sys, getopt, os, math, codecs
 import logging
@@ -60,14 +61,14 @@ def get_local_local_flight_duration_hr (place1, place2):
 
 # Initialise the OpenTrep library
 def initOpenTrep():
-  trep_dir = "/var/www/webapps/opentrep/trep"
   # Initialise the OpenTrep C++ library
+  trep_dir = "/var/www/webapps/opentrep/trep"
   porPath = f"{trep_dir}/share/opentrep/data/por/test_optd_por_public.csv"
   # xapianDBPath = "/tmp/opentrep/xapian_traveldb"
   # sqlDBConnStr = "/tmp/opentrep/sqlite_travel.db"
-  xapianDBPath = f"{porPath}/traveldb"
+  xapianDBPath = f"{trep_dir}/traveldb"
   sqlDBType = "sqlite"
-  sqlDBConnStr = f"{porPath}/sqlite_travel.db"
+  sqlDBConnStr = f"{trep_dir}/sqlite_travel.db"
   #sqlDBType = "mysql"
   #sqlDBConnStr = "db=trep_trep user=trep password=trep"
   deploymentNb = 0
@@ -125,6 +126,10 @@ def extract_params (request, query_string = ''):
   zoom_level = 5
   map_type_value = 'HYBRID'
 
+  #
+  logger = logging.getLogger ('django.request')
+  logger.info (f"[Django][extract_params] Request: '{request}'")
+
   # Try with GET
   search_form = request.GET
 
@@ -152,7 +157,16 @@ def extract_params (request, query_string = ''):
     result = True
 
   elif 'q' in search_form:
-    query_string = search_form['q']
+    query_string_raw = search_form['q']
+    query_string_raw_type = type (query_string_raw)
+    query_string_bytes = force_bytes(query_string_raw)
+    query_string_bytes_type = type (query_string_bytes)
+    query_string = smart_str (query_string_bytes)
+    logger.info (f"[Django][extract_params] query_string_raw_type: {query_string_raw_type}i; query_string_bytes_type: {query_string_bytes_type}")
+    logger.info (f"[Django][extract_params] query_string_raw: '{query_string_raw}'")
+    logger.info (f"[Django][extract_params] query_string_bytes: '{query_string_bytes}'")
+    logger.info (f"[Django][extract_params] query_string: '{query_string}'")
+
     result = True
 
   # Detect the Google Map parameters (if any)
@@ -167,6 +181,8 @@ def extract_params (request, query_string = ''):
   # Detect the required action
   if 'q' in search_form:
     query_string = search_form['q']
+    #query_string = force_str (query_string_raw, encoding='utf-8',
+    #        strings_only=True, errors='strict')
     result = True
 
   elif 'show_airport' in search_form:
@@ -219,16 +235,18 @@ def index (request):
 
   if query_string == '':
     #
-    return render (request, 'search/index.html', {
-        'place_list': None,
-        'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
-        'nb_of_places': 0,
-        'dist_total': '0',
-        'unmatched_keyword_list': None, 'n_unmatched_kw': 0,
-        'query_string': query_string,
-        'corrected_query_string': query_string,
-        'coord_for_GMap_center': '',
-        'zoom_level': zoom_level, 'map_type_value': map_type_value})
+    out_struct = {
+            'place_list': None,
+            'place_pair_list': [{'dep': None, 'arr': None, 'dist': '0'}],
+            'nb_of_places': 0, 'dist_total': '0',
+            'unmatched_keyword_list': None, 'n_unmatched_kw': 0,
+            'query_string': query_string,
+            'corrected_query_string': query_string,
+            'coord_for_GMap_center': '',
+            'zoom_level': zoom_level,
+            'map_type_value': map_type_value
+            }
+    return render (request, 'search/index.html', out_struct)
   else:
     # Delegate the call to the display view
     return display (request, query_string, zoom_level, map_type_value)
@@ -238,8 +256,10 @@ def display (request, query_string = '',
              zoom_level = 5, map_type_value = 'HYBRID'):
   # Logging
   logger = logging.getLogger ('django.request')
-  logger.info (str(request))
-  logger.info ('Query string: "' + query_string + '"')
+  logger.info (f"[Django][Display] Request: '{request}'")
+  query_string_type = type (query_string)
+  logger.info (f"[Django][Display] Type of query string: {query_string_type}")
+  logger.info (f"[Django][Display] Query string: '{query_string}'")
 
   #
   if query_string == '':
@@ -257,14 +277,20 @@ def display (request, query_string = '',
   # into UTF-8 (from Unicode), so that the OpenTREP library be happy with it.
   #query_string_str = smart_bytes (query_string, encoding='utf-8',
   #                                strings_only=True, errors='strict')
-  result = openTrepLibrary.searchToPB (query_string)
+  result = None
+  try:
+      result = openTrepLibrary.searchToPB (query_string)
+  except:
+      errorMsg = f"[Django][Display] Error - The search failed on the OpenTrepLibrary - Query string: '{query_string}'"
+      logger.error (errorMsg)
+      return render (request, 'search/500.html', {'error_msg': errorMsg})
 
   # Extract the answer
   okStatus, queryAnswer = extractAnswer (result)
 
   # Query status
   if okStatus == False:
-    errorMsg = 'Error in the OpenTREP library: ' + queryAnswer.error_msg.msg
+    errorMsg = f"[Django][Display] Error in the OpenTREP library: {queryAnswer.error_msg.msg}"
     logger.error (errorMsg)
     return render (request, 'search/500.html', {'error_msg': errorMsg})
 
@@ -279,7 +305,7 @@ def display (request, query_string = '',
   coord_for_GMap_center = {'lat': 10, 'lon': 0}
 
   # DEBUG
-  logger.debug ('Result: ' + str(placeList))
+  logger.debug (f"[Django][Display] Result: '{placeList}'")
 
   # Free the OpenTREP library resource
   openTrepLibrary.finalize()
@@ -297,7 +323,7 @@ def display (request, query_string = '',
   ##
   if n_airports == 0:
     if (result == True):
-      msg += 'Your entry ("%s") was not recognised:<br>' % query_string_str
+      msg += f'Your entry ("{query_string}") was not recognised:<br>'
       msg += 'Enter a three-letter code or the name of an airport or city to find out its coordinates (e.g., JFK, or Rio de Janeiro)<br>'
       msg += 'Enter a sequence of two three-letter place_list or names to find out the distance between those airports (e.g., JFK CDG Tokyo)'
 
@@ -328,18 +354,20 @@ def display (request, query_string = '',
   corrected_query_string = calculate_corrected_query_string (place_list)
 
   #
-  logger.info ('Query string: "' + query_string
-               + '", corrected query string: "' + corrected_query_string
-               + '", unmatched keywords: "' + str(unmatched_keyword_list) + '"')
-  logger.info ('Place list: ' + text_format.MessageToString (placeList))
-  return render (request, 'search/display.html', {
-      'place_list': place_list, 'place_pair_list': place_pair_list,
-      'nb_of_places': n_airports,
-      'dist_total': '%d' % dist_total,
-      'unmatched_keyword_list': unmatched_keyword_list,
-      'n_unmatched_kw': n_unmatched_kw,
-      'query_string': query_string,
-      'corrected_query_string': corrected_query_string,
-      'coord_for_GMap_center': coord_for_GMap_center,
-      'zoom_level': zoom_level, 'map_type_value': map_type_value})
-
+  logger.info (f"Query string: '{query_string}'" \
+               f", corrected query string: '{corrected_query_string}'" \
+               f", unmatched keywords: '{unmatched_keyword_list}'")
+  out_place = {
+          'place_list': place_list,
+          'place_pair_list': place_pair_list,
+          'nb_of_places': n_airports,
+          'dist_total': '%d' % dist_total,
+          'unmatched_keyword_list': unmatched_keyword_list,
+          'n_unmatched_kw': n_unmatched_kw,
+          'query_string': query_string,
+          'corrected_query_string': corrected_query_string,
+          'coord_for_GMap_center': coord_for_GMap_center,
+          'zoom_level': zoom_level, 'map_type_value': map_type_value}
+  place_list_str = text_format.MessageToString (placeList)
+  logger.info (f"[Django][Display] Place list: {place_list_str}")
+  return render (request, 'search/display.html', out_place)

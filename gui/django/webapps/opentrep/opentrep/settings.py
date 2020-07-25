@@ -126,6 +126,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+DEFAULT_CHARSET = 'utf-8'
+
 TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
