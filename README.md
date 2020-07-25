@@ -319,7 +319,7 @@ $ brew install homebrew/portable-ruby/portable-readline
 * Note that, as of July 2020, the Hombrew recipes for Python 3 are now
   specific up to the minor version, more specifically:
   + Python 3.7: `python@3.7` (Python 3.7.8 as of July 2020)
-  + Python 3.8: `python@3.8` (Python 3.8.4 as of July 2020)
+  + Python 3.8: `python@3.8` (Python 3.8.5 as of July 2020)
 
 * Previously, the default Python 3 installation was Python 3.7 (now part of
   the `python@3.7` Homebrew package).
@@ -328,13 +328,13 @@ $ brew install homebrew/portable-ruby/portable-readline
 $ brew info python@3.7
 python@3.7: stable 3.7.8 (bottled) [keg-only]
 $ brew info python@3.8
-python@3.8: stable 3.8.4 (bottled)
+python@3.8: stable 3.8.5 (bottled)
 ```
 
 * Because of the multiple parallel installations of Python versions,
   the following setup may be necessary:
 ```bash
-$ sudo ln -s /usr/local/Cellar/python\@3.8/3.8.4 /usr/local/Cellar/python/3.8.4
+$ sudo ln -s /usr/local/Cellar/python\@3.8/3.8.5 /usr/local/Cellar/python/3.8.5
 $ sudo chown -R user /usr/local/Cellar/python/
 ```
   + Clean links on potential older versions:
@@ -342,42 +342,45 @@ $ sudo chown -R user /usr/local/Cellar/python/
 $ ls -lFh /usr/local/Cellar/python/
 total 0
 lrwxr-xr-x  1 user staff 34B Apr  7 23:15 3.8.2@ -> /usr/local/Cellar/python@3.8/3.8.2
-lrwxr-xr-x  1 user staff 34B Jul 17 09:19 3.8.4@ -> /usr/local/Cellar/python@3.8/3.8.4
+lrwxr-xr-x  1 user staff 34B Jul 17 09:19 3.8.5@ -> /usr/local/Cellar/python@3.8/3.8.5
 $ sudo rm -f /usr/local/Cellar/python/3.8.2
 ```
   + Check the following links, as installed by Homebrew on MacOS:
 ```bash
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.8
-lrwxr-xr-x  1 user staff 73B Jul 17 09:02 /usr/local/Frameworks/Python.framework/Versions/3.8@ -> ../../../Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8
+lrwxr-xr-x  1 user staff 73B Jul 17 09:02 /usr/local/Frameworks/Python.framework/Versions/3.8@ -> ../../../Cellar/python@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/Current
-lrwxr-xr-x  1 user staff 77B Jul 17 09:02 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user staff 77B Jul 17 09:02 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.8/3.8.5/Frameworks/Python.framework/Versions/Current
 ```
   + If those links are not as expected (as of July 2020, they were correct),
     recreate them:
 ```bash
 $ sudo unlink /usr/local/Frameworks/Python.framework/Versions/3.8
-$ sudo ln -s /usr/local/Cellar/python/3.8.4/Frameworks/Python.framework/Versions/3.8 /usr/local/Frameworks/Python.framework/Versions/3.8
+$ sudo ln -s /usr/local/Cellar/python/3.8.5/Frameworks/Python.framework/Versions/3.8 /usr/local/Frameworks/Python.framework/Versions/3.8
 $ sudo unlink /usr/local/Frameworks/Python.framework/Versions/Current
-$ sudo ln -s /usr/local/Cellar/python/3.8.4/Frameworks/Python.framework/Versions/Current /usr/local/Frameworks/Python.framework/Versions/Current
+$ sudo ln -s /usr/local/Cellar/python/3.8.5/Frameworks/Python.framework/Versions/Current /usr/local/Frameworks/Python.framework/Versions/Current
 ```
   + Leading to:
 ```bash
 $ ls -lFh /usr/local/Cellar/python/
 total 0
 drwxr-xr-x  13 user  staff   416B Mar 12 11:34 3.7.7/
-lrwxr-xr-x   1 user  staff    34B Apr  7 23:15 3.8.4@ -> /usr/local/Cellar/python@3.8/3.8.4
+lrwxr-xr-x   1 user  staff    34B Apr  7 23:15 3.8.5@ -> /usr/local/Cellar/python@3.8/3.8.5
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/
 total 0
 lrwxr-xr-x  1 user  staff    69B Mar 12 11:34 3.7@ -> ../../../Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7
-lrwxr-xr-x  1 user  staff    71B Apr  7 23:17 3.8@ -> /usr/local/Cellar/python/3.8.4/Frameworks/Python.framework/Versions/3.8
-lrwxr-xr-x  1 user  staff    75B Apr  7 23:19 Current@ -> /usr/local/Cellar/python/3.8.4/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  staff    71B Apr  7 23:17 3.8@ -> /usr/local/Cellar/python/3.8.5/Frameworks/Python.framework/Versions/3.8
+lrwxr-xr-x  1 user  staff    75B Apr  7 23:19 Current@ -> /usr/local/Cellar/python/3.8.5/Frameworks/Python.framework/Versions/Current
 ```
 
 * Up until recently (mid-2020), Boost.Python came with a dependency on
   the `libpython` Python library. As of July 2020, it seems to no longer
   be the case. As a matter of fact, as stated in the
   [What's new documentation of Python 3.8](https://docs.python.org/3/whatsnew/3.8.html#debug-build-uses-the-same-abi-as-release-build):
-> On Unix, C extensions are no longer linked to libpython except on Android and Cygwin. It is now possible for a statically linked Python to load a C extension built using a shared library Python. (Contributed by Victor Stinner in [bpo-21536](https://bugs.python.org/issue21536).).
+> On Unix, C extensions are no longer linked to libpython except on Android
+> and Cygwin. It is now possible for a statically linked Python to load
+> a C extension built using a shared library Python.
+> (Contributed by Victor Stinner in [bpo-21536](https://bugs.python.org/issue21536).).
 
 * The rationale is that most of the C extensions (including OpenTREP Python
   extension and Boost.Python) are meant to be loaded by the Python interpreter,
@@ -804,7 +807,7 @@ All the details are explained on a
 which works for the major Linux distributions and on MacOS.
 
 The procedure first installs a specific version of Python (as of July 2020,
-3.8.4) thanks to Pyenv, then install `pipenv` thanks to the `pip` utility
+3.8.5) thanks to Pyenv, then install `pipenv` thanks to the `pip` utility
 provided with that specific Python version.
 
 # Checking that the Python module works
@@ -847,7 +850,7 @@ $ PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 $ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
   DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
   ASAN_OPTIONS=detect_container_overflow=0 \
-  /usr/local/Cellar/python/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python \
+  /usr/local/Cellar/python/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python \
   ./opentrep/python/pyopentrep.py -d /tmp/opentrep/xapian_traveldb "nce sfo"
 OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv'
 Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
@@ -910,20 +913,21 @@ $ python3 -m pip install -U simplejson protobuf
 $ python3 -m pip install -U opentrep
 Defaulting to user installation because normal site-packages is not writeable
 Collecting opentrep
-  Using cached opentrep-0.7.6.post1.tar.gz (1.7 MB)
+  Using cached opentrep-0.7.7.post4.tar.gz (1.7 MB)
   Installing build dependencies ... done
   Getting requirements to build wheel ... done
     Preparing wheel metadata ... done
 Building wheels for collected packages: opentrep
   Building wheel for opentrep (PEP 517) ... done
-  Created wheel for opentrep: filename=opentrep-0.7.6.post1-cp38-cp38-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
+  Created wheel for opentrep: filename=opentrep-0.7.7.post4-cp38-cp38-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
   Stored in directory: ~/.cache/pip/wheels/82/b3/7c/f026b883cc204eefab1588f5e68661f78fec25395277bd221d
 Successfully built opentrep
 Installing collected packages: opentrep
-Successfully installed opentrep-0.7.6.post1
+Successfully installed opentrep-0.7.7.post4
 ```
 
-* Set the `LD_LIBRARY_PATH` and `PYTHONPATH` environment variables
+* Set the `LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH` and `PYTHONPATH`
+   environment variables
   + On MacOS:
 ```bash
 $ export INST_DIR=/usr/local
@@ -946,18 +950,18 @@ $ export LD_LIBRARY_PATH=${INST_DIR}/lib; export PYTHONPATH=${INST_DIR}/lib:${IN
 ```bash
 $ pyenv global system
 $ python --version
-Python 3.8.4
+Python 3.8.5
 ```
 
 * Clean potential former builds and launch a new build with Scikit-build:
 ```bash
-$ rm -rf _skbuild dist MANIFEST
+$ rm -rf _skbuild/ build/ dist/ .tox/ __pycache__/ .pytest_cache/ MANIFEST *.egg-info/
 $ python3 setup.py --build-type=Debug build sdist bdist_wheel # the build takes a few minutes
 $ ls -lFh _skbuild/linux-x86_64-3.8/ dist/
 dist/:
 total 42M
--rw-rw-r-- 1 user staff  40M May 15 23:45 opentrep-0.7.6.post1-cp38-cp38-linux_x86_64.whl
--rw-rw-r-- 1 user staff 1.6M May 15 23:45 opentrep-0.7.6.post1.tar.gz
+-rw-rw-r-- 1 user staff  40M May 15 23:45 opentrep-0.7.7.post4-cp38-cp38-linux_x86_64.whl
+-rw-rw-r-- 1 user staff 1.6M May 15 23:45 opentrep-0.7.7.post4.tar.gz
 
 _skbuild/linux-x86_64-3.8/:
 total 12K
@@ -974,7 +978,7 @@ $ OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
 $ export LD_LIBRARY_PATH=${INST_DIR}/lib; export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.8/site-packages/pyopentrep
 ```
 
-* Manylinux (for now, limited to Python2, so, not working):
+* Manylinux (as of mid-2020, limited to Python2, so, not working):
 ```bash
 $ docker pull scikitbuild/manylinux2010_x86_64:09d11d5f8
 $ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinux2010_x86_64:09d11d5f8 linux64 /io/travis/build-wheels.sh
@@ -985,13 +989,13 @@ $ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinu
 user@laptop$ PYPIURL="https://test.pypi.org"
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://test.pypi.org/legacy/
-Uploading opentrep-0.7.6-cp38-cp38-macosx_10_15_x86_64.whl
+Uploading opentrep-0.7.7.post4-cp38-cp38-macosx_10_15_x86_64.whl
 100%|██████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:16<00:00, 853kB/s]
-Uploading opentrep-0.7.6.macosx-10.15-x86_64.tar.gz
+Uploading opentrep-0.7.7.post4.macosx-10.15-x86_64.tar.gz
 100%|██████████████████████████████████████████████████████████████████████| 13.2M/13.2M [00:13<00:00, 993kB/s]
 
 View at:
-https://test.pypi.org/project/opentrep/0.7.6/
+https://test.pypi.org/project/opentrep/0.7.7.post4/
 ```
 
 * Upload/release the Python packages onto the
@@ -1002,30 +1006,30 @@ user@laptop$ keyring set ${PYPIURL}/ __token__
 Password for '__token__' in '${PYPIURL}/':
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://upload.pypi.org/legacy/
-Uploading opentrep-0.7.6-cp38-cp38-macosx_10_15_x86_64.whl
+Uploading opentrep-0.7.7.post4-cp38-cp38-macosx_10_15_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 13.4M/13.4M [00:48<00:00, 293kB/s]
-Uploading opentrep-0.7.6.macosx-10.15-x86_64.tar.gz
+Uploading opentrep-0.7.7.post4.macosx-10.15-x86_64.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 13.2M/13.2M [00:49<00:00, 278kB/s]
 
 View at:
-https://pypi.org/project/opentrep/0.7.6/
+https://pypi.org/project/opentrep/0.7.7.post4/
 ```
 
 ## Test the OpenTREP Python extension
 * Remove older version of and install the `opentrep` Python extension:
 ```bash
-$ python3 -m pip uninstall opentrep
-$ python3 -m pip install -U opentrep
+$ python3 -mpip uninstall opentrep
+$ python3 -mpip install -U opentrep
 ```
 
 * Launch a simple end-to-end test with `pytest`
   + On Linux:
 ```bash
-$ python3 -m pytest test_trep_e2e_simple.py
+$ python3 -mpytest test_trep_e2e_simple.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python -m pytest test_trep_e2e_simple.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
 ```
 
 ## Use the OpenTREP Python extension
@@ -1033,18 +1037,18 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0
 ### Download the latest OpenTravelData (OPTD) POR data file
 * If not already done, install a few more Python modules:
 ```bash
-$ python3 -m pip install -U opentrepwrapper opentraveldata
+$ python3 -mpip install -U opentrepwrapper opentraveldata
 ```
 
 * Download and use the latest POR data file
   + On Linux:
 ```bash
 $ python3
-Python 3.8.4 (default, July 2020) 
+Python 3.8.5 (default, July 2020) 
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1069,7 +1073,7 @@ $ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -p /tmp/
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentraveldata/optd_por_public_all.csv'
@@ -1111,7 +1115,7 @@ $ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1130,7 +1134,7 @@ $ python3 ~/.local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -f F "cn
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.8/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1147,12 +1151,12 @@ Raw result from the OpenTrep library:
 * Use the OpenTrep Python extension from a Python interactive shell
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
 ```
   + On Linux:
 ```bash
 $ python3
-Python 3.8.4 (default, July 2020)
+Python 3.8.5 (default, July 2020)
 ```
 ```python
 >>> import pyopentrep
@@ -1170,11 +1174,11 @@ Python 3.8.4 (default, July 2020)
   + On Linux:
 ```bash
 $ python3
-Python 3.8.4 (default, June 2020, 15:53:34) 
+Python 3.8.5 (default, June 2020, 15:53:34) 
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1189,7 +1193,7 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0
 # (Optional) Running the Django-based application server (needs update)
 * Install Django as a Python module:
 ```bash
-$ python3 -m pip -U django
+$ python3 -mpip -U django
 ```
 
 * Go in the Django directory:
@@ -1203,11 +1207,11 @@ $ pushd gui/django/webapps/opentrep
   + On Linux:
 ```bash
 $ python3 manage.py runserver localhost:8000
-Python 3.8.4 (default, Apr 27 2020, 15:53:34) 
+Python 3.8.5 (default, Apr 27 2020, 15:53:34) 
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.8/3.8.4/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.8/3.8.5/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
 ```
 
 * Query OpenTREP with a web browser:
