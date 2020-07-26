@@ -16,7 +16,7 @@ function draw(locations) {
   //Add markers
   markers = locations.map(function(e, i) {
       return L.marker([e.lat, e.lon])
-        .bindPopup('POR: ' + [e.iata_code, e.icao_code, e.geonames_id, e.lon, e.lat, e.wiki_link])
+        .bindPopup('' + e.name_common + ' - ' + [e.iata_code, e.geonames_id, e.lon, e.lat])
     })
     //Center the view on the markers
   var group = L.featureGroup(markers).addTo(mymap);
