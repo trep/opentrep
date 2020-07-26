@@ -81,28 +81,27 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   void LocationExchange::exportLocation (treppb::Place& ioPlace,
                                          const Location& iLocation) {
+    /**
+     * The content of the Protobuf object abides to the Travel Protobuf
+     * interface, namely Travel.proto:
+     * https://github.com/trep/opentrep/blob/master/opentrep/bom/Travel.proto
+     *
+     * The order of the fields here attempts to mimic the one in Travel.proto
+     * in order to ease the maintenance.
+     */
+    
     // Retrieve the primary key
     const LocationKey& lLocationKey = iLocation.getKey();
 
+    /**
+     * Section 1 - Codes (IATA, ICAO, FAA, UN/LOCODE, UIC, etc)
+     */
+    
     // Retrieve and set the travel-related IATA code (part of the primary key)
     const IATACode_T& lIataCode = lLocationKey.getIataCode();
     treppb::IATACode* lIataAirportPtr = ioPlace.mutable_tvl_code();
     assert (lIataAirportPtr != NULL);
     lIataAirportPtr->set_code (lIataCode);
-
-    // Retrieve and set the location type
-    const IATAType& lLocationType = lLocationKey.getIataType();
-    const treppb::PlaceType& lPlaceType = lLocationType.getTypeAsPB();
-    const treppb::PlaceType_LocationType& lPlaceTypeEnum = lPlaceType.type();
-    treppb::PlaceType* lPlaceTypePtr = ioPlace.mutable_loc_type();
-    assert (lPlaceTypePtr != NULL);
-    lPlaceTypePtr->set_type (lPlaceTypeEnum);
-
-    // Retrieve and set the Geonames ID
-    const GeonamesID_T& lGeonamesID = lLocationKey.getGeonamesID();
-    treppb::GeonamesID* lGeonamesIDPtr = ioPlace.mutable_geonames_id();
-    assert (lGeonamesIDPtr != NULL);
-    lGeonamesIDPtr->set_id (lGeonamesID);
 
     // Retrieve and set the ICAO code
     const ICAOCode_T& lIcaoCode = iLocation.getIcaoCode();
@@ -128,12 +127,33 @@ namespace OPENTREP {
       assert (lUNLOCodePtr != NULL);
       lUNLOCodePtr->set_code (lUNLOCode);
     }    
+
+    // Retrieve and set the UIC code list
+    const UICCodeList_T& lUICCodeList = iLocation.getUICCodeList();
+    treppb::UICCodeList* lUICCodeListPtr = ioPlace.mutable_uiccode_list();
+    assert (lUICCodeListPtr != NULL);
+    //
+    for (UICCodeList_T::const_iterator itUICCode = lUICCodeList.begin();
+         itUICCode != lUICCodeList.end(); ++itUICCode) {
+      const UICCode_T& lUICCode = *itUICCode;
+      treppb::UICCode* lUICCodePtr = lUICCodeListPtr->add_uiccode();
+      assert (lUICCodePtr != NULL);
+      lUICCodePtr->set_code (lUICCode);
+    }
     
-    // Retrieve and set the names
-    const CommonName_T& lUtfName = iLocation.getCommonName();
-    ioPlace.set_name_utf (lUtfName);
-    const ASCIIName_T& lAsciiName = iLocation.getAsciiName();
-    ioPlace.set_name_ascii (lAsciiName);
+    /**
+     * Section 2 - Identification / reference
+     */
+    
+    // Retrieve and set whether the Geonames ID is known
+    const IsGeonames_T& lIsGeonames = iLocation.isGeonames();
+    ioPlace.set_is_geonames (lIsGeonames);
+    
+    // Retrieve and set the Geonames ID
+    const GeonamesID_T& lGeonamesID = lLocationKey.getGeonamesID();
+    treppb::GeonamesID* lGeonamesIDPtr = ioPlace.mutable_geonames_id();
+    assert (lGeonamesIDPtr != NULL);
+    lGeonamesIDPtr->set_id (lGeonamesID);
 
     // Retrieve and set the feature class and code
     const FeatureClass_T& lFeatClass = iLocation.getFeatureClass();
@@ -147,7 +167,84 @@ namespace OPENTREP {
     lFeatClassPtr->set_code (lFeatClass);
     lFeatCodePtr->set_code (lFeatCode);
 
-    // Retrieve and set the geographical coordinates
+    // Retrieve and set the modification date (within Geonames)
+    const Date_T& lGeonameModDate = iLocation.getModificationDate();
+    treppb::Date* lGeonameModDatePtr = ioPlace.mutable_mod_date();
+    assert (lGeonameModDatePtr != NULL);
+    const std::string& lGeonameModDateStr =
+      boost::gregorian::to_iso_extended_string(lGeonameModDate);
+    lGeonameModDatePtr->set_date (lGeonameModDateStr);
+
+    // Retrieve and set the envelope ID
+    const EnvelopeID_T& lEnvID = iLocation.getEnvelopeID();
+    treppb::EnvelopeID* lEnvIDPtr = ioPlace.mutable_env_id();
+    assert (lEnvIDPtr != NULL);
+    lEnvIDPtr->set_id (lEnvID);
+
+    // Retrieve and set the beginning date of the validity period
+    const Date_T& lDateFrom = iLocation.getDateFrom();
+    treppb::Date* lDateFromPtr = ioPlace.mutable_date_from();
+    assert (lDateFromPtr != NULL);
+    const std::string& lDateFromStr =
+      boost::gregorian::to_iso_extended_string(lDateFrom);
+    lDateFromPtr->set_date (lDateFromStr);
+
+    // Retrieve and set the end date of the validity period
+    const Date_T& lDateEnd = iLocation.getDateEnd();
+    treppb::Date* lDateEndPtr = ioPlace.mutable_date_end();
+    assert (lDateEndPtr != NULL);
+    const std::string& lDateEndStr =
+      boost::gregorian::to_iso_extended_string(lDateEnd);
+    lDateEndPtr->set_date (lDateEndStr);
+
+    // Retrieve and set the location type
+    const IATAType& lLocationType = lLocationKey.getIataType();
+    const treppb::PlaceType& lPlaceType = lLocationType.getTypeAsPB();
+    const treppb::PlaceType_LocationType& lPlaceTypeEnum = lPlaceType.type();
+    treppb::PlaceType* lPlaceTypePtr = ioPlace.mutable_loc_type();
+    assert (lPlaceTypePtr != NULL);
+    lPlaceTypePtr->set_type (lPlaceTypeEnum);
+
+    /**
+     * Section 3 - Names
+     */
+    
+    // Retrieve and set the name in UTF-8 and ASCII formats
+    const CommonName_T& lUtfName = iLocation.getCommonName();
+    ioPlace.set_name_utf (lUtfName);
+    const ASCIIName_T& lAsciiName = iLocation.getAsciiName();
+    ioPlace.set_name_ascii (lAsciiName);
+
+    // Retrieve and set the list of alternate names
+    const NameMatrix& lNameMatrixRef = iLocation.getNameMatrix();
+    treppb::AltNameList* lAltNameListPtr = ioPlace.mutable_alt_name_list();
+    assert (lAltNameListPtr != NULL);
+    //
+    const NameMatrix_T lNameMatrix = lNameMatrixRef.getNameMatrix();
+    for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
+         itNameList != lNameMatrix.end(); ++itNameList) {
+      const Names& lNameListRef = itNameList->second;
+      const LanguageCode_T& lLangCode = lNameListRef.getLanguageCode();
+      const NameList_T& lNameList = lNameListRef.getNameList();
+      for (NameList_T::const_iterator itName = lNameList.begin();
+           itName != lNameList.end(); ++itName) {
+        const std::string& lName = *itName;
+        //
+        treppb::AltName* lAltNamePtr = lAltNameListPtr->add_name();
+        assert (lAltNamePtr != NULL);
+        //
+        treppb::LanguageCode* lLangCodePtr = lAltNamePtr->mutable_lang();
+        assert (lLangCodePtr != NULL);
+        lLangCodePtr->set_code (lLangCode);
+        lAltNamePtr->set_name (lName);
+      }
+    }
+    
+    /**
+     * Section 4 - Geographical data (coordinates, elevation, topology reference)
+     */
+    
+    // Retrieve and set the geographical coordinates, as known by OPTD
     const Latitude_T& lLatitude = iLocation.getLatitude();
     const Longitude_T& lLongitude = iLocation.getLongitude();
     treppb::GeoPoint* lPointPtr = ioPlace.mutable_coord();
@@ -155,44 +252,29 @@ namespace OPENTREP {
     lPointPtr->set_latitude (lLatitude);
     lPointPtr->set_longitude (lLongitude);
 
-    // Retrieve and set the list of served city details
-    const CityDetailsList_T& lCityList = iLocation.getCityList();
-    treppb::CityList* lCityListPtr = ioPlace.mutable_city_list();
-    assert (lCityListPtr != NULL);
-    //
-    for (CityDetailsList_T::const_iterator itCity = lCityList.begin();
-         itCity != lCityList.end(); ++itCity) {
-      const CityDetails& lCity = *itCity;
-      treppb::City* lCityPtr = lCityListPtr->add_city();
-      assert (lCityPtr != NULL);
+    // Retrieve and set the geographical coordinates, as known by Geonames
+    const Latitude_T& lGeonameLatitude = iLocation.getGeonameLatitude();
+    const Longitude_T& lGeonameLongitude = iLocation.getGeonameLongitude();
+    treppb::GeoPoint* lGeonamePointPtr = ioPlace.mutable_coord_geonames();
+    assert (lGeonamePointPtr != NULL);
+    lGeonamePointPtr->set_latitude (lGeonameLatitude);
+    lGeonamePointPtr->set_longitude (lGeonameLongitude);
 
-      // IATA code of the served city
-      const IATACode_T& lIataCode = lCity.getIataCode();
-      treppb::IATACode* lIataCodePtr = lCityPtr->mutable_code();
-      assert (lIataCodePtr != NULL);
-      lIataCodePtr->set_code (lIataCode);
+    // Retrieve and set the elevation
+    const Elevation_T& lElevation = iLocation.getElevation();
+    treppb::Elevation* lElevationPtr = ioPlace.mutable_elevation();
+    assert (lElevationPtr != NULL);
+    lElevationPtr->set_value (lElevation);
 
-      // Geonames ID of the served city
-      const GeonamesID_T& lGeonamesID = lCity.getGeonamesID();
-      treppb::GeonamesID* lGeonamesIDPtr = lCityPtr->mutable_geonames_id();
-      assert (lGeonamesIDPtr != NULL);
-      lGeonamesIDPtr->set_id (lGeonamesID);
+    // Retrieve and set the geo topology 30
+    const GTopo30_T& lGTopo30 = iLocation.getGTopo30();
+    treppb::GTopo30* lGTopo30Ptr = ioPlace.mutable_gtopo30();
+    assert (lGTopo30Ptr != NULL);
+    lGTopo30Ptr->set_value (lGTopo30);
 
-      // City UTF8 name
-      const CityUTFName_T& lCityUtfName = lCity.getUtfName();
-      lCityPtr->set_name_utf (lCityUtfName);
-
-      // City ASCII name
-      const CityASCIIName_T& lCityAsciiName = lCity.getAsciiName();
-      lCityPtr->set_name_ascii (lCityAsciiName);
-    }
-
-    // Retrieve and set the state code
-    const StateCode_T& lStateCode = iLocation.getStateCode();
-    treppb::StateCode* lStateCodePtr = ioPlace.mutable_state_code();
-    assert (lStateCodePtr != NULL);
-    lStateCodePtr->set_code (lStateCode);
-
+    /**
+     * Section 5 - Administrative levels
+     */
     // Retrieve and set the country code
     const CountryCode_T& lCountryCode = iLocation.getCountryCode();
     treppb::CountryCode* lCountryCodePtr = ioPlace.mutable_country_code();
@@ -209,22 +291,6 @@ namespace OPENTREP {
     // Retrieve and set the country name
     const CountryName_T& lCountryName = iLocation.getCountryName();
     ioPlace.set_country_name (lCountryName);
-
-    // Retrieve and set the US DOT World Area Code (WAC)
-    const WAC_T& lWAC = iLocation.getWAC();
-    treppb::WorldAreaCode* lWorldAreaCodePtr = ioPlace.mutable_wac_code();
-    assert (lWorldAreaCodePtr != NULL);
-    lWorldAreaCodePtr->set_code (lWAC);
-
-    // Retrieve and set the US DOT World Area Code (WAC) name
-    const WACName_T& lWACName = iLocation.getWACName();
-    ioPlace.set_wac_name (lWACName);
-
-    // Retrieve and set the currency code
-    const CurrencyCode_T& lCurrencyCode = iLocation.getCurrencyCode();
-    treppb::CurrencyCode* lCurrencyCodePtr = ioPlace.mutable_currency_code();
-    assert (lCurrencyCodePtr != NULL);
-    lCurrencyCodePtr->set_code (lCurrencyCode);
 
     // Retrieve and set the continent code
     const ContinentCode_T& lContinentCode = iLocation.getContinentCode();
@@ -272,23 +338,25 @@ namespace OPENTREP {
     assert (lAdm4CodePtr != NULL);
     lAdm4CodePtr->set_code (lAdm4Code);
 
-    // Retrieve and set the population
-    const Population_T& lPopulation = iLocation.getPopulation();
-    treppb::Population* lPopulationPtr = ioPlace.mutable_population();
-    assert (lPopulationPtr != NULL);
-    lPopulationPtr->set_value (lPopulation);
+    // Retrieve and set the state code
+    const StateCode_T& lStateCode = iLocation.getStateCode();
+    treppb::StateCode* lStateCodePtr = ioPlace.mutable_state_code();
+    assert (lStateCodePtr != NULL);
+    lStateCodePtr->set_code (lStateCode);
+    
+    // Retrieve and set the US DOT World Area Code (WAC)
+    const WAC_T& lWAC = iLocation.getWAC();
+    treppb::WorldAreaCode* lWorldAreaCodePtr = ioPlace.mutable_wac_code();
+    assert (lWorldAreaCodePtr != NULL);
+    lWorldAreaCodePtr->set_code (lWAC);
 
-    // Retrieve and set the elevation
-    const Elevation_T& lElevation = iLocation.getElevation();
-    treppb::Elevation* lElevationPtr = ioPlace.mutable_elevation();
-    assert (lElevationPtr != NULL);
-    lElevationPtr->set_value (lElevation);
+    // Retrieve and set the US DOT World Area Code (WAC) name
+    const WACName_T& lWACName = iLocation.getWACName();
+    ioPlace.set_wac_name (lWACName);
 
-    // Retrieve and set the geo topology 30
-    const GTopo30_T& lGTopo30 = iLocation.getGTopo30();
-    treppb::GTopo30* lGTopo30Ptr = ioPlace.mutable_gtopo30();
-    assert (lGTopo30Ptr != NULL);
-    lGTopo30Ptr->set_value (lGTopo30);
+    /**
+     * Section 6 - General characteristics (PageRank (PR) value, population)
+     */
 
     // Retrieve and set the PageRank value
     const PageRank_T& lPageRank = iLocation.getPageRank();
@@ -296,6 +364,28 @@ namespace OPENTREP {
     assert (lPageRankPtr != NULL);
     lPageRankPtr->set_rank (lPageRank);
 
+    // Retrieve and set the commentaries
+    const Comment_T& lComment = iLocation.getComment();
+    treppb::Comment* lCommentPtr = ioPlace.mutable_comment();
+    assert (lCommentPtr != NULL);
+    lCommentPtr->set_text (lComment);
+
+    // Retrieve and set the population
+    const Population_T& lPopulation = iLocation.getPopulation();
+    treppb::Population* lPopulationPtr = ioPlace.mutable_population();
+    assert (lPopulationPtr != NULL);
+    lPopulationPtr->set_value (lPopulation);
+
+    // Retrieve and set the currency code
+    const CurrencyCode_T& lCurrencyCode = iLocation.getCurrencyCode();
+    treppb::CurrencyCode* lCurrencyCodePtr = ioPlace.mutable_currency_code();
+    assert (lCurrencyCodePtr != NULL);
+    lCurrencyCodePtr->set_code (lCurrencyCode);
+
+    /**
+     * Section 7 - Time-zone details
+     */
+    
     // Retrieve and set the time-zone
     const TimeZone_T& lTimeZone = iLocation.getTimeZone();
     treppb::TimeZone* lTimeZonePtr = ioPlace.mutable_tz();
@@ -320,17 +410,55 @@ namespace OPENTREP {
     assert (lRAWOffsetPtr != NULL);
     lRAWOffsetPtr->set_offset (lRAWOffset);
 
-    // Retrieve and set the modification date (within Geonames)
-    const Date_T& lGeonameModDate = iLocation.getModificationDate();
-    treppb::Date* lGeonameModDatePtr = ioPlace.mutable_mod_date();
-    assert (lGeonameModDatePtr != NULL);
-    lGeonameModDatePtr->set_date (boost::gregorian::to_iso_extended_string(lGeonameModDate));
+    /**
+     * Section 8 - Served cities (for a travel-/transport-related POR)
+     */
+    
+    // Retrieve and set the list of served city details
+    const CityDetailsList_T& lCityList = iLocation.getCityList();
+    treppb::CityList* lCityListPtr = ioPlace.mutable_city_list();
+    assert (lCityListPtr != NULL);
+    //
+    for (CityDetailsList_T::const_iterator itCity = lCityList.begin();
+         itCity != lCityList.end(); ++itCity) {
+      const CityDetails& lCity = *itCity;
+      treppb::City* lCityPtr = lCityListPtr->add_city();
+      assert (lCityPtr != NULL);
+
+      // IATA code of the served city
+      const IATACode_T& lIataCode = lCity.getIataCode();
+      treppb::IATACode* lIataCodePtr = lCityPtr->mutable_code();
+      assert (lIataCodePtr != NULL);
+      lIataCodePtr->set_code (lIataCode);
+
+      // Geonames ID of the served city
+      const GeonamesID_T& lGeonamesID = lCity.getGeonamesID();
+      treppb::GeonamesID* lGeonamesIDPtr = lCityPtr->mutable_geonames_id();
+      assert (lGeonamesIDPtr != NULL);
+      lGeonamesIDPtr->set_id (lGeonamesID);
+
+      // City UTF8 name
+      const CityUTFName_T& lCityUtfName = lCity.getUtfName();
+      lCityPtr->set_name_utf (lCityUtfName);
+
+      // City ASCII name
+      const CityASCIIName_T& lCityAsciiName = lCity.getAsciiName();
+      lCityPtr->set_name_ascii (lCityAsciiName);
+    }
+
+    /**
+     * Section 9 - Serving travel-/transport-related POR (for a city)
+     */
 
     // Retrieve and set the list of the travel-related POR IATA codes
     const TvlPORListString_T& lTvlPORList = iLocation.getTvlPORListString();
     treppb::TravelRelatedList* lTvlPORListPtr = ioPlace.mutable_tvl_por_list();
     assert (lTvlPORListPtr != NULL);
     lTvlPORListPtr->add_tvl_code (lTvlPORList);
+
+    /**
+     * Section 10 - List of Wikipedia links
+     */
 
     // Retrieve and set the list of the Wikipedia links (URLs)
     const WikiLink_T& lWikiLink = iLocation.getWikiLink();
@@ -343,48 +471,10 @@ namespace OPENTREP {
     lLangCodePtr->set_code ("en");
     lWikiLinkPtr->set_link (lWikiLink);
 
-    // Retrieve and set the beginning date of the validity period
-    const Date_T& lDateFrom = iLocation.getDateFrom();
-    treppb::Date* lDateFromPtr = ioPlace.mutable_date_from();
-    assert (lDateFromPtr != NULL);
-    lDateFromPtr->set_date (boost::gregorian::to_iso_extended_string(lDateFrom));
-
-    // Retrieve and set the end date of the validity period
-    const Date_T& lDateEnd = iLocation.getDateEnd();
-    treppb::Date* lDateEndPtr = ioPlace.mutable_date_end();
-    assert (lDateEndPtr != NULL);
-    lDateEndPtr->set_date (boost::gregorian::to_iso_extended_string(lDateEnd));
-
-    // Retrieve and set the commentaries
-    const Comment_T& lComment = iLocation.getComment();
-    treppb::Comment* lCommentPtr = ioPlace.mutable_comment();
-    assert (lCommentPtr != NULL);
-    lCommentPtr->set_text (lComment);
-
-    // Retrieve and set the list of alternate names
-    const NameMatrix& lNameMatrixRef = iLocation.getNameMatrix();
-    treppb::AltNameList* lAltNameListPtr = ioPlace.mutable_alt_name_list();
-    assert (lAltNameListPtr != NULL);
-    //
-    const NameMatrix_T lNameMatrix = lNameMatrixRef.getNameMatrix();
-    for (NameMatrix_T::const_iterator itNameList = lNameMatrix.begin();
-         itNameList != lNameMatrix.end(); ++itNameList) {
-      const Names& lNameListRef = itNameList->second;
-      const LanguageCode_T& lLangCode = lNameListRef.getLanguageCode();
-      const NameList_T& lNameList = lNameListRef.getNameList();
-      for (NameList_T::const_iterator itName = lNameList.begin();
-           itName != lNameList.end(); ++itName) {
-        const std::string& lName = *itName;
-        //
-        treppb::AltName* lAltNamePtr = lAltNameListPtr->add_name();
-        assert (lAltNamePtr != NULL);
-        //
-        treppb::LanguageCode* lLangCodePtr = lAltNamePtr->mutable_lang();
-        assert (lLangCodePtr != NULL);
-        lLangCodePtr->set_code (lLangCode);
-        lAltNamePtr->set_name (lName);
-      }
-    }
+    /**
+     * Section 11 - Search-related results and initial query,
+     *              for that specific place
+     */
 
     // Retrieve and set the matching percentage value
     const MatchingPercentage_T& lPercentage = iLocation.getPercentage();

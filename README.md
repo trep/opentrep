@@ -955,7 +955,7 @@ Python 3.8.5
 
 * Clean potential former builds and launch a new build with Scikit-build:
 ```bash
-$ rm -rf _skbuild/ build/ dist/ .tox/ __pycache__/ .pytest_cache/ MANIFEST *.egg-info/
+$ rm -rf _skbuild/ dist/ .tox/ __pycache__/ .pytest_cache/ MANIFEST *.egg-info/
 $ python3 setup.py --build-type=Debug build sdist bdist_wheel # the build takes a few minutes
 $ ls -lFh _skbuild/linux-x86_64-3.8/ dist/
 dist/:
