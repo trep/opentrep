@@ -16,7 +16,7 @@ before_install:
   - sudo apt-get -y install sqlite3 libsqlite3-dev libmysql++-dev
   - sudo apt-get -y install postgresql-server-dev-all
   - sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
-  - sudo apt-get -y install python3.8 python3.8-dev libpython3.8 libpython3.8-dev
+  - sudo apt-get -y install python3.6 python3.6-dev libpython3.6 libpython3.6-dev
   - sudo apt-get -y install doxygen ghostscript texlive-latex-recommended
   - sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
   - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
