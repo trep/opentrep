@@ -23,9 +23,6 @@ before_install:
   - sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
   - sudo apt-get update
   - sudo apt-get -y install cmake
-  - sudo mkdir -p /opt
-  - sudo git clone https://github.com/SOCI/soci.git /opt/soci
-  - sudo cp ci-scripts/soci-debian-cmake.patch /opt/soci
   - sudo ./ci-scripts/soci-install-debian.sh
 script:
   - mkdir build
