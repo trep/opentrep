@@ -156,6 +156,16 @@ General purpose Docker images for C++/Python development are also available from
 Those Docker images allow to develop on the major Linux distributions, _i.e._,
 CentOS, Debian and Ubuntu.
 
+### CentOS 8
+```bash
+$ docker pull cpppythondevelopment/base:centos8
+$ docker run -t cpppythondevelopment/base:centos8 bash
+[build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
+[build@2..c geo]$ git clone https://github.com/trep/opentrep.git
+[build@2..c geo]$ cd opentrep && mkdir build && cd build
+[build@2..c build (master)]$ cmake3 -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+```
+
 ### CentOS 7
 ```bash
 $ docker pull cpppythondevelopment/base:centos7
@@ -166,10 +176,30 @@ $ docker run -t cpppythondevelopment/base:centos7 bash
 [build@2..c build (master)]$ cmake3 -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
 ```
 
+### Ubuntu 18.04 LTS Focal Fossal
+```bash
+$ docker pull cpppythondevelopment/base:ubuntu2004
+$ docker run -t cpppythondevelopment/base:ubuntu2004 bash
+[build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
+[build@2..c geo]$ git clone https://github.com/trep/opentrep.git
+[build@2..c geo]$ cd opentrep && mkdir build && cd build
+[build@2..c build (master)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+```
+
 ### Ubuntu 18.04 LTS Bionic Beaver
 ```bash
 $ docker pull cpppythondevelopment/base:ubuntu1804
 $ docker run -t cpppythondevelopment/base:ubuntu1804 bash
+[build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
+[build@2..c geo]$ git clone https://github.com/trep/opentrep.git
+[build@2..c geo]$ cd opentrep && mkdir build && cd build
+[build@2..c build (master)]$ cmake -DCMAKE_INSTALL_PREFIX=${HOME}/dev/deliveries/opentrep-99.99.99 -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
+```
+
+### Debian 10 Buster
+```bash
+$ docker pull cpppythondevelopment/base:debian10
+$ docker run -t cpppythondevelopment/base:debian10 bash
 [build@2..c ~]$ $ mkdir -p ~/dev/geo && cd ~/dev/geo
 [build@2..c geo]$ git clone https://github.com/trep/opentrep.git
 [build@2..c geo]$ cd opentrep && mkdir build && cd build
@@ -227,6 +257,7 @@ Note that SourceForge also stores some
 [older archived tar-balls](https://sourceforge.net/projects/opentrep/files/opentrep/).
 
 ### Installation of the dependencies
+
 #### On Linux
 The following packages may be needed (Fedora/RedHat/CentOS names on the left
 hand side, Debian/Ubuntu names on the right hand side; names for other
@@ -256,20 +287,28 @@ for a few famous Linux distributions.
 ```bash
 $ dnf -y install git-all bash-completion gcc-c++ cmake boost-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
- sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
+ sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler \
+ autoconf automake libtool
 ```
+
 * Python development (the package names may vary; Python 2 is no longer
   supported):
 ```bash
 $ dnf -y install python-devel python-pip
 ```
+
+* Related Python packages (the package names may vary):
+```bash
+$ dnf -y install python3-protobuf boost-python3-devel
+```
+
 * Documentation tools:
 ```bash
 $ dnf -y install doxygen ghostscript "tex(latex)"
 ```
 
 ##### CentOS
-* If DNF is not already installed (_e.g._, on Cent OS 7):
+* If DNF is not already installed (_e.g._, on CentOS 7):
 ```bash
 $ yum -y install dnf
 ```
@@ -278,12 +317,21 @@ $ yum -y install dnf
 ```bash
 $ dnf -y install git-all bash-completion gcc-c++ cmake boost169-devel \
  xapian-core-devel soci-mysql-devel soci-sqlite3-devel readline-devel \
- sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler
+ sqlite-devel mariadb-devel libicu-devel protobuf-devel protobuf-compiler \
+ autoconf automake libtool
 ```
+
+* Related Python packages (the package names may vary):
+```bash
+$ dnf -y install python3-protobuf boost169-python3-devel
+```
+
 * Python development (the package names may vary):
 ```bash
-$ dnf -y install python3-devel python3-pip
+$ dnf -y install python38 python38-devel
+$ dnf -y install python3 python3-devel
 ```
+
 * Documentation tools:
 ```bash
 $ dnf -y install doxygen ghostscript "tex(latex)"
@@ -294,15 +342,18 @@ $ dnf -y install doxygen ghostscript "tex(latex)"
 ```bash
 $ apt-get -y install locales && locale-gen "en_US.UTF-8"
 $ apt-get -y install zlib1g-dev libbz2-dev lsb-release libgmp-dev \
-   libgmp-dev gcc g++ clang cppcheck cmake libboost-all-dev libxapian-dev graphviz \
-   libreadline-dev libncurses5-dev libczmq-dev libzmq3-dev libssl-dev libffi-dev \
-   sqlite3 libsqlite3-dev libmariadb-dev libmysql++-dev postgresql-server-dev-all \
-   libicu-dev libprotobuf-dev protobuf-compiler
+   libgmp-dev gcc g++ clang cppcheck cmake libboost-all-dev libxapian-dev \
+   graphviz libreadline-dev libncurses5-dev libczmq-dev libzmq3-dev \
+   libssl-dev libffi-dev sqlite3 libsqlite3-dev libmariadb-dev \
+   libmysql++-dev postgresql-server-dev-all libicu-dev \
+   libprotobuf-dev protobuf-compiler
 ```
+
 * Python development (the package names may vary)
 ```bash
 $ apt-get -y install python3 libpython3-dev python3-pip
 ```
+
 * Documentation tools
 ```bash
 $ apt-get -y install doxygen ghostscript texlive-latex-recommended
@@ -318,16 +369,13 @@ $ brew install homebrew/portable-ruby/portable-readline
 
 * Note that, as of January 2021, the Hombrew recipes for Python 3 are now
   specific up to the minor version, more specifically:
-  + Python 3.7: `python@3.7` (Python 3.7.9 as of January 2021)
   + Python 3.8: `python@3.8` (Python 3.8.6 as of January 2021)
   + Python 3.9: `python@3.9` (Python 3.9.1 as of January 2021)
 
-* Previously, the default Python 3 installation was Python 3.7 (now part of
-  the `python@3.7` Homebrew package).
+* Previously, the default Python 3 installation was Python 3.8 (now part of
+  the `python@3.8` Homebrew package).
   As a reminder, on MacOS with Homebrew, a way to get the details is:
 ```bash
-$ $ brew info python@3.7
-python@3.7: stable 3.7.9 (bottled) [keg-only]
 $ brew info python@3.8
 python@3.8: stable 3.8.7 (bottled) [keg-only]
 $ brew info python@3.9
@@ -434,6 +482,62 @@ $ otool -L /usr/local/Cellar/boost-python3/1.75.0/lib/libboost_python39.dylib
 $ brew install icu4c
 ```
 
+### CMake
+
+* On some Linux distributions, _e.g._ on CentOS 8, the available version
+  of CMake may lag well behind the
+  [latest releases](https://github.com/Kitware/CMake/releases).
+  It then may be needed to build and install CMake from the sources.
+
+#### CentOS 8
+
+* CMake 3.18 will be released on CentOS 8 only from CentOS 8.4 onwards,
+  that is, most probably only from mid-2021. In the meantime, CMake may
+  be installed, for instance following the details on
+  [Linux-4-One - Install CMake on CentOS 8](https://linux4one.com/how-to-install-cmake-on-centos-8)
+
+* Remove any installed CMake package:
+```bash
+$ sudo dnf -y remove cmake-data cmake cmake-filesystem
+```
+
+* Specify the CMake version to install (to be picked up on the
+  [GitHub page for CMake releases](https://github.com/Kitware/CMake/releases)):
+```bash
+$ CMAKE_VERSION="3.19.3"
+```
+
+* Download the CMake source tar-ball and un-package it:
+```bash
+$ sudo mkdir -p /opt/cmake/archives && \
+  sudo wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz \
+  -O /opt/cmake/archives/cmake-${CMAKE_VERSION}.tar.gz && \
+  pushd /opt/cmake && \
+  sudo tar zxf /opt/cmake/archives/cmake-${CMAKE_VERSION}.tar.gz &&\
+  pushd /opt/cmake/cmake-${CMAKE_VERSION} && \
+  popd && popd && \
+  sudo chown -R $USER /opt/cmake/cmake-${CMAKE_VERSION}
+```
+
+* Build and install CMake:
+```bash
+$ pushd /opt/cmake/cmake-${CMAKE_VERSION} && \
+  ./bootstrap && \
+  make && \
+  sudo make install && \
+  popd
+```
+
+* CMake is then installed in `/usr/local` (binaries in `/usr/local/bin`,
+  manual pages in `/usr/local/man` and CMake files in
+  `/usr/local/share/cmake-3.19/Modules`
+
+* Check the just installed CMake distribution:
+```bash
+$ cmake --version
+cmake version ${CMAKE_VERSION}
+```
+
 ### Boost
 Follow the instructions on
 [Boost helper documentation on GitHub](https://github.com/cpp-projects-showcase/boost-helper)
@@ -446,19 +550,24 @@ to install Python and Boost on some platforms, including MacOS.
   [Python 3 libraries have been upgraded from Python 3.4 to
   Python 3.6](https://lists.fedoraproject.org/archives/list/epel-announce@lists.fedoraproject.org/thread/EGUMKAIMPK2UD5VSHXM53BH2MBDGDWMO/),
   but where Boost 1.53 Python libraries have not been upgraded accordingly,
-  leading for the least to [linking errors](https://bugzilla.redhat.com/show_bug.cgi?id=1702242).
+  leading for the least to
+  [linking errors](https://bugzilla.redhat.com/show_bug.cgi?id=1702242).
+
 * Hopefully, [EPEL](https://fedoraproject.org/wiki/EPEL) provides
   more recent Boost releases, for instance
   [Boost 1.69 on RHEL/CentOS 7](https://src.fedoraproject.org/rpms/boost169/tree/epel7).
+
 * Those additional specific Boost packages may be installed in parallel
   to the officiial Boost packages.
   CMake has however to be made aware of that additional Boost package and,
   equally importantly, of its location on the file-system.
+
 * Example of additional CMake configuration variables for
   [Boost 1.69 on CentOS 7](https://src.fedoraproject.org/rpms/boost169/tree/epel7):
 ```bash
 $ cmake3 [...] \
-  -DBOOST_LIBRARYDIR=/usr/lib64/boost169 -DBOOST_INCLUDEDIR=/usr/include/boost169 \
+  -DBOOST_LIBRARYDIR=/usr/lib64/boost169 \
+  -DBOOST_INCLUDEDIR=/usr/include/boost169 \
   -DBoost_ADDITIONAL_VERSIONS="1.69 1.69.0" \
   [...]
 ```
@@ -532,7 +641,7 @@ export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 Then, as usual:
 * To configure the project, type something like:
 ```bash
-$ mkdir build && cd build
+$ rm -rf build && mkdir build && cd build
 $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
    -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
@@ -544,7 +653,8 @@ $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
 ```bash
 $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
         -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
-        -DBOOST_LIBRARYDIR=/usr/lib64/boost169 -DBOOST_INCLUDEDIR=/usr/include/boost169 \
+        -DBOOST_LIBRARYDIR=/usr/lib64/boost169 \
+		-DBOOST_INCLUDEDIR=/usr/include/boost169 \
         -DBoost_ADDITIONAL_VERSIONS="1.69 1.69.0" \
         -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 ```
@@ -900,8 +1010,10 @@ NCE SFO
 
 * Note that Linux binary wheels cannot be pushed as is onto PyPi.
   [Manylinux](https://github.com/pypa/manylinux) should be used for that.
-  Scikit-build maintains [some additions on top of Manylinux](https://github.com/scikit-build/manylinux)
-  and the [corresponding Manylinux Docker images](https://hub.docker.com/r/scikitbuild/manylinux2010_x86_64).
+  Scikit-build maintains
+  [some additions on top of Manylinux](https://github.com/scikit-build/manylinux)
+  and the
+  [corresponding Manylinux Docker images](https://hub.docker.com/r/scikitbuild/manylinux2010_x86_64).
   The way to run those have still to be documented below.
   In the meantime, the OpenTREP wheel has to be built from the sources, either
   (see below for the details):
@@ -946,15 +1058,16 @@ Successfully installed opentrep-0.7.7.post4
   + On MacOS:
 ```bash
 $ export INST_DIR=/usr/local
-$ export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
-$ export DYLD_LIBRARY_PATH=${INST_DIR}/lib
+export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
+export DYLD_LIBRARY_PATH=${INST_DIR}/lib
 ```
   + On Linux:
 ```bash
 $ INST_DIR=${HOME}/.local
-$ TREPBINDIR=${INST_DIR}/bin
-$ OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
-$ export LD_LIBRARY_PATH=${INST_DIR}/lib; export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
+TREPBINDIR=${INST_DIR}/bin
+OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
+export LD_LIBRARY_PATH=${INST_DIR}/lib
+export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
 ```
 
 * See how to use the newly installed extension
