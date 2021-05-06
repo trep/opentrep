@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install locales
   - sudo locale-gen $LANG
-  - sudo apt-get -y install gcc g++ clang cppcheck
+  - sudo apt-get -y install gcc g++ cppcheck
   - sudo apt-get -y install zlib1g-dev libbz2-dev libgmp-dev
   - sudo apt-get -y install libboost-all-dev libxapian-dev graphviz
   - sudo apt-get -y install libreadline-dev libncurses5-dev
