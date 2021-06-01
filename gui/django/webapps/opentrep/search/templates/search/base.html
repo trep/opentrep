@@ -9,11 +9,22 @@
     <meta name="robots" content="NONE,NOARCHIVE"/>
     {% endblock %}
 
+    {% block ganalytics %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46880930-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-46880930-1');
+    </script>
+    {% endblock %}
+
     {% block jscript %}
     {% endblock %}
 
     {% block style %}
-	{% endblock %}
+    {% endblock %}
 
     <title>{% block title %}Title{% endblock %}</title>
 
