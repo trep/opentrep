@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Travel/Transport Search</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46880930-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-46880930-1');
+    </script>
   
   <link rel="stylesheet prefetch"
 	href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
@@ -15,7 +24,16 @@
   
 <div id="mapid"></div>
 <form id="omnibox">
-  <div class="logo-text"><span class="red">A</span><span class="blue">i</span><span class="yellow">r</span><span class="green">p</span><span class="red">o</span><span class="yellow">r</span><span class="blue">t</span><span class="green">s</span></div>
+  <div class="logo-text">
+	  <span class="red">A</span>
+	  <span class="blue">i</span>
+	  <span class="yellow">r</span>
+	  <span class="green">p</span>
+	  <span class="red">o</span>
+	  <span class="yellow">r</span>
+	  <span class="blue">t</span>
+	  <span class="green">s</span>
+  </div>
   <input id="query" type="text" placeholder="Open Travel Data (OPTD) Search"/>
   <div id="userTools">
     <div id="search"></div>
