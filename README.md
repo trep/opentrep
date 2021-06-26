@@ -250,7 +250,7 @@ GitHub generates
 [tar-balls on the fly for every tagged release](https://github.com/trep/opentrep/releases).
 For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.8.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.9.tar.gz
 ```
 
 Note that SourceForge also stores some
@@ -633,7 +633,7 @@ To customize OpenTREP to your environment, you can alter
 the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export TREP_VER="0.07.8"
+export TREP_VER="0.07.9"
 if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; else LIBSUFFIX=""; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
