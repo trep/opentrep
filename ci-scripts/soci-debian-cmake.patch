@@ -23,13 +23,17 @@ diff -Naur soci-4.0.2/CMakeLists.txt soci-4.0.2.new/CMakeLists.txt
  # Configuration files
 diff -Naur soci-4.0.2/src/backends/mysql/session.cpp soci-4.0.2.new/src/backends/mysql/session.cpp
 --- soci-4.0.2/src/backends/mysql/session.cpp	2021-04-20 09:43:34.000000000 +0000
-+++ soci-4.0.2.new/src/backends/mysql/session.cpp	2021-07-11 14:18:52.295648287 +0000
-@@ -355,7 +355,7 @@
++++ soci-4.0.2.new/src/backends/mysql/session.cpp	2021-07-11 16:41:13.637174415 +0000
+@@ -355,7 +355,11 @@
      }
      if (reconnect_p)
      {
 -        my_bool reconnect = 1;
-+        bool reconnect = 1;
++        #if MYSQL_VERSION_ID < 8
++            my_bool reconnect = 1;
++        #else
++            bool reconnect = 1;
++        #endif
          if (0 != mysql_options(conn_, MYSQL_OPT_RECONNECT, &reconnect))
          {
              clean_up();
