@@ -8,7 +8,8 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install locales
   - sudo locale-gen $LANG
-  - sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget 
+  - sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
+  - sudo apt-get -y remove cmake
   - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
   - sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
   - sudo apt-get update
