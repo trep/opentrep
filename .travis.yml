@@ -24,6 +24,8 @@ before_install:
   - sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
   - sudo apt-get update
   - sudo apt-get -y install cmake cmake-data libmysql++3v5
+  - cmake --version
+  - cmake --help-policy CMP0102
   - sudo mkdir -p /opt/soci
   - sudo cp ./ci-scripts/soci-debian-cmake.patch /opt/soci
   - sudo ./ci-scripts/soci-install-debian.sh /opt/soci
