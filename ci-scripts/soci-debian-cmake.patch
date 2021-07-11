@@ -1,5 +1,6 @@
---- a/CMakeLists.txt	2020-05-16 14:08:50.801669540 +0000
-+++ b/CMakeLists.txt	2020-05-16 14:09:43.609057340 +0000
+diff -Naur soci-4.0.2/CMakeLists.txt soci-4.0.2.new/CMakeLists.txt
+--- soci-4.0.2/CMakeLists.txt	2021-04-20 09:43:34.000000000 +0000
++++ soci-4.0.2.new/CMakeLists.txt	2021-07-11 14:17:56.384789763 +0000
 @@ -13,6 +13,8 @@
  cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
  
@@ -9,16 +10,26 @@
  
  ###############################################################################
  # Build features and variants
-@@ -134,11 +136,7 @@
+@@ -186,7 +188,9 @@
+ # Installation
  ###############################################################################
  
- if(NOT DEFINED SOCI_LIBDIR)
--  if(APPLE OR CMAKE_SIZEOF_VOID_P EQUAL 4)
--    set(SOCI_LIBDIR "lib")
--  else()
--    set(SOCI_LIBDIR "lib64")
--  endif()
+-include(GNUInstallDirs)
++if(NOT DEFINED SOCI_LIBDIR)
 +  set(SOCI_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
- endif()
++endif()
  
- set(BINDIR "bin" CACHE PATH "The directory to install binaries into.")
+ ###############################################################################
+ # Configuration files
+diff -Naur soci-4.0.2/src/backends/mysql/session.cpp soci-4.0.2.new/src/backends/mysql/session.cpp
+--- soci-4.0.2/src/backends/mysql/session.cpp	2021-04-20 09:43:34.000000000 +0000
++++ soci-4.0.2.new/src/backends/mysql/session.cpp	2021-07-11 14:18:52.295648287 +0000
+@@ -355,7 +355,7 @@
+     }
+     if (reconnect_p)
+     {
+-        my_bool reconnect = 1;
++        bool reconnect = 1;
+         if (0 != mysql_options(conn_, MYSQL_OPT_RECONNECT, &reconnect))
+         {
+             clean_up();

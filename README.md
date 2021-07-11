@@ -369,17 +369,17 @@ $ brew install homebrew/portable-ruby/portable-readline
 
 * Note that, as of January 2021, the Hombrew recipes for Python 3 are now
   specific up to the minor version, more specifically:
-  + Python 3.8: `python@3.8` (Python 3.8.6 as of January 2021)
-  + Python 3.9: `python@3.9` (Python 3.9.1 as of January 2021)
+  + Python 3.8: `python@3.8` (Python 3.8.11 as of July 2021)
+  + Python 3.9: `python@3.9` (Python 3.9.6 as of July 2021)
 
 * Previously, the default Python 3 installation was Python 3.8 (now part of
   the `python@3.8` Homebrew package).
   As a reminder, on MacOS with Homebrew, a way to get the details is:
 ```bash
 $ brew info python@3.8
-python@3.8: stable 3.8.7 (bottled) [keg-only]
+python@3.8: stable 3.8.11 (bottled) [keg-only]
 $ brew info python@3.9
-python@3.9: stable 3.9.1 (bottled)
+python@3.9: stable 3.9.6 (bottled)
 ```
 
 * Because of the multiple parallel installations of Python versions,
@@ -387,48 +387,48 @@ python@3.9: stable 3.9.1 (bottled)
 ```bash
 $ sudo mkdir -p /usr/local/Cellar/python
 $ sudo chown -R $USER /usr/local/Cellar/python
-$ ln -s /usr/local/Cellar/python\@3.8/3.8.7 /usr/local/Cellar/python/3.8.7
-$ ln -s /usr/local/Cellar/python\@3.9/3.9.1_6 /usr/local/Cellar/python/3.9.1
+$ ln -s /usr/local/Cellar/python\@3.8/3.8.11 /usr/local/Cellar/python/3.8.11
+$ ln -s /usr/local/Cellar/python\@3.9/3.9.6 /usr/local/Cellar/python/3.9.6
 ```
   + Clean links on potential older versions:
 ```bash
 $ ls -lFh /usr/local/Cellar/python/
 total 0
-lrwxr-xr-x 1 user staff 34B Jan 9 21:14 3.8.7@ -> /usr/local/Cellar/python@3.8/3.8.7
-lrwxr-xr-x 1 user staff 34B Jan 9 21:14 3.9.1@ -> /usr/local/Cellar/python@3.9/3.9.1_5
-$ sudo unlink /usr/local/Cellar/python/3.8.5
+lrwxr-xr-x 1 user staff 34B Jan 9 21:14 3.8.11@ -> /usr/local/Cellar/python@3.8/3.8.11
+lrwxr-xr-x 1 user staff 34B Jan 9 21:14 3.9.6@ -> /usr/local/Cellar/python@3.9/3.9.6
+$ sudo unlink /usr/local/Cellar/python/3.8.7
 ```
   + Check the following links, as installed by Homebrew on MacOS:
 ```bash
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 darnaud  staff    75B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.1_5/Frameworks/Python.framework/Versions/3.9
+lrwxr-xr-x  1 darnaud  staff    75B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.8
-lrwxr-xr-x  1 root  staff    75B Jan  9 21:20 /usr/local/Frameworks/Python.framework/Versions/3.8@ -> /usr/local/Cellar/python@3.8/3.8.7/Frameworks/Python.framework/Versions/3.8
+lrwxr-xr-x  1 root  staff    75B Jan  9 21:20 /usr/local/Frameworks/Python.framework/Versions/3.8@ -> /usr/local/Cellar/python@3.8/3.8.11/Frameworks/Python.framework/Versions/3.8
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/Current
-lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.9/3.9.1_5/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/Current
 ```
   + If those links are not as expected (as of January 2021, they were correct),
     recreate them:
 ```bash
 $ sudo chown -R $USER /usr/local/Frameworks/Python.framework
 $ unlink /usr/local/Frameworks/Python.framework/Versions/3.9
-$ ln -s /usr/local/Cellar/python\@3.9/3.9.1_6/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/3.9
+$ ln -s /usr/local/Cellar/python\@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/3.9
 $ unlink /usr/local/Frameworks/Python.framework/Versions/3.8
-$ ln -s /usr/local/Cellar/python\@3.8/3.8.7/Frameworks/Python.framework/Versions/3.8 /usr/local/Frameworks/Python.framework/Versions/3.8
+$ ln -s /usr/local/Cellar/python\@3.8/3.8.11/Frameworks/Python.framework/Versions/3.8 /usr/local/Frameworks/Python.framework/Versions/3.8
 $ unlink /usr/local/Frameworks/Python.framework/Versions/Current
-$ ln -s /usr/local/Cellar/python\@3.9/3.9.1_6/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/Current
+$ ln -s /usr/local/Cellar/python\@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/Current
 ```
   + Leading to:
 ```bash
 $ ls -lFh /usr/local/Cellar/python/
 total 0
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.8.7@ -> /usr/local/Cellar/python@3.8/3.8.7
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.9.1@ -> /usr/local/Cellar/python@3.9/3.9.1
+lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.8.11@ -> /usr/local/Cellar/python@3.8/3.8.11
+lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.9.6@ -> /usr/local/Cellar/python@3.9/3.9.6
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/
 total 0
-lrwxr-xr-x  1 root     staff    75B Jan  9 21:20 3.8@ -> /usr/local/Cellar/python@3.8/3.8.7/Frameworks/Python.framework/Versions/3.8
-lrwxr-xr-x  1 user  staff    75B Jan  9 04:01 3.9@ -> ../../../Cellar/python@3.9/3.9.1_5/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python@3.9/3.9.1_5/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 root     staff    75B Jan  9 21:20 3.8@ -> /usr/local/Cellar/python@3.8/3.8.11/Frameworks/Python.framework/Versions/3.8
+lrwxr-xr-x  1 user  staff    75B Jan  9 04:01 3.9@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9
+lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/Current
 ```
 
 * Up until recently (mid-2020), Boost.Python came with a dependency on
@@ -458,15 +458,15 @@ lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python
 	on MacOS no longer seems to be linked against `libpython`.
 ```bash
 $ brew info boost-python3
-boost-python3: stable 1.75.0 (bottled), HEAD
-/usr/local/Cellar/boost-python3/1.75.0 (472 files, 18.5MB) *
-$ ls -lFh /usr/local/Cellar/boost-python3/1.75.0/lib/libboost_python39.dylib
--r--r--r--  1 user  staff   411K Dec 20 16:32 /usr/local/Cellar/boost-python3/1.75.0/lib/libboost_python39.dylib
-$ otool -L /usr/local/Cellar/boost-python3/1.75.0/lib/libboost_python39.dylib
-/usr/local/Cellar/boost-python3/1.75.0/lib/libboost_python39.dylib:
+boost-python3: stable 1.76.0 (bottled), HEAD
+/usr/local/Cellar/boost-python3/1.76.0 (472 files, 18.2MB) *
+$ ls -lFh /usr/local/Cellar/boost-python3/1.76.0/lib/libboost_python39.dylib
+-r--r--r--  1 user  staff   410K May 26 21:13 /usr/local/Cellar/boost-python3/1.76.0/lib/libboost_python39.dylib
+$ otool -L /usr/local/Cellar/boost-python3/1.76.0/lib/libboost_python39.dylib
+/usr/local/Cellar/boost-python3/1.76.0/lib/libboost_python39.dylib:
 	/usr/local/opt/boost-python3/lib/libboost_python39.dylib (compatibility version 0.0.0, current version 0.0.0)
-	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 904.4.0)
-	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1292.0.0)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 905.6.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1292.100.5)
 ```
   
 * The OpenTREP Python extension itself has adopted that change with

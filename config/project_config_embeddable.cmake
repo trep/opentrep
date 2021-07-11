@@ -488,17 +488,18 @@ endmacro (get_lcov)
 # ~~~~~~~~~~ Python ~~~~~~~~~
 macro (get_python)
   unset (_required_version)
+  set(Python_USE_STATIC_LIBS FALSE)
   if (${ARGC} GREATER 0)
     set (_required_version ${ARGV0})
-    message (STATUS "Requires Python with version ${_required_version}; however just Python3 is considered here")
+    message (STATUS "Requires Python with version ${_required_version}; however just Python is considered here")
   else (${ARGC} GREATER 0)
-    message (STATUS "Requires Python3; any version will do")
+    message (STATUS "Requires Python; any version will do")
   endif (${ARGC} GREATER 0)
 
   # The first check searches for the libraries and include paths.
   # However, on some older versions (e.g., on RedHat/CentOS 5.x),
   # only the static library is searched.
-  find_package (Python3 COMPONENTS Development REQUIRED)
+  find_package (Python COMPONENTS Development.Module REQUIRED)
 
   # Python extension
   #find_package (PythonExtensions REQUIRED)
@@ -507,20 +508,20 @@ macro (get_python)
   # The second check is to get the dynamic library for sure.
   #find_package (PythonLibsWrapper ${_required_version} REQUIRED)
 
-  if (Python3_FOUND)
-    message (STATUS "Found Python3 ${Python3_VERSION} (${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}.${Python3_VERSION_PATCH})")
+  if (Python_FOUND)
+    message (STATUS "Found Python ${Python_VERSION} (${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}.${Python_VERSION_PATCH})")
 
     # Set the Python installation directory
     set (INSTALL_PY_LIB_DIR
-      ${INSTALL_LIB_DIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/py${PROJECT_NAME}
+      ${INSTALL_LIB_DIR}/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages/py${PROJECT_NAME}
       CACHE PATH "Installation directory for Python libraries")
 
     # Update the list of include directories for the project
-    include_directories (${Python3_INCLUDE_DIRS})
+    include_directories (${Python_INCLUDE_DIRS})
 
-  else (Python3_FOUND)
+  else (Python_FOUND)
 	message (FATAL_ERROR "Python libraries are missing. Please install them (e.g., 'python-devel' for the Fedora/RedHat package)")
-  endif (Python3_FOUND)
+  endif (Python_FOUND)
 
 endmacro (get_python)
 
@@ -633,13 +634,13 @@ macro (get_boost)
   if (NEED_PYTHON)
     set (python_cpt_name0 "python")
     #
-    if (Python3_VERSION_MAJOR)
-      set (python_cpt_name1 "python${Python3_VERSION_MAJOR}")
-    endif (Python3_VERSION_MAJOR)
+    if (Python_VERSION_MAJOR)
+      set (python_cpt_name1 "python${Python_VERSION_MAJOR}")
+    endif (Python_VERSION_MAJOR)
     #
-    if (Python3_VERSION_MINOR)
-      set (python_cpt_name2 "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-    endif (Python3_VERSION_MINOR)
+    if (Python_VERSION_MINOR)
+      set (python_cpt_name2 "python${Python_VERSION_MAJOR}${Python_VERSION_MINOR}")
+    endif (Python_VERSION_MINOR)
   endif (NEED_PYTHON)
 
   # Boost components for (non-Python) libraries
@@ -683,31 +684,31 @@ macro (get_boost)
       # distribution, it can be libboost_python3 or libboost_python3x
       if (Boost_PYTHON_LIBRARY)
 	set (BOOST_REQUIRED_COMPONENTS_FOR_PYEXT ${python_cpt_name0})
-	if (Python3_VERSION_MAJOR)
+	if (Python_VERSION_MAJOR)
 	  list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name1})
-	endif (Python3_VERSION_MAJOR)
-	if (Python3_VERSION_MINOR)
+	endif (Python_VERSION_MAJOR)
+	if (Python_VERSION_MINOR)
 	  list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name2})
-	endif (Python3_VERSION_MINOR)
+	endif (Python_VERSION_MINOR)
       endif (Boost_PYTHON_LIBRARY)
 
       #
-      if (Boost_PYTHON${Python3_VERSION_MAJOR}_LIBRARY)
+      if (Boost_PYTHON${Python_VERSION_MAJOR}_LIBRARY)
 	set (BOOST_REQUIRED_COMPONENTS_FOR_PYEXT ${python_cpt_name1})
 	list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name0})
-	if (Python3_VERSION_MINOR)
+	if (Python_VERSION_MINOR)
 	  list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name2})
-	endif (Python3_VERSION_MINOR)
-      endif (Boost_PYTHON${Python3_VERSION_MAJOR}_LIBRARY)
+	endif (Python_VERSION_MINOR)
+      endif (Boost_PYTHON${Python_VERSION_MAJOR}_LIBRARY)
 
       #
-      if (Boost_PYTHON${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}_LIBRARY)
+      if (Boost_PYTHON${Python_VERSION_MAJOR}${Python_VERSION_MINOR}_LIBRARY)
 	set (BOOST_REQUIRED_COMPONENTS_FOR_PYEXT ${python_cpt_name2})
 	list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name0})
-	if (Python3_VERSION_MAJOR)
+	if (Python_VERSION_MAJOR)
 	  list (REMOVE_ITEM BOOST_REQUIRED_COMPONENTS ${python_cpt_name1})
-	endif (Python3_VERSION_MAJOR)
-      endif (Boost_PYTHON${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}_LIBRARY)
+	endif (Python_VERSION_MAJOR)
+      endif (Boost_PYTHON${Python_VERSION_MAJOR}${Python_VERSION_MINOR}_LIBRARY)
 
       # Reporting
       message (STATUS "  + Retained Boost Python component: ${BOOST_REQUIRED_COMPONENTS_FOR_PYEXT}")
@@ -1588,7 +1589,7 @@ macro (set_install_directories)
   set (exec_prefix   ${prefix})
   set (bindir        ${exec_prefix}/bin)
   set (libdir        ${exec_prefix}/${LIBDIR})
-  set (pylibdir	     ${libdir}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/py${PACKAGE})
+  set (pylibdir	     ${libdir}/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages/py${PACKAGE})
   set (libexecdir    ${exec_prefix}/libexec)
   set (sbindir       ${exec_prefix}/sbin)
   set (sysconfdir    ${prefix}/etc)
@@ -1887,7 +1888,7 @@ macro (module_library_add_specific
   # Python extension libraries has some peculiarities
   if ("${_lib_prefix}" STREQUAL "py")
     message (STATUS "${_lib_short_name} is assumed to be a Python library:")
-    message (STATUS "  -> Following libraries will be weakly linked: ${Python3_LIBRARIES} ${PROJ_DEP_LIBS_FOR_PYEXT}")
+    message (STATUS "  -> Following libraries will be weakly linked: ${Python_LIBRARIES} ${PROJ_DEP_LIBS_FOR_PYEXT}")
 	
     # no 'lib' prefix
     set_target_properties (${_lib_target} PROPERTIES PREFIX "")
@@ -1908,7 +1909,7 @@ macro (module_library_add_specific
     #  https://blog.tim-smith.us/2015/09/python-extension-modules-os-x/
     #  https://github.com/scikit-build/scikit-build/blob/master/skbuild/resources/cmake/targetLinkLibrariesWithDynamicLookup.cmake
     target_link_libraries_with_dynamic_lookup (${_lib_target}
-      ${Python3_LIBRARIES} ${PROJ_DEP_LIBS_FOR_PYEXT})
+      ${Python_LIBRARIES} ${PROJ_DEP_LIBS_FOR_PYEXT})
     #python_extension_module (${_lib_target})
 	
   endif ("${_lib_prefix}" STREQUAL "py")
@@ -2733,12 +2734,12 @@ macro (display_python)
   if (NEED_PYTHON)
     message (STATUS)
     message (STATUS "* Python:")
-    message (STATUS "  - Python3_VERSION ............... : ${Python3_VERSION}")
-    message (STATUS "  - Python3_VERSION_{MJR,MNR,PTCH}  : ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}.${Python3_VERSION_PATCH}")
-    message (STATUS "  - Python3_INCLUDE_DIRS .......... : ${Python3_INCLUDE_DIRS}")
-    message (STATUS "  - Python3_LIBRARIES ............. : ${Python3_LIBRARIES}")
-    message (STATUS "  - Python3_LIBRARY_DIRS .......... : ${Python3_LIBRARY_DIRS}")
-    message (STATUS "  - Python3_RUNTIME_LIBRARY_DIRS .. : ${Python3_RUNTIME_LIBRARY_DIRS}")
+    message (STATUS "  - Python_VERSION ............... : ${Python_VERSION}")
+    message (STATUS "  - Python_VERSION_{MJR,MNR,PTCH}  : ${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}.${Python_VERSION_PATCH}")
+    message (STATUS "  - Python_INCLUDE_DIRS .......... : ${Python_INCLUDE_DIRS}")
+    message (STATUS "  - Python_LIBRARIES ............. : ${Python_LIBRARIES}")
+    message (STATUS "  - Python_LIBRARY_DIRS .......... : ${Python_LIBRARY_DIRS}")
+    message (STATUS "  - Python_RUNTIME_LIBRARY_DIRS .. : ${Python_RUNTIME_LIBRARY_DIRS}")
   else (NEED_PYTHON)
     message (STATUS)
     message (STATUS "* Python not required")
