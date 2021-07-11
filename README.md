@@ -677,8 +677,8 @@ $ export CMAKE_CXX_FLAGS="-Wno-mismatched-new-delete"; \
    -DREADLINE_INCLUDE_DIR=/usr/local/opt/portable-readline/include \
    -DREADLINE_LIBRARY=/usr/local/opt/libedit/lib/libedit.dylib \
    -DICU_ROOT=/usr/local/opt/icu4c \
-   -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
-   -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
+   -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
 ```
 
 * To build the project, type:

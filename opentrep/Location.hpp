@@ -493,6 +493,13 @@ namespace OPENTREP {
     }
 
     /**
+     * Set the Geonames flag.
+     */
+    void setIsGeonames (const IsGeonames_T& isGeonames) {
+      _key.setIsGeonames (isGeonames);
+    }
+    
+    /**
      * Set the ICAO code.
      */
     void setIcaoCode (const std::string& iIcaoCode) {

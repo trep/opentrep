@@ -7,8 +7,8 @@
 #include <fstream>
 // Boost
 #include <boost/lexical_cast.hpp>
-//#define BOOST_SPIRIT_DEBUG
-#define BOOST_SPIRIT_UNICODE
+//#define BOOST_SPIRIT_X3_DEBUG
+#define BOOST_SPIRIT_X3_UNICODE
 // OpenTREP
 #include <opentrep/basic/BasParserTypes.hpp>
 #include <opentrep/bom/PORParserHelper.hpp>
@@ -17,9 +17,10 @@
 namespace OPENTREP {
 
   /** Namespaces */
-  namespace bsq = boost::spirit::qi;
-  //namespace bsa = boost::spirit::ascii;
-  namespace bsu = boost::spirit::unicode;
+  namespace bs = boost::spirit;
+  namespace x3 = boost::spirit::x3;
+  namespace bsa = boost::spirit::x3::ascii;
+  namespace bsu = boost::spirit::x3::unicode;
   namespace bsc = boost::spirit::classic;
 
   namespace PorParserHelper {
@@ -38,9 +39,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeIataCode::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeIataCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lIataCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::IATACode_T lIataCode (lIataCodeStr);
       _location.setIataCode (lIataCode);
@@ -59,9 +61,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeIcaoCode::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeIcaoCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lIcaoCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::ICAOCode_T lIcaoCode (lIcaoCodeStr);
       _location.setIcaoCode (lIcaoCode);
@@ -76,9 +79,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeFaaCode::operator() (std::vector<uchar_t> iChar,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeFaaCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lFaaCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::FAACode_T lFaaCode (lFaaCodeStr);
       _location.setFaaCode (lFaaCode);
@@ -93,9 +97,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeUNLOCode::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeUNLOCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lUNLOCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::UNLOCode_T lUNLOCode (lUNLOCodeStr);
       _location.addUNLOCode (lUNLOCode);
@@ -110,9 +115,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeUICCode::operator() (unsigned int iUICCode,
-                                   bsq::unused_type, bsq::unused_type) const {
-
+    template <typename Context>
+    void storeUICCode::operator() (Context const& iCtx) const {
+      
+      const unsigned int& iUICCode = x3::_val(iCtx);
       _location.addUICCode (iUICCode);
 
       // DEBUG
@@ -125,8 +131,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGeonamesID::operator() (unsigned int iPorId,
-                                      bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeGeonamesID::operator() (Context const& iCtx) const {
+      
+      const unsigned int& iPorId = x3::_val(iCtx);
       _location.setGeonamesID (iPorId);
       
       // DEBUG
@@ -139,12 +147,35 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeEnvelopeID::operator() (unsigned int iEnvelopeID,
-                                      bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeEnvelopeID::operator() (Context const& iCtx) const {
+      
+      const unsigned int& iEnvelopeID = x3::_val(iCtx);
       _location.setEnvelopeID (iEnvelopeID);
       
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Envelope ID: " << _location.getEnvelopeID());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeIsGeonames::storeIsGeonames (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    template <typename Context>
+    void storeIsGeonames::operator() (Context const& iCtx) const {
+      
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
+      const std::string isGeonamesStr (iChar.begin(), iChar.end());
+      if (isGeonamesStr == "Y") {
+        _location.setIsGeonames (true);
+      } else {
+        _location.setIsGeonames (false);
+      }
+      
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("IsGeonames: " << _location.isGeonames());
     }
     
     // //////////////////////////////////////////////////////////////////
@@ -153,13 +184,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCommonName::operator() (std::vector<uchar_t> iChar,
-                                      bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeCommonName::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCommonNameStr (iChar.begin(), iChar.end());
       const OPENTREP::CommonName_T lCommonName (lCommonNameStr);
       _location.setCommonName (lCommonName);
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Common name: " << _location.getCommonName());
     }
 
@@ -169,13 +202,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAsciiName::operator() (std::vector<uchar_t> iChar,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAsciiName::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAsciiNameStr (iChar.begin(), iChar.end());
       const OPENTREP::ASCIIName_T lAsciiName (lAsciiNameStr);
       _location.setAsciiName (lAsciiName);
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("ASCII name: " << _location.getAsciiName());
     }
 
@@ -185,10 +220,11 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCityDetailList::
-    operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeCityDetailList::operator() (Context const& iCtx) const {
       _location.consolidateCityDetailsList();
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("List of served cities: " << _location.describeCityDetailsList());
     }
     
@@ -198,14 +234,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltNameShort::operator() (std::vector<uchar_t> iChar,
-                                        bsq::unused_type,
-                                        bsq::unused_type)const {
+    template <typename Context>
+    void storeAltNameShort::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAltNameShortStr (iChar.begin(), iChar.end());
       const OPENTREP::AltNameShortListString_T lAltNameShort (lAltNameShortStr);
       _location._itAltNameShortList.push_back (lAltNameShort);
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alt name short: " << lAltNameShortStr);
     }
 
@@ -216,10 +253,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltNameShortListString::
-    operator() (bsq::unused_type, bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAltNameShortListString::operator() (Context const& iCtx) const {
+
       _location.consolidateAltNameShortListString();
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alternative name short list: " << _location.getAltNameShortListString());
     }
 
@@ -229,14 +268,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeTvlPORCode::operator() (std::vector<uchar_t> iChar,
-                                      bsq::unused_type,
-                                      bsq::unused_type)const {
+    template <typename Context>
+    void storeTvlPORCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lTvlPORCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::IATACode_T lTvlPORCode (lTvlPORCodeStr);
       _location._itTvlPORList.push_back (lTvlPORCode);
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Travel-related IATA code: " << lTvlPORCodeStr);
     }
 
@@ -246,10 +286,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeTvlPORListString::operator() (bsq::unused_type, bsq::unused_type,
-                                            bsq::unused_type)const {
+    template <typename Context>
+    void storeTvlPORListString::operator() (Context const& iCtx) const {
+
       _location.consolidateTvlPORListString();
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Travel-related POR list: " << _location.getTvlPORListString());
     }
 
@@ -259,9 +301,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeLatitude::operator() (double iLatitude,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeLatitude::operator() (Context const& iCtx) const {
+
+      const double& iLatitude = x3::_val(iCtx);
       _location.setLatitude (iLatitude);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Latitude: " << _location.getLatitude());
     }
@@ -272,8 +317,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeLongitude::operator() (double iLongitude,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeLongitude::operator() (Context const& iCtx) const {
+
+      const double& iLongitude = x3::_val(iCtx);
       _location.setLongitude (iLongitude);
 
       // DEBUG
@@ -286,9 +333,10 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeFeatureClass::operator() (std::vector<uchar_t> iChar,
-                                        bsq::unused_type,
-                                        bsq::unused_type) const {
+    template <typename Context>
+    void storeFeatureClass::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lFeatClassStr (iChar.begin(), iChar.end());
       const OPENTREP::FeatureClass_T lFeatClass (lFeatClassStr);
       _location.setFeatureClass (lFeatClass);
@@ -303,9 +351,10 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeFeatureCode::operator() (std::vector<uchar_t> iChar,
-                                       bsq::unused_type,
-                                       bsq::unused_type) const {
+    template <typename Context>
+    void storeFeatureCode::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lFeatCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::FeatureClass_T lFeatCode (lFeatCodeStr);
       _location.setFeatureCode (lFeatCode);
@@ -320,12 +369,62 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storePageRank::operator() (double iPageRank,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storePageRank::operator() (Context const& iCtx) const {
+
+      const double& iPageRank = x3::_val(iCtx);
       _location.setPageRank (100.0 * iPageRank);
 
       // DEBUG
       //OPENTREP_LOG_DEBUG ("PageRank: " << _location.getPageRank());
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeDateYear::storeDateYear (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    template <typename Context>
+    void storeDateYear::operator() (Context const& iCtx) const {
+
+      const unsigned int& iDateElement = x3::_val(iCtx);
+      _location._itYear = iDateElement;
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Year: " << _location._itYear);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeDateMonth::storeDateMonth (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    template <typename Context>
+    void storeDateMonth::operator() (Context const& iCtx) const {
+
+      const unsigned int& iDateElement = x3::_val(iCtx);
+      _location._itMonth = iDateElement;
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Year: " << _location._itMonth);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeDateDay::storeDateDay (Location& ioLocation)
+      : ParserSemanticAction (ioLocation) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    template <typename Context>
+    void storeDateDay::operator() (Context const& iCtx) const {
+
+      const unsigned int& iDateElement = x3::_val(iCtx);
+      _location._itMonth = iDateElement;
+
+      // DEBUG
+      //OPENTREP_LOG_DEBUG ("Year: " << _location._itDay);
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -334,8 +433,9 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeDateFrom::operator() (bsq::unused_type,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeDateFrom::operator() (Context const& iCtx) const {
+
       const OPENTREP::Date_T& lDateFrom = _location.calculateDate();
       _location.setDateFrom (lDateFrom);
 
@@ -349,8 +449,9 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeDateEnd::operator() (bsq::unused_type,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeDateEnd::operator() (Context const& iCtx) const {
+
       const OPENTREP::Date_T& lDateEnd = _location.calculateDate();
       _location.setDateEnd (lDateEnd);
 
@@ -364,9 +465,11 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeComments::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeComments::operator() (Context const& iCtx) const {
+
       /*
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCommentsStr (iChar.begin(), iChar.end());
       const CountryCode_T lComments (lCommentsStr);
       _location.setComments (lComments);
@@ -382,12 +485,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeCountryCode::operator() (std::vector<uchar_t> iChar,
-                                       bsq::unused_type,
-                                       bsq::unused_type) const {
+    template <typename Context>
+    void storeCountryCode::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCountryCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::CountryCode_T lCountryCode (lCountryCodeStr);
       _location.setCountryCode (lCountryCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Country code: " << _location.getCountryCode());
     }
@@ -398,12 +503,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAltCountryCode::operator() (std::vector<uchar_t> iChar,
-                                          bsq::unused_type,
-                                          bsq::unused_type) const {
+    template <typename Context>
+    void storeAltCountryCode::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCountryCodeStr (iChar.begin(), iChar.end());
       const CountryCode_T lCountryCode (lCountryCodeStr);
       _location.setAltCountryCode (lCountryCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Alt country code: " << _location.getAltCountryCode());
     }
@@ -414,12 +521,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeCountryName::operator() (std::vector<uchar_t> iChar,
-                                       bsq::unused_type,
-                                       bsq::unused_type) const {
+    template <typename Context>
+    void storeCountryName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCountryNameStr (iChar.begin(), iChar.end());
       const CountryName_T lCountryName (lCountryNameStr);
       _location.setCountryName (lCountryName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Country name: " << _location.getCountryName());
     }
@@ -430,12 +539,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeContinentName::operator() (std::vector<uchar_t> iChar,
-                                         bsq::unused_type,
-                                         bsq::unused_type) const {
+    template <typename Context>
+    void storeContinentName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lContinentNameStr (iChar.begin(), iChar.end());
       const ContinentName_T lContinentName (lContinentNameStr);
       _location.setContinentName (lContinentName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Continent name: " << _location.getContinentName());
     }
@@ -446,12 +557,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm1Code::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type,
-                                    bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm1Code::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmCodeStr (iChar.begin(), iChar.end());
       const Admin1Code_T lAdmCode (lAdmCodeStr);
       _location.setAdmin1Code (lAdmCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm1 code: " << _location.getAdmin1Code());
     }
@@ -462,12 +575,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm1UtfName::operator() (std::vector<uchar_t> iChar,
-                                       bsq::unused_type,
-                                       bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm1UtfName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
       const Admin1UTFName_T lAdmName (lAdmNameStr);
       _location.setAdmin1UtfName (lAdmName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm1 UTF8 name: " << _location.getAdmin1UtfName());
     }
@@ -478,12 +593,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm1AsciiName::operator() (std::vector<uchar_t> iChar,
-                                         bsq::unused_type,
-                                         bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm1AsciiName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
       const Admin1ASCIIName_T lAdmName (lAdmNameStr);
       _location.setAdmin1AsciiName (lAdmName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG("Adm1 ASCII name: "<< _location.getAdmin1AsciiName());
     }
@@ -494,12 +611,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm2Code::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type,
-                                    bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm2Code::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmCodeStr (iChar.begin(), iChar.end());
       const Admin2Code_T lAdmCode (lAdmCodeStr);
       _location.setAdmin2Code (lAdmCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm2 code: " << _location.getAdmin2Code());
     }
@@ -510,12 +629,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm2UtfName::operator() (std::vector<uchar_t> iChar,
-                                       bsq::unused_type,
-                                       bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm2UtfName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
       const Admin2UTFName_T lAdmName (lAdmNameStr);
       _location.setAdmin2UtfName (lAdmName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm2 UTF8 name: " << _location.getAdmin2UtfName());
     }
@@ -526,12 +647,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm2AsciiName::operator() (std::vector<uchar_t> iChar,
-                                         bsq::unused_type,
-                                         bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm2AsciiName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmNameStr (iChar.begin(), iChar.end());
       const Admin2ASCIIName_T lAdmName (lAdmNameStr);
       _location.setAdmin2AsciiName (lAdmName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG("Adm2 ASCII name: "<< _location.getAdmin2AsciiName());
     }
@@ -542,9 +665,10 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm3Code::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type,
-                                    bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm3Code::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmCodeStr (iChar.begin(), iChar.end());
       const Admin3Code_T lAdmCode (lAdmCodeStr);
       _location.setAdmin3Code (lAdmCode);
@@ -558,12 +682,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeAdm4Code::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type,
-                                    bsq::unused_type) const {
+    template <typename Context>
+    void storeAdm4Code::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lAdmCodeStr (iChar.begin(), iChar.end());
       const Admin4Code_T lAdmCode (lAdmCodeStr);
       _location.setAdmin4Code (lAdmCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Adm4 code: " << _location.getAdmin4Code());
     }
@@ -574,9 +700,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storePopulation::operator() (unsigned int iPopulation,
-                                      bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storePopulation::operator() (Context const& iCtx) const {
+
+      const unsigned int& iPopulation = x3::_val(iCtx);
       _location.setPopulation (iPopulation);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Population: " << _location.getPopulation());
     }
@@ -587,9 +716,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeElevation::operator() (int iElevation,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeElevation::operator() (Context const& iCtx) const {
+
+      const int& iElevation = x3::_val(iCtx);
       _location.setElevation (iElevation);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Elevation: " << _location.getElevation());
     }
@@ -600,9 +732,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGTopo30::operator() (int iGTopo30,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeGTopo30::operator() (Context const& iCtx) const {
+
+      const int& iGTopo30 = x3::_val(iCtx);
       _location.setGTopo30 (iGTopo30);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("GTopo30: " << _location.getGTopo30());
     }
@@ -613,12 +748,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeTimeZone::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type,
-                                    bsq::unused_type) const {
+    template <typename Context>
+    void storeTimeZone::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lTimeZoneStr (iChar.begin(), iChar.end());
       const TimeZone_T lTimeZone (lTimeZoneStr);
       _location.setTimeZone (lTimeZone);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Time-zone code: " << _location.getTimeZone());
     }
@@ -629,9 +766,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGMTOffset::operator() (float iOffset,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeGMTOffset::operator() (Context const& iCtx) const {
+
+      const float& iOffset = x3::_val(iCtx);
       _location.setGMTOffset (iOffset);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("GMT offset: " << _location.getGMTOffset());
     }
@@ -642,9 +782,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeDSTOffset::operator() (float iOffset,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeDSTOffset::operator() (Context const& iCtx) const {
+
+      const float& iOffset = x3::_val(iCtx);
       _location.setDSTOffset (iOffset);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("DST offset: " << _location.getDSTOffset());
     }
@@ -655,9 +798,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeRawOffset::operator() (float iOffset,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeRawOffset::operator() (Context const& iCtx) const {
+
+      const float& iOffset = x3::_val(iCtx);
       _location.setRawOffset (iOffset);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Raw offset: " << _location.getRawOffset());
     }
@@ -668,10 +814,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeModDate::operator() (bsq::unused_type,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeModDate::operator() (Context const& iCtx) const {
+
       const OPENTREP::Date_T& lModDate = _location.calculateDate();
       _location.setModificationDate (lModDate);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Modification date: " << _location.getModificationDate());
     }
@@ -682,13 +830,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCityCode::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeCityCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCityCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::CityCode_T lCityCode (lCityCodeStr);
       _location._itCityIataCode = lCityCode;
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("City code: " << _location._itCityIataCode);
     }
 
@@ -698,11 +848,13 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCityGeonamesID::operator() (unsigned int iCtyId,
-                                          bsq::unused_type,
-                                          bsq::unused_type) const {
+    template <typename Context>
+    void storeCityGeonamesID::operator() (Context const& iCtx) const {
+
+      const unsigned int& iCtyId = x3::_val(iCtx);
       _location._itCityGeonamesID = iCtyId;
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG("City Geonames ID: " << _location._itCityGeonamesID);
     }
 
@@ -712,14 +864,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCityUtfName::operator() (std::vector<uchar_t> iChar,
-                                       bsq::unused_type,
-                                       bsq::unused_type) const {
+    template <typename Context>
+    void storeCityUtfName::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCityUtfNameStr (iChar.begin(), iChar.end());
       const OPENTREP::CityUTFName_T lCityUtfName (lCityUtfNameStr);
       _location._itCityUtfName = lCityUtfName;
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("City UTF8 name: " << _location._itCityUtfName);
     }
 
@@ -729,14 +882,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCityAsciiName::operator() (std::vector<uchar_t> iChar,
-                                         bsq::unused_type,
-                                         bsq::unused_type) const {
+    template <typename Context>
+    void storeCityAsciiName::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCityAsciiNameStr (iChar.begin(), iChar.end());
       const OPENTREP::CityASCIIName_T lCityAsciiName (lCityAsciiNameStr);
       _location._itCityAsciiName = lCityAsciiName;
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG("City ASCII name: " << _location._itCityAsciiName);
     }
 
@@ -746,13 +900,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storeCityCountryCode::operator() (std::vector<uchar_t> iChar,
-                                           bsq::unused_type,
-                                           bsq::unused_type) const {
+    template <typename Context>
+    void storeCityCountryCode::operator() (Context const& iCtx) const {
       
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCityCountryCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::CountryCode_T lCityCountryCode (lCityCountryCodeStr);
       _location._itCityCountryCode = lCityCountryCode;
+
       // DEBUG
       //OPENTREP_LOG_DEBUG("City country code: "<< _location._itCityCountryCode);
     }
@@ -763,14 +918,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCityStateCode::operator() (std::vector<uchar_t> iChar,
-                                         bsq::unused_type,
-                                         bsq::unused_type) const {
+    template <typename Context>
+    void storeCityStateCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCityStateCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::StateCode_T lCityStateCode (lCityStateCodeStr);
       _location._itCityStateCode = lCityStateCode;
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("City state code: " << _location._itCityStateCode);
     }
  
@@ -780,13 +936,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeStateCode::operator() (std::vector<uchar_t> iChar,
-                                     bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeStateCode::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lStateCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::StateCode_T lStateCode (lStateCodeStr);
       _location.setStateCode (lStateCode);
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("State code: " << _location.getStateCode());
     }
 
@@ -796,9 +954,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeWAC::operator() (unsigned int iWAC,
-                               bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeWAC::operator() (Context const& iCtx) const {
+
+      const unsigned int& iWAC = x3::_val(iCtx);
       _location.setWAC (iWAC);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("WAC: " << _location.getWAC());
     }
@@ -809,11 +970,14 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeWACName::operator() (std::vector<uchar_t> iChar,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeWACName::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lWACNameStr (iChar.begin(), iChar.end());
       const OPENTREP::WACName_T lWACName (lWACNameStr);
       _location.setWACName (lWACName);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("WAC name: " << _location.getWACName());
     }
@@ -824,12 +988,14 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCurrencyCode::operator() (std::vector<uchar_t> iChar,
-                                        bsq::unused_type,
-                                        bsq::unused_type) const {
+    template <typename Context>
+    void storeCurrencyCode::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lCurrencyCodeStr (iChar.begin(), iChar.end());
       const OPENTREP::CurrencyCode_T lCurrencyCode (lCurrencyCodeStr);
       _location.setCurrencyCode (lCurrencyCode);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Currency code: " << _location.getCurrencyCode());
     }
@@ -840,11 +1006,14 @@ namespace OPENTREP {
     }
 
     // //////////////////////////////////////////////////////////////////
-    void storePORType::operator() (std::vector<uchar_t> iChar,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storePORType::operator() (Context const& iCtx) const {
+
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lIATATypeStr (iChar.begin(), iChar.end());
       const IATAType lIATAType (lIATATypeStr);
       _location.setIataType (lIATAType);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("IATA type: " << _location.getIataType());
     }
@@ -855,13 +1024,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeWikiLink::operator() (std::vector<uchar_t> iChar,
-                                    bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeWikiLink::operator() (Context const& iCtx) const {
 
+      const std::vector<uchar_t>& iChar = x3::_where(iCtx);
       const std::string lWikiLinkStr (iChar.begin(), iChar.end());
       const OPENTREP::WikiLink_T lWikiLink (lWikiLinkStr);
       _location.setWikiLink (lWikiLink);
-       // DEBUG
+
+      // DEBUG
        // OPENTREP_LOG_DEBUG ("Wiki link: " << _location.getWikiLink());
     }
 
@@ -871,10 +1042,12 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGeonameLatitude::operator() (double iLatitude,
-                                           bsq::unused_type,
-                                           bsq::unused_type) const {
+    template <typename Context>
+    void storeGeonameLatitude::operator() (Context const& iCtx) const {
+
+      const double& iLatitude = x3::_val(iCtx);
       _location.setGeonameLatitude (iLatitude);
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Geoname latitude: " << _location.getGeonameLatitude());
     }
@@ -885,9 +1058,10 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeGeonameLongitude::operator() (double iLongitude,
-                                            bsq::unused_type,
-                                            bsq::unused_type) const {
+    template <typename Context>
+    void storeGeonameLongitude::operator() (Context const& iCtx) const {
+
+      const double& iLongitude = x3::_val(iCtx);
       _location.setGeonameLongitude (iLongitude);
 
       // DEBUG
@@ -900,13 +1074,15 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltLangCodeFull::operator() (std::vector<uchar_t> iChar,
-                                           bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAltLangCodeFull::operator() (Context const& iCtx) const {
 
-      const std::string lAltLangCodeStr (iChar.begin(), iChar.end());
+      const std::vector<boost::uint32_t>& iCode = x3::_where(iCtx);
+      const std::string lAltLangCodeStr (iCode.begin(), iCode.end());
       const OPENTREP::LanguageCode_T lAltLangCode (lAltLangCodeStr);
       _location._itLanguageCode = lAltLangCode;
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alt lang full code: " << _location._itLanguageCode);
     }
 
@@ -916,14 +1092,16 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltLangCode2Char::operator() (std::vector<uchar_t> iChar,
-                                            bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAltLangCode2Char::operator() (Context const& iCtx) const {
 
-      const std::string lAltLangCodeStr (iChar.begin(), iChar.end());
+      const std::vector<boost::uint32_t>& iCode = x3::_where(iCtx);
+      const std::string lAltLangCodeStr (iCode.begin(), iCode.end());
       _location._itLangCode2Char = lAltLangCodeStr;
       _location._itLangCodeExt = "";
       _location._itLangCodeHist = "";
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alt lang 2-char code: " << _location._itLangCode2Char);
     }
 
@@ -933,14 +1111,16 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltLangCodeExt::operator() (std::vector<uchar_t> iChar,
-                                          bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAltLangCodeExt::operator() (Context const& iCtx) const {
 
-      const std::string lAltLangCodeStr (iChar.begin(), iChar.end());
+      const std::vector<boost::uint32_t>& iCode = x3::_where(iCtx);
+      const std::string lAltLangCodeStr (iCode.begin(), iCode.end());
       std::ostringstream oStr;
       oStr << _location._itLangCode2Char << "-" << lAltLangCodeStr;
       _location._itLangCodeExt = oStr.str();
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alt lang 2-char code: " << _location._itLangCodeExt);
     }
 
@@ -950,14 +1130,16 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltLangCodeHist::operator() (std::vector<uchar_t> iChar,
-                                           bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAltLangCodeHist::operator() (Context const& iCtx) const {
 
-      const std::string lAltLangCodeStr (iChar.begin(), iChar.end());
+      const std::vector<boost::uint32_t>& iCode = x3::_where(iCtx);
+      const std::string lAltLangCodeStr (iCode.begin(), iCode.end());
       std::ostringstream oStr;
       oStr << _location._itLangCode2Char << "_" << lAltLangCodeStr;
       _location._itLangCodeHist = oStr.str();
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alt lang 2-char code: " << _location._itLangCodeHist);
     }
 
@@ -967,17 +1149,20 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeAltName::operator() (std::vector<uchar_t> iChar,
-                                   bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void storeAltName::operator() (Context const& iCtx) const {
 
-      const std::string lAltNameStr (iChar.begin(), iChar.end());
+      const std::vector<boost::uint32_t>& iCode = x3::_where(iCtx);
+      const std::string lAltNameStr (iCode.begin(), iCode.end());
       const OPENTREP::AltNameShortListString_T lAltName (lAltNameStr);
       //_location.addName (_location._itLanguageCodeNum, lAltName);
       _location.addName (_location._itLanguageCode, lAltName);
+
       // Reset the values
       //_location._itLanguageCodeNum = OPENTREP::Language::LAST_VALUE;
       _location._itLanguageCode = LanguageCode_T ("");
-       // DEBUG
+
+      // DEBUG
        //OPENTREP_LOG_DEBUG ("Alt name: " << _location.getAltNameShortList());
     }
 
@@ -988,12 +1173,14 @@ namespace OPENTREP {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void doEndPor::operator() (bsq::unused_type,
-                               bsq::unused_type, bsq::unused_type) const {
+    template <typename Context>
+    void doEndPor::operator() (Context const& iCtx) const {
+
       // DEBUG
       //OPENTREP_LOG_DEBUG ("Do End. Location structure: " << _location);
     }  
 
+    
     // ///////////////////////////////////////////////////////////////////
     //
     //  Utility Parsers
@@ -1032,9 +1219,6 @@ namespace OPENTREP {
     OPENTREP::year_p_t year_p;
     OPENTREP::month_p_t month_p;
     OPENTREP::day_p_t day_p;
-
-    /** Boolean parser */
-    OPENTREP::boolean_p_t boolean_p;
 
     /////////////////////////////////////////////////////////////////////////
     //
@@ -1230,16 +1414,15 @@ namespace OPENTREP {
      * Grammar for the Por-Rule parser.
      */
     template <typename Iterator>	
-    struct LocationParser : public bsq::grammar<Iterator, bsu::blank_type> {
+    struct LocationParser {
 
-      LocationParser (Location& ioPORRule) : 
-        LocationParser::base_type(start), _location(ioPORRule) {
+      LocationParser (Location& ioPORRule) : _location(ioPORRule) {
 
-        start = bsq::eps
+        start = x3::eps
           >> *(header | por_rule);
 
-        header = bsq::lit("iata_code") >> +(bsu::char_ - bsq::eoi - bsq::eol)
-                                       >> (bsq::eoi | bsq::eol);
+        header = x3::lit("iata_code") >> +(x3::char_ - x3::eoi - x3::eol)
+                                       >> (x3::eoi | x3::eol);
 
         por_rule = por_key
           >> '^' >> por_details
@@ -1247,7 +1430,7 @@ namespace OPENTREP {
           >> '^' >> por_details_additional
           >> por_rule_end[doEndPor(_location)];
 
-        por_rule_end = bsq::eps;
+        por_rule_end = x3::eps;
 
         por_key = -iata_code
           >> '^' >> -icao_code
@@ -1286,7 +1469,7 @@ namespace OPENTREP {
           >> '^' >> -gmt_offset
           >> '^' >> -dst_offset
           >> '^' >> -raw_offset
-          >> '^' >> (mod_date | bsq::lit("-1"))
+          >> '^' >> (mod_date | x3::lit("-1"))
           >> '^' >> -city_code_list
           >> '^' >> -city_name_list
           >> '^' >> -city_detail_list
@@ -1304,124 +1487,124 @@ namespace OPENTREP {
           ;
 
         iata_code =
-          bsq::repeat(3)[bsu::char_('A', 'Z')][storeIataCode(_location)];
+          x3::repeat(3)[x3::char_('A', 'Z')][storeIataCode(_location)];
 
         icao_code =
-          bsq::repeat(4)[bsu::char_("A-Z0-9")][storeIcaoCode(_location)];
+          x3::repeat(4)[x3::char_("A-Z0-9")][storeIcaoCode(_location)];
 
         faa_code =
-          bsq::repeat(1,4)[bsu::char_("A-Z0-9")][storeFaaCode(_location)];
+          x3::repeat(1,4)[x3::char_("A-Z0-9")][storeFaaCode(_location)];
 
         geoname_id = uint1_9_p[storeGeonamesID(_location)];
 
         envelope_id = uint1_4_p[storeEnvelopeID(_location)];
 
-        is_geonames = boolean_p;
+        is_geonames = (x3::char_('Y') | x3::char_('N') | x3::char_('Z'))[storeIsGeonames(_location)];
 
         common_name =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeCommonName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeCommonName(_location)]
           ;
 
         ascii_name =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAsciiName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAsciiName(_location)]
           ;
 
         alt_name_short_list = alt_name_short % ',';
 
         alt_name_short =
-          (bsq::no_skip[+~bsu::char_("^,")]
-           - (bsq::eoi|bsq::eol))[storeAltNameShort(_location)]
+          (x3::no_skip[+~x3::char_("^,")]
+           - (x3::eoi|x3::eol))[storeAltNameShort(_location)]
           ;
 
         tvl_por_code_list = tvl_por_code % ',';
 
         tvl_por_code =
-          (bsq::no_skip[+~bsu::char_("^,")]
-           - (bsq::eoi|bsq::eol))[storeTvlPORCode(_location)]
+          (x3::no_skip[+~x3::char_("^,")]
+           - (x3::eoi|x3::eol))[storeTvlPORCode(_location)]
           ;
 
-        latitude = bsq::double_[storeLatitude(_location)];
+        latitude = x3::double_[storeLatitude(_location)];
 
-        longitude = bsq::double_[storeLongitude(_location)];
+        longitude = x3::double_[storeLongitude(_location)];
 
         feat_class =
-          bsq::repeat(1)[bsu::char_("A-Z")][storeFeatureClass(_location)]
+          x3::repeat(1)[x3::char_("A-Z")][storeFeatureClass(_location)]
           ;
 
         feat_code =
-          bsq::repeat(2,5)[bsu::char_("A-Z1-5")][storeFeatureCode(_location)]
+          x3::repeat(2,5)[x3::char_("A-Z1-5")][storeFeatureCode(_location)]
           ;
 
-        page_rank = bsq::double_[storePageRank(_location)];
+        page_rank = x3::double_[storePageRank(_location)];
 
         date_from = date[storeDateFrom(_location)];
 
         date_end = date[storeDateEnd(_location)];
 
         comments =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeComments(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeComments(_location)]
           ;
 
         country_code =
-          bsq::repeat(2,3)[bsu::char_("A-Z")][storeCountryCode(_location)]
+          x3::repeat(2,3)[x3::char_("A-Z")][storeCountryCode(_location)]
           ;
 
         country_code2 =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAltCountryCode(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAltCountryCode(_location)]
           ;
 
         country_name =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeCountryName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeCountryName(_location)]
           ;
 
         continent_name =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeContinentName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeContinentName(_location)]
           ;
 
         adm1_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm1Code(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm1Code(_location)]
           ;
 
         adm1_name_utf =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm1UtfName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm1UtfName(_location)]
           ;
 
         adm1_name_ascii =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm1AsciiName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm1AsciiName(_location)]
           ;
 
         adm2_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm2Code(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm2Code(_location)]
           ;
 
         adm2_name_utf =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm2UtfName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm2UtfName(_location)]
           ;
 
         adm2_name_ascii =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm2AsciiName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm2AsciiName(_location)]
           ;
 
         adm3_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm3Code(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm3Code(_location)]
           ;
 
         adm4_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeAdm4Code(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeAdm4Code(_location)]
           ;
 
         population = uint1_9_p[storePopulation(_location)];
@@ -1431,50 +1614,50 @@ namespace OPENTREP {
         gtopo30 = int1_5_p[storeGTopo30(_location)];
 
         time_zone =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeTimeZone(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeTimeZone(_location)]
           ;
 
-        gmt_offset = bsq::float_[storeGMTOffset(_location)];
+        gmt_offset = x3::float_[storeGMTOffset(_location)];
 
-        dst_offset = bsq::float_[storeDSTOffset(_location)];
+        dst_offset = x3::float_[storeDSTOffset(_location)];
 
-        raw_offset = bsq::float_[storeRawOffset(_location)];
+        raw_offset = x3::float_[storeRawOffset(_location)];
 
         mod_date = date[storeModDate(_location)];
 
-        date = bsq::lexeme
-          [year_p[boost::phoenix::ref(_location._itYear) = bsq::labels::_1]
-           >> '-'
-           >> month_p[boost::phoenix::ref(_location._itMonth) = bsq::labels::_1]
-           >> '-'
-           >> day_p[boost::phoenix::ref(_location._itDay) = bsq::labels::_1] ];
+        date =
+          year_p[storeDateYear(_location)]
+          >> '-'
+          >> month_p[storeDateMonth(_location)]
+          >> '-'
+          >> day_p[storeDateDay(_location)];
 
         city_code_list = city_code % ',';
 
         city_code =
-          bsq::repeat(3)[bsu::char_('A', 'Z')][storeCityCode(_location)]
+          x3::repeat(3)[x3::char_('A', 'Z')][storeCityCode(_location)]
           ;
 
         city_name_list = city_name_utf % '=';
 
         city_name_utf =
-          (bsq::no_skip[+~bsu::char_("^|=")]
-           - (bsq::eoi|bsq::eol))[storeCityUtfName(_location)]
+          (x3::no_skip[+~x3::char_("^|=")]
+           - (x3::eoi|x3::eol))[storeCityUtfName(_location)]
           ;
 
         city_name_ascii =
-          (bsq::no_skip[+~bsu::char_("^|=")]
-           - (bsq::eoi|bsq::eol))[storeCityAsciiName(_location)]
+          (x3::no_skip[+~x3::char_("^|=")]
+           - (x3::eoi|x3::eol))[storeCityAsciiName(_location)]
           ;
 
         city_country_code =
-          bsq::repeat(2,3)[bsu::char_("A-Z")][storeCityCountryCode(_location)]
+          x3::repeat(2,3)[x3::char_("A-Z")][storeCityCountryCode(_location)]
           ;
       
         city_state_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeCityStateCode(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeCityStateCode(_location)]
           ;      
 
         city_detail_list = city_details[storeCityDetailList(_location)] % '=';
@@ -1491,20 +1674,20 @@ namespace OPENTREP {
         city_geoname_id = uint1_9_p[storeCityGeonamesID(_location)];
 
         state_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeStateCode(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeStateCode(_location)]
           ;
 
         wac = uint1_4_p[storeWAC(_location)];
 
         wac_name =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeWACName(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeWACName(_location)]
           ;
 
         ccy_code =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeCurrencyCode(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeCurrencyCode(_location)]
           ;
 
         unlc_section = unlc_details % '=';
@@ -1514,10 +1697,10 @@ namespace OPENTREP {
           ;
 
         unlocode_code =
-          bsq::repeat(5)[bsu::char_("A-Z0-9")][storeUNLOCode(_location)];
+          x3::repeat(5)[x3::char_("A-Z0-9")][storeUNLOCode(_location)];
 
         unlc_qualifiers =
-          bsq::repeat(1,2)[bsu::char_("hp")]
+          x3::repeat(1,2)[x3::char_("hp")]
           ;
 
         uic_section = uic_details % '=';
@@ -1529,20 +1712,20 @@ namespace OPENTREP {
         uic_code = uint1_9_p[storeUICCode(_location)];
 
         uic_qualifiers =
-          bsq::repeat(1,2)[bsu::char_("hp")]
+          x3::repeat(1,2)[x3::char_("hp")]
           ;
 
-        geoname_lat = bsq::double_[storeGeonameLatitude(_location)];
+        geoname_lat = x3::double_[storeGeonameLatitude(_location)];
 
-        geoname_lon = bsq::double_[storeGeonameLongitude(_location)];        
+        geoname_lon = x3::double_[storeGeonameLongitude(_location)];        
 
         por_type =
-          bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
+          x3::repeat(1,3)[x3::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
       
         wiki_link =
-          (bsq::no_skip[+~bsu::char_('^')]
-           - (bsq::eoi|bsq::eol))[storeWikiLink(_location)]
+          (x3::no_skip[+~x3::char_('^')]
+           - (x3::eoi|x3::eol))[storeWikiLink(_location)]
           ;
 
         alt_name_section = alt_name_details % '=';
@@ -1554,8 +1737,8 @@ namespace OPENTREP {
           ;
 
         alt_lang_code =
-          (+~bsu::char_("|=")
-           - (bsq::eoi|bsq::eol))[storeAltLangCodeFull(_location)]
+          (+~x3::char_("|=")
+           - (x3::eoi|x3::eol))[storeAltLangCodeFull(_location)]
           ;
 
         alt_lang_code_ftd = lang_code_2char >> lang_code_opt;
@@ -1563,115 +1746,27 @@ namespace OPENTREP {
         lang_code_opt = -(lang_code_ext | lang_code_hist);
 
         lang_code_2char =
-          bsq::repeat(2,4)[bsu::char_("a-z")][storeAltLangCode2Char(_location)]
+          x3::repeat(2,4)[x3::char_("a-z")][storeAltLangCode2Char(_location)]
           ;
 
         lang_code_ext =
-          '-' >> bsq::repeat(1,4)[bsu::char_('A', 'Z')][storeAltLangCodeExt(_location)];
+          '-' >> x3::repeat(1,4)[x3::char_('A', 'Z')][storeAltLangCodeExt(_location)];
 
         lang_code_hist =
-          '_' >> bsq::repeat(1,4)[bsu::char_("a-z0-9")][storeAltLangCodeHist(_location)];
+          '_' >> x3::repeat(1,4)[x3::char_("a-z0-9")][storeAltLangCodeHist(_location)];
 
         alt_name =
-          (bsq::no_skip[+~bsu::char_("|=")]
-           - (bsq::eoi|bsq::eol))[storeAltName(_location)]
+          (x3::no_skip[+~x3::char_("|=")]
+           - (x3::eoi|x3::eol))[storeAltName(_location)]
           ;
 
         alt_name_qualifiers =
-          bsq::repeat(1,4)[bsu::char_("shpc")]
+          x3::repeat(1,4)[x3::char_("shpc")]
           ;
-
-        //BOOST_SPIRIT_DEBUG_NODE (LocationParser);
-        BOOST_SPIRIT_DEBUG_NODE (start);
-        BOOST_SPIRIT_DEBUG_NODE (header);
-        BOOST_SPIRIT_DEBUG_NODE (por_rule);
-        BOOST_SPIRIT_DEBUG_NODE (por_rule_end);
-        BOOST_SPIRIT_DEBUG_NODE (por_key);
-        BOOST_SPIRIT_DEBUG_NODE (por_details);
-        BOOST_SPIRIT_DEBUG_NODE (iata_code);
-        BOOST_SPIRIT_DEBUG_NODE (icao_code);
-        BOOST_SPIRIT_DEBUG_NODE (faa_code);
-        BOOST_SPIRIT_DEBUG_NODE (geoname_id);
-        BOOST_SPIRIT_DEBUG_NODE (envelope_id);
-        BOOST_SPIRIT_DEBUG_NODE (is_geonames);
-        BOOST_SPIRIT_DEBUG_NODE (common_name);
-        BOOST_SPIRIT_DEBUG_NODE (ascii_name);      
-        BOOST_SPIRIT_DEBUG_NODE (alt_name_short_list);
-        BOOST_SPIRIT_DEBUG_NODE (alt_name_short);
-        BOOST_SPIRIT_DEBUG_NODE (alt_name_sep);
-        BOOST_SPIRIT_DEBUG_NODE (tvl_por_code_list);
-        BOOST_SPIRIT_DEBUG_NODE (tvl_por_code);
-        BOOST_SPIRIT_DEBUG_NODE (tvl_por_sep);
-        BOOST_SPIRIT_DEBUG_NODE (latitude);
-        BOOST_SPIRIT_DEBUG_NODE (longitude);
-        BOOST_SPIRIT_DEBUG_NODE (feat_class);
-        BOOST_SPIRIT_DEBUG_NODE (feat_code);
-        BOOST_SPIRIT_DEBUG_NODE (page_rank);
-        BOOST_SPIRIT_DEBUG_NODE (date_from);
-        BOOST_SPIRIT_DEBUG_NODE (date_end);
-        BOOST_SPIRIT_DEBUG_NODE (comments);
-        BOOST_SPIRIT_DEBUG_NODE (country_code);
-        BOOST_SPIRIT_DEBUG_NODE (country_code2);
-        BOOST_SPIRIT_DEBUG_NODE (country_name);
-        BOOST_SPIRIT_DEBUG_NODE (continent_name);
-        BOOST_SPIRIT_DEBUG_NODE (adm1_code);
-        BOOST_SPIRIT_DEBUG_NODE (adm1_name_utf);
-        BOOST_SPIRIT_DEBUG_NODE (adm1_name_ascii);
-        BOOST_SPIRIT_DEBUG_NODE (adm2_code);
-        BOOST_SPIRIT_DEBUG_NODE (adm2_name_utf);
-        BOOST_SPIRIT_DEBUG_NODE (adm2_name_ascii);
-        BOOST_SPIRIT_DEBUG_NODE (adm3_code);
-        BOOST_SPIRIT_DEBUG_NODE (adm4_code);
-        BOOST_SPIRIT_DEBUG_NODE (population);
-        BOOST_SPIRIT_DEBUG_NODE (elevation);
-        BOOST_SPIRIT_DEBUG_NODE (gtopo30);
-        BOOST_SPIRIT_DEBUG_NODE (time_zone);
-        BOOST_SPIRIT_DEBUG_NODE (gmt_offset);
-        BOOST_SPIRIT_DEBUG_NODE (raw_offset);
-        BOOST_SPIRIT_DEBUG_NODE (dst_offset);
-        BOOST_SPIRIT_DEBUG_NODE (mod_date);
-        BOOST_SPIRIT_DEBUG_NODE (date);
-        BOOST_SPIRIT_DEBUG_NODE (city_code_list);
-        BOOST_SPIRIT_DEBUG_NODE (city_name_list);
-        BOOST_SPIRIT_DEBUG_NODE (city_detail_list);
-        BOOST_SPIRIT_DEBUG_NODE (city_details);
-        BOOST_SPIRIT_DEBUG_NODE (city_geoname_id);
-        BOOST_SPIRIT_DEBUG_NODE (city_code);
-        BOOST_SPIRIT_DEBUG_NODE (city_name_utf);
-        BOOST_SPIRIT_DEBUG_NODE (city_name_ascii);
-        BOOST_SPIRIT_DEBUG_NODE (city_country_code);
-        BOOST_SPIRIT_DEBUG_NODE (city_state_code);
-        BOOST_SPIRIT_DEBUG_NODE (state_code);
-        BOOST_SPIRIT_DEBUG_NODE (por_type);
-        BOOST_SPIRIT_DEBUG_NODE (wiki_link);
-        BOOST_SPIRIT_DEBUG_NODE (alt_name_section);
-        BOOST_SPIRIT_DEBUG_NODE (alt_name_details);
-        BOOST_SPIRIT_DEBUG_NODE (alt_lang_code);
-        BOOST_SPIRIT_DEBUG_NODE (alt_lang_code_ftd);
-        BOOST_SPIRIT_DEBUG_NODE (alt_name);
-        BOOST_SPIRIT_DEBUG_NODE (alt_name_qualifiers);
-        BOOST_SPIRIT_DEBUG_NODE (lang_code_opt);
-        BOOST_SPIRIT_DEBUG_NODE (lang_code_2char);
-        BOOST_SPIRIT_DEBUG_NODE (lang_code_ext);
-        BOOST_SPIRIT_DEBUG_NODE (lang_code_hist);
-        BOOST_SPIRIT_DEBUG_NODE (por_details_additional);
-        BOOST_SPIRIT_DEBUG_NODE (wac);
-        BOOST_SPIRIT_DEBUG_NODE (wac_name);
-        BOOST_SPIRIT_DEBUG_NODE (ccy_code);
-        BOOST_SPIRIT_DEBUG_NODE (unlc_section);
-        BOOST_SPIRIT_DEBUG_NODE (unlc_details);
-        BOOST_SPIRIT_DEBUG_NODE (unlocode_code);
-        BOOST_SPIRIT_DEBUG_NODE (unlc_qualifiers);
-        BOOST_SPIRIT_DEBUG_NODE (uic_section);
-        BOOST_SPIRIT_DEBUG_NODE (uic_details);
-        BOOST_SPIRIT_DEBUG_NODE (uic_code);
-        BOOST_SPIRIT_DEBUG_NODE (uic_qualifiers);
-        BOOST_SPIRIT_DEBUG_NODE (geoname_lat);
-        BOOST_SPIRIT_DEBUG_NODE (geoname_lon);
       }
 
       // Instantiation of rules
-      bsq::rule<Iterator, bsu::blank_type>
+      x3::rule<Iterator, bsu::blank_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
         iata_code, icao_code, faa_code, geoname_id, envelope_id, is_geonames,
         common_name, ascii_name,
@@ -1733,37 +1828,26 @@ namespace OPENTREP {
     // OPENTREP_LOG_DEBUG ("Parsing POR string: '" << _string << "'");
 
     // String to be parsed
-    std::istringstream stringToBeParsed (_string);
+    //std::istringstream stringToBeParsed (_string);
+    auto const iStrBegin = _string.begin();
+    auto const iStrEnd = _string.end();
     
-    // Create an input iterator
-    OPENTREP::base_iterator_t iStr (stringToBeParsed);
-
-    // Convert input iterator to an iterator usable by spirit parser  
-    OPENTREP::iterator_t fwd_start(boost::spirit::make_default_multi_pass(iStr));
-    OPENTREP::iterator_t fwd_end;
-
-    // Initialise the positional iterators
-    OPENTREP::pos_iterator_t pos_start (fwd_start, fwd_end, _string);
-    OPENTREP::pos_iterator_t pos_end;
-
     // Initialise the parser (grammar) with the helper/staging structure.
-    PorParserHelper::LocationParser<OPENTREP::iterator_t> lPORParser (_location);
+    PorParserHelper::LocationParser<std::string> lPORParser (_location);
       
     // Launch the parsing of the file and, thanks to the doEndPor
     // call-back structure, the building of the whole BomRoot BOM
     bool hasParsingBeenSuccesful = false;
     try {
 
-      hasParsingBeenSuccesful = bsq::phrase_parse (fwd_start, fwd_end,
-                                                   lPORParser, bsu::blank);
+      hasParsingBeenSuccesful = x3::phrase_parse (iStrBegin, iStrEnd,
+                                                   lPORParser, x3::space);
 
-    } catch (const bsq::expectation_failure<pos_iterator_t>& e) {
-      const bsc::file_position_base<std::string>& pos = e.first.get_position();
+    } catch (const x3::expectation_failure<std::string>& e) {
+      auto const pos = e.where();
       std::ostringstream oStr;
-      oStr << "Parse error on POR string '" << _string
-           << "', position " << pos.column << std::endl
-           << "'" << e.first.get_currentline() << "'" << std::endl
-           << std::setw(pos.column) << " " << "^- here";
+      oStr << "Parse error on POR string '" << _string << "'." << std::endl
+           << "Message: " << e.which() << "'" << std::endl;
       OPENTREP_LOG_ERROR (oStr.str());
       throw PorFileParsingException (oStr.str());
     }
@@ -1775,7 +1859,7 @@ namespace OPENTREP {
                                      + _string + "' failed");
     }
     
-    if  (fwd_start != fwd_end) {
+    if  (iStrBegin != iStrEnd) {
       OPENTREP_LOG_ERROR ("Parsing of POR input string: '" << _string
                           << "' failed");
       throw PorFileParsingException ("Parsing of POR input file: '"
@@ -1783,7 +1867,7 @@ namespace OPENTREP {
     }
     
     //
-    if (hasParsingBeenSuccesful == true && fwd_start == fwd_end) {
+    if (hasParsingBeenSuccesful == true && iStrBegin == iStrEnd) {
       // DEBUG
       /*
       OPENTREP_LOG_DEBUG ("Parsing of POR input string: '" << _string
@@ -1842,7 +1926,7 @@ namespace OPENTREP {
     // Launch the parsing of the file and, thanks to the doEndPor
     // call-back structure, the building of the whole BomRoot BOM
     const bool hasParsingBeenSuccesful = 
-       bsq::phrase_parse (start, end, lPORParser, bsu::blank);
+       x3::phrase_parse (start, end, lPORParser, bsu::blank);
       
     if (hasParsingBeenSuccesful == false) {
       OPENTREP_LOG_ERROR ("Parsing of POR input file ('" << _filename
