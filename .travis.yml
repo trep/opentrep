@@ -9,16 +9,12 @@ before_install:
   - sudo apt-get -y install locales
   - sudo locale-gen $LANG
   - sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
-  - sudo apt-get -y remove cmake
   - sudo rm -rf /usr/local/cmake-*
   - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
   - sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
   - sudo apt-get update
   - sudo apt-get -y install cmake cmake-data libmysql++3v5
-  - echo $PATH
-  - type cmake
-  - cmake --version
-  - cmake --help-policy CMP0102
+  - sudo cmake --version
   - sudo apt-get -y install gcc g++ cppcheck
   - sudo apt-get -y install zlib1g-dev libbz2-dev libgmp-dev
   - sudo apt-get -y install libboost-all-dev libxapian-dev graphviz
