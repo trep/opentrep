@@ -18,8 +18,9 @@ namespace OPENTREP {
   namespace PorParserHelper {
 
     /** Unicode character. */
-    //typedef char uchar_t;
-    typedef boost::uint32_t uchar_t;
+    typedef char uchar_t;
+    //typedef boost::uint8_t uchar_t;
+    //typedef boost::uint32_t uchar_t;
 
 
     // ///////////////////////////////////////////////////////////////////
@@ -600,7 +601,7 @@ namespace OPENTREP {
       /** Actor Constructor. */
       storeAltLangCodeFull (Location&);
       /** Actor Function (functor). */
-      void operator() (std::vector<boost::uint32_t>,
+      void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };
@@ -612,7 +613,7 @@ namespace OPENTREP {
       /** Actor Constructor. */
       storeAltLangCode2Char (Location&);
       /** Actor Function (functor). */
-      void operator() (std::vector<boost::uint32_t>,
+      void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };
@@ -624,7 +625,7 @@ namespace OPENTREP {
       /** Actor Constructor. */
       storeAltLangCodeExt (Location&);
       /** Actor Function (functor). */
-      void operator() (std::vector<boost::uint32_t>,
+      void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };
@@ -634,7 +635,7 @@ namespace OPENTREP {
       /** Actor Constructor. */
       storeAltLangCodeHist (Location&);
       /** Actor Function (functor). */
-      void operator() (std::vector<boost::uint32_t>,
+      void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };
@@ -644,7 +645,7 @@ namespace OPENTREP {
       /** Actor Constructor. */
       storeAltName (Location&);
       /** Actor Function (functor). */
-      void operator() (std::vector<boost::uint32_t>,
+      void operator() (std::vector<uchar_t>,
                        boost::spirit::qi::unused_type,
                        boost::spirit::qi::unused_type) const;
     };

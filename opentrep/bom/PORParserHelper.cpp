@@ -18,7 +18,8 @@ namespace OPENTREP {
 
   /** Namespaces */
   namespace bsq = boost::spirit::qi;
-  //namespace bsa = boost::spirit::ascii;
+  namespace bsa = boost::spirit::ascii;
+  namespace bss = boost::spirit::standard;
   namespace bsu = boost::spirit::unicode;
   namespace bsc = boost::spirit::classic;
 
@@ -1230,7 +1231,7 @@ namespace OPENTREP {
      * Grammar for the Por-Rule parser.
      */
     template <typename Iterator>	
-    struct LocationParser : public bsq::grammar<Iterator, bsu::blank_type> {
+    struct LocationParser : public bsq::grammar<Iterator, bsa::space_type> {
 
       LocationParser (Location& ioPORRule) : 
         LocationParser::base_type(start), _location(ioPORRule) {
@@ -1238,7 +1239,7 @@ namespace OPENTREP {
         start = bsq::eps
           >> *(header | por_rule);
 
-        header = bsq::lit("iata_code") >> +(bsu::char_ - bsq::eoi - bsq::eol)
+        header = bsq::lit("iata_code") >> +(bsa::char_ - bsq::eoi - bsq::eol)
                                        >> (bsq::eoi | bsq::eol);
 
         por_rule = por_key
@@ -1304,13 +1305,13 @@ namespace OPENTREP {
           ;
 
         iata_code =
-          bsq::repeat(3)[bsu::char_('A', 'Z')][storeIataCode(_location)];
+          bsq::repeat(3)[bsa::char_('A', 'Z')][storeIataCode(_location)];
 
         icao_code =
-          bsq::repeat(4)[bsu::char_("A-Z0-9")][storeIcaoCode(_location)];
+          bsq::repeat(4)[bsa::char_("A-Z0-9")][storeIcaoCode(_location)];
 
         faa_code =
-          bsq::repeat(1,4)[bsu::char_("A-Z0-9")][storeFaaCode(_location)];
+          bsq::repeat(1,4)[bsa::char_("A-Z0-9")][storeFaaCode(_location)];
 
         geoname_id = uint1_9_p[storeGeonamesID(_location)];
 
@@ -1319,26 +1320,26 @@ namespace OPENTREP {
         is_geonames = boolean_p;
 
         common_name =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeCommonName(_location)]
           ;
 
         ascii_name =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAsciiName(_location)]
           ;
 
         alt_name_short_list = alt_name_short % ',';
 
         alt_name_short =
-          (bsq::no_skip[+~bsu::char_("^,")]
+          (bsq::no_skip[+~bsa::char_("^,")]
            - (bsq::eoi|bsq::eol))[storeAltNameShort(_location)]
           ;
 
         tvl_por_code_list = tvl_por_code % ',';
 
         tvl_por_code =
-          (bsq::no_skip[+~bsu::char_("^,")]
+          (bsq::no_skip[+~bsa::char_("^,")]
            - (bsq::eoi|bsq::eol))[storeTvlPORCode(_location)]
           ;
 
@@ -1347,11 +1348,11 @@ namespace OPENTREP {
         longitude = bsq::double_[storeLongitude(_location)];
 
         feat_class =
-          bsq::repeat(1)[bsu::char_("A-Z")][storeFeatureClass(_location)]
+          bsq::repeat(1)[bsa::char_("A-Z")][storeFeatureClass(_location)]
           ;
 
         feat_code =
-          bsq::repeat(2,5)[bsu::char_("A-Z1-5")][storeFeatureCode(_location)]
+          bsq::repeat(2,5)[bsa::char_("A-Z1-5")][storeFeatureCode(_location)]
           ;
 
         page_rank = bsq::double_[storePageRank(_location)];
@@ -1361,66 +1362,66 @@ namespace OPENTREP {
         date_end = date[storeDateEnd(_location)];
 
         comments =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeComments(_location)]
           ;
 
         country_code =
-          bsq::repeat(2,3)[bsu::char_("A-Z")][storeCountryCode(_location)]
+          bsq::repeat(2,3)[bsa::char_("A-Z")][storeCountryCode(_location)]
           ;
 
         country_code2 =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAltCountryCode(_location)]
           ;
 
         country_name =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeCountryName(_location)]
           ;
 
         continent_name =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeContinentName(_location)]
           ;
 
         adm1_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm1Code(_location)]
           ;
 
         adm1_name_utf =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm1UtfName(_location)]
           ;
 
         adm1_name_ascii =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm1AsciiName(_location)]
           ;
 
         adm2_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm2Code(_location)]
           ;
 
         adm2_name_utf =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm2UtfName(_location)]
           ;
 
         adm2_name_ascii =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm2AsciiName(_location)]
           ;
 
         adm3_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm3Code(_location)]
           ;
 
         adm4_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeAdm4Code(_location)]
           ;
 
@@ -1431,7 +1432,7 @@ namespace OPENTREP {
         gtopo30 = int1_5_p[storeGTopo30(_location)];
 
         time_zone =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeTimeZone(_location)]
           ;
 
@@ -1453,27 +1454,27 @@ namespace OPENTREP {
         city_code_list = city_code % ',';
 
         city_code =
-          bsq::repeat(3)[bsu::char_('A', 'Z')][storeCityCode(_location)]
+          bsq::repeat(3)[bsa::char_('A', 'Z')][storeCityCode(_location)]
           ;
 
         city_name_list = city_name_utf % '=';
 
         city_name_utf =
-          (bsq::no_skip[+~bsu::char_("^|=")]
+          (bsq::no_skip[+~bsa::char_("^|=")]
            - (bsq::eoi|bsq::eol))[storeCityUtfName(_location)]
           ;
 
         city_name_ascii =
-          (bsq::no_skip[+~bsu::char_("^|=")]
+          (bsq::no_skip[+~bsa::char_("^|=")]
            - (bsq::eoi|bsq::eol))[storeCityAsciiName(_location)]
           ;
 
         city_country_code =
-          bsq::repeat(2,3)[bsu::char_("A-Z")][storeCityCountryCode(_location)]
+          bsq::repeat(2,3)[bsa::char_("A-Z")][storeCityCountryCode(_location)]
           ;
       
         city_state_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeCityStateCode(_location)]
           ;      
 
@@ -1491,19 +1492,19 @@ namespace OPENTREP {
         city_geoname_id = uint1_9_p[storeCityGeonamesID(_location)];
 
         state_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeStateCode(_location)]
           ;
 
         wac = uint1_4_p[storeWAC(_location)];
 
         wac_name =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeWACName(_location)]
           ;
 
         ccy_code =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeCurrencyCode(_location)]
           ;
 
@@ -1514,10 +1515,10 @@ namespace OPENTREP {
           ;
 
         unlocode_code =
-          bsq::repeat(5)[bsu::char_("A-Z0-9")][storeUNLOCode(_location)];
+          bsq::repeat(5)[bsa::char_("A-Z0-9")][storeUNLOCode(_location)];
 
         unlc_qualifiers =
-          bsq::repeat(1,2)[bsu::char_("hp")]
+          bsq::repeat(1,2)[bsa::char_("hp")]
           ;
 
         uic_section = uic_details % '=';
@@ -1529,7 +1530,7 @@ namespace OPENTREP {
         uic_code = uint1_9_p[storeUICCode(_location)];
 
         uic_qualifiers =
-          bsq::repeat(1,2)[bsu::char_("hp")]
+          bsq::repeat(1,2)[bsa::char_("hp")]
           ;
 
         geoname_lat = bsq::double_[storeGeonameLatitude(_location)];
@@ -1537,11 +1538,11 @@ namespace OPENTREP {
         geoname_lon = bsq::double_[storeGeonameLongitude(_location)];        
 
         por_type =
-          bsq::repeat(1,3)[bsu::char_("ABCGHOPRZ")][storePORType(_location)]
+          bsq::repeat(1,3)[bsa::char_("ABCGHOPRZ")][storePORType(_location)]
           ;
       
         wiki_link =
-          (bsq::no_skip[+~bsu::char_('^')]
+          (bsq::no_skip[+~bsa::char_('^')]
            - (bsq::eoi|bsq::eol))[storeWikiLink(_location)]
           ;
 
@@ -1554,7 +1555,7 @@ namespace OPENTREP {
           ;
 
         alt_lang_code =
-          (+~bsu::char_("|=")
+          (+~bsa::char_("|=")
            - (bsq::eoi|bsq::eol))[storeAltLangCodeFull(_location)]
           ;
 
@@ -1563,22 +1564,22 @@ namespace OPENTREP {
         lang_code_opt = -(lang_code_ext | lang_code_hist);
 
         lang_code_2char =
-          bsq::repeat(2,4)[bsu::char_("a-z")][storeAltLangCode2Char(_location)]
+          bsq::repeat(2,4)[bsa::char_("a-z")][storeAltLangCode2Char(_location)]
           ;
 
         lang_code_ext =
-          '-' >> bsq::repeat(1,4)[bsu::char_('A', 'Z')][storeAltLangCodeExt(_location)];
+          '-' >> bsq::repeat(1,4)[bsa::char_('A', 'Z')][storeAltLangCodeExt(_location)];
 
         lang_code_hist =
-          '_' >> bsq::repeat(1,4)[bsu::char_("a-z0-9")][storeAltLangCodeHist(_location)];
+          '_' >> bsq::repeat(1,4)[bsa::char_("a-z0-9")][storeAltLangCodeHist(_location)];
 
         alt_name =
-          (bsq::no_skip[+~bsu::char_("|=")]
+          (bsq::no_skip[+~bsa::char_("|=")]
            - (bsq::eoi|bsq::eol))[storeAltName(_location)]
           ;
 
         alt_name_qualifiers =
-          bsq::repeat(1,4)[bsu::char_("shpc")]
+          bsq::repeat(1,4)[bsa::char_("shpc")]
           ;
 
         //BOOST_SPIRIT_DEBUG_NODE (LocationParser);
@@ -1671,7 +1672,7 @@ namespace OPENTREP {
       }
 
       // Instantiation of rules
-      bsq::rule<Iterator, bsu::blank_type>
+      bsq::rule<Iterator, bsa::space_type>
       start, header, por_rule, por_rule_end, por_key, por_details,
         iata_code, icao_code, faa_code, geoname_id, envelope_id, is_geonames,
         common_name, ascii_name,
@@ -1755,7 +1756,7 @@ namespace OPENTREP {
     try {
 
       hasParsingBeenSuccesful = bsq::phrase_parse (fwd_start, fwd_end,
-                                                   lPORParser, bsu::blank);
+                                                   lPORParser, bsa::space);
 
     } catch (const bsq::expectation_failure<pos_iterator_t>& e) {
       const bsc::file_position_base<std::string>& pos = e.first.get_position();
@@ -1842,7 +1843,7 @@ namespace OPENTREP {
     // Launch the parsing of the file and, thanks to the doEndPor
     // call-back structure, the building of the whole BomRoot BOM
     const bool hasParsingBeenSuccesful = 
-       bsq::phrase_parse (start, end, lPORParser, bsu::blank);
+       bsq::phrase_parse (start, end, lPORParser, bsa::space);
       
     if (hasParsingBeenSuccesful == false) {
       OPENTREP_LOG_ERROR ("Parsing of POR input file ('" << _filename
