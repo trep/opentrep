@@ -1,3 +1,9 @@
+* 2021-08-15:
+- Version 0.07.10
+- Fixed an Boost.Spirit issue having appeared with Boost 1.76.
+  There is still an issue with Boost.Python, at least on MacOS.
+  The support for Unicode may have been dropped.
+
 * 2021-06-26:
 - Version 0.07.9
 - Upgraded a few CMake support files
