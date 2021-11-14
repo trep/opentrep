@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup (
     name='opentrep',
-    version='0.7.7.post10',
+    version='0.7.10.post1',
     author='Denis Arnaud',
     author_email='denis.arnaud_pypi@m4x.org',
     description=('''Simple Python wrapper for OpenTREP'''),
@@ -21,6 +21,9 @@ setup (
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+    ],
+    install_requires=[
+        'protobuf'
     ],
     cmake_args = [
       '-DINSTALL_DOC:BOOL=OFF',
