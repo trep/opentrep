@@ -17,7 +17,7 @@ before_install:
   - sudo cmake --version
   - sudo apt-get -y install gcc g++ cppcheck
   - sudo apt-get -y install zlib1g-dev libbz2-dev libgmp-dev
-  - sudo apt-get -y install libboost-all-dev libxapian-dev graphviz
+  - sudo apt-get -y install libxapian-dev graphviz # libboost-all-dev
   - sudo apt-get -y install libreadline-dev libncurses5-dev
   - sudo apt-get -y install libzmqpp-dev libssl-dev libffi-dev
   - sudo apt-get -y install sqlite3 libsqlite3-dev
@@ -26,6 +26,8 @@ before_install:
   - sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
   - sudo apt-get -y install python3.9 python3.9-dev libpython3.9 libpython3.9-dev
   - sudo apt-get -y install doxygen ghostscript texlive-latex-recommended
+  - sudo mkdir -p /opt/boost
+  - sudo ./ci-scripts/boost-install-debian.sh /opt/boost
   - sudo mkdir -p /opt/soci
   - sudo cp ./ci-scripts/soci-debian-cmake.patch /opt/soci
   - sudo ./ci-scripts/soci-install-debian.sh /opt/soci
