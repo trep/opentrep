@@ -499,7 +499,7 @@ macro (get_python)
   # The first check searches for the libraries and include paths.
   # However, on some older versions (e.g., on RedHat/CentOS 5.x),
   # only the static library is searched.
-  find_package (Python COMPONENTS Development.Module REQUIRED)
+  find_package (Python COMPONENTS Development REQUIRED)
 
   # Python extension
   #find_package (PythonExtensions REQUIRED)
