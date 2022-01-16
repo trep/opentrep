@@ -377,17 +377,20 @@ $ brew install homebrew/portable-ruby/portable-readline
 
 * Note that, as of January 2021, the Hombrew recipes for Python 3 are now
   specific up to the minor version, more specifically:
-  + Python 3.8: `python@3.8` (Python 3.8.11 as of July 2021)
-  + Python 3.9: `python@3.9` (Python 3.9.6 as of July 2021)
+  + Python 3.10: `python@3.10` (Python 3.10.1 as of January 2022)
+  + Python 3.9: `python@3.9` (Python 3.9.9 as of January 2022)
+  + Python 3.8: `python@3.8` (Python 3.8.12 as of January 2022)
 
 * Previously, the default Python 3 installation was Python 3.8 (now part of
   the `python@3.8` Homebrew package).
   As a reminder, on MacOS with Homebrew, a way to get the details is:
 ```bash
-$ brew info python@3.8
-python@3.8: stable 3.8.11 (bottled) [keg-only]
+$ brew info python@3.10
+python@3.10: stable 3.10.1 (bottled) [keg-only]
 $ brew info python@3.9
-python@3.9: stable 3.9.6 (bottled)
+python@3.9: stable 3.9.9 (bottled)
+$ brew info python@3.8
+python@3.8: stable 3.8.12 (bottled) [keg-only]
 ```
 
 * Because of the multiple parallel installations of Python versions,
@@ -395,8 +398,9 @@ python@3.9: stable 3.9.6 (bottled)
 ```bash
 $ sudo mkdir -p /usr/local/Cellar/python
 $ sudo chown -R $USER /usr/local/Cellar/python
-$ ln -s /usr/local/Cellar/python\@3.8/3.8.11 /usr/local/Cellar/python/3.8.11
-$ ln -s /usr/local/Cellar/python\@3.9/3.9.6 /usr/local/Cellar/python/3.9.6
+$ ln -s /usr/local/Cellar/python\@3.10/3.10.1 /usr/local/Cellar/python/3.10.1
+$ ln -s /usr/local/Cellar/python\@3.9/3.9.9 /usr/local/Cellar/python/3.9.9
+$ ln -s /usr/local/Cellar/python\@3.8/3.8.12 /usr/local/Cellar/python/3.8.12
 ```
   + Clean links on potential older versions:
 ```bash
@@ -409,34 +413,30 @@ $ sudo unlink /usr/local/Cellar/python/3.8.7
   + Check the following links, as installed by Homebrew on MacOS:
 ```bash
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 darnaud  staff    75B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9
-$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.8
-lrwxr-xr-x  1 root  staff    75B Jan  9 21:20 /usr/local/Frameworks/Python.framework/Versions/3.8@ -> /usr/local/Cellar/python@3.8/3.8.11/Frameworks/Python.framework/Versions/3.8
+lrwxr-xr-x  1 darnaud  staff    75B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/Current
-lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.9/3.9.9/Frameworks/Python.framework/Versions/Current
 ```
-  + If those links are not as expected (as of January 2021, they were correct),
+  + If those links are not as expected (as of January 2022, they were correct),
     recreate them:
 ```bash
 $ sudo chown -R $USER /usr/local/Frameworks/Python.framework
 $ unlink /usr/local/Frameworks/Python.framework/Versions/3.9
-$ ln -s /usr/local/Cellar/python\@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/3.9
-$ unlink /usr/local/Frameworks/Python.framework/Versions/3.8
-$ ln -s /usr/local/Cellar/python\@3.8/3.8.11/Frameworks/Python.framework/Versions/3.8 /usr/local/Frameworks/Python.framework/Versions/3.8
+$ ln -s /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/3.9
 $ unlink /usr/local/Frameworks/Python.framework/Versions/Current
-$ ln -s /usr/local/Cellar/python\@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/Current
+$ ln -s /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9 /usr/local/Frameworks/Python.framework/Versions/Current
 ```
   + Leading to:
 ```bash
 $ ls -lFh /usr/local/Cellar/python/
 total 0
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.8.11@ -> /usr/local/Cellar/python@3.8/3.8.11
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.9.6@ -> /usr/local/Cellar/python@3.9/3.9.6
+lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.10.1@ -> /usr/local/Cellar/python@3.10/3.10.1
+lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.9.9@ -> /usr/local/Cellar/python@3.9/3.9.9
+lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.8.12@ -> /usr/local/Cellar/python@3.8/3.8.12
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/
 total 0
-lrwxr-xr-x  1 root     staff    75B Jan  9 21:20 3.8@ -> /usr/local/Cellar/python@3.8/3.8.11/Frameworks/Python.framework/Versions/3.8
-lrwxr-xr-x  1 user  staff    75B Jan  9 04:01 3.9@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python@3.9/3.9.6/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  staff    75B Jan  9 04:01 3.9@ -> ../../../Cellar/python@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9
+lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python@3.9/3.9.9/Frameworks/Python.framework/Versions/Current
 ```
 
 * Up until recently (mid-2020), Boost.Python came with a dependency on
@@ -460,7 +460,7 @@ lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python
   `libpython`) is progressing slowly, and highly dependent on the
   C extensions and the platforms. For instance:
   + On Fedora Linux distributions, that change was implemented only
-    from Boost 1.73 on Fedora 33 (to be released at the end of 2020).
+    from Boost 1.73 on Fedora 33 (released at the end of 2020).
   + On MacOS, that change seems to have been implemented as a patch to
     Boost 1.72 package; as it can be seen below, Boost 1.72+
 	on MacOS no longer seems to be linked against `libpython`.
@@ -490,62 +490,6 @@ $ otool -L /usr/local/Cellar/boost-python3/1.76.0/lib/libboost_python39.dylib
 $ brew install icu4c
 ```
 
-### CMake
-
-* On some Linux distributions, _e.g._ on CentOS 8, the available version
-  of CMake may lag well behind the
-  [latest releases](https://github.com/Kitware/CMake/releases).
-  It then may be needed to build and install CMake from the sources.
-
-#### CentOS 8
-
-* CMake 3.18 will be released on CentOS 8 only from CentOS 8.4 onwards,
-  that is, most probably only from mid-2021. In the meantime, CMake may
-  be installed, for instance following the details on
-  [Linux-4-One - Install CMake on CentOS 8](https://linux4one.com/how-to-install-cmake-on-centos-8)
-
-* Remove any installed CMake package:
-```bash
-$ sudo dnf -y remove cmake-data cmake cmake-filesystem
-```
-
-* Specify the CMake version to install (to be picked up on the
-  [GitHub page for CMake releases](https://github.com/Kitware/CMake/releases)):
-```bash
-$ CMAKE_VERSION="3.19.3"
-```
-
-* Download the CMake source tar-ball and un-package it:
-```bash
-$ sudo mkdir -p /opt/cmake/archives && \
-  sudo wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz \
-  -O /opt/cmake/archives/cmake-${CMAKE_VERSION}.tar.gz && \
-  pushd /opt/cmake && \
-  sudo tar zxf /opt/cmake/archives/cmake-${CMAKE_VERSION}.tar.gz &&\
-  pushd /opt/cmake/cmake-${CMAKE_VERSION} && \
-  popd && popd && \
-  sudo chown -R $USER /opt/cmake/cmake-${CMAKE_VERSION}
-```
-
-* Build and install CMake:
-```bash
-$ pushd /opt/cmake/cmake-${CMAKE_VERSION} && \
-  ./bootstrap && \
-  make && \
-  sudo make install && \
-  popd
-```
-
-* CMake is then installed in `/usr/local` (binaries in `/usr/local/bin`,
-  manual pages in `/usr/local/man` and CMake files in
-  `/usr/local/share/cmake-3.19/Modules`
-
-* Check the just installed CMake distribution:
-```bash
-$ cmake --version
-cmake version ${CMAKE_VERSION}
-```
-
 ### Boost
 Follow the instructions on
 [Boost helper documentation on GitHub](https://github.com/cpp-projects-showcase/boost-helper)
@@ -566,7 +510,7 @@ to install Python and Boost on some platforms, including MacOS.
   [Boost 1.69 on RHEL/CentOS 7](https://src.fedoraproject.org/rpms/boost169/tree/epel7).
 
 * Those additional specific Boost packages may be installed in parallel
-  to the officiial Boost packages.
+  to the official Boost packages.
   CMake has however to be made aware of that additional Boost package and,
   equally importantly, of its location on the file-system.
 
@@ -585,11 +529,9 @@ $ cmake3 [...] \
   is also the official maintainer of the SOCI package, that latter
   is usually up-to-date
 
-* On Debian, Ubuntu and MacOS however, as of mid-2020, SOCI 4.0
-  has still not been released, and `soci-mysql` is no longer available.
-  Hence, SOCI must be built from the sources. The following shows
-  how to do that on MacOS (on Debian/Ubuntu, one can have a look at
-  the part installing SOCI on the
+* On Debian, Ubuntu and MacOS however, SOCI must be built from the sources.
+  The following shows how to do that on MacOS (on Debian/Ubuntu, one can have
+  a look at the part installing SOCI on the
   [C++/Python Docker files](https://github.com/cpp-projects-showcase/docker-images))
 
 * Download and prepare SOCI:
@@ -938,8 +880,8 @@ All the details are explained on a
 [dedicated procedure](http://github.com/machine-learning-helpers/induction-python/tree/master/installation/virtual-env),
 which works for the major Linux distributions and on MacOS.
 
-The procedure first installs a specific version of Python (as of November 2021,
-3.9.8) thanks to PyEnv, then install `pipenv` thanks to the `pip` utility
+The procedure first installs a specific version of Python (as of January 2022,
+3.9.9) thanks to PyEnv, then install `pipenv` thanks to the `pip` utility
 provided with that specific Python version.
 
 ## Checking that the Python module works
@@ -1086,7 +1028,7 @@ export DYLD_LIBRARY_PATH=${INST_DIR}/lib
 ```bash
 $ pyenv global system
 $ python --version
-Python 3.9.8
+Python 3.9.9
 ```
 
 * Clean potential former builds and launch a new build with Scikit-build:
@@ -1096,8 +1038,8 @@ $ python setup.py --build-type=Debug build sdist bdist_wheel # the build takes a
 $ ls -lFh _skbuild/*-x86_64-3.9/ dist/
 dist/:
 total 24408
--rw-r--r--  1 user staff 9.8M Jan 10 19:10 opentrep-0.7.10a0-cp39-cp39-macosx_12_0_x86_64.whl
--rw-r--r--  1 user staff 1.6M Jan 10 19:10 opentrep-0.7.10a0.tar.gz
+-rw-r--r--  1 user staff 9.6M Jan 16 19:10 opentrep-0.7.10.post2-cp39-cp39-macosx_12_0_x86_64.whl
+-rw-r--r--  1 user staff 1.6M Jan 16 19:10 opentrep-0.7.10.post2.tar.gz
 
 _skbuild/*-x86_64-3.9/:
 -rw-r--r--   1 user  staff     0B Jan 10 19:10 _skbuild_MANIFEST
@@ -1109,9 +1051,10 @@ drwxr-xr-x   3 user  staff    96B Jan 10 19:10 setuptools/
 * Set the `LD_LIBRARY_PATH` and `PYTHONPATH` environment variables:
 ```bash
 $ INST_DIR=${PWD}/_skbuild/macosx-12.0-x86_64-3.9/cmake-install
-$ TREPBINDIR=${INST_DIR}/bin
-$ OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
-$ export LD_LIBRARY_PATH=${INST_DIR}/lib; export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
+  TREPBINDIR=${INST_DIR}/bin
+  OPTDPOR=${INST_DIR}/share/opentrep/data/por/test_optd_por_public.csv
+  export LD_LIBRARY_PATH=${INST_DIR}/lib
+  export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
 ```
 
 * Manylinux (as of mid-2020, limited to Python2, so, not working):
@@ -1142,28 +1085,33 @@ user@laptop$ keyring set ${PYPIURL}/ __token__
 Password for '__token__' in '${PYPIURL}/':
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://upload.pypi.org/legacy/
-Uploading opentrep-0.7.10-cp39-cp39-macosx_12_0_x86_64.whl
+Uploading opentrep-0.7.10.post2-cp39-cp39-macosx_12_0_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 9.86M/9.86M [01:00<00:00, 172kB/s]
-Uploading opentrep-0.7.10.tar.gz
+Uploading opentrep-0.7.10.post2.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 1.65M/1.65M [00:12<00:00, 139kB/s]
 
 View at:
-https://pypi.org/project/opentrep/0.7.10/
+https://pypi.org/project/opentrep/0.7.10.post2/
 ```
 
 ## Test the OpenTREP Python extension
-* Set the `PYTHONPATH` environment variable to where the system Python
-  is installed
-  + On Linux:
+* Just to be sure the local configuration does not interfere,
+  set the version of Python to be the system one
+    + On most recent distributions, it would be 3.10.x:
 ```bash
-$ export PYTHONPATH="${HOME}/.pyenv/versions/3.9.8/lib:${HOME}/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep"
-  export LD_LIBRARY_PATH="${HOME}/.pyenv/versions/3.9.8/lib:${HOME}/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep:${LD_LIBRARY_PATH}"
+$ pyenv local system
+$ python -V
+Python 3.10.1
+$ type python3
+python3 is ~/.pyenv/shims/python3
 ```
-  + On MacOS (Python binary is
-    `/usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python`
-	and Python libraries are installed simply in `/usr/local/lib`):
+    + On MacOS:
 ```bash
-$ export PYTHONPATH="/usr/local/lib:/usr/local/lib/python3.9/site-packages/pyopentrep"
+$ pyenv local system
+$ python3 -V
+Python 3.9.9
+$ type python3
+python3 is hashed (/usr/local/opt/python@3.9/bin/python3)
 ```
 
 * Remove older version of and install the `opentrep` Python extension
@@ -1172,10 +1120,46 @@ $ export PYTHONPATH="/usr/local/lib:/usr/local/lib/python3.9/site-packages/pyope
 $ python -mpip uninstall opentrep
 $ python -mpip install -U opentrep # will take a few minutes, as OpenTREP is built again
 ```
+  + On MacOS
+    (noramlly, `python3` should point to
+	`/usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python`):
+```bash
+$ python3 -mpip uninstall opentrep
+$ python3 -mpip install -U opentrep
+```
+
+* Check that the OpenTREP Python extension has been installed
+  + On Linux:
+```bash
+$ python -mpip show opentrep
+Name: opentrep
+Version: 0.7.10.post2
+...
+Location: ~/.pyenv/versions/3.10.1/lib/python3.9/site-packages
+Requires: protobuf
+```
   + On MacOS:
 ```bash
-$ /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpip uninstall opentrep
-$ /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpip install opentrep==0.7.10
+$ python3 -mpip show opentrep
+Name: opentrep
+Version: 0.7.10.post2
+...
+Location: /usr/local/lib/python3.9/site-packages
+Requires: protobuf
+```
+
+* Set the `PYTHONPATH` environment variable to where the system Python
+  is installed
+  + On Linux:
+```bash
+$ export PYTHONPATH="${HOME}/.local/lib:${HOME}/.local/lib/python3.10/site-packages/pyopentrep"
+  export LD_LIBRARY_PATH="${HOME}/.local/lib:${HOME}/.local/lib/python3.10/site-packages/pyopentrep:${LD_LIBRARY_PATH}"
+```
+  + On MacOS (Python binary is
+    `/usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python`
+	and Python libraries are installed simply in `/usr/local/lib`):
+```bash
+$ export PYTHONPATH="/usr/local/lib:/usr/local/lib/python3.9/site-packages/pyopentrep"
 ```
 
 * Launch a simple end-to-end test with `pytest`
@@ -1185,12 +1169,12 @@ $ python -mpytest test_trep_e2e_simple.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
 ```
   + It should give something like:
 ```bash
 =============== test session starts ============
-platform darwin -- Python 3.9.8, pytest-6.2.5, py-1.11.0, pluggy-1.0.0
+platform darwin -- Python 3.9.9, pytest-6.2.5, py-1.11.0, pluggy-1.0.0
 rootdir: $HOME/dev/geo/opentrep
 collected 1 item
 
@@ -1209,18 +1193,18 @@ $ python -mpip install -U opentrepwrapper opentraveldata
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpip install -U opentrepwrapper opentraveldata
+$ python3 -mpip install -U opentrepwrapper opentraveldata
 ```
 
 * Download and use the latest POR data file
   + On Linux:
 ```bash
 $ python
-Python 3.9.8 (default, November 2021) 
+Python 3.9.9 (default, November 2021) 
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1232,7 +1216,7 @@ OpenTravelData:
 	Local IATA/ICAO POR file: /tmp/opentraveldata/optd_por_public_all.csv
 	Local UN/LOCODE POR file: /tmp/opentraveldata/optd_por_unlc.csv
 >>> myOPTD.fileSizes()
-(44578066, 4966769)
+(44588871, 4967092)
 ```
 
 ### Xapian index initialization
@@ -1241,11 +1225,11 @@ OpenTravelData:
   data file
   + On Linux:
 ```bash
-$ python ~/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+$ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python $HOME/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentraveldata/optd_por_public_all.csv'
@@ -1257,7 +1241,7 @@ It takes less than 20 seconds on fast ones...
 Number of actually parsed records: 1,000, out of 103,394 records in the POR data file so far
 ...
 Number of actually parsed records: 20,000, out of 122,394 records in the POR data file so far
-Done. Indexed 20348 POR (points of reference)
+Done. Indexed 20372 POR (points of reference)
 ```
 
 * The Xapian index may also be initialized with the C++ (non-Python)
@@ -1265,7 +1249,7 @@ Done. Indexed 20348 POR (points of reference)
   the Xapian index, when it was not available from the Python utility):
 ```bash
 $ ${TREPBINDIR}/opentrep-indexer -t sqlite -a 1 -p ${OPTDPOR}
-POR file-path is: ~/.pyenv/versions/3.9.8/share/opentrep/data/por/test_optd_por_public.csv
+POR file-path is: ~/.pyenv/versions/3.9.9/share/opentrep/data/por/test_optd_por_public.csv
 Deployment number: 0
 Xapian index/database filepath is: /tmp/opentrep/xapian_traveldb0
 SQL database type is: sqlite
@@ -1283,11 +1267,11 @@ Parsing and indexing the OpenTravelData POR data file (into Xapian and/or SQL da
   for terms
   + On Linux:
 ```bash
-$ python ~/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep/pyopentrep.py
+$ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python $HOME/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep/pyopentrep.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.9/site-packages/pyopentrep/pyopentrep.py
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1302,11 +1286,11 @@ SFO RIO LAX REK
 * When the full POR data file has been indexed
   + On Linux:
 ```bash
-$ python ~/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+$ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python $HOME/.pyenv/versions/3.9.8/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1324,11 +1308,11 @@ Raw result from the OpenTrep library:
   + On Linux:
 ```bash
 $ python
-Python 3.9.8 (default, November 2021)
+Python 3.10.1 (main, Jan 10 2022, ...) on linux
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
 ```
 ```python
 >>> import pyopentrep
@@ -1346,11 +1330,11 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0
   + On Linux:
 ```bash
 $ python
-Python 3.9.8 (default, November 2021)
+Python 3.10.1 (main, Jan 10 2022, ...) on linux
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1366,11 +1350,11 @@ $ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0
 * Install Django as a Python module
   + On Linux:
 ```bash
-$ python -mpip -U django
+$ python -mpip install -U django
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpip -U django
+$ python3 -mpip install -U django
 ```
 
 * Go in the Django directory:
@@ -1384,11 +1368,11 @@ $ pushd gui/django/webapps/opentrep
   + On Linux:
 ```bash
 $ python manage.py runserver localhost:8000
-Python 3.9.8 (default, November 2021)
+Python 3.10.1 (default, November 2021)
 ```
   + On MacOS (as of end 2021, does not work):
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.8/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
 ```
 
 * Query OpenTREP with a web browser:

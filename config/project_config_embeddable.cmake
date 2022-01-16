@@ -543,7 +543,6 @@ macro (get_icu)
   find_package (ICU ${_required_version}
 	COMPONENTS ${ICU_REQUIRED_COMPONENTS} REQUIRED)
 
-  icudebug (ICU_I18N_FOUND)
   if (ICU_FOUND)
 	#
 	#if (ICU_I18N_FOUND)
