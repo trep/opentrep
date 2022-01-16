@@ -569,7 +569,7 @@ $ popd
 ```bash
 $ mkdir -p /opt/soci/socigit/build/head && cd /opt/soci/socigit/build/head
 $ cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
-  -DCMAKE_BUILD_TYPE=Debug -DSOCI_CXX_C11=ON \
+  -DCMAKE_BUILD_TYPE=Debug -DSOCI_CXX11=ON \
   -DSOCI_ASAN=ON -DCMAKE_VERBOSE_MAKEFILE=OFF \
   -DSOCI_TESTS=OFF -DSOCI_STATIC=OFF -DSOCI_DB2=OFF -DSOCI_EMPTY=ON \
   -DSOCI_FIREBIRD=OFF -DSOCI_MYSQL=ON -DSOCI_ODBC=OFF -DSOCI_ORACLE=OFF \
