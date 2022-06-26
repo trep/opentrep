@@ -1,3 +1,6 @@
+* Sun Jun 26 2022 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.11
+- Added support for Python 3.11
+
 * Sun Aug 15 2021 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.10
 - Fixed an Boost.Spirit issue having appeared with Boost 1.76.
 There is still an issue with Boost.Python, at least on MacOS.
