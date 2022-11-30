@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Boost (as of November 2021, Ubuntu 20.04 has only Boost 1.71, whereas Boost 1.77 is already out)
+# Boost (as of November 2022, Ubuntu 22.04 has only Boost 1.74, whereas Boost 1.80 is already out)
 
-BOOST_VER="1_77_0"
+BOOST_VER="1_80_0"
 BOOST_VER_DOT="$(echo ${BOOST_VER}|sed -e s/_/./g)"
 BOOST_DIR="/opt/boost"
 
@@ -40,14 +40,14 @@ pushd boost_${BOOST_VER}
 
 # Build Boost
 echo
-echo "Configuring the build of Boost ${SOCI_VER} (with bootstrap)"
+echo "Configuring the build of Boost ${BOOST_VER} (with bootstrap)"
 ./bootstrap.sh --prefix=/usr/
-echo "Build Boost ${SOCI_VER} (with b2)"
+echo "Build Boost ${BOOST_VER} (with b2)"
 ./b2 cxxflags="-std=c++14"
 
 # Install Boost
 echo
-echo "Installing Boost ${SOCI_VER} into /usr"
+echo "Installing Boost ${BOOST_VER} into /usr"
 ./b2 cxxflags="-std=c++14" install
 
 popd

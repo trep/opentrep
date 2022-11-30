@@ -7,5 +7,7 @@ tmp
 /.tox/
 /MANIFEST
 /MANIFEST.in
+/Pipfile.lock
 /.python-version
 *.pyc
+/pyopentrep.log

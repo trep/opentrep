@@ -925,7 +925,7 @@ PYTHONPATH=${INSTALL_DIR}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/lib${LIBSUFFIX}/pyt
 ```bash
 $ ./opentrep/python/pyopentrep -d /tmp/opentrep/xapian_traveldb "nce sfo"
 ==217==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
-DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
 "interceptors not installed" && 0Abort trap: 6
 ```
 
@@ -934,9 +934,9 @@ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/l
 ```bash
 $ PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 $ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
-  DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
+  DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
   ASAN_OPTIONS=detect_container_overflow=0 \
-  /usr/local/Cellar/python/3.9.1/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python \
+  /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python \
   ./opentrep/python/pyopentrep.py -d /tmp/opentrep/xapian_traveldb "nce sfo"
 OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv'
 Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
@@ -1002,17 +1002,17 @@ $ python -m pip install -U pyjq pyyaml
 $ python -mpip install -U opentrep
 Defaulting to user installation because normal site-packages is not writeable
 Collecting opentrep
-  Using cached opentrep-0.7.10.tar.gz (1.7 MB)
+  Using cached opentrep-0.7.12.tar.gz (1.7 MB)
   Installing build dependencies ... done
   Getting requirements to build wheel ... done
     Preparing wheel metadata ... done
 Building wheels for collected packages: opentrep
   Building wheel for opentrep (PEP 517) ... done
-  Created wheel for opentrep: filename=opentrep-0.7.10-cp39-cp39-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
+  Created wheel for opentrep: filename=opentrep-0.7.12-cp39-cp39-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
   Stored in directory: ~/.cache/pip/wheels/82/b3/7c/f026b883cc204eefab1588f5e68661f78fec25395277bd221d
 Successfully built opentrep
 Installing collected packages: opentrep
-Successfully installed opentrep-0.7.10
+Successfully installed opentrep-0.7.12
 ```
 
 * Set the `LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH` and `PYTHONPATH`
@@ -1050,8 +1050,8 @@ $ python setup.py --build-type=Debug build sdist bdist_wheel # the build takes a
 $ ls -lFh _skbuild/*-x86_64-3.9/ dist/
 dist/:
 total 24408
--rw-r--r--  1 user staff 9.6M Jan 16 19:10 opentrep-0.7.10.post2-cp39-cp39-macosx_12_0_x86_64.whl
--rw-r--r--  1 user staff 1.6M Jan 16 19:10 opentrep-0.7.10.post2.tar.gz
+-rw-r--r--  1 user staff 9.6M Jan 16 19:10 opentrep-0.7.12.post2-cp39-cp39-macosx_12_0_x86_64.whl
+-rw-r--r--  1 user staff 1.6M Jan 16 19:10 opentrep-0.7.12.post2.tar.gz
 
 _skbuild/*-x86_64-3.9/:
 -rw-r--r--   1 user  staff     0B Jan 10 19:10 _skbuild_MANIFEST
@@ -1080,13 +1080,13 @@ $ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinu
 user@laptop$ PYPIURL="https://test.pypi.org"
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://test.pypi.org/legacy/
-Uploading opentrep-0.7.10-cp39-cp39-macosx_12_0_x86_64.whl
+Uploading opentrep-0.7.12-cp39-cp39-macosx_12_0_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 9.86M/9.86M [01:00<00:00, 172kB/s]
-Uploading opentrep-0.7.10.tar.gz
+Uploading opentrep-0.7.12.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 1.65M/1.65M [00:12<00:00, 139kB/s]
 
 View at:
-https://test.pypi.org/project/opentrep/0.7.10/
+https://test.pypi.org/project/opentrep/0.7.12/
 ```
 
 * Upload/release the Python packages onto the
@@ -1097,13 +1097,13 @@ user@laptop$ keyring set ${PYPIURL}/ __token__
 Password for '__token__' in '${PYPIURL}/':
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://upload.pypi.org/legacy/
-Uploading opentrep-0.7.10.post2-cp39-cp39-macosx_12_0_x86_64.whl
+Uploading opentrep-0.7.12.post2-cp39-cp39-macosx_12_0_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 9.86M/9.86M [01:00<00:00, 172kB/s]
-Uploading opentrep-0.7.10.post2.tar.gz
+Uploading opentrep-0.7.12.post2.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 1.65M/1.65M [00:12<00:00, 139kB/s]
 
 View at:
-https://pypi.org/project/opentrep/0.7.10.post2/
+https://pypi.org/project/opentrep/0.7.12.post2/
 ```
 
 ## Test the OpenTREP Python extension
@@ -1121,9 +1121,9 @@ python3 is ~/.pyenv/shims/python3
 ```bash
 $ pyenv local system
 $ python3 -V
-Python 3.9.9
+Python 3.11.0
 $ type python3
-python3 is hashed (/usr/local/opt/python@3.9/bin/python3)
+python3 is hashed (/usr/local/opt/python@3.11/bin/python3)
 ```
 
 * Remove older version of and install the `opentrep` Python extension
@@ -1134,7 +1134,7 @@ $ python -mpip install -U opentrep # will take a few minutes, as OpenTREP is bui
 ```
   + On MacOS
     (noramlly, `python3` should point to
-	`/usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python`):
+	`/usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python`):
 ```bash
 $ python3 -mpip uninstall opentrep
 $ python3 -mpip install -U opentrep
@@ -1145,7 +1145,7 @@ $ python3 -mpip install -U opentrep
 ```bash
 $ python -mpip show opentrep
 Name: opentrep
-Version: 0.7.10.post2
+Version: 0.7.12
 ...
 Location: ~/.pyenv/versions/3.10.1/lib/python3.9/site-packages
 Requires: protobuf
@@ -1154,7 +1154,7 @@ Requires: protobuf
 ```bash
 $ python3 -mpip show opentrep
 Name: opentrep
-Version: 0.7.10.post2
+Version: 0.7.12
 ...
 Location: /usr/local/lib/python3.9/site-packages
 Requires: protobuf
@@ -1168,10 +1168,10 @@ $ export PYTHONPATH="${HOME}/.local/lib:${HOME}/.local/lib/python3.10/site-packa
   export LD_LIBRARY_PATH="${HOME}/.local/lib:${HOME}/.local/lib/python3.10/site-packages/pyopentrep:${LD_LIBRARY_PATH}"
 ```
   + On MacOS (Python binary is
-    `/usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python`
+    `/usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python`
 	and Python libraries are installed simply in `/usr/local/lib`):
 ```bash
-$ export PYTHONPATH="/usr/local/lib:/usr/local/lib/python3.9/site-packages/pyopentrep"
+$ export PYTHONPATH="/usr/local/lib:/usr/local/lib/python3.11/site-packages/pyopentrep"
 ```
 
 * Launch a simple end-to-end test with `pytest`
@@ -1181,12 +1181,12 @@ $ python -mpytest test_trep_e2e_simple.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
 ```
   + It should give something like:
 ```bash
 =============== test session starts ============
-platform darwin -- Python 3.9.9, pytest-6.2.5, py-1.11.0, pluggy-1.0.0
+platform darwin -- Python 3.11.0, pytest-7.2.0, pluggy-1.0.0
 rootdir: $HOME/dev/geo/opentrep
 collected 1 item
 
@@ -1212,11 +1212,11 @@ $ python3 -mpip install -U opentrepwrapper opentraveldata
   + On Linux:
 ```bash
 $ python
-Python 3.9.9 (default, November 2021) 
+Python 3.10.15 (default, November 2022) 
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1241,7 +1241,7 @@ $ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py -p /tmp/
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.11/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentraveldata/optd_por_public_all.csv'
@@ -1283,7 +1283,7 @@ $ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.9/site-packages/pyopentrep/pyopentrep.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.11/site-packages/pyopentrep/pyopentrep.py
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1302,7 +1302,7 @@ $ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py -f F "cn
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.9/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.11/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1324,7 +1324,7 @@ Python 3.10.1 (main, Jan 10 2022, ...) on linux
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
 ```
 ```python
 >>> import pyopentrep
@@ -1346,7 +1346,7 @@ Python 3.10.1 (main, Jan 10 2022, ...) on linux
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1384,7 +1384,7 @@ Python 3.10.1 (default, November 2021)
 ```
   + On MacOS (as of end 2021, does not work):
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/13.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python\@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
 ```
 
 * Query OpenTREP with a web browser:
