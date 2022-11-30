@@ -1,3 +1,6 @@
+* Wed Nov 30 2022 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.12
+- Fixed deprecated Boost.Phoenix/Boost.Spirit header
+
 * Sun Jun 26 2022 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.11
 - Added support for Python 3.11
 

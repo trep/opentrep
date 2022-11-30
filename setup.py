@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup (
     name='opentrep',
-    version='0.7.10.post2',
+    version='0.7.11',
     author='Denis Arnaud',
     author_email='denis.arnaud_pypi@m4x.org',
     description=('''Simple Python wrapper for OpenTREP'''),
