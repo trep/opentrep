@@ -258,7 +258,7 @@ GitHub generates
 [tar-balls on the fly for every tagged release](https://github.com/trep/opentrep/releases).
 For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.10.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.13.tar.gz
 ```
 
 Note that SourceForge also stores some
@@ -379,25 +379,28 @@ $ brew install boost boost-python3 cmake libedit \
 $ brew install homebrew/portable-ruby/portable-readline
 ```
 
-* Note that, as of end 2022, the Hombrew recipes for Python 3 are now
+* Note that, as of mid 2023, the Hombrew recipes for Python 3 are now
   specific up to the minor version, more specifically:
-  + Python 3.11: `python@3.11` (Python 3.11.0 as of November 2022)
-  + Python 3.10: `python@3.10` (Python 3.10.8 as of November 2022)
-  + Python 3.9: `python@3.9` (Python 3.9.15 as of November 2022)
-  + Python 3.8: `python@3.8` (Python 3.8.15 as of November 2022)
+  + Python 3.12: `python@3.12` (Python 3.12.0 as of May 2023)
+  + Python 3.11: `python@3.11` (Python 3.11.3 as of May 2023)
+  + Python 3.10: `python@3.10` (Python 3.10.11 as of May 2023)
+  + Python 3.9: `python@3.9` (Python 3.9.16 as of May 2023)
+  + Python 3.8: `python@3.8` (Python 3.8.16 as of May 2023)
 
 * Previously, the default Python 3 installation was Python 3.8 (now part of
   the `python@3.8` Homebrew package).
   As a reminder, on MacOS with Homebrew, a way to get the details is:
 ```bash
+$ brew info python@3.12
+python@3.12: stable 3.12.0 (bottled)
 $ brew info python@3.11
-python@3.11: stable 3.11.0 (bottled)
+python@3.11: stable 3.11.3 (bottled)
 $ brew info python@3.10
-python@3.10: stable 3.10.8 (bottled)
+python@3.10: stable 3.10.11 (bottled)
 $ brew info python@3.9
-python@3.9: stable 3.9.15 (bottled)
+python@3.9: stable 3.9.16 (bottled)
 $ brew info python@3.8
-python@3.8: stable 3.8.15 (bottled)
+python@3.8: stable 3.8.16 (bottled)
 ```
 
 * Because of the multiple parallel installations of Python versions,
@@ -405,10 +408,11 @@ python@3.8: stable 3.8.15 (bottled)
 ```bash
 $ sudo mkdir -p /usr/local/Cellar/python
 $ sudo chown -R $USER /usr/local/Cellar/python
-$ ln -s /usr/local/Cellar/python@3.11/3.11.0 /usr/local/Cellar/python/3.11.0
-$ ln -s /usr/local/Cellar/python@3.10/3.10.8 /usr/local/Cellar/python/3.10.8
-$ ln -s /usr/local/Cellar/python@3.9/3.9.15 /usr/local/Cellar/python/3.9.15
-$ ln -s /usr/local/Cellar/python@3.8/3.8.15 /usr/local/Cellar/python/3.8.15
+$ ln -s /usr/local/Cellar/python@3.12/3.12.0 /usr/local/Cellar/python/3.12.0
+$ ln -s /usr/local/Cellar/python@3.11/3.11.3 /usr/local/Cellar/python/3.11.3
+$ ln -s /usr/local/Cellar/python@3.10/3.10.11 /usr/local/Cellar/python/3.10.11
+$ ln -s /usr/local/Cellar/python@3.9/3.9.16 /usr/local/Cellar/python/3.9.16
+$ ln -s /usr/local/Cellar/python@3.8/3.8.16 /usr/local/Cellar/python/3.8.16
 ```
   + Clean links on potential older versions:
 ```bash
@@ -421,13 +425,13 @@ $ sudo unlink /usr/local/Cellar/python/3.8.7
   + Check the following links, as installed by Homebrew on MacOS:
 ```bash
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/Current
-lrwxr-xr-x  1 user  staff    79B Oct 13 12:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.10/3.10.8/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  staff    79B Oct 13 12:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.10/3.10.11/Frameworks/Python.framework/Versions/Current
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.10
-lrwxr-xr-x  1 user  staff    76B Oct 13 12:00 /usr/local/Frameworks/Python.framework/Versions/3.10@ -> ../../../Cellar/python@3.10/3.10.8/Frameworks/Python.framework/Versions/3.10
+lrwxr-xr-x  1 user  staff    76B Oct 13 12:00 /usr/local/Frameworks/Python.framework/Versions/3.10@ -> ../../../Cellar/python@3.10/3.10.11/Frameworks/Python.framework/Versions/3.10
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.11
-lrwxr-xr-x  1 user  staff    76B Nov 30 17:37 /usr/local/Frameworks/Python.framework/Versions/3.11@ -> ../../../Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11
+lrwxr-xr-x  1 user  staff    76B Nov 30 17:37 /usr/local/Frameworks/Python.framework/Versions/3.11@ -> ../../../Cellar/python@3.11/3.11.3/Frameworks/Python.framework/Versions/3.11
 $ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 darnaud  staff    75B Oct 13 12:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.15/Frameworks/Python.framework/Versions/3.9
+lrwxr-xr-x  1 darnaud  staff    75B Oct 13 12:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.16/Frameworks/Python.framework/Versions/3.9
 ```
   + If those links are not as expected (as of January 2022, they were correct),
     recreate them:

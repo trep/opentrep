@@ -30,7 +30,7 @@ namespace OPENTREP {
     }
 
 #if BOOST_VERSION >= 103500
-    if (boostfs::is_regular (lPath) == true) {
+    if (boostfs::is_regular_file (lPath) == true) {
       oFine = true;
     }
 #endif // BOOST_VERSION >= 103500
