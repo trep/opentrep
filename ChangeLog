@@ -1,3 +1,6 @@
+* Wed Nov 30 2022 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.13
+- Upgraded a few CMake support files
+
 * Wed Nov 30 2022 Denis Arnaud <denis.arnaud_fedora at m4x.org> 0.07.12
 - Fixed deprecated Boost.Phoenix/Boost.Spirit header
 
