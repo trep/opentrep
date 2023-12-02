@@ -1,5 +1,5 @@
 #
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.15..)
 
 ##
 # CMake macros for the project
@@ -10,7 +10,7 @@ include (config/project_config_embeddable.cmake)
 project (opentrep)
 set_project_names (opentrep OpenTREP)
 set_project_brief ("C++ Open Travel Request Parsing Library")
-set_project_versions (0 07 13)
+set_project_versions (0 07 14)
 
 ##
 # Project options

@@ -258,7 +258,7 @@ GitHub generates
 [tar-balls on the fly for every tagged release](https://github.com/trep/opentrep/releases).
 For instance:
 ```bash
-$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.13.tar.gz
+$ wget https://github.com/trep/opentrep/archive/opentrep-0.07.14.tar.gz
 ```
 
 Note that SourceForge also stores some
@@ -599,7 +599,7 @@ To customize OpenTREP to your environment, you can alter
 the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export TREP_VER="0.07.13"
+export TREP_VER="0.07.14"
 if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; else LIBSUFFIX=""; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
@@ -1006,17 +1006,17 @@ $ python -m pip install -U pyjq pyyaml
 $ python -mpip install -U opentrep
 Defaulting to user installation because normal site-packages is not writeable
 Collecting opentrep
-  Using cached opentrep-0.7.13.tar.gz (1.7 MB)
+  Using cached opentrep-0.7.14.tar.gz (1.7 MB)
   Installing build dependencies ... done
   Getting requirements to build wheel ... done
     Preparing wheel metadata ... done
 Building wheels for collected packages: opentrep
   Building wheel for opentrep (PEP 517) ... done
-  Created wheel for opentrep: filename=opentrep-0.7.13-cp39-cp39-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
+  Created wheel for opentrep: filename=opentrep-0.7.14-cp39-cp39-linux_x86_64.whl size=3060796 sha256=6362e3a86af016b251fe33b9f76db17322ec15a60575082f31f6b719ba2cf97f
   Stored in directory: ~/.cache/pip/wheels/82/b3/7c/f026b883cc204eefab1588f5e68661f78fec25395277bd221d
 Successfully built opentrep
 Installing collected packages: opentrep
-Successfully installed opentrep-0.7.13
+Successfully installed opentrep-0.7.14
 ```
 
 * Set the `LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH` and `PYTHONPATH`
@@ -1054,8 +1054,8 @@ $ python setup.py --build-type=Debug build sdist bdist_wheel # the build takes a
 $ ls -lFh _skbuild/*-x86_64-3.9/ dist/
 dist/:
 total 24408
--rw-r--r--  1 user staff 9.6M Jan 16 19:10 opentrep-0.7.13.post2-cp39-cp39-macosx_13_0_x86_64.whl
--rw-r--r--  1 user staff 1.6M Jan 16 19:10 opentrep-0.7.13.post2.tar.gz
+-rw-r--r--  1 user staff 9.6M Jan 16 19:10 opentrep-0.7.14.post2-cp39-cp39-macosx_14_0_x86_64.whl
+-rw-r--r--  1 user staff 1.6M Jan 16 19:10 opentrep-0.7.14.post2.tar.gz
 
 _skbuild/*-x86_64-3.9/:
 -rw-r--r--   1 user  staff     0B Jan 10 19:10 _skbuild_MANIFEST
@@ -1084,13 +1084,13 @@ $ docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io scikitbuild/manylinu
 user@laptop$ PYPIURL="https://test.pypi.org"
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://test.pypi.org/legacy/
-Uploading opentrep-0.7.13-cp39-cp39-macosx_13_0_x86_64.whl
+Uploading opentrep-0.7.14-cp39-cp39-macosx_13_0_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 9.86M/9.86M [01:00<00:00, 172kB/s]
-Uploading opentrep-0.7.13.tar.gz
+Uploading opentrep-0.7.14.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 1.65M/1.65M [00:12<00:00, 139kB/s]
 
 View at:
-https://test.pypi.org/project/opentrep/0.7.13/
+https://test.pypi.org/project/opentrep/0.7.14/
 ```
 
 * Upload/release the Python packages onto the
@@ -1101,13 +1101,13 @@ user@laptop$ keyring set ${PYPIURL}/ __token__
 Password for '__token__' in '${PYPIURL}/':
 user@laptop$ twine upload -u __token__ --repository-url ${PYPIURL}/legacy/ dist/*
 Uploading distributions to https://upload.pypi.org/legacy/
-Uploading opentrep-0.7.13.post2-cp39-cp39-macosx_13_0_x86_64.whl
+Uploading opentrep-0.7.14.post2-cp39-cp39-macosx_13_0_x86_64.whl
 100%|█████████████████████████████████████████████████████████████████████| 9.86M/9.86M [01:00<00:00, 172kB/s]
-Uploading opentrep-0.7.13.post2.tar.gz
+Uploading opentrep-0.7.14.post2.tar.gz
 100%|█████████████████████████████████████████████████████████████████████| 1.65M/1.65M [00:12<00:00, 139kB/s]
 
 View at:
-https://pypi.org/project/opentrep/0.7.13.post2/
+https://pypi.org/project/opentrep/0.7.14.post2/
 ```
 
 ## Test the OpenTREP Python extension
@@ -1149,7 +1149,7 @@ $ python3 -mpip install -U opentrep
 ```bash
 $ python -mpip show opentrep
 Name: opentrep
-Version: 0.7.13
+Version: 0.7.14
 ...
 Location: ~/.pyenv/versions/3.10.1/lib/python3.9/site-packages
 Requires: protobuf
@@ -1158,7 +1158,7 @@ Requires: protobuf
 ```bash
 $ python3 -mpip show opentrep
 Name: opentrep
-Version: 0.7.13
+Version: 0.7.14
 ...
 Location: /usr/local/lib/python3.9/site-packages
 Requires: protobuf
