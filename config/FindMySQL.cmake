@@ -100,7 +100,7 @@ endif (UNIX)
 if (WIN32)
   find_library (MYSQL_LIBRARY 
     NAMES
-      mysql libmysql libmysqlclient ${LIB}
+      mysql libmysql mysqlclient libmysqlclient ${LIB}
     PATHS
       ${MYSQL_ADD_LIBRARIES_PATH}
       "C:/Program Files/MySQL/lib"
