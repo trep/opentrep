@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 version=@PACKAGE_VERSION@
 package_name=@PACKAGE@
 package_pretty_name=@PACKAGE_PRETTY_NAME@
 prefix=@prefix@
 exec_prefix=${prefix}
-#libdir=@libdir@
+#libdir=${exec_prefix}/@INSTALL_LIB_DIR@
 libdir=`pkg-config --variable=libdir ${package_name}`
 libexecdir=`pkg-config --variable=libexecdir ${package_name}`
 includedir=@includedir@

@@ -599,9 +599,7 @@ To customize OpenTREP to your environment, you can alter
 the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export TREP_VER="0.07.17"
-if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; else LIBSUFFIX=""; fi
-export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
+export TREP_VER="0.07.18"
 ```
 
 Then, as usual:
@@ -610,7 +608,7 @@ Then, as usual:
 $ rm -rf build && mkdir build && cd build
 $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON \
-   -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+   -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ..
 ```
 
 * With a specific version of Boost, say
@@ -622,7 +620,7 @@ $ cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-${TREP_VER} \
         -DBOOST_LIBRARYDIR=/usr/lib64/boost169 \
 		-DBOOST_INCLUDEDIR=/usr/include/boost169 \
         -DBoost_ADDITIONAL_VERSIONS="1.69 1.69.0" \
-        -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+        -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF ..
 ```
 
 * For an _ad hoc_ installation:
@@ -644,7 +642,7 @@ $ export CMAKE_CXX_FLAGS="-Wno-mismatched-new-delete"; \
    -DREADLINE_LIBRARY=/usr/local/opt/libedit/lib/libedit.dylib \
    -DICU_ROOT=/usr/local/opt/icu4c \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
-   -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
+   -DRUN_GCOV:BOOL=OFF ..
 ```
 
 * To build the project, type:
@@ -694,7 +692,7 @@ $ ./opentrep/opentrep-{dbmgr,indexer,searcher}
 * To run the installed version (the first following line must be done once
   per session):
 ```bash
-$ export TREP_LIB="${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}"
+$ export TREP_LIB="${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib"
 $ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${TREP_LIB}"
 $ ${INSTALL_BASEDIR}/opentrep-${TREP_VER}/bin/opentrep-{dbmgr,indexer,searcher}
 ```
@@ -904,7 +902,7 @@ provided with that specific Python version.
 * With the standard installation:
 ```bash
 PYTHON_VERSION=$(python --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
-PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
+PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
  python3 -c "import pyopentrep; \
  openTrepLibrary = pyopentrep.OpenTrepSearcher(); \
  initOK = openTrepLibrary.init (\"${INSTALL_BASEDIR}/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv\", '/tmp/opentrep/xapian_traveldb', 'sqlite', '/tmp/opentrep/sqlite_travel.db', 0, False, True, True, 'pyopentrep.log'); \

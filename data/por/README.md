@@ -1,15 +1,19 @@
 OpenTravelData (OPTD) POR Data
 ------------------------------
 
-This directory contains POR (Points Of Reference) date files.
+This directory contains POR (Points Of Reference) data files.
 The main data file is named `optd_por_public.csv`, whose master is located
 on the [OpenTravelData (OPTD) project on GitHub](https://github.com/opentraveldata/opentraveldata):
 [`opentraveldata/optd_por_public.csv`](https://github.com/opentraveldata/opentraveldata/blob/master/opentraveldata/optd_por_public.csv).
 
 The data files are also available from https://transport-search.org/data/optd/por/
 
-A good complementary tool is [GeoBase](https://opentraveldata.github.io/geobases),
-a Python-based software able to access to any travel-related data source.
+Good complementary tools are:
+* [OpenTravelData Python wrapper](https://github.com/opentraveldata/python-opentraveldata),
+  a Python wrapper around OpenTravelData (OPTD)
+* [Neobase](https://github.com/alexprengere/neobase)
+  (deprecating [GeoBase](https://opentraveldata.github.io/geobases)),
+  a Python-based utility able to access to any transport-related data source
 
 Licensing
 ---------
