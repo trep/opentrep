@@ -1,13 +1,30 @@
-tmp
-/build/
-/_skbuild/
-/dist/
-/opentrep.egg-info/
+#
+tmp/
+
+# OpenTREP
+/pyopentrep.log
+/opentrep-*.log
+
+# CMake / build
 /build2/
 /.tox/
 /MANIFEST
 /MANIFEST.in
+
+# Python
 /Pipfile.lock
-/.python-version
-*.pyc
-/pyopentrep.log
+/_skbuild/
+/build/
+/dist/
+/.venv/
+.ipynb_checkpoints/
+*.py[cod]
+__pycache__/
+/requirements.txt
+/build/
+*.egg-info/
+typings/
+/poetry.lock
+/uv.lock
+.python-version
+

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 #
 # File:
 #   https://github.com/trep/opentrep/blob/master/opentrep/python/pyopentrep.py.in
@@ -515,7 +515,10 @@ def search(openTrepLibrary, searchString, outputFormat):
 ############################
 # Main
 ############################
-if __name__ == "__main__":
+def main():
+    """
+    Main entry point
+    """
     (
         command,
         logPath,
@@ -581,3 +584,7 @@ if __name__ == "__main__":
 
     # Free the OpenTREP library resource
     openTrepLibrary.finalize()
+
+if __name__ == "__main__":
+    main()
+

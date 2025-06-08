@@ -1,3 +1,68 @@
+#
+# References:
+# * https://github.com/tueda/test-poetry-scikit-build
+# * https://setuptools.pypa.io/en/latest/userguide/quickstart.html
+#
+
+[project]
+name = "opentrep"
+version = "0.7.18"
+description = "Simple Python wrapper for OpenTREP"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+authors = [
+  {name = "Denis Arnaud", email = "denis.arnaud_pypi@m4x.org"},
+]
+license = "MIT"
+urls = {repository = "https://github.com/trep/opentrep"}
+dynamic = ["dependencies"]
+
 [build-system]
-requires = ["setuptools", "wheel", "scikit-build", "cmake", "ninja"]
+requires = ["poetry-core", "setuptools", "wheel", "scikit-build", "cmake", "ninja", "protobuf"]
+build-backend = "setuptools.build_meta"
+#build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
+trep = "pyopentrep:main"
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.skbuild.setup]
+cmake_args = ["-DINSTALL_DOC:BOOL=OFF", "-DRUN_GCOV:BOOL=OFF", "-DLIB_SUFFIX="]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.poetry]
+include = [
+    # Source files for C extensions must be included in the source distribution.
+    { path = "CMakeLists.txt", format = "sdist" },
+    { path = "opentrep/**/*.cpp", format = "sdist" },
+    # C extensions must be included in the wheel distribution.
+    { path = "opentrep/**/*.pyd", format = "wheel" },
+    { path = "opentrep/**/*.so", format = "wheel" },
+]
+exclude = ["opentrep/**/*.cpp", "opentrep/**/*.pyd", "opentrep/**/*.so"]
+
+[tool.mypy]
+pretty = true
+show_error_codes = true
+strict = true
+warn_unreachable = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov-report=html",
+    "--cov-report=term",
+    "--cov=opentrep",
+    "--doctest-modules",
+    "--ignore=_skbuild",
+    "--ignore=build.py",
+]
+
+[tool.taskipy.tasks]
+build_ext.cmd = "python build.py"
+build_ext.help = "builds C extensions"
+
 
