@@ -100,7 +100,7 @@ namespace OPENTREP {
   
     const wchar_t* src = iStr.c_str();
     size_t idx = 0;
-    size_t i = 0;
+    size_t i = idx;
   
     while (src[i] != 0) {
       wchar_t ch = src[i];
