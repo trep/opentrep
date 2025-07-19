@@ -1,5 +1,5 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
-# file Copyright.txt or https://cmake.org/licensing for details.
+# file LICENSE.rst or https://cmake.org/licensing for details.
 
 #[=======================================================================[.rst:
 FindICU
@@ -215,7 +215,7 @@ function(_ICU_FIND)
     endif()
     if(component STREQUAL "in")
       list(APPEND component_libnames "icui18n")
-      list(APPEND component_debug_libnames "icui18nd")
+      list(APPEND component_debug_libnames "icui18nd")  # noqa: spellcheck disable-line
     endif()
 
     if(static_prefix)
@@ -295,7 +295,7 @@ endfunction()
 
 _ICU_FIND()
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(ICU
   REQUIRED_VARS
     ICU_INCLUDE_DIR
