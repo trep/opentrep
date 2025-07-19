@@ -369,90 +369,94 @@ $ apt-get -y install doxygen ghostscript texlive-latex-recommended
 
 #### On MacOS
 * References:
-  + https://docs.brew.sh/Homebrew-and-Python
-  + https://ahmadawais.com/how-to-set-python-default-version-to-3-on-macos/
+  * https://docs.brew.sh/Homebrew-and-Python
+  * https://ahmadawais.com/how-to-set-python-default-version-to-3-on-macos/
+  * https://www.tigerdata.com/blog/how-to-install-psql-on-mac-ubuntu-debian-windows
 
 * With [Homebrew](http://brew.sh):
+  * Derive the installation directory (stored in the `BREW_PFX` variable):
+```bash
+export BREW_PFX="$(brew --prefix)"
+```
+
+* Install a few packages:
 ```bash
 $ brew install boost boost-python3 cmake libedit \
-  xapian sqlite mysql mysql-client icu4c protobuf protobuf-c doxygen
+  xapian sqlite mysql mysql-client libpq icu4c \
+  abseil protobuf protobuf-c doxygen
 $ brew install homebrew/portable-ruby/portable-readline
 ```
 
-* Note that, as of mid 2023, the Hombrew recipes for Python 3 are now
+* Symlink `psql` to `${BREW_PFX}/bin` (so that CMake may find the PostgreSQL
+  library):
+```bash
+$ brew link --force libpq
+```
+
+* Note that, as of mid 2025, the Hombrew recipes for Python 3 are now
   specific up to the minor version, more specifically:
-  + Python 3.12: `python@3.12` (Python 3.12.0 as of May 2023)
-  + Python 3.11: `python@3.11` (Python 3.11.3 as of May 2023)
-  + Python 3.10: `python@3.10` (Python 3.10.11 as of May 2023)
-  + Python 3.9: `python@3.9` (Python 3.9.16 as of May 2023)
-  + Python 3.8: `python@3.8` (Python 3.8.16 as of May 2023)
+  * Python 3.13: `python@3.13` (Python 3.13.5 as of July 2025)
+  * Python 3.12: `python@3.12` (Python 3.12.11 as of July 2025)
+  * Python 3.11: `python@3.11` (Python 3.11.13 as of July 2025)
 
 * Previously, the default Python 3 installation was Python 3.8 (now part of
   the `python@3.8` Homebrew package).
   As a reminder, on MacOS with Homebrew, a way to get the details is:
 ```bash
+$ brew info python@3.13
+python@3.13: stable 3.13.5 (bottled)
 $ brew info python@3.12
-python@3.12: stable 3.12.0 (bottled)
+python@3.12: stable 3.12.11 (bottled)
 $ brew info python@3.11
-python@3.11: stable 3.11.3 (bottled)
-$ brew info python@3.10
-python@3.10: stable 3.10.11 (bottled)
-$ brew info python@3.9
-python@3.9: stable 3.9.16 (bottled)
-$ brew info python@3.8
-python@3.8: stable 3.8.16 (bottled)
+python@3.11: stable 3.11.13 (bottled)
 ```
 
 * Because of the multiple parallel installations of Python versions,
   the following setup may be necessary:
 ```bash
-$ sudo mkdir -p /usr/local/Cellar/python
-$ sudo chown -R $USER /usr/local/Cellar/python
-$ ln -s /usr/local/Cellar/python@3.12/3.12.0 /usr/local/Cellar/python/3.12.0
-$ ln -s /usr/local/Cellar/python@3.11/3.11.3 /usr/local/Cellar/python/3.11.3
-$ ln -s /usr/local/Cellar/python@3.10/3.10.11 /usr/local/Cellar/python/3.10.11
-$ ln -s /usr/local/Cellar/python@3.9/3.9.16 /usr/local/Cellar/python/3.9.16
-$ ln -s /usr/local/Cellar/python@3.8/3.8.16 /usr/local/Cellar/python/3.8.16
+$ sudo mkdir -p ${BREW_PFX}/Cellar/python
+$ sudo chown -R $USER ${BREW_PFX}/Cellar/python
+$ ln -s ${BREW_PFX}/Cellar/python@3.13/3.13.5 ${BREW_PFX}/Cellar/python/3.13.5
+$ ln -s ${BREW_PFX}/Cellar/python@3.12/3.12.11 ${BREW_PFX}/Cellar/python/3.12.11
+$ ln -s ${BREW_PFX}/Cellar/python@3.11/3.11.3 ${BREW_PFX}/Cellar/python/3.11.3
 ```
-  + Clean links on potential older versions:
+  * Clean links on potential older versions:
 ```bash
-$ ls -lFh /usr/local/Cellar/python/
+$ ls -lFh ${BREW_PFX}/Cellar/python/
 total 0
-lrwxr-xr-x 1 user staff 34B Jan 9 21:14 3.8.11@ -> /usr/local/Cellar/python@3.8/3.8.11
-lrwxr-xr-x 1 user staff 34B Jan 9 21:14 3.9.6@ -> /usr/local/Cellar/python@3.9/3.9.6
-$ sudo unlink /usr/local/Cellar/python/3.8.7
+lrwxr-xr-x  1 user admin 40B Jul 19 18:32 3.12.11@ -> ${BREW_PFX}/Cellar/python@3.12/3.12.11
+lrwxr-xr-x  1 user admin 39B Jul 19 18:32 3.13.5@ -> ${BREW_PFX}/Cellar/python@3.13/3.13.5
+$ sudo unlink ${BREW_PFX}/Cellar/python/3.8.7
 ```
-  + Check the following links, as installed by Homebrew on MacOS:
+  * Check the following links, as installed by Homebrew on MacOS:
 ```bash
-$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/Current
-lrwxr-xr-x  1 user  staff    79B Oct 13 12:01 /usr/local/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.10/3.10.11/Frameworks/Python.framework/Versions/Current
-$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.10
-lrwxr-xr-x  1 user  staff    76B Oct 13 12:00 /usr/local/Frameworks/Python.framework/Versions/3.10@ -> ../../../Cellar/python@3.10/3.10.11/Frameworks/Python.framework/Versions/3.10
-$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.11
-lrwxr-xr-x  1 user  staff    76B Nov 30 17:37 /usr/local/Frameworks/Python.framework/Versions/3.11@ -> ../../../Cellar/python@3.11/3.11.3/Frameworks/Python.framework/Versions/3.11
-$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 darnaud  staff    75B Oct 13 12:01 /usr/local/Frameworks/Python.framework/Versions/3.9@ -> ../../../Cellar/python@3.9/3.9.16/Frameworks/Python.framework/Versions/3.9
+$ ls -lFh ${BREW_PFX}/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  staff    79B Oct 13 12:01 ${BREW_PFX}/Frameworks/Python.framework/Versions/Current@ -> ../../../Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/Current
+$ ls -lFh ${BREW_PFX}/Frameworks/Python.framework/Versions/3.13
+lrwxr-xr-x  1 user  staff    76B Oct 13 12:00 ${BREW_PFX}/Frameworks/Python.framework/Versions/3.13@ -> ../../../Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13
+$ ls -lFh ${BREW_PFX}/Frameworks/Python.framework/Versions/3.12
+lrwxr-xr-x  1 user  staff    76B Nov 30 17:37 ${BREW_PFX}/Frameworks/Python.framework/Versions/3.12@ -> ../../../Cellar/python@3.12/3.12.11/Frameworks/Python.framework/Versions/3.12
 ```
-  + If those links are not as expected (as of January 2022, they were correct),
+  * If those links are not as expected (as of January 2022, they were correct),
     recreate them:
 ```bash
-$ sudo chown -R $USER /usr/local/Frameworks/Python.framework
-$ unlink /usr/local/Frameworks/Python.framework/Versions/3.11
-$ ln -s /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11 /usr/local/Frameworks/Python.framework/Versions/3.11
-$ unlink /usr/local/Frameworks/Python.framework/Versions/Current
-$ ln -s /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11 /usr/local/Frameworks/Python.framework/Versions/Current
+$ sudo chown -R $USER ${BREW_PFX}/Frameworks/Python.framework
+$ unlink ${BREW_PFX}/Frameworks/Python.framework/Versions/3.13
+$ ln -s ${BREW_PFX}/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13 ${BREW_PFX}/Frameworks/Python.framework/Versions/3.13.5
+$ unlink ${BREW_PFX}/Frameworks/Python.framework/Versions/Current
+$ ln -s ${BREW_PFX}/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13 ${BREW_PFX}/Frameworks/Python.framework/Versions/Current
 ```
   + Leading to:
 ```bash
-$ ls -lFh /usr/local/Cellar/python/
+$ ls -lFh ${BREW_PFX}/Cellar/python/
 total 0
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.10.1@ -> /usr/local/Cellar/python@3.10/3.10.1
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.9.9@ -> /usr/local/Cellar/python@3.9/3.9.9
-lrwxr-xr-x  1 user  admin    34B Jan  9 21:14 3.8.12@ -> /usr/local/Cellar/python@3.8/3.8.12
-$ ls -lFh /usr/local/Frameworks/Python.framework/Versions/
+lrwxr-xr-x  1 user  admin 34B Jul  9 21:14 3.12.11@ -> ${BREW_PFX}/Cellar/python@3.12/3.12.11
+lrwxr-xr-x  1 user  admin 34B Jul  9 21:14 3.13.5@ -> ${BREW_PFX}/Cellar/python@3.13/3.13.5
+$ ls -lFh ${BREW_PFX}/Frameworks/Python.framework/Versions/
 total 0
-lrwxr-xr-x  1 user  staff    75B Jan  9 04:01 3.9@ -> ../../../Cellar/python@3.9/3.9.9/Frameworks/Python.framework/Versions/3.9
-lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python@3.9/3.9.9/Frameworks/Python.framework/Versions/Current
+lrwxr-xr-x  1 user  admin 77B Jun  7 09:36 3.12@ -> ../../../Cellar/python@3.12/3.12.11/Frameworks/Python.framework/Versions/3.12
+lrwxr-xr-x  1 user  admin 76B Jun 13 21:33 3.13@ -> ../../../Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13
+lrwxr-xr-x  1 user  admin 79B Jun 13 21:33 Current@ -> ../../../Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/Current
 ```
 
 * Up until recently (mid-2020), Boost.Python came with a dependency on
@@ -475,20 +479,20 @@ lrwxr-xr-x  1 user  staff    79B Jan  9 04:01 Current@ -> ../../../Cellar/python
 * The adoption of that change (no longer linking a C extension with
   `libpython`) is progressing slowly, and highly dependent on the
   C extensions and the platforms. For instance:
-  + On Fedora Linux distributions, that change was implemented only
+  * On Fedora Linux distributions, that change was implemented only
     from Boost 1.73 on Fedora 33 (released at the end of 2020).
-  + On MacOS, that change seems to have been implemented as a patch to
+  * On MacOS, that change seems to have been implemented as a patch to
     Boost 1.72 package; as it can be seen below, Boost 1.72+
 	on MacOS no longer seems to be linked against `libpython`.
 ```bash
 $ brew info boost-python3
 boost-python3: stable 1.80.0 (bottled), HEAD
-/usr/local/Cellar/boost-python3/1.80.0_1 (472 files, 17.7MB) *
-$ ls -lFh /usr/local/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib 
--r--r--r--  1 user  staff   403K Nov 14 11:27 /usr/local/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib
-$ otool -L /usr/local/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib
-/usr/local/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib:
-	/usr/local/opt/boost-python3/lib/libboost_python311.dylib (compatibility version 0.0.0, current version 0.0.0)
+${BREW_PFX}/Cellar/boost-python3/1.80.0_1 (472 files, 17.7MB) *
+$ ls -lFh ${BREW_PFX}/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib 
+-r--r--r--  1 user  staff   403K Nov 14 11:27 ${BREW_PFX}/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib
+$ otool -L ${BREW_PFX}/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib
+${BREW_PFX}/Cellar/boost-python3/1.80.0_1/lib/libboost_python311.dylib:
+	${BREW_PFX}/opt/boost-python3/lib/libboost_python311.dylib (compatibility version 0.0.0, current version 0.0.0)
 	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1300.23.0)
 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1311.100.3)
 ```
@@ -584,7 +588,7 @@ $ popd
 * Configure SOCI:
 ```bash
 $ mkdir -p /opt/soci/socigit/build/head && cd /opt/soci/socigit/build/head
-$ cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+$ cmake -DCMAKE_INSTALL_PREFIX=${BREW_PFX} \
   -DCMAKE_BUILD_TYPE=Debug -DSOCI_CXX11=ON \
   -DSOCI_ASAN=ON -DCMAKE_VERBOSE_MAKEFILE=OFF \
   -DSOCI_TESTS=OFF -DSOCI_STATIC=OFF -DSOCI_DB2=OFF -DSOCI_EMPTY=ON \
@@ -637,10 +641,10 @@ the standard place. So, the `cmake` command becomes:
 ```bash
 $ export CMAKE_CXX_FLAGS="-Wno-mismatched-new-delete"; \
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
-   -DREADLINE_ROOT=/usr/local/opt/portable-readline \
-   -DREADLINE_INCLUDE_DIR=/usr/local/opt/portable-readline/include \
-   -DREADLINE_LIBRARY=/usr/local/opt/libedit/lib/libedit.dylib \
-   -DICU_ROOT=/usr/local/opt/icu4c \
+   -DREADLINE_ROOT=${BREW_PFX}/opt/portable-readline \
+   -DREADLINE_INCLUDE_DIR=${BREW_PFX}/opt/portable-readline/include \
+   -DREADLINE_LIBRARY=${BREW_PFX}/opt/libedit/lib/libedit.dylib \
+   -DICU_ROOT=${BREW_PFX}/opt/icu4c \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ..
 ```
@@ -938,7 +942,7 @@ $ PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2,2 | cut -d'.' -f1,2)
 $ PYTHONPATH=${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}:${INSTALL_BASEDIR}/opentrep-${TREP_VER}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/site-packages/pyopentrep \
   DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib \
   ASAN_OPTIONS=detect_container_overflow=0 \
-  /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python \
+  ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python \
   ./opentrep/python/pyopentrep.py -d /tmp/opentrep/xapian_traveldb "nce sfo"
 OPTD-maintained list of POR (points of reference): '~/dev/deliveries/opentrep-${TREP_VER}/share/opentrep/data/por/test_optd_por_public.csv'
 Xapian-based travel database/index: '/tmp/opentrep/xapian_traveldb0'
@@ -1029,7 +1033,7 @@ export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopen
 ```
   + On MacOS:
 ```bash
-$ export INST_DIR=/usr/local
+$ export INST_DIR=${BREW_PFX}
 export PYTHONPATH=${INST_DIR}/lib:${INST_DIR}/lib/python3.9/site-packages/pyopentrep
 export DYLD_LIBRARY_PATH=${INST_DIR}/lib
 ```
@@ -1125,7 +1129,7 @@ $ pyenv local system
 $ python3 -V
 Python 3.11.0
 $ type python3
-python3 is hashed (/usr/local/opt/python@3.11/bin/python3)
+python3 is hashed (${BREW_PFX}/opt/python@3.11/bin/python3)
 ```
 
 * Remove older version of and install the `opentrep` Python extension
@@ -1136,7 +1140,7 @@ $ python -mpip install -U opentrep # will take a few minutes, as OpenTREP is bui
 ```
   + On MacOS
     (noramlly, `python3` should point to
-	`/usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python`):
+	`${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python`):
 ```bash
 $ python3 -mpip uninstall opentrep
 $ python3 -mpip install -U opentrep
@@ -1158,7 +1162,7 @@ $ python3 -mpip show opentrep
 Name: opentrep
 Version: 0.7.14
 ...
-Location: /usr/local/lib/python3.9/site-packages
+Location: ${BREW_PFX}/lib/python3.9/site-packages
 Requires: protobuf
 ```
 
@@ -1170,10 +1174,10 @@ $ export PYTHONPATH="${HOME}/.local/lib:${HOME}/.local/lib/python3.10/site-packa
   export LD_LIBRARY_PATH="${HOME}/.local/lib:${HOME}/.local/lib/python3.10/site-packages/pyopentrep:${LD_LIBRARY_PATH}"
 ```
   + On MacOS (Python binary is
-    `/usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python`
-	and Python libraries are installed simply in `/usr/local/lib`):
+    `${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python`
+	and Python libraries are installed simply in `${BREW_PFX}/lib`):
 ```bash
-$ export PYTHONPATH="/usr/local/lib:/usr/local/lib/python3.11/site-packages/pyopentrep"
+$ export PYTHONPATH="${BREW_PFX}/lib:${BREW_PFX}/lib/python3.11/site-packages/pyopentrep"
 ```
 
 * Launch a simple end-to-end test with `pytest`
@@ -1183,7 +1187,7 @@ $ python -mpytest test_trep_e2e_simple.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python -mpytest test_trep_e2e_simple.py
 ```
   + It should give something like:
 ```bash
@@ -1218,7 +1222,7 @@ Python 3.10.15 (default, November 2022)
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1243,7 +1247,7 @@ $ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py -p /tmp/
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.11/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python ${BREW_PFX}/lib/python3.11/site-packages/pyopentrep/pyopentrep.py -p /tmp/opentraveldata/optd_por_public_all.csv -i
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentraveldata/optd_por_public_all.csv'
@@ -1285,7 +1289,7 @@ $ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.11/site-packages/pyopentrep/pyopentrep.py
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python ${BREW_PFX}/lib/python3.11/site-packages/pyopentrep/pyopentrep.py
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1304,7 +1308,7 @@ $ python ~/.local/lib/python3.10/site-packages/pyopentrep/pyopentrep.py -f F "cn
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python /usr/local/lib/python3.11/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python ${BREW_PFX}/lib/python3.11/site-packages/pyopentrep/pyopentrep.py -f F "cnsha deham deess"
 ```
 ```bash
 OPTD-maintained list of POR (points of reference): '/tmp/opentrep/test_optd_por_public.csv'
@@ -1326,7 +1330,7 @@ Python 3.10.1 (main, Jan 10 2022, ...) on linux
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
 ```
 ```python
 >>> import pyopentrep
@@ -1348,7 +1352,7 @@ Python 3.10.1 (main, Jan 10 2022, ...) on linux
 ```
   + On MacOS:
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python
 ```
   + Python interactive shell:
 ```python
@@ -1386,7 +1390,7 @@ Python 3.10.1 (default, November 2021)
 ```
   + On MacOS (as of end 2021, does not work):
 ```bash
-$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 /usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
+$ DYLD_INSERT_LIBRARIES=/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib ASAN_OPTIONS=detect_container_overflow=0 ${BREW_PFX}/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python manage.py runserver localhost:8000
 ```
 
 * Query OpenTREP with a web browser:
