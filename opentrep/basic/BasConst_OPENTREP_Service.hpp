@@ -44,6 +44,20 @@ namespace OPENTREP {
   extern const std::string DEFAULT_OPENTREP_SQL_DB_TYPE;
 
   /**
+   * Default connection string for the PostgreSQL database.
+   *
+   * Usually, the default parameters are
+   * <ul>
+   *   <li>Database user name: <tt>trep</tt></li>
+   *   <li>Database user password: <tt>trep</tt></li>
+   *   <li>Database name: <tt>trep_trep</tt></li>
+   *   <li>Server hostname: <tt>localhost</tt></li>
+   *   <li>Server port: <tt>5432</tt></li>
+   * </ul>
+   */
+  extern const std::string DEFAULT_OPENTREP_PG_CONN_STRING;
+
+  /**
    * Default connection string for the MySQL/MariaDB database.
    *
    * Usually, the default parameters are
@@ -64,6 +78,25 @@ namespace OPENTREP {
    * <tt>/tmp/opentrep/sqlite_travel.db</tt>
    */
   extern const std::string DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
+
+  /**
+   * Default name and location for the PostgreSQL database (if existing;
+   * currently, it does not).
+   *
+   * Usually, the default PostgreSQL database details are:
+   * <ul>
+   *   <li>User: trep</li>
+   *   <li>Passwd: trep</li>
+   *   <li>DB name: trep_trep</li>
+   *   <li>Server hostname: localhost</li>
+   *   <li>Server port: 5432</li>
+   * </ul>
+   */
+  extern const std::string DEFAULT_OPENTREP_PG_DB_USER;
+  extern const std::string DEFAULT_OPENTREP_PG_DB_PASSWD;
+  extern const std::string DEFAULT_OPENTREP_PG_DB_DBNAME;
+  extern const std::string DEFAULT_OPENTREP_PG_DB_HOST;
+  extern const std::string DEFAULT_OPENTREP_PG_DB_PORT;
 
   /**
    * Default name and location for the MySQL database (if existing; currently,

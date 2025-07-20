@@ -13,6 +13,7 @@
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
 #include <soci/mysql/soci-mysql.h>
+#include <soci/postgresql/soci-postgresql.h>
 // OpenTrep
 #include <opentrep/Location.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
@@ -31,216 +32,242 @@
 namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
-  bool DBManager::
-  createSQLDBUser (const DBType& iDBType,
-                   const SQLDBConnectionString_T& iSQLDBConnStr,
-                   const DeploymentNumber_T& iDeploymentNumber) {
+  bool createSQLDBUserOnSQLite (const SQLDBConnectionString_T& iSQLDBConnStr,
+                                const DeploymentNumber_T& iDeploymentNumber) {
+    bool oCreationSuccessful = true;
+    try {
+
+      // Retrieve the full file-path of the SQLite3 directory
+      boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
+                                                 iSQLDBConnStr.end());
+      // Retrieve the directory hosting the SQLite3 database
+      boost::filesystem::path lSQLiteDBParentPath =
+        lSQLiteDBFullPath.parent_path();
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The SQLite database file ('" << lSQLiteDBFullPath
+                          << "') will be cleared and re-created");
+
+      // Delete the SQL database/file and its directory
+      boost::filesystem::remove_all (lSQLiteDBFullPath);
+
+      // Re-create the SQLite3 directory
+      boost::filesystem::create_directories (lSQLiteDBParentPath);
+
+      // Check whether the just created directory exists and is a directory.
+      //boost::filesystem::path lSQLiteDBFilename=lSQLiteDBFullPath.filename();
+      if (!(boost::filesystem::exists (lSQLiteDBParentPath)
+            && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
+        std::ostringstream oStr;
+        oStr << "Error. The path to the SQLite3 database directory ('"
+             << lSQLiteDBParentPath
+             << "') does not exist or is not a directory.";
+        OPENTREP_LOG_ERROR (oStr.str());
+        throw FileNotFoundException (oStr.str());
+      }
+        
+    } catch (std::exception const& lException) {
+      std::ostringstream errorStr;
+      errorStr << "Error when trying to create " << iSQLDBConnStr
+               << " SQLite3 database file: " << lException.what();
+      errorStr << ". Check that the program has got write permission on the "
+               << "corresponding parent directories.";
+      OPENTREP_LOG_ERROR (errorStr.str());
+      throw SQLDatabaseFileCannotBeCreatedException (errorStr.str());
+    }
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The SQLite database ('" << iSQLDBConnStr
+                        << "') has been cleared and re-created");
+
+    //
+    return oCreationSuccessful;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  bool createSQLDBUserOnMySQL (const SQLDBConnectionString_T& iSQLDBConnStr,
+                               const DeploymentNumber_T& iDeploymentNumber) {
     bool oCreationSuccessful = true;
 
     // DEBUG
-    if (iDBType == DBType::MYSQL) {
-      OPENTREP_LOG_DEBUG ("The MySQL/MariaDB database user will be created/reset");
+    OPENTREP_LOG_DEBUG ("Create the '"
+                        << DEFAULT_OPENTREP_MYSQL_DB_USER
+                        << "' user and '" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                        << iDeploymentNumber
+                        << "' database in MySQL/MariaDB ('" << iSQLDBConnStr
+                        << "')");
+
+    // Connection to the MySQL/MariaDB database
+    soci::session* lSociSession_ptr = NULL;      
+    try {
+
+      // Connect to the SQL database/file
+      lSociSession_ptr = DBManager::initSQLDBSession (DBType::MYSQL,
+                                                      iSQLDBConnStr);
+      if (lSociSession_ptr == NULL) {
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
+      }
+      
+    } catch (soci::mysql_soci_error const& lSociException) {
+      std::ostringstream errorStr;
+      errorStr << "SOCI-related error when trying to connect to the "
+               << "MySQL/MariaDB database ('" << iSQLDBConnStr
+               << "'). SOCI error message: " << lSociException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      std::cerr << errorStr.str() << std::endl;
+      oCreationSuccessful = false;
+      return oCreationSuccessful;
+    }
+    assert (lSociSession_ptr != NULL);
+    soci::session& lSociSession = *lSociSession_ptr;
+
+    /**
+     * SQL DDL (Data Definition Language) queries:
+     * -------------------------------------------
+     -- Universal procedure for 'drop user if exists', as that feature
+     -- has been available on MySQL from 5.6 only (and CentOS 6
+     -- has MySQL 5.0): https://stackoverflow.com/a/12502107/798053
+     
+     drop user 'trep'@'localhost'; drop user 'trep'@'%';
+     
+     create user 'trep'@'localhost' identified by 'trep';
+     grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+     ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+     CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
+     
+     create user 'trep'@'%' identified by 'trep';
+     grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
+     ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
+     CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'%';
+     
+     flush privileges;
+     
+     -- <N> is the deployment number
+     drop database if exists trep_trep<N>;
+     create database if not exists trep_trep<N>
+     default character set utf8
+     collate utf8_unicode_ci;
+    */
+    
+    try {
+      // Drop user 'trep'@'localhost'
+      std::ostringstream lSQLDropTrepLocalStr;
+      lSQLDropTrepLocalStr << "drop user '"
+                           << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'"
+                           << DEFAULT_OPENTREP_MYSQL_DB_HOST << "';";
+      lSociSession << lSQLDropTrepLocalStr.str();
+      
+      // Drop user 'trep'@'%'
+      std::ostringstream lSQLDropTrepAllStr;
+      lSQLDropTrepAllStr << "drop user '"
+                         << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'%';";
+      lSociSession << lSQLDropTrepAllStr.str();
+      
+    } catch (soci::mysql_soci_error const& lSociException) {
+      std::ostringstream issueStr;
+      issueStr << "Issue when trying to drop MySQL/MariaDB '"
+               << DEFAULT_OPENTREP_MYSQL_DB_USER << "' user. "
+               << "Most probably the user did not exist before. " << std::endl
+               << "SOCI error message: " << lSociException.what() << std::endl
+               << "The database users should however be created without "
+               << "any issue ";
+      OPENTREP_LOG_DEBUG (issueStr.str());
+      std::cout << issueStr.str() << std::endl;
     }
 
-    if (iDBType == DBType::SQLITE3) {
-
-      try {
-
-        // Retrieve the full file-path of the SQLite3 directory
-        boost::filesystem::path lSQLiteDBFullPath (iSQLDBConnStr.begin(),
-                                                   iSQLDBConnStr.end());
-        // Retrieve the directory hosting the SQLite3 database
-        boost::filesystem::path lSQLiteDBParentPath =
-          lSQLiteDBFullPath.parent_path();
-
-        // DEBUG
-        OPENTREP_LOG_DEBUG ("The SQLite database file ('" << lSQLiteDBFullPath
-                            << "') will be cleared and re-created");
-
-        // Delete the SQL database/file and its directory
-        boost::filesystem::remove_all (lSQLiteDBFullPath);
-
-        // Re-create the SQLite3 directory
-        boost::filesystem::create_directories (lSQLiteDBParentPath);
-
-        // Check whether the just created directory exists and is a directory.
-        //boost::filesystem::path lSQLiteDBFilename=lSQLiteDBFullPath.filename();
-        if (!(boost::filesystem::exists (lSQLiteDBParentPath)
-              && boost::filesystem::is_directory (lSQLiteDBParentPath))) {
-          std::ostringstream oStr;
-          oStr << "Error. The path to the SQLite3 database directory ('"
-               << lSQLiteDBParentPath
-               << "') does not exist or is not a directory.";
-          OPENTREP_LOG_ERROR (oStr.str());
-          throw FileNotFoundException (oStr.str());
-        }
-        
-      } catch (std::exception const& lException) {
-        std::ostringstream errorStr;
-        errorStr << "Error when trying to create " << iSQLDBConnStr
-                 << " SQLite3 database file: " << lException.what();
-        errorStr << ". Check that the program has got write permission on the "
-                 << "corresponding parent directories.";
-        OPENTREP_LOG_ERROR (errorStr.str());
-        throw SQLDatabaseFileCannotBeCreatedException (errorStr.str());
-      }
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("The SQLite database ('" << iSQLDBConnStr
-                          << "') has been cleared and re-created");
-      
-    } else if (iDBType == DBType::MYSQL) {
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("Create the '"
-                          << DEFAULT_OPENTREP_MYSQL_DB_USER
-                          << "' user and '" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
-                          << iDeploymentNumber
-                          << "' database in MySQL/MariaDB ('" << iSQLDBConnStr
-                          << "')");
-
-      // Connection to the MySQL/MariaDB database
-      soci::session* lSociSession_ptr = NULL;      
-      try {
-
-        // Connect to the SQL database/file
-        lSociSession_ptr = initSQLDBSession (iDBType, iSQLDBConnStr);
-        if (lSociSession_ptr == NULL) {
-          oCreationSuccessful = false;
-          return oCreationSuccessful;
-        }
-
-      } catch (soci::mysql_soci_error const& lSociException) {
-        std::ostringstream errorStr;
-        errorStr << "SOCI-related error when trying to connect to the "
-                 << "MySQL/MariaDB database ('" << iSQLDBConnStr
-                 << "'). SOCI error message: " << lSociException.what();
-        OPENTREP_LOG_ERROR (errorStr.str());
-        std::cerr << errorStr.str() << std::endl;
-        oCreationSuccessful = false;
-        return oCreationSuccessful;
-      }
-      assert (lSociSession_ptr != NULL);
-      soci::session& lSociSession = *lSociSession_ptr;
-
-      /**
-       * SQL DDL (Data Definition Language) queries:
-       * -------------------------------------------
-       -- Universal procedure for 'drop user if exists', as that feature
-       -- has been available on MySQL from 5.6 only (and CentOS 6
-       -- has MySQL 5.0): https://stackoverflow.com/a/12502107/798053
-
-       drop user 'trep'@'localhost'; drop user 'trep'@'%';
-         
-       create user 'trep'@'localhost' identified by 'trep';
-       grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
-       ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-       CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'localhost';
-
-       create user 'trep'@'%' identified by 'trep';
-       grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, 
-       ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, 
-       CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* to 'trep'@'%';
-
-       flush privileges;
-
-       -- <N> is the deployment number
-       drop database if exists trep_trep<N>;
-       create database if not exists trep_trep<N>
-       default character set utf8
-       collate utf8_unicode_ci;
-      */
-
-      try {
-        // Drop user 'trep'@'localhost'
-        std::ostringstream lSQLDropTrepLocalStr;
-        lSQLDropTrepLocalStr << "drop user '"
+    try {
+      // Create user 'trep'@'localhost'
+      std::ostringstream lSQLCreateTrepLocalStr;
+      lSQLCreateTrepLocalStr << "create user '"
                              << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'"
-                             << DEFAULT_OPENTREP_MYSQL_DB_HOST << "';";
-        lSociSession << lSQLDropTrepLocalStr.str();
-        
-        // Drop user 'trep'@'%'
-        std::ostringstream lSQLDropTrepAllStr;
-        lSQLDropTrepAllStr << "drop user '"
-                           << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'%';";
-        lSociSession << lSQLDropTrepAllStr.str();
-
-      } catch (soci::mysql_soci_error const& lSociException) {
-        std::ostringstream issueStr;
-        issueStr << "Issue when trying to drop MySQL/MariaDB '"
-                 << DEFAULT_OPENTREP_MYSQL_DB_USER << "' user. "
-                 << "Most probably the user did not exist before. " << std::endl
-                 << "SOCI error message: " << lSociException.what() << std::endl
-                 << "The database users should however be created without "
-                 << "any issue ";
-        OPENTREP_LOG_DEBUG (issueStr.str());
-        std::cout << issueStr.str() << std::endl;
-      }
-
-      try {
-        // Create user 'trep'@'localhost'
-        std::ostringstream lSQLCreateTrepLocalStr;
-        lSQLCreateTrepLocalStr << "create user '"
-                               << DEFAULT_OPENTREP_MYSQL_DB_USER << "'@'"
-                               << DEFAULT_OPENTREP_MYSQL_DB_HOST << "' ";
-        lSQLCreateTrepLocalStr << "identified by '"
-                               << DEFAULT_OPENTREP_MYSQL_DB_PASSWD << "';";
-        lSociSession << lSQLCreateTrepLocalStr.str();
-
-        // Grant privileges to 'trep'@'localhost'
-        std::ostringstream lSQLGrantTrepLocalStr;
-        lSQLGrantTrepLocalStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
-        lSQLGrantTrepLocalStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
-        lSQLGrantTrepLocalStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
-        lSQLGrantTrepLocalStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
-        lSQLGrantTrepLocalStr << "ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepLocalStr << " to '" << DEFAULT_OPENTREP_MYSQL_DB_USER
-                              << "'@'" << DEFAULT_OPENTREP_MYSQL_DB_HOST << "';";
-        lSociSession << lSQLGrantTrepLocalStr.str();
-
-        // Create user 'trep'@'%'
-        std::ostringstream lSQLCreateTrepAllStr;
-        lSQLCreateTrepAllStr << "create user '"
-                             << DEFAULT_OPENTREP_MYSQL_DB_USER
-                             << "'@'%' identified by '"
+                             << DEFAULT_OPENTREP_MYSQL_DB_HOST << "' ";
+      lSQLCreateTrepLocalStr << "identified by '"
                              << DEFAULT_OPENTREP_MYSQL_DB_PASSWD << "';";
-        lSociSession << lSQLCreateTrepAllStr.str();
+      lSociSession << lSQLCreateTrepLocalStr.str();
+      
+      // Grant privileges to 'trep'@'localhost'
+      std::ostringstream lSQLGrantTrepLocalStr;
+      lSQLGrantTrepLocalStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
+      lSQLGrantTrepLocalStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
+      lSQLGrantTrepLocalStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
+      lSQLGrantTrepLocalStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
+      lSQLGrantTrepLocalStr << "ALTER ROUTINE, EXECUTE ON *.*";
+      lSQLGrantTrepLocalStr << " to '" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                            << "'@'" << DEFAULT_OPENTREP_MYSQL_DB_HOST << "';";
+      lSociSession << lSQLGrantTrepLocalStr.str();
+      
+      // Create user 'trep'@'%'
+      std::ostringstream lSQLCreateTrepAllStr;
+      lSQLCreateTrepAllStr << "create user '"
+                           << DEFAULT_OPENTREP_MYSQL_DB_USER
+                           << "'@'%' identified by '"
+                           << DEFAULT_OPENTREP_MYSQL_DB_PASSWD << "';";
+      lSociSession << lSQLCreateTrepAllStr.str();
+      
+      // Grant privileges to 'trep'@'%'
+      std::ostringstream lSQLGrantTrepAllStr;
+      lSQLGrantTrepAllStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
+      lSQLGrantTrepAllStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
+      lSQLGrantTrepAllStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
+      lSQLGrantTrepAllStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
+      lSQLGrantTrepAllStr << "ALTER ROUTINE, EXECUTE ON *.*";
+      lSQLGrantTrepAllStr << " to '" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                          << "'@'%';";
+      lSociSession << lSQLGrantTrepAllStr.str();
+      
+      // Flush privileges
+      std::ostringstream lSQLFlushPrivilegesStr;
+      lSQLFlushPrivilegesStr << "flush privileges;";
+      lSociSession << lSQLFlushPrivilegesStr.str();
+      
+    } catch (soci::mysql_soci_error const& lSociException) {
+      oCreationSuccessful = false;
+      std::ostringstream errorStr;
+      errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+               << "'" << DEFAULT_OPENTREP_MYSQL_DB_USER
+               << "' user. Error message: " << lSociException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      std::cerr << errorStr.str() << std::endl;
+      oCreationSuccessful = false;
+      return oCreationSuccessful;
+    }
 
-        // Grant privileges to 'trep'@'%'
-        std::ostringstream lSQLGrantTrepAllStr;
-        lSQLGrantTrepAllStr << "grant SELECT, INSERT, UPDATE, DELETE, ";
-        lSQLGrantTrepAllStr << "CREATE, DROP, FILE, INDEX, ALTER, ";
-        lSQLGrantTrepAllStr << "CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, ";
-        lSQLGrantTrepAllStr << "TRIGGER, SHOW VIEW, CREATE ROUTINE, ";
-        lSQLGrantTrepAllStr << "ALTER ROUTINE, EXECUTE ON *.*";
-        lSQLGrantTrepAllStr << " to '" << DEFAULT_OPENTREP_MYSQL_DB_USER
-                            << "'@'%';";
-        lSociSession << lSQLGrantTrepAllStr.str();
-
-        // Flush privileges
-        std::ostringstream lSQLFlushPrivilegesStr;
-        lSQLFlushPrivilegesStr << "flush privileges;";
-        lSociSession << lSQLFlushPrivilegesStr.str();
-
-      } catch (soci::mysql_soci_error const& lSociException) {
-        oCreationSuccessful = false;
-        std::ostringstream errorStr;
-        errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                 << "'" << DEFAULT_OPENTREP_MYSQL_DB_USER
-                 << "' user. Error message: " << lSociException.what();
-        OPENTREP_LOG_ERROR (errorStr.str());
-        std::cerr << errorStr.str() << std::endl;
-        oCreationSuccessful = false;
-        return oCreationSuccessful;
-      }
-
-      /**
-       * On some MySQL server configurations (eg, MacOS), UTF8 just handles
-       * 3-byte character. To support 4-byte character on those platforms,
-       * 'utf8mb4' is needed, but is available only from MySQL 5.5. Moreover,
-       * 'utf8' seems enough on MySQL servers on CentOS.
-       * So, we first try with 'utf8mb4', and if it does not work, we try
-       * 'utf8'.
-       */
+    /**
+     * On some MySQL server configurations (eg, MacOS), UTF8 just handles
+     * 3-byte character. To support 4-byte character on those platforms,
+     * 'utf8mb4' is needed, but is available only from MySQL 5.5. Moreover,
+     * 'utf8' seems enough on MySQL servers on CentOS.
+     * So, we first try with 'utf8mb4', and if it does not work, we try
+     * 'utf8'.
+     */
+    try {
+      // Drop the 'trep_trep' database, if existing
+      std::ostringstream lSQLDropDBStr;
+      lSQLDropDBStr << "drop database if exists "
+                    << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
+                    << ";";
+      lSociSession << lSQLDropDBStr.str();
+      
+      // Create the 'trep_trep' database
+      std::ostringstream lSQLCreateDBStr;
+      lSQLCreateDBStr << "create database if not exists "
+                      << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber;
+      lSQLCreateDBStr << " default character set utf8mb4";
+      lSQLCreateDBStr << " collate utf8mb4_unicode_ci;";
+      lSociSession << lSQLCreateDBStr.str();
+      
+    } catch (soci::mysql_soci_error const& lSociException) {
+      oCreationSuccessful = false;
+      std::ostringstream errorStr;
+      errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
+               << "'" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
+               << "' database with 'utf8mb4' as character set. "
+               << "Error message: " << lSociException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      std::cerr << errorStr.str() << std::endl;
+    }
+    if (oCreationSuccessful == false) {
       try {
         // Drop the 'trep_trep' database, if existing
         std::ostringstream lSQLDropDBStr;
@@ -248,68 +275,123 @@ namespace OPENTREP {
                       << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
                       << ";";
         lSociSession << lSQLDropDBStr.str();
-
+        
         // Create the 'trep_trep' database
         std::ostringstream lSQLCreateDBStr;
         lSQLCreateDBStr << "create database if not exists "
-                        << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber;
-        lSQLCreateDBStr << " default character set utf8mb4";
-        lSQLCreateDBStr << " collate utf8mb4_unicode_ci;";
+                        << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                        << iDeploymentNumber;
+        lSQLCreateDBStr << " default character set utf8";
+        lSQLCreateDBStr << " collate utf8_unicode_ci;";
         lSociSession << lSQLCreateDBStr.str();
-
+        
       } catch (soci::mysql_soci_error const& lSociException) {
         oCreationSuccessful = false;
         std::ostringstream errorStr;
         errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                 << "'" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
-                 << "' database with 'utf8mb4' as character set. "
-                 << "Error message: " << lSociException.what();
+                 << "'" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                 << iDeploymentNumber
+                 << "' database. Error message: " << lSociException.what();
         OPENTREP_LOG_ERROR (errorStr.str());
         std::cerr << errorStr.str() << std::endl;
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
       }
-      if (oCreationSuccessful == false) {
-        try {
-          // Drop the 'trep_trep' database, if existing
-          std::ostringstream lSQLDropDBStr;
-          lSQLDropDBStr << "drop database if exists "
-                        << DEFAULT_OPENTREP_MYSQL_DB_DBNAME << iDeploymentNumber
-                        << ";";
-          lSociSession << lSQLDropDBStr.str();
-
-          // Create the 'trep_trep' database
-          std::ostringstream lSQLCreateDBStr;
-          lSQLCreateDBStr << "create database if not exists "
-                          << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
-                          << iDeploymentNumber;
-          lSQLCreateDBStr << " default character set utf8";
-          lSQLCreateDBStr << " collate utf8_unicode_ci;";
-          lSociSession << lSQLCreateDBStr.str();
-          
-        } catch (soci::mysql_soci_error const& lSociException) {
-          oCreationSuccessful = false;
-          std::ostringstream errorStr;
-          errorStr << "SOCI-related error when trying to create MySQL/MariaDB "
-                   << "'" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
-                   << iDeploymentNumber
-                   << "' database. Error message: " << lSociException.what();
-          OPENTREP_LOG_ERROR (errorStr.str());
-          std::cerr << errorStr.str() << std::endl;
-          oCreationSuccessful = false;
-          return oCreationSuccessful;
-        }
-      }
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("The '" << DEFAULT_OPENTREP_MYSQL_DB_USER
-                          << "' user and '" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
-                          << iDeploymentNumber
-                          << "' database have been created in MySQL/MariaDB ('"
-                          << iSQLDBConnStr << "')");
-      
-    } else if (iDBType == DBType::NODB || iDBType == DBType::SQLITE3) {
-      // Do nothing
     }
 
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The '" << DEFAULT_OPENTREP_MYSQL_DB_USER
+                        << "' user and '" << DEFAULT_OPENTREP_MYSQL_DB_DBNAME
+                        << iDeploymentNumber
+                        << "' database have been created in MySQL/MariaDB ('"
+                        << iSQLDBConnStr << "')");
+    //
+    return oCreationSuccessful;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool createSQLDBUserOnPG (const SQLDBConnectionString_T& iSQLDBConnStr,
+                            const DeploymentNumber_T& iDeploymentNumber) {
+    bool oCreationSuccessful = true;
+
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("Create the '"
+                        << DEFAULT_OPENTREP_PG_DB_USER
+                        << "' user and '" << DEFAULT_OPENTREP_PG_DB_DBNAME
+                        << iDeploymentNumber
+                        << "' database in PostgreSQL ('" << iSQLDBConnStr
+                        << "')");
+
+    // Connection to the PostgreSQL database
+    soci::session* lSociSession_ptr = NULL;      
+    try {
+
+      // Connect to the SQL database/file
+      lSociSession_ptr = DBManager::initSQLDBSession (DBType::PG,
+                                                      iSQLDBConnStr);
+      if (lSociSession_ptr == NULL) {
+        oCreationSuccessful = false;
+        return oCreationSuccessful;
+      }
+      
+    } catch (soci::mysql_soci_error const& lSociException) {
+      std::ostringstream errorStr;
+      errorStr << "SOCI-related error when trying to connect to the "
+               << "PostgreSQL database ('" << iSQLDBConnStr
+               << "'). SOCI error message: " << lSociException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      std::cerr << errorStr.str() << std::endl;
+      oCreationSuccessful = false;
+      return oCreationSuccessful;
+    }
+    assert (lSociSession_ptr != NULL);
+    // soci::session& lSociSession = *lSociSession_ptr;
+
+    //
+    // TODO - Adapt the remaining of the MySQL function
+    //
+
+    //
+    return oCreationSuccessful;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  bool DBManager::
+  createSQLDBUser (const DBType& iDBType,
+                   const SQLDBConnectionString_T& iSQLDBConnStr,
+                   const DeploymentNumber_T& iDeploymentNumber) {
+    bool oCreationSuccessful = true;
+
+    // Retrieve the enum, so that the switch-case statement works
+    const DBType::EN_DBType& dbType = iDBType.getType();
+    
+    switch (dbType) {
+    case DBType::SQLITE3: {
+      oCreationSuccessful = createSQLDBUserOnSQLite(iSQLDBConnStr,
+                                                    iDeploymentNumber);
+      break;
+    }
+
+    case DBType::MYSQL: {
+      oCreationSuccessful = createSQLDBUserOnMySQL(iSQLDBConnStr,
+                                                   iDeploymentNumber);
+
+      break;
+    }
+      
+    case DBType::PG: {
+      oCreationSuccessful = createSQLDBUserOnPG(iSQLDBConnStr,
+                                                iDeploymentNumber);
+
+      break;
+    }
+
+    default: {
+      break;
+    }
+    }
+    
     return oCreationSuccessful;
   }
 
@@ -319,14 +401,17 @@ namespace OPENTREP {
                     const SQLDBConnectionString_T& iSQLDBConnStr) {
     soci::session* oSociSession_ptr = NULL;
 
+    // Retrieve the enum, so that the switch-case statement works
+    const DBType::EN_DBType& dbType = iDBType.getType();
+    
     // DEBUG
-    if (!(iDBType == DBType::NODB)) {
+    if (dbType != DBType::NODB) {
       OPENTREP_LOG_DEBUG ("Connecting to the " << iDBType.describe()
                           << " SQL database/file ('" << iSQLDBConnStr << "')");
     }
 
-    if (iDBType == DBType::SQLITE3) {
-
+    switch (dbType) {
+    case DBType::SQLITE3: {
       // Check that the directory hosting the SQLite database exists
       const bool existSQLDBDir =
         FileManager::checkSQLiteDirectory (iSQLDBConnStr);
@@ -362,8 +447,10 @@ namespace OPENTREP {
       // The SQLite3 connection is assumed to have been successful
       assert (oSociSession_ptr != NULL);
 
-    } else if (iDBType == DBType::MYSQL) {
+      break;
+    }
 
+    case DBType::MYSQL: {
       try {
 
         // Connect to the SQL database.
@@ -387,15 +474,50 @@ namespace OPENTREP {
       // The MySQL/MariaDB connection is assumed to have been successful
       assert (oSociSession_ptr != NULL);
 
-    } else if (iDBType == DBType::NODB) {
+      break;
+    }
+
+    case DBType::PG: {
+      try {
+
+        // Connect to the SQL database.
+        oSociSession_ptr = new soci::session();
+        assert (oSociSession_ptr != NULL);
+        soci::session& lSociSession = *oSociSession_ptr;
+        lSociSession.open (soci::postgresql, iSQLDBConnStr);
+
+        // DEBUG
+        OPENTREP_LOG_DEBUG ("The " << iDBType.describe() << " database ("
+                            << iSQLDBConnStr << ") is accessible");
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to connect to the '" << iSQLDBConnStr
+                 << "' PostgreSQL database: " << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseImpossibleConnectionException (errorStr.str());
+      }
+
+      // The PostgreSQL connection is assumed to have been successful
+      assert (oSociSession_ptr != NULL);
+
+      break;
+    }
+
+    case DBType::NODB: {
       // Do nothing
 
-    } else {
+      break;
+    }
+
+    default: {
       std::ostringstream errorStr;
       errorStr << "Error: the '" << iDBType.describe()
                << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseTableCreationException (errorStr.str());
+      break;
+    }
     }
 
     return oSociSession_ptr;
@@ -406,14 +528,17 @@ namespace OPENTREP {
   terminateSQLDBSession (const DBType& iDBType,
                          const SQLDBConnectionString_T& iSQLDBConnStr,
                          soci::session& ioSociSession) {
+    // Retrieve the enum, so that the switch-case statement works
+    const DBType::EN_DBType& dbType = iDBType.getType();
+    
     // DEBUG
-    if (!(iDBType == DBType::NODB)) {
+    if (dbType != DBType::NODB) {
       OPENTREP_LOG_DEBUG ("Connecting to the " << iDBType.describe()
                           << " SQL database/file ('" << iSQLDBConnStr << "')");
     }
 
-    if (iDBType == DBType::SQLITE3) {
-      //
+    switch (dbType) {
+    case DBType::SQLITE3: {
       try {
 
         // Release the SQL database connection
@@ -428,8 +553,28 @@ namespace OPENTREP {
         throw SQLDatabaseConnectionReleaseException (errorStr.str());
       }
 
-    } else if (iDBType == DBType::MYSQL) {
-      //
+      break;
+    }
+
+    case DBType::PG: {
+      try {
+
+        // Release the SQL database connection
+        ioSociSession.close();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to release the connection ('"
+                 << iSQLDBConnStr
+                 << "') to the PostgreSQL database: " << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseConnectionReleaseException (errorStr.str());
+      }
+
+      break;
+    }
+
+    case DBType::MYSQL: {
       try {
 
         // Release the SQL database connection
@@ -443,16 +588,22 @@ namespace OPENTREP {
         OPENTREP_LOG_ERROR (errorStr.str());
         throw SQLDatabaseConnectionReleaseException (errorStr.str());
       }
+      break;
+    }
 
-    } else if (iDBType == DBType::NODB) {
+    case DBType::NODB: {
       // Do nothing
 
-    } else {
+      break;
+    }
+
+    default: {
       std::ostringstream errorStr;
       errorStr << "Error: the '" << iDBType.describe()
                << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseTableCreationException (errorStr.str());
+    }
     }
   }
 
@@ -461,14 +612,17 @@ namespace OPENTREP {
     const std::string& lDBName = ioSociSession.get_backend_name();
     const DBType lDBType (lDBName);
 
+    // Retrieve the enum, so that the switch-case statement works
+    const DBType::EN_DBType& dbType = lDBType.getType();
+    
     // DEBUG
-    if (!(lDBType == DBType::NODB)) {
+    if (dbType != DBType::NODB) {
       OPENTREP_LOG_DEBUG ("The tables of the " << lDBType.describe()
                           << " SQL database/file will be created/reset");
     }
 
-    if (lDBType == DBType::SQLITE3) {
-
+    switch (dbType) {
+    case DBType::SQLITE3: {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the optd_por table in the SQLite3 database");
         
@@ -522,9 +676,15 @@ namespace OPENTREP {
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("The optd_por table has been created in the SQLite3 database");
-        
-    } else if (lDBType == DBType::MYSQL) {
+      break;
+    }
 
+    case DBType::PG: {
+      // TODO
+      break;
+    }      
+
+    case DBType::MYSQL: {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the optd_por table in the MySQL database");
         
@@ -578,16 +738,24 @@ namespace OPENTREP {
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("The optd_por table has been created in the MySQL database");
-        
-    } else if (lDBType == DBType::NODB) {
+
+      break;
+    }
+
+    case DBType::NODB: {
       // Do nothing
 
-    } else {
+      break;
+    }
+
+    default: {
       std::ostringstream errorStr;
       errorStr << "Error: the '" << lDBName
                << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseTableCreationException (errorStr.str());
+      break;
+    }
     }
   }
 
@@ -596,14 +764,17 @@ namespace OPENTREP {
     const std::string& lDBName = ioSociSession.get_backend_name();
     const DBType lDBType (lDBName);
 
+    // Retrieve the enum, so that the switch-case statement works
+    const DBType::EN_DBType& dbType = lDBType.getType();
+    
     // DEBUG
-    if (!(lDBType == DBType::NODB)) {
+    if (dbType != DBType::NODB) {
       OPENTREP_LOG_DEBUG ("The indexes of the " << lDBType.describe()
                           << " SQL database/file will be created/reset");
     }
 
-    if (lDBType == DBType::SQLITE3) {
-
+    switch (dbType) {
+    case DBType::SQLITE3: {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the indices for the SQLite3 database");
         
@@ -644,9 +815,16 @@ namespace OPENTREP {
       // DEBUG
       OPENTREP_LOG_DEBUG ("The indices have been created "
                           "for the SQLite3 database");
-        
-    } else if (lDBType == DBType::MYSQL) {
+      break;
+    }
 
+    case DBType::PG: {
+      // TODO
+      
+      break;
+    }
+      
+    case DBType::MYSQL: {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the indices for the MySQL database");
         
@@ -691,16 +869,23 @@ namespace OPENTREP {
       // DEBUG
       OPENTREP_LOG_DEBUG ("The indices have been created "
                           "for the MySQL/MariaDB database");
-      
-    } else if (lDBType == DBType::NODB) {
-      // Do nothing
 
-    } else {
+      break;
+    }
+      
+    case DBType::NODB: {
+      // Do nothing
+      break;
+    }
+
+    default: {
       std::ostringstream errorStr;
       errorStr << "Error: the '" << lDBName
                << "' SQL database type is not supported";
       OPENTREP_LOG_ERROR (errorStr.str());
       throw SQLDatabaseIndexCreationException (errorStr.str());
+      break;
+    }
     }
   }
 

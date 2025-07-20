@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+#
+# File: https://github.com/trep/opentrep/tree/master/data/por/pg/opentrep-create-db-user.sh.in
+#
+# Two parameters are optional for this script:
+# - the host server of the database
+# - the port of the database
+#
+# References:
+# * https://github.com/data-engineering-helpers/ks-cheat-sheets/tree/main/db/postgresql
+#
+
+if [ "$1" = "-h" -o "$1" = "--help" ];
+then
+	echo "Usage: $0 [<Database server hostname> [<Database server port>] [<Admin database name>]]]"
+	echo ""
+	exit 1
+fi
+
+##
+# Database server hostname
+DB_HOST="localhost"
+if [ "$1" != "" ];
+then
+	DB_HOST="$1"
+fi
+
+# Database server port
+DB_PORT="5432"
+if [ "$2" != "" ];
+then
+	DB_PORT="$2"
+fi
+
+##
+# Administrative database name
+DB_ADM_NAME="postgres"
+if [ "$3" != "" ];
+then
+	DB_ADM_NAME="$3"
+fi
+
+# Default database admin user
+DB_ADM_USER="${USER}"
+
+# Default database admin password
+DB_ADM_PASSWD=""
+
+# Default database for OpenTREP
+DB_TREP_NAME="trep_trep"
+
+# Default user for OpenTREP database
+DB_TREP_USER="trep"
+
+# Default passwd for OpenTREP database
+DB_TREP_PASSWD="trep"
+
+# Ask the user for administrative credentials on PostgreSQL
+getUserCredentials() {
+	echo "Accessing PostgreSQL administrative database (${DB_ADM_NAME}) hosted on ${DB_HOST}:${DB_PORT}, in order to create the OpenTREP database."
+	echo "To create a database, username and password of an administrator-like PostgreSQL account are required."
+	echo "On most of PostgreSQL databases, either the 'postgres' or user ID (${USER}) PostgreSQL account has all the administrative rights,"
+	echo "but you may want to use a less-privileged PostgreSQL administrator account."
+	echo "Type the username of administrator followed by "
+	echo "[Enter]. To discontinue, type CTRL-C."
+	read userinput_adminname
+
+	echo "Type $userinput_adminname's password followed by [Enter]"
+	read -s userinput_pw
+
+	# Database User
+	INPUT_DB_USER="${userinput_adminname}"
+	DB_ADM_USER="${INPUT_DB_USER:-${USER}}"
+
+	# Database Password
+	DB_PASSWD="${userinput_pw}"
+}
+
+# Create the database and user for OpenTREP on the PostgreSQL database
+executeSQLScriptAsAdmin() {
+	SQL_ADM_FILE="@CMAKE_INSTALL_PREFIX@/@INSTALL_DATA_DIR@/opentrep/data/por/pg/create-trep-user-and-db.sql"
+
+	echo "Executing the following database SQL script: ${SQL_ADM_FILE}"
+	psql "host=${DB_HOST} port=${DB_PORT} dbname=${DB_ADM_NAME} user=${DB_ADM_USER} password=${DB_ADM_PASSWD}" -f ${SQL_ADM_FILE}
+	retval=$?; if [ ${retval} != 0 ]; then return ${retval}; fi
+	echo "The following database SQL script has been successfully executed: ${SQL_ADM_FILE}"
+}
+
+# Create the tables for OpenTREP on the PostgreSQL database
+executeSQLScriptTableCreation() {
+	SQL_DDL_FILE="@CMAKE_INSTALL_PREFIX@/@INSTALL_DATA_DIR@/opentrep/data/por/pg/create-trep-tables.sql"
+
+	echo "Executing the following database SQL script: ${SQL_DDL_FILE}"
+	psql "host=${DB_HOST} port=${DB_PORT} dbname=${DB_TREP_NAME} user=${DB_TREP_USER} password=${DB_TREP_PASSWD}" -f ${SQL_DDL_FILE}
+	retval=$?; if [ ${retval} != 0 ]; then return ${retval}; fi
+	echo "The following database SQL script has been successfully executed: ${SQL_DDL_FILE}"
+}
+
+# Main
+## Creating the 'trep' user and the corresponding 'trep_trep' database
+getUserCredentials
+retval=$?; if [ ${retval} != 0 ]; then exit ${retval}; fi
+
+executeSQLScriptAsAdmin
+retval=$?; if [ ${retval} != 0 ]; then exit ${retval}; fi
+
+executeSQLScriptTableCreation
+retval=$?; if [ ${retval} != 0 ]; then exit ${retval}; fi

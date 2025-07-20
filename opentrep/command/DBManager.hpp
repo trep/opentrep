@@ -26,7 +26,7 @@ namespace OPENTREP {
    * @brief Class wrapping the access to an underlying SQL database.
    *
    * The SQL database may be one of none, SQLite3, MySQL, PostgreSQL.
-   * That latter is not supported yet. However, patches are welcome on
+   * That latter is not fully supported yet. However, patches are welcome on
    * http://github.com/trep/opentrep/issues.
    *
    * The methods are assumed to be used in the following order:
@@ -49,10 +49,11 @@ namespace OPENTREP {
      * !!!!!Please be careful to not store anything else in that
      * directory, as it would otherwise be deleted as well!!!!!
      *
-     * On MySQL, create the 'trep' database user and 'trep_trep' database.
+     * On MySQL and PostgreSQL, create the 'trep' database user and
+     * 'trep_trep' database.
      * If tables were previously existing, they are deleted and re-created.
      *
-     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const DBType& The SQL database type (e.g., SQLite3, PG, MySQL).
      * @param const SQLDBConnectionString_T& Connection string for the SQL
      *                                       database.
      * @param const const DeploymentNumber_T& Deployment number
@@ -70,18 +71,18 @@ namespace OPENTREP {
      * destroys and re-creates the database.
      *
      * <ul>
-     *  <li>With SQLite3, a database is given by just a file-path. If the SQLite3
-     * database file was previously existing, it is deleted and re-created,
-     * empty.</li>
-     *  <li>With MySQL, a database server needs to run and being accessible
-     *      thanks to details, including credentials, you know.
-     *      On that database, the <tt>rfd</tt> user must have been created
-     *      before hand. You can use the opentrep_create_db_user.sh helper
+     *  <li>With SQLite3, a database is given by just a file-path. If the
+     *      SQLite3 database file was previously existing, it is deleted and
+     *      re-created, empty.</li>
+     *  <li>With MySQL and PostgreSQL, a database server needs to run and being
+     *      accessible thanks to details, including credentials, you know.
+     *      On that database, the <tt>trep</tt> user must have been created
+     *      before hand. You can use the opentrep-create-db-user.sh helper
      *      script (in the <tt>bin</tt> of the OpenTREP installation directory)
      *      for that.</li>
      * </ul>
      *
-     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const DBType& The SQL database type (e.g., SQLite3, PG, MySQL).
      * @param const SQLDBConnectionString_T& Connection string for the SQL
      *                                       database.
      * @return soci::session* A pointer on the just created SQL database
@@ -98,7 +99,7 @@ namespace OPENTREP {
      * are for information only, so that a proper exception message be
      * throwed, if ever.
      *
-     * @param const DBType& The SQL database type (e.g., SQLite3, MySQL).
+     * @param const DBType& The SQL database type (e.g., SQLite3, PG, MySQL).
      * @param const SQLDBConnectionString_T& Connection string for the SQL
      *                                       database.
      * @param soci::session& A reference to the SQL database connection.
@@ -117,15 +118,16 @@ namespace OPENTREP {
     static void createSQLDBTables (soci::session&);
 
     /**
-     * Create the database indexes.
+     * Create the database indices.
      *
-     * @param soci::session& A reference on the SQLite3 database session.
+     * @param soci::session& A reference on the SQL database session.
      */
     static void createSQLDBIndexes (soci::session&);
 
     /**
      * Retrieve the number of POR (points of reference) within the SQL database.
      *
+     * @param soci::session& A reference on the SQL database session.
      * @return NbOfDBEntries_T Number of documents of the SQL database.
      */
     static NbOfDBEntries_T displayCount (soci::session&);
@@ -133,6 +135,7 @@ namespace OPENTREP {
     /**
      * Dump all the POR (points of reference) of the SQL database.
      *
+     * @param soci::session& A reference on the SQL database session.
      * @return NbOfDBEntries_T Number of documents of the SQL database.
      */
     static NbOfDBEntries_T displayAll (soci::session&);
@@ -217,7 +220,8 @@ namespace OPENTREP {
      * to the given IATA code.
      *
      * @param const SQLDBConnectionString_T& Connection string to the SQL DB.
-     * @param const GeonamesID_T& The GeonameID (key) of the POR to be retrieved.
+     * @param const GeonamesID_T& The GeonameID (key) of the POR
+     *                            to be retrieved.
      * @param LocationList_T& List of (geographical) locations, if any,
      *                        matching the given key.
      * @return NbOfDBEntries_T Number of documents of the SQL database.

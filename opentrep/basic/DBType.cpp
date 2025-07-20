@@ -11,10 +11,10 @@ namespace OPENTREP {
   
   // //////////////////////////////////////////////////////////////////////
   const std::string DBType::_labels[LAST_VALUE] =
-    { "NoDB", "SQLite3", "MySQL/MariaDB" };
+    { "NoDB", "SQLite3", "PG", "MySQL/MariaDB" };
 
   // //////////////////////////////////////////////////////////////////////
-  const char DBType::_typeLabels[LAST_VALUE] = { 'N', 'S', 'M' };
+  const char DBType::_typeLabels[LAST_VALUE] = { 'N', 'S', 'P', 'M' };
   
   // //////////////////////////////////////////////////////////////////////
   DBType::DBType() : _type (LAST_VALUE) {
@@ -37,6 +37,7 @@ namespace OPENTREP {
     switch (iTypeChar) {
     case 'N': oType = NODB; break;
     case 'S': oType = SQLITE3; break;
+    case 'P': oType = PG; break;
     case 'M': oType = MYSQL; break;
     default: oType = LAST_VALUE; break;
     }
@@ -63,6 +64,9 @@ namespace OPENTREP {
       _type = SQLITE3;
     } else if (iTypeStr == "sqlite" || iTypeStr == "sqlite3") {
       _type = SQLITE3;
+    } else if (iTypeStr == "pg" || iTypeStr == "postgres"
+               || iTypeStr == "postgresql") {
+      _type = PG;
     } else if (iTypeStr == "mysql" || iTypeStr == "mariadb") {
       _type = MYSQL;
     } else if (iTypeStr == "nodb") {

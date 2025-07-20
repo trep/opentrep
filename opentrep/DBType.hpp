@@ -19,27 +19,29 @@ namespace OPENTREP {
     typedef enum {
       NODB = 0,
       SQLITE3,
+      PG,
       MYSQL,
       LAST_VALUE
     } EN_DBType;
 
     /**
-     * Get the label as a string (e.g., "NoDB", "SQLite3", "MySQL/MariaDB").
+     * Get the label as a string (e.g., "NoDB", "PG", "SQLite3",
+     * "MySQL/MariaDB").
      */
     static const std::string& getLabel (const EN_DBType&);
 
     /**
-     * Get the type value from parsing a single char (e.g., 'N', 'S', 'M')
+     * Get the type value from parsing a single char (e.g., 'N', 'S', 'P', 'M')
      */
     static EN_DBType getType (const char);
 
     /**
-     * Get the label as a single char (e.g., 'N', 'S', 'M')
+     * Get the label as a single char (e.g., 'N', 'S', 'P', 'M')
      */
     static char getTypeLabel (const EN_DBType&);
 
     /**
-     * Get the label as a string of a single char (e.g., 'N', 'S', 'M')
+     * Get the label as a string of a single char (e.g., 'N', 'S', 'P', 'M')
      */
     static std::string getTypeLabelAsString (const EN_DBType&);
 
@@ -54,18 +56,18 @@ namespace OPENTREP {
     EN_DBType getType() const;
 
     /**
-     * Get the enumerated value as a short string (e.g., "N", "S", "M")
+     * Get the enumerated value as a short string (e.g., "N", "S", "P", "M")
      */
     char getTypeAsChar() const;
     
     /**
-     * Get the enumerated value as a short string (e.g., "N", "S", "M")
+     * Get the enumerated value as a short string (e.g., "N", "S", "P", "M")
      */
     std::string getTypeAsString() const;
     
     /**
      * Give a description of the structure (e.g., "NoDB", "SQLite3",
-     * "MySQL/MariaDB").
+     * "PG", "MySQL/MariaDB").
      */
     const std::string describe() const;
 

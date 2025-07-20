@@ -13,7 +13,7 @@ namespace OPENTREP {
    * Default file-path for the OPTD-maintained POR (points of reference) file.
    */
   const std::string DEFAULT_OPENTREP_POR_FILEPATH (OPENTREP_POR_DATA_DIR
-                                                   "/test_optd_por_public.csv");
+                                                   "/csv/test-optd-por-public.csv");
   
   /**
    * Default file-path for the Xapian database/index.
@@ -35,6 +35,12 @@ namespace OPENTREP {
    * Default connection string for the MySQL/MariaDB database.
    */
   const std::string
+  DEFAULT_OPENTREP_PG_CONN_STRING ("dbname=trep_trep user=trep password=trep");
+
+  /**
+   * Default connection string for the MySQL/MariaDB database.
+   */
+  const std::string
   DEFAULT_OPENTREP_MYSQL_CONN_STRING ("db=trep_trep user=trep password=trep");
 
   /**
@@ -42,6 +48,15 @@ namespace OPENTREP {
    */
   const std::string
   DEFAULT_OPENTREP_SQLITE_DB_FILEPATH ("/tmp/opentrep/sqlite_travel.db");
+
+  /**
+   * Default name and location for the PostgreSQL database (if existing).
+   */
+  const std::string DEFAULT_OPENTREP_PG_DB_USER ("trep");
+  const std::string DEFAULT_OPENTREP_PG_DB_PASSWD ("trep");
+  const std::string DEFAULT_OPENTREP_PG_DB_DBNAME ("trep_trep");
+  const std::string DEFAULT_OPENTREP_PG_DB_HOST ("localhost");
+  const std::string DEFAULT_OPENTREP_PG_DB_PORT ("5432");
 
   /**
    * Default name and location for the MySQL database (if existing).

@@ -116,10 +116,10 @@ int readConfiguration (int argc, char* argv[],
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
     ("sqldbtype,t",
      boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
-     "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
+     "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL, pg for PostgreSQL)")
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString),
-     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL or PostgreSQL)")
     ("deploymentnb,m",
      boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
      "Deployment number (from to N, where N=1 normally)")
@@ -224,6 +224,10 @@ int readConfiguration (int argc, char* argv[],
     ioAddPORInDB = true;
     ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
 
+  } else if (lDBType == OPENTREP::DBType::PG) {
+    ioAddPORInDB = true;
+    ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_PG_CONN_STRING;
+
   } else if (lDBType == OPENTREP::DBType::MYSQL) {
     ioAddPORInDB = true;
     ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_MYSQL_CONN_STRING;
@@ -236,7 +240,8 @@ int readConfiguration (int argc, char* argv[],
 
   // Reporting of the SQL database connection string
   if (lDBType == OPENTREP::DBType::SQLITE3
-      || lDBType == OPENTREP::DBType::MYSQL) {
+      || lDBType == OPENTREP::DBType::MYSQL
+      || lDBType == OPENTREP::DBType::PG) {
     const std::string& lSQLDBConnString =
       OPENTREP::parseAndDisplayConnectionString (lDBType,
                                                  ioSQLDBConnectionString,
@@ -676,14 +681,14 @@ int main (int argc, char* argv[]) {
                 << "database. SQL database administrative rights are required."
                 << std::endl;
       std::cout << " reset_connection_string" << "\t"
-                << "Reset/update the connection string to a MySQL database."
+                << "Reset/update the connection string to a MySQL or PostgreSQL database."
                 << " The connection string must be given"
                 << std::endl;
       std::cout << " create_tables" << "\t\t\t"
-                << "Create/reset the SQL database (eg, SQLite3, MySQL) tables"
+                << "Create/reset the SQL database (eg, SQLite3, PostgreSQL, MySQL) tables"
                 << std::endl;
       std::cout << " create_indexes" << "\t\t\t"
-                << "Create/reset the SQL database (eg, SQLite3, MySQL) indices"
+                << "Create/reset the SQL database (eg, SQLite3, PostgreSQL, MySQL) indices"
                 << std::endl;
       std::cout << " toggle_deployment_number" << "\t"
                 << "Toggle the deployment number/version. "
@@ -799,6 +804,10 @@ int main (int argc, char* argv[]) {
       std::cout << std::endl;
       std::cout << "    --------    " << std::endl;
       std::cout << "Management of the database user and database:" << std::endl;
+      std::cout << "* For PostgreSQL:" << std::endl;
+      std::cout <<" reset_connection_string db=postgres user=$USER password=<passwd>"
+                << std::endl;
+      std::cout << "* For MySQL:" << std::endl;
       std::cout <<" reset_connection_string db=mysql user=root password=<passwd>"
                 << std::endl;
       std::cout << " create_user" << std::endl;
@@ -1137,7 +1146,8 @@ int main (int argc, char* argv[]) {
       std::cout << "Creating the 'trep' user and 'trep_trep' database"
                 << std::endl;
     
-      // On MySQL/MariaDB, create the 'trep' user and 'trep_trep' database.
+      // On MySQL/MariaDB and PostgreSQL, create the 'trep' user and 'trep_trep'
+      // database.
       // On SQLite, delete the directory hosting the database, and re-create it.
       // On other database types, do nothing.
       const bool lCreationSuccessful = opentrepService.createSQLDBUser();
@@ -1224,7 +1234,7 @@ int main (int argc, char* argv[]) {
       std::cout << "Creating/resetting the " << lDBType.describe()
                 << " database tables" << std::endl;
     
-      // Create/reset the SQLite3/MySQL tables
+      // Create/reset the tables (on SQLite3, PostgreSQL, MySQL)
       opentrepService.createSQLDBTables();
 
       //
@@ -1238,14 +1248,14 @@ int main (int argc, char* argv[]) {
     case Command_T::CREATE_INDEXES: {
       //
       std::cout << "Creating/resetting the " << lDBType.describe()
-                << " database indexes" << std::endl;
+                << " database indices" << std::endl;
     
-      // Create/reset the SQLite3/MySQL indexes
+      // Create/reset the indices (on SQLite3, PostgreSQL, MySQL)
       opentrepService.createSQLDBIndexes();
 
       //
       std::cout << "The " << lDBType.describe()
-                << " indexes has been created/resetted" << std::endl;
+                << " indices has been created/resetted" << std::endl;
 
       break;
     }

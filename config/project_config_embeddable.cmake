@@ -949,6 +949,20 @@ macro (get_soci)
     include_directories (${SOCI_INCLUDE_DIR})
   endif (SOCI_FOUND)
 
+  # SOCI PostgreSQL
+  find_package (SOCIPostgreSQL ${_required_version} REQUIRED)
+  if (SOCIPostgreSQL_FOUND)
+    #
+    message (STATUS "Found SOCI with PostgreSQL back-end support version:"
+	  " ${SOCI_HUMAN_VERSION}")
+
+    # Update the list of include directories for the project
+    include_directories (${SOCIPostgreSQL_INCLUDE_DIR})
+
+    # Update the list of dependencies for the project
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${SOCI_LIBRARIES} ${SOCIPostgreSQL_LIBRARIES})
+  endif (SOCIPostgreSQL_FOUND)
+
   # SOCI MySQL
   find_package (SOCIMySQL ${_required_version} REQUIRED)
   if (SOCIMYSQL_FOUND)
@@ -2798,9 +2812,11 @@ macro (display_soci)
     message (STATUS "  - SOCI_LIB_VERSION .............. : ${SOCI_LIB_VERSION}")
     message (STATUS "  - SOCI_HUMAN_VERSION ............ : ${SOCI_HUMAN_VERSION}")
     message (STATUS "  - SOCI_INCLUDE_DIR .............. : ${SOCI_INCLUDE_DIR}")
+    message (STATUS "  - SOCIPostgreSQL_INCLUDE_DIR .... : ${SOCIPostgreSQL_INCLUDE_DIR}")
     message (STATUS "  - SOCIMYSQL_INCLUDE_DIR ......... : ${SOCIMYSQL_INCLUDE_DIR}")
     message (STATUS "  - SOCISQLITE_INCLUDE_DIR ........ : ${SOCISQLITE_INCLUDE_DIR}")
     message (STATUS "  - SOCI_LIBRARIES ................ : ${SOCI_LIBRARIES}")
+    message (STATUS "  - SOCIPostgreSQL_LIBRARIES ...... : ${SOCIPostgreSQL_LIBRARIES}")
     message (STATUS "  - SOCIMYSQL_LIBRARIES ........... : ${SOCIMYSQL_LIBRARIES}")
     message (STATUS "  - SOCISQLITE_LIBRARIES .......... : ${SOCISQLITE_LIBRARIES}")
   endif (SOCI_FOUND)
