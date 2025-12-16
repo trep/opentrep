@@ -51,7 +51,7 @@
 	(otherwise, the other options would be interpreted as part of that
 	travel query word list).
 
-See the output of the <tt>`opentrep-searcher --help'</tt> command for the default options.
+See the output of the <tt>opentrep-searcher --help</tt> command for the default options.
 
 
 \section sec_see_also_searcher SEE ALSO

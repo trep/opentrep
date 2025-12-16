@@ -36,7 +36,7 @@
  \b -g, \b --generate <nb-of-por><br>
  	Number of POR (points of reference) to generate
 
-See the output of the <tt>`pyopentrep --help'</tt> command for default options.
+See the output of the <tt>pyopentrep --help</tt> command for default options.
 
 
 \section sec_see_also_py SEE ALSO

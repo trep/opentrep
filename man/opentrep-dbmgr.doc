@@ -49,7 +49,7 @@
     Path (absolute or relative) of the output log file.
 
 
-See the output of the <tt>`opentrep-dbmgr --help'</tt> command for default options.
+See the output of the <tt>opentrep-dbmgr --help</tt> command for default options.
 
 Once the program is launched, just type the 'help' command to get the full list
 of all the possible commands and their parameters.
