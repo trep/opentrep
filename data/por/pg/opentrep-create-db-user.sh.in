@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 #
 # File: https://github.com/trep/opentrep/tree/master/data/por/pg/opentrep-create-db-user.sh.in
 #
