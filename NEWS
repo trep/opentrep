@@ -1,3 +1,7 @@
+* 2025-12-16:
+- Version 0.07.19
+- Fixed a few issues with the doc and man pages
+
 * 2025-03-24:
 - Version 0.07.18
 - Upgraded a few CMake support files
