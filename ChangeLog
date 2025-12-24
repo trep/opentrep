@@ -1,3 +1,6 @@
+* Wed Dec 24 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.20:
+- Upgraded CMake conf for Python
+
 * Tue Dec 16 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.19:
 - Fixed a few issues with the doc and man pages
 
