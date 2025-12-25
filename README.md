@@ -641,9 +641,9 @@ the standard place. So, the `cmake` command becomes:
 ```bash
 $ export CMAKE_CXX_FLAGS="-Wno-mismatched-new-delete"; \
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/opentrep-$TREP_VER \
-   -DREADLINE_ROOT=${BREW_PFX}/opt/portable-readline \
-   -DREADLINE_INCLUDE_DIR=${BREW_PFX}/opt/portable-readline/include \
-   -DREADLINE_LIBRARY=${BREW_PFX}/opt/libedit/lib/libedit.dylib \
+   -DReadline_ROOT_DIR=${BREW_PFX}/opt/readline \
+   -DReadline_INCLUDE_DIR=${BREW_PFX}/opt/readline/include \
+   -DReadline_LIBRARY=${BREW_PFX}/opt/readline/lib/libreadline.dylib
    -DICU_ROOT=${BREW_PFX}/opt/icu4c \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ..
