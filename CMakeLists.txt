@@ -66,8 +66,8 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ##            Dependencies            ##
 ########################################
 #
-get_external_libs (git "python 3.6" "boost 1.48" "icu 4.2" protobuf readline
-  "xapian 1.0" "soci 3.0" "sqlite 3.0" "mysql 5.1" doxygen)
+get_external_libs (git "python 3.10" "boost 1.48" "icu 4.2" protobuf readline
+  "xapian 1.0" "soci 4.0" "sqlite 3.0" "postgres 9"  "mysql 5.1" doxygen)
 
 
 ##############################################

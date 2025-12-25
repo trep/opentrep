@@ -297,7 +297,7 @@ endmacro (packaging_set_other_options)
 ###################################################################
 # ~~~~~~~~ Wrapper ~~~~~~~~
 macro (get_external_libs)
-  # CMake scripts, to find some dependencies (e.g., Boost, MySQL, SOCI)
+  # CMake scripts, to find some dependencies (e.g., Boost, PostgreSQL, MySQL, SOCI)
   set (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config/)
 
   #
@@ -362,6 +362,10 @@ macro (get_external_libs)
     if (${_arg_lower} STREQUAL "sqlite")
       get_sqlite (${_arg_version})
     endif (${_arg_lower} STREQUAL "sqlite")
+
+    if (${_arg_lower} STREQUAL "postgres")
+      get_postgres (${_arg_version})
+    endif (${_arg_lower} STREQUAL "postgres")
 
     if (${_arg_lower} STREQUAL "mysql")
       get_mysql (${_arg_version})
@@ -493,9 +497,6 @@ macro (get_python)
   #find_package (PythonExtensions REQUIRED)
   include(targetLinkLibrariesWithDynamicLookup)
 
-  # The second check is to get the dynamic library for sure.
-  #find_package (PythonLibsWrapper ${_required_version} REQUIRED)
-
   if (Python3_FOUND)
     message (STATUS "Found Python3 ${Python3_VERSION} (${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}.${Python3_VERSION_PATCH})")
 
@@ -604,16 +605,15 @@ macro (get_boost)
   #         On some platform/Boost version combinations, the Python version
   #         may be just the major version (2 or 3 as of 2020) or the major
   #         and minor versions (e.g., 27, 28, 34, 36, 37, 38, 39 as of 2020)
-  # Note 3: Boot.Python has is reuired only for Python extensions. It should
+  # Note 3: Boot.Python is required only for Python extensions. It should
   #         not be linked with other regular (non-Python) libraries/binaries,
   #         as it pulls with it symbols from the Python interpreter, which are
   #         available only when launched from a Python interpreter.
   set (Boost_USE_STATIC_LIBS OFF)
   set (Boost_USE_MULTITHREADED ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
-  # Boost.Python - Depending on the platforms, the component name
-  # differs. We try all of them, and the find_package() will retrieve
-  # just one
+  # Boost.Python - Depending on the platforms, the component name differs.
+  # We try all of them, and the find_package() will retrieve just one
   if (NEED_PYTHON)
     set (python_cpt_name0 "python")
     #
@@ -628,7 +628,7 @@ macro (get_boost)
 
   # Boost components for (non-Python) libraries
   set (BOOST_REQUIRED_COMPONENTS_FOR_LIB
-    date_time random iostreams serialization filesystem system locale regex)
+    date_time random iostreams serialization filesystem locale regex)
 
   # Boost components for Python extensions
   if (NEED_PYTHON)
@@ -787,9 +787,6 @@ macro (get_xapian)
   endif (${ARGC} GREATER 0)
 
   # The first check is to get Xapian installation details
-  if (${CMAKE_VERSION} VERSION_LESS 2.8.0)
-	set (Xapian_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/xapian)
-  endif (${CMAKE_VERSION} VERSION_LESS 2.8.0)
   find_package (Xapian)
 
   # The second check is for the required version (FindXapianWrapper.cmake is
@@ -883,6 +880,28 @@ macro (get_sqlite)
   endif (SQLite3_FOUND)
 
 endmacro (get_sqlite)
+
+# ~~~~~~~~~~ PostgreSQL ~~~~~~~~~
+macro (get_postgres)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires PostgreSQL-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires PostgreSQL without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  find_package (PostgreSQL ${_required_version} REQUIRED)
+  if (PostgreSQL_FOUND)
+
+    # Update the list of include directories for the project
+    include_directories (${PostgreSQL_INCLUDE_DIRS})
+
+    # Update the list of dependencies for the project
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB ${PostgreSQL_LIBRARIES})
+  endif (PostgreSQL_FOUND)
+
+endmacro (get_postgres)
 
 # ~~~~~~~~~~ MySQL ~~~~~~~~~
 macro (get_mysql)
@@ -1781,8 +1800,8 @@ macro (module_library_add_specific
   endif (NOT "${_lib_short_name}" STREQUAL "${MODULE_NAME}")
 
   # Add the dependencies:
-  #  * on external libraries (Boost, MySQL, SOCI, StdAir), as calculated by 
-  #    the get_external_libs() macro above;
+  #  * on external libraries (Boost, PostgreSQL, MySQL, SOCI, StdAir), as calculated
+  #    by the get_external_libs() macro above;
   #  * on the other module libraries, as provided as paramaters to this macro
   #  * on the main/standard library of the module (when, of course, the
   #    current library is not the main/standard library).
@@ -2792,6 +2811,17 @@ macro (display_sqlite)
   endif (SQLite3_FOUND)
 endmacro (display_sqlite)
 
+# PostgreSQL
+macro (display_postgres)
+  if (PostgreSQL_FOUND)
+    message (STATUS)
+    message (STATUS "* PostgreSQL:")
+    message (STATUS "  - PostgreSQL_VERSION ............ : ${PostgreSQL_VERSION}")
+    message (STATUS "  - PostgreSQL_INCLUDE_DIRS ....... : ${PostgreSQL_INCLUDE_DIRS}")
+    message (STATUS "  - PostgreSQL_LIBRARIES .......... : ${PostgreSQL_LIBRARIES}")
+  endif (PostgreSQL_FOUND)
+endmacro (display_postgres)
+
 # MySQL
 macro (display_mysql)
   if (MYSQL_FOUND)
@@ -3142,6 +3172,7 @@ macro (display_status)
   display_readline ()
   display_curses ()
   display_sqlite ()
+  display_postgres ()
   display_mysql ()
   display_soci ()
   display_optd ()

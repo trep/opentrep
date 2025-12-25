@@ -29,7 +29,7 @@
  * File-path of the POR (points of reference) file.
  */
 const std::string K_POR_FILEPATH (OPENTREP_POR_DATA_DIR
-                                  "/test_world_schedule.csv");
+                                  "/csv/test-world-schedule.csv");
 
 
 // Type definitions
