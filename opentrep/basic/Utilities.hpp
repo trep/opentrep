@@ -82,11 +82,48 @@ namespace OPENTREP {
                                             const DeploymentNumber_T& iDN = DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE);
 
   /**
+   * Parse a PostgreSQL SOCI connection string.
+   *
+   * Typically, the connection string is like
+   * 'dbname=trep_trep user=trep password=trep host=localhost port=5432'.
+   *
+   * @param const SQLDBConnectionString_T& Connection string for PostgreSQL
+   * @return StringMap_T Connection details for PostgreSQL
+   */
+  StringMap_T parsePGConnectionString (const SQLDBConnectionString_T&);
+
+  /**
+   * Recompose the PostgreSQL connection string, appending the deployment
+   * number to the database name.
+   *
+   * For instance, 'dbname=trep_trep0 user=trep password=trep'
+   *
+   * @param const StringMap_T& Connection details for PostgreSQL
+   * @param const DeploymentNumber_T& Deployment number
+   * @return SQLDBConnectionString_T Connection string for PostgreSQL
+   */
+  SQLDBConnectionString_T buildPGConnectionString (const StringMap_T&,
+                                                   const DeploymentNumber_T&);
+
+  /**
+   * Display the PostgreSQL connection string (hiding password).
+   *
+   * @param const StringMap_T& Connection details for PostgreSQL
+   * @param const DeploymentNumber_T& Deployment number
+   * @return std::string Displayable connection string
+   */
+  std::string displayPGConnectionString (const StringMap_T&,
+                                         const DeploymentNumber_T& iDN = DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE);
+
+  /**
    * Parse the connection string, and re-build it taking into account
    * the deployment number/version.
    *
-   * @param const SQLDBConnectionString_T& Connection string for MySQL/MariaDB
-   * @param const const DeploymentNumber_T& Deployment number
+   * Supports SQLite3, MySQL/MariaDB, and PostgreSQL.
+   *
+   * @param const DBType& The SQL database type
+   * @param const SQLDBConnectionString_T& Connection string
+   * @param const DeploymentNumber_T& Deployment number
    * @return std::string String displaying the connection string
    */
   std::string parseAndDisplayConnectionString (const DBType&,

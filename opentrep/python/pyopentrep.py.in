@@ -61,7 +61,7 @@ def usage(script_name="pyopentrep"):
     print("  -p, --porpath=     : file-path of the POR (points of reference)" \
           " data file")
     print("  -d, --xapiandb=    : file-path to the Xapian index/database")
-    print("  -t, --sqldbtype=   : type of the SQL DB (noDB, sqlite, mysql)")
+    print("  -t, --sqldbtype=   : type of the SQL DB (noDB, sqlite, pg, mysql)")
     print("  -s, --sqldbconx=   : specifies the connection string for the SQL DB")
     print("  -m, --deploymentdb=: deployment number/version")
     print("  -f, --format=      : format of the output: Short (S, default),")

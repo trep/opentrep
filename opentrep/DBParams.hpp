@@ -137,6 +137,17 @@ namespace OPENTREP {
       }
       return true;
     }
+
+    /**
+     * Check that all the parameters are fine for PostgreSQL.
+     */
+    bool checkPG () const {
+      if (_user.empty() == true || _passwd.empty() == true
+          || _dbname.empty() == true) {
+        return false;
+      }
+      return true;
+    }
     
   public:
     // //////////////////// Display methods //////////////////////
@@ -181,6 +192,22 @@ namespace OPENTREP {
       std::ostringstream oStr;
       oStr << "db=" << _dbname << " user=" << _user << " password=" << _passwd
            << " port=" << _port << " host=" << _host;
+      return oStr.str();
+    }
+
+    /**
+     * Get the PostgreSQL SOCI connection string.
+     */
+    std::string toPGConnectionString() const {
+      std::ostringstream oStr;
+      oStr << "dbname=" << _dbname << " user=" << _user
+           << " password=" << _passwd;
+      if (!_host.empty()) {
+        oStr << " host=" << _host;
+      }
+      if (!_port.empty()) {
+        oStr << " port=" << _port;
+      }
       return oStr.str();
     }
 

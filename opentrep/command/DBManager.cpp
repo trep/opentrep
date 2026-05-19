@@ -335,7 +335,7 @@ namespace OPENTREP {
         return oCreationSuccessful;
       }
       
-    } catch (soci::mysql_soci_error const& lSociException) {
+    } catch (soci::postgresql_soci_error const& lSociException) {
       std::ostringstream errorStr;
       errorStr << "SOCI-related error when trying to connect to the "
                << "PostgreSQL database ('" << iSQLDBConnStr
@@ -346,12 +346,82 @@ namespace OPENTREP {
       return oCreationSuccessful;
     }
     assert (lSociSession_ptr != NULL);
-    // soci::session& lSociSession = *lSociSession_ptr;
+    soci::session& lSociSession = *lSociSession_ptr;
 
-    //
-    // TODO - Adapt the remaining of the MySQL function
-    //
+    /**
+     * PostgreSQL DDL (Data Definition Language) queries:
+     * ---------------------------------------------------
+     -- Drop and re-create the 'trep' role (user)
+     DROP ROLE IF EXISTS trep;
+     CREATE ROLE trep WITH LOGIN ENCRYPTED PASSWORD 'trep';
 
+     -- Drop and re-create the 'trep_trep<N>' database
+     DROP DATABASE IF EXISTS trep_trep<N>;
+     CREATE DATABASE trep_trep<N> WITH OWNER trep ENCODING 'UTF8'
+       TEMPLATE template0;
+
+     -- Grant schema privileges (run after connecting to trep_trep<N>)
+     GRANT ALL ON SCHEMA public TO trep;
+    */
+
+    try {
+      // Drop role 'trep' if it already exists
+      std::ostringstream lSQLDropRoleStr;
+      lSQLDropRoleStr << "DROP ROLE IF EXISTS "
+                      << DEFAULT_OPENTREP_PG_DB_USER << ";";
+      lSociSession << lSQLDropRoleStr.str();
+
+      // Create role 'trep' with login and password
+      std::ostringstream lSQLCreateRoleStr;
+      lSQLCreateRoleStr << "CREATE ROLE " << DEFAULT_OPENTREP_PG_DB_USER
+                        << " WITH LOGIN ENCRYPTED PASSWORD '"
+                        << DEFAULT_OPENTREP_PG_DB_PASSWD << "';";
+      lSociSession << lSQLCreateRoleStr.str();
+
+    } catch (soci::postgresql_soci_error const& lSociException) {
+      oCreationSuccessful = false;
+      std::ostringstream errorStr;
+      errorStr << "SOCI-related error when trying to create PostgreSQL role '"
+               << DEFAULT_OPENTREP_PG_DB_USER
+               << "'. Error message: " << lSociException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      std::cerr << errorStr.str() << std::endl;
+      return oCreationSuccessful;
+    }
+
+    try {
+      // Drop the 'trep_trep<N>' database if it exists
+      std::ostringstream lSQLDropDBStr;
+      lSQLDropDBStr << "DROP DATABASE IF EXISTS "
+                    << DEFAULT_OPENTREP_PG_DB_DBNAME << iDeploymentNumber
+                    << ";";
+      lSociSession << lSQLDropDBStr.str();
+
+      // Create the 'trep_trep<N>' database
+      std::ostringstream lSQLCreateDBStr;
+      lSQLCreateDBStr << "CREATE DATABASE "
+                      << DEFAULT_OPENTREP_PG_DB_DBNAME << iDeploymentNumber
+                      << " WITH OWNER " << DEFAULT_OPENTREP_PG_DB_USER
+                      << " ENCODING 'UTF8' TEMPLATE template0;";
+      lSociSession << lSQLCreateDBStr.str();
+
+    } catch (soci::postgresql_soci_error const& lSociException) {
+      oCreationSuccessful = false;
+      std::ostringstream errorStr;
+      errorStr << "SOCI-related error when trying to create PostgreSQL database '"
+               << DEFAULT_OPENTREP_PG_DB_DBNAME << iDeploymentNumber
+               << "'. Error message: " << lSociException.what();
+      OPENTREP_LOG_ERROR (errorStr.str());
+      std::cerr << errorStr.str() << std::endl;
+      return oCreationSuccessful;
+    }
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("The '" << DEFAULT_OPENTREP_PG_DB_USER
+                        << "' role and '"
+                        << DEFAULT_OPENTREP_PG_DB_DBNAME << iDeploymentNumber
+                        << "' database have been created in PostgreSQL ('"
+                        << iSQLDBConnStr << "')");
     //
     return oCreationSuccessful;
   }
@@ -680,7 +750,60 @@ namespace OPENTREP {
     }
 
     case DBType::PG: {
-      // TODO
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("Create the optd_por table in the PostgreSQL database");
+
+      try {
+
+        /**
+         * SQL DDL (Data Definition Language) queries for PostgreSQL:
+         * ----------------------------------------------------------
+           drop table if exists optd_por;
+           create table optd_por (
+           pk varchar(20) NOT NULL,
+           location_type varchar(4) default NULL,
+           iata_code varchar(3) default NULL,
+           icao_code varchar(4) default NULL,
+           faa_code varchar(4) default NULL,
+           unlocode_code varchar(5) default NULL,
+           uic_code integer default NULL,
+           is_geonames varchar(1) default NULL,
+           geoname_id integer default NULL,
+           envelope_id integer default NULL,
+           date_from date default NULL,
+           date_until date default NULL,
+           serialised_place varchar(12000) default NULL);
+        */
+
+        ioSociSession << "drop table if exists optd_por;";
+        std::ostringstream lSQLTableCreationStr;
+        lSQLTableCreationStr << "create table optd_por (";
+        lSQLTableCreationStr << "pk varchar(20) NOT NULL, ";
+        lSQLTableCreationStr << "location_type varchar(4) default NULL, ";
+        lSQLTableCreationStr << "iata_code varchar(3) default NULL, ";
+        lSQLTableCreationStr << "icao_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "faa_code varchar(4) default NULL, ";
+        lSQLTableCreationStr << "unlocode_code varchar(5) default NULL, ";
+        lSQLTableCreationStr << "uic_code integer default NULL, ";
+        lSQLTableCreationStr << "is_geonames varchar(1) default NULL, ";
+        lSQLTableCreationStr << "geoname_id integer default NULL, ";
+        lSQLTableCreationStr << "envelope_id integer default NULL, ";
+        lSQLTableCreationStr << "date_from date default NULL, ";
+        lSQLTableCreationStr << "date_until date default NULL, ";
+        lSQLTableCreationStr << "serialised_place varchar(12000) default NULL);";
+        ioSociSession << lSQLTableCreationStr.str();
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create PostgreSQL tables: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseTableCreationException (errorStr.str());
+      }
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The optd_por table has been created in the "
+                          "PostgreSQL database");
       break;
     }      
 
@@ -819,11 +942,52 @@ namespace OPENTREP {
     }
 
     case DBType::PG: {
-      // TODO
-      
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("Create the indices for the PostgreSQL database");
+
+      try {
+
+        /**
+         * SQL DDL (Data Definition Language) queries for PostgreSQL:
+         * ----------------------------------------------------------
+         create unique index optd_por_pk on optd_por (pk);
+         create index optd_por_iata_code on optd_por (iata_code asc);
+         create index optd_por_iata_date on optd_por (iata_code asc, date_from asc, date_until asc);
+         create index optd_por_icao_code on optd_por (icao_code asc);
+         create index optd_por_geonameid on optd_por (geoname_id asc);
+         create index optd_por_unlocode_code on optd_por (unlocode_code asc);
+         create index optd_por_uic_code on optd_por (uic_code asc);
+        */
+
+        ioSociSession
+          << "create unique index optd_por_pk on optd_por (pk);";
+        ioSociSession
+          << "create index optd_por_iata_code on optd_por (iata_code asc);";
+        ioSociSession
+          << "create index optd_por_iata_date on optd_por (iata_code asc, date_from asc, date_until asc);";
+        ioSociSession
+          << "create index optd_por_icao_code on optd_por (icao_code asc);";
+        ioSociSession
+          << "create index optd_por_geonameid on optd_por (geoname_id asc);";
+        ioSociSession
+          << "create index optd_por_unlocode_code on optd_por (unlocode_code asc);";
+        ioSociSession
+          << "create index optd_por_uic_code on optd_por (uic_code asc);";
+
+      } catch (std::exception const& lException) {
+        std::ostringstream errorStr;
+        errorStr << "Error when trying to create PostgreSQL indices: "
+                 << lException.what();
+        OPENTREP_LOG_ERROR (errorStr.str());
+        throw SQLDatabaseIndexCreationException (errorStr.str());
+      }
+
+      // DEBUG
+      OPENTREP_LOG_DEBUG ("The indices have been created "
+                          "for the PostgreSQL database");
       break;
     }
-      
+
     case DBType::MYSQL: {
       // DEBUG
       OPENTREP_LOG_DEBUG ("Create the indices for the MySQL database");

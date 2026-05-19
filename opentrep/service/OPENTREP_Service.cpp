@@ -82,13 +82,17 @@ namespace OPENTREP {
   SQLDBConnectionString_T
   getSQLConnStr (const DBType& iSQLDBType,
                  const SQLDBConnectionString_T& iSQLDBConnStr) {
-    // When the SQL database is MariaDB/MySQL and the connection string
-    // is equal to the default SQLite one, override it
+    // When the SQL database type is MySQL or PostgreSQL and the connection
+    // string is still set to the default SQLite file-path, override it
+    // with the appropriate default connection string for that backend.
     std::string oSQLDBConnStr =
       static_cast<const std::string> (iSQLDBConnStr);
     if (iSQLDBType == DBType::MYSQL
         && oSQLDBConnStr == DEFAULT_OPENTREP_SQLITE_DB_FILEPATH) {
       oSQLDBConnStr = DEFAULT_OPENTREP_MYSQL_CONN_STRING;
+    } else if (iSQLDBType == DBType::PG
+               && oSQLDBConnStr == DEFAULT_OPENTREP_SQLITE_DB_FILEPATH) {
+      oSQLDBConnStr = DEFAULT_OPENTREP_PG_CONN_STRING;
     }
     return SQLDBConnectionString_T (oSQLDBConnStr);
   }

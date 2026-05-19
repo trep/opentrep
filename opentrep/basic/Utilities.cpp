@@ -269,6 +269,113 @@ namespace OPENTREP {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  StringMap_T
+  parsePGConnectionString (const SQLDBConnectionString_T& iSQLDBConnStr) {
+    StringMap_T oStrMap;
+
+    // Split on spaces; each token is "key=value". Split each token on the
+    // first '=' only, so that passwords containing '=' are handled correctly.
+    std::stringstream lConnStream (iSQLDBConnStr);
+    std::string kvStr;
+
+    while (std::getline (lConnStream, kvStr, ' ')) {
+      if (kvStr.empty()) {
+        continue;
+      }
+
+      const size_t eqPos = kvStr.find ('=');
+      if (eqPos == std::string::npos) {
+        continue;
+      }
+
+      const std::string lKey = kvStr.substr (0, eqPos);
+      const std::string lVal = kvStr.substr (eqPos + 1);
+      oStrMap[lKey] = lVal;
+    }
+
+    // Validate required fields
+    if (oStrMap.find ("dbname") == oStrMap.end()) {
+      std::ostringstream errStr;
+      errStr << "Error when parsing the PG connection string ('"
+             << iSQLDBConnStr << "'), the 'dbname' value cannot be found";
+      OPENTREP_LOG_ERROR (errStr.str());
+      throw SQLDatabaseConnectionStringParsingException (errStr.str());
+    }
+
+    if (oStrMap.find ("user") == oStrMap.end()) {
+      std::ostringstream errStr;
+      errStr << "Error when parsing the PG connection string ('"
+             << iSQLDBConnStr << "'), the 'user' value cannot be found";
+      OPENTREP_LOG_ERROR (errStr.str());
+      throw SQLDatabaseConnectionStringParsingException (errStr.str());
+    }
+
+    if (oStrMap.find ("password") == oStrMap.end()) {
+      std::ostringstream errStr;
+      errStr << "Error when parsing the PG connection string ('"
+             << iSQLDBConnStr << "'), the 'password' value cannot be found";
+      OPENTREP_LOG_ERROR (errStr.str());
+      throw SQLDatabaseConnectionStringParsingException (errStr.str());
+    }
+
+    return oStrMap;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  SQLDBConnectionString_T
+  buildPGConnectionString (const StringMap_T& iStringMap,
+                           const DeploymentNumber_T& iDeploymentNumber) {
+    std::ostringstream oStr;
+
+    const StringMap_T::const_iterator itDBName = iStringMap.find ("dbname");
+    assert (itDBName != iStringMap.end());
+    oStr << "dbname=" << itDBName->second << iDeploymentNumber;
+
+    const StringMap_T::const_iterator itDBUser = iStringMap.find ("user");
+    assert (itDBUser != iStringMap.end());
+    oStr << " user=" << itDBUser->second;
+
+    const StringMap_T::const_iterator itDBPasswd = iStringMap.find ("password");
+    assert (itDBPasswd != iStringMap.end());
+    oStr << " password=" << itDBPasswd->second;
+
+    // Preserve optional host and port
+    const StringMap_T::const_iterator itHost = iStringMap.find ("host");
+    if (itHost != iStringMap.end()) {
+      oStr << " host=" << itHost->second;
+    }
+
+    const StringMap_T::const_iterator itPort = iStringMap.find ("port");
+    if (itPort != iStringMap.end()) {
+      oStr << " port=" << itPort->second;
+    }
+
+    return SQLDBConnectionString_T (oStr.str());
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  std::string
+  displayPGConnectionString (const StringMap_T& iStringMap,
+                             const DeploymentNumber_T& iDeploymentNumber) {
+    std::ostringstream oStr;
+
+    for (StringMap_T::const_iterator itDBKV = iStringMap.begin();
+         itDBKV != iStringMap.end(); ++itDBKV) {
+      const std::string& lDBKey = itDBKV->first;
+      const std::string& lDBValue = itDBKV->second;
+      oStr << lDBKey << "=";
+      oStr << lDBValue;
+      if (lDBKey == "dbname"
+          && iDeploymentNumber != DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE) {
+        oStr << iDeploymentNumber;
+      }
+      oStr << " ";
+    }
+
+    return oStr.str();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   std::string
   parseAndDisplayConnectionString (const DBType& iDBType,
                                    const std::string& iSQLDBConnStr,
@@ -291,6 +398,17 @@ namespace OPENTREP {
       // deployment number/version
       const std::string& lNewSQLDBConnStr =
         displayMySQLConnectionString (lStrMap, iDeploymentNumber);
+      oStr << lNewSQLDBConnStr;
+
+    } else if (iDBType == DBType::PG) {
+      // Parse the connection string
+      const SQLDBConnectionString_T lSQLDBConnStr (iSQLDBConnStr);
+      const StringMap_T& lStrMap = parsePGConnectionString (lSQLDBConnStr);
+
+      // Re-build the new connection string, taking into account the
+      // deployment number/version
+      const std::string& lNewSQLDBConnStr =
+        displayPGConnectionString (lStrMap, iDeploymentNumber);
       oStr << lNewSQLDBConnStr;
     }
 

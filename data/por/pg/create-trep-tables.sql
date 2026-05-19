@@ -14,9 +14,10 @@ create table optd_por (
  icao_code varchar(4) default NULL,
  faa_code varchar(4) default NULL,
  unlocode_code varchar(5) default NULL,
+ uic_code integer default NULL,
  is_geonames varchar(1) default NULL,
- geoname_id int default NULL,
- envelope_id int default NULL,
+ geoname_id integer default NULL,
+ envelope_id integer default NULL,
  date_from date default NULL,
  date_until date default NULL,
  serialised_place varchar(12000) default NULL
@@ -26,8 +27,7 @@ create table optd_por (
 -- PostgreSQL standard load statement (however, there is no correspondance
 -- between the table and CSV file formats)
 --
--- load data local infile 'optd_por_public.csv' replace into table optd_por
--- character set utf8 columns terminated by '^' ignore 1 lines;
+-- \copy optd_por FROM 'optd_por_public.csv' DELIMITER '^' CSV HEADER;
 
 
 --
@@ -39,3 +39,4 @@ create index optd_por_iata_date on optd_por (iata_code asc, date_from asc, date_
 create index optd_por_icao_code on optd_por (icao_code asc);
 create index optd_por_geonameid on optd_por (geoname_id asc);
 create index optd_por_unlocode_code on optd_por (unlocode_code asc);
+create index optd_por_uic_code on optd_por (uic_code asc);

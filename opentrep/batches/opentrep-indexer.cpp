@@ -80,10 +80,10 @@ int readConfiguration (int argc, char* argv[],
      "Xapian database filepath (e.g., /tmp/opentrep/xapian_traveldb)")
     ("sqldbtype,t",
      boost::program_options::value< std::string >(&ioSQLDBTypeString)->default_value(OPENTREP::DEFAULT_OPENTREP_SQL_DB_TYPE),
-     "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, mysql for MariaDB/MySQL)")
+     "SQL database type (e.g., nodb for no SQL database, sqlite for SQLite, pg for PostgreSQL, mysql for MariaDB/MySQL)")
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString),
-     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
+     "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, \"dbname=trep_trep user=trep password=trep\" for PostgreSQL, \"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("deploymentnb,m",
      boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
      "Deployment number (from to N, where N=1 normally)")
@@ -188,6 +188,10 @@ int readConfiguration (int argc, char* argv[],
     ioAddPORInDB = true;
     ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_SQLITE_DB_FILEPATH;
 
+  } else if (lDBType == OPENTREP::DBType::PG) {
+    ioAddPORInDB = true;
+    ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_PG_CONN_STRING;
+
   } else if (lDBType == OPENTREP::DBType::MYSQL) {
     ioAddPORInDB = true;
     ioSQLDBConnectionString = OPENTREP::DEFAULT_OPENTREP_MYSQL_CONN_STRING;
@@ -200,6 +204,7 @@ int readConfiguration (int argc, char* argv[],
 
   // Reporting of the SQL database connection string
   if (lDBType == OPENTREP::DBType::SQLITE3
+      || lDBType == OPENTREP::DBType::PG
       || lDBType == OPENTREP::DBType::MYSQL) {
     const std::string& lSQLDBConnString =
       OPENTREP::parseAndDisplayConnectionString (lDBType,
