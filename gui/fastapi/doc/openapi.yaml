@@ -1,0 +1,453 @@
+components:
+  schemas:
+    Cities:
+      properties:
+        city_details:
+          anyOf:
+          - $ref: '#/components/schemas/CityDetails'
+          - type: 'null'
+      title: Cities
+      type: object
+    CityDetails:
+      properties:
+        geonames_id:
+          default: ''
+          description: Geonames identifier of the city
+          title: Geonames Id
+          type: string
+        iata_code:
+          default: ''
+          description: IATA code of the serving city
+          title: Iata Code
+          type: string
+        name_ascii:
+          default: ''
+          description: City name (ASCII)
+          title: Name Ascii
+          type: string
+        name_utf:
+          default: ''
+          description: City name (UTF-8)
+          title: Name Utf
+          type: string
+      title: CityDetails
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    Location:
+      properties:
+        adm1_code:
+          default: ''
+          description: Administrative level-1 code
+          title: Adm1 Code
+          type: string
+        adm1_name_utf:
+          default: ''
+          description: Administrative level-1 name
+          title: Adm1 Name Utf
+          type: string
+        adm2_code:
+          default: ''
+          description: Administrative level-2 code
+          title: Adm2 Code
+          type: string
+        adm2_name_utf:
+          default: ''
+          description: Administrative level-2 name
+          title: Adm2 Name Utf
+          type: string
+        allowable_distance:
+          default: ''
+          description: Maximum allowable edit distance for this match
+          title: Allowable Distance
+          type: string
+        cities:
+          anyOf:
+          - $ref: '#/components/schemas/Cities'
+          - type: 'null'
+          description: Serving city information
+        continent_code:
+          default: ''
+          description: Continent code
+          title: Continent Code
+          type: string
+        continent_name:
+          default: ''
+          description: Continent name
+          title: Continent Name
+          type: string
+        corrected_keywords:
+          default: ''
+          description: Spell-corrected keyword(s) matched to this result
+          title: Corrected Keywords
+          type: string
+        country_code:
+          default: ''
+          description: ISO 3166-1 alpha-2 country code
+          examples:
+          - FR
+          title: Country Code
+          type: string
+        country_name:
+          default: ''
+          description: Country name
+          examples:
+          - France
+          title: Country Name
+          type: string
+        currency_code:
+          default: ''
+          description: ISO 4217 currency code
+          examples:
+          - EUR
+          title: Currency Code
+          type: string
+        distance_km:
+          default: 0
+          description: Great-circle distance from the previous location in the result
+            list (0 for the first)
+          title: Distance Km
+          type: integer
+        edit_distance:
+          default: ''
+          description: Edit distance between query and matched term
+          title: Edit Distance
+          type: string
+        elevation:
+          default: ''
+          description: Elevation above sea level (metres)
+          title: Elevation
+          type: string
+        faa_code:
+          default: ''
+          description: FAA code (US only)
+          title: Faa Code
+          type: string
+        feature_class:
+          default: ''
+          description: Geonames feature class (P=populated place, S=spot/facility…)
+          title: Feature Class
+          type: string
+        feature_code:
+          default: ''
+          description: Geonames feature code (AIRP, PPL, PPLA2…)
+          title: Feature Code
+          type: string
+        geonames_id:
+          default: ''
+          description: Geonames numeric identifier
+          examples:
+          - '2990440'
+          title: Geonames Id
+          type: string
+        iata_code:
+          description: IATA 3-letter code
+          examples:
+          - NCE
+          title: Iata Code
+          type: string
+        icao_code:
+          default: ''
+          description: ICAO 4-letter code (empty if none)
+          examples:
+          - LFMN
+          title: Icao Code
+          type: string
+        lat:
+          default: 0.0
+          description: Latitude (WGS84 decimal degrees)
+          examples:
+          - 43.7031
+          title: Lat
+          type: number
+        lon:
+          default: 0.0
+          description: Longitude (WGS84 decimal degrees)
+          examples:
+          - 7.2661
+          title: Lon
+          type: number
+        matching_percentage:
+          default: ''
+          description: Xapian matching percentage (0 for exact IATA matches)
+          title: Matching Percentage
+          type: string
+        name_ascii:
+          default: ''
+          description: ASCII transliteration of the common name
+          title: Name Ascii
+          type: string
+        name_common:
+          default: ''
+          description: Common travel name
+          examples:
+          - Nice
+          title: Name Common
+          type: string
+        names:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/NameEntry'
+            type: array
+          - type: 'null'
+          description: All known alternate names (from Geonames)
+          title: Names
+        offset_dst:
+          default: ''
+          description: UTC offset (daylight saving time), hours
+          examples:
+          - '2'
+          title: Offset Dst
+          type: string
+        offset_gmt:
+          default: ''
+          description: UTC offset (standard time), hours
+          examples:
+          - '1'
+          title: Offset Gmt
+          type: string
+        offset_raw:
+          default: ''
+          description: Raw UTC offset, hours
+          examples:
+          - '1'
+          title: Offset Raw
+          type: string
+        original_keywords:
+          default: ''
+          description: Original query keyword(s) matched to this result (may be NA
+            when Xapian is bypassed for direct IATA lookups — known OpenTREP issue)
+          title: Original Keywords
+          type: string
+        page_rank:
+          default: 0.0
+          description: OpenTREP PageRank score (0–100)
+          examples:
+          - 9.52
+          title: Page Rank
+          type: number
+        population:
+          default: ''
+          description: Population (0 for non-populated features)
+          title: Population
+          type: string
+        state_code:
+          default: ''
+          description: State/region code
+          title: State Code
+          type: string
+        time_zone:
+          default: ''
+          description: IANA time-zone identifier
+          examples:
+          - Europe/Paris
+          title: Time Zone
+          type: string
+        tvl_por_list:
+          default: ''
+          description: Pipe-separated list of travel-related POR IATA codes served
+            by this entry
+          title: Tvl Por List
+          type: string
+        unlocode_codes:
+          anyOf:
+          - $ref: '#/components/schemas/UnlocodeCodes'
+          - type: 'null'
+          description: UN/LOCODE entry
+        wac:
+          default: ''
+          description: World Area Code
+          title: Wac
+          type: string
+        wac_name:
+          default: ''
+          description: World Area Code name
+          title: Wac Name
+          type: string
+        wiki_link:
+          default: ''
+          description: Wikipedia article URL
+          examples:
+          - https://en.wikipedia.org/wiki/Nice
+          title: Wiki Link
+          type: string
+      required:
+      - iata_code
+      title: Location
+      type: object
+    NameEntry:
+      properties:
+        name:
+          default: ''
+          description: Alternate name
+          title: Name
+          type: string
+      title: NameEntry
+      type: object
+    SearchResponse:
+      properties:
+        locations:
+          description: Ordered list of matched Points of Reference
+          items:
+            $ref: '#/components/schemas/Location'
+          title: Locations
+          type: array
+        query:
+          description: Query string as received
+          examples:
+          - nce cdg jfk
+          title: Query
+          type: string
+        total_km:
+          default: 0
+          description: Total great-circle distance along the full route (km)
+          examples:
+          - 9808
+          title: Total Km
+          type: integer
+      required:
+      - query
+      - locations
+      title: SearchResponse
+      type: object
+    UnlocodeCodes:
+      properties:
+        unlocode_code:
+          default: ''
+          description: UN/LOCODE
+          title: Unlocode Code
+          type: string
+      title: UnlocodeCodes
+      type: object
+    ValidationError:
+      properties:
+        ctx:
+          title: Context
+          type: object
+        input:
+          title: Input
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+info:
+  contact:
+    email: denis.arnaud_opentrep@m4x.org
+    name: OpenTREP project
+    url: https://github.com/trep/opentrep
+  description: "REST API for the [OpenTREP](https://github.com/trep/opentrep) open-source\
+    \ travel search engine.\n\nOpenTREP uses Xapian full-text search and SQLite (or\
+    \ MySQL/PostgreSQL) to index and query the [OpenTravelData (OPTD)](https://github.com/opentraveldata/opentraveldata)\
+    \ Points of Reference (POR) dataset, which covers all IATA-registered airports,\
+    \ cities, and heliports worldwide.\n\n**Source**: https://github.com/trep/opentrep\
+    \  \n**OPTD data**: https://github.com/opentraveldata/opentraveldata"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: OpenTREP Travel Search
+  version: 0.7.18
+openapi: 3.1.0
+paths:
+  /:
+    get:
+      operationId: index__get
+      responses:
+        '200':
+          content:
+            text/html:
+              schema:
+                type: string
+          description: Successful Response
+      summary: Index
+  /api/random:
+    get:
+      description: "Draw *n* random Points of Reference from the OPTD dataset and\
+        \ return the same structure as `/api/search`. Useful for demos and testing.\n\
+        \n- `n=1` → single random airport  \n- `n=3` → random three-leg itinerary"
+      operationId: random_airports_api_random_get
+      parameters:
+      - description: Number of random locations to draw
+        in: query
+        name: n
+        required: false
+        schema:
+          default: 1
+          description: Number of random locations to draw
+          maximum: 10
+          minimum: 1
+          title: N
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Random airports / itinerary
+  /api/search:
+    get:
+      description: 'Search the OPTD POR dataset using OpenTREP.
+
+
+        The query can be free-text (city name, airport name) or a sequence of IATA
+        codes. When multiple locations are resolved, the response includes the great-circle
+        distance between consecutive pairs and the total route distance.'
+      operationId: search_api_search_get
+      parameters:
+      - description: 'Search query: free-text or IATA code(s)'
+        in: query
+        name: q
+        required: true
+        schema:
+          description: 'Search query: free-text or IATA code(s)'
+          examples:
+          - nce
+          - cdg jfk lax
+          - Tokyo London
+          maxLength: 200
+          minLength: 1
+          title: Q
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Search Points of Reference
