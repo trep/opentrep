@@ -12,10 +12,20 @@ from pydantic import BaseModel, Field
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-POR_PATH    = "/usr/share/opentrep/data/por/optd_por_public_fixed3.csv"
-XAPIAN_DIR  = "/var/www/webapps/opentrep/trep/traveldb"
-SQLITE_PATH = "/var/www/webapps/opentrep/trep/sqlite_travel.db"
+# Blue-green deployment: 0 = current (SQLite), 1 = next (PostgreSQL)
+# Change deploymentNb and restart the service to switch deployments.
+deploymentNb = 0
+
+TREP_DIR    = "/var/www/webapps/opentrep/trep"
+POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
+XAPIAN_DIR  = f"{TREP_DIR}/traveldb"   # opentrep appends deploymentNb automatically
 LOG_PATH    = "/var/log/webapps/search/pyopentrep.log"
+
+# SQL backend per deployment slot
+_SQL_TYPE = {
+    0: ("sqlite", f"{TREP_DIR}/sqlite_travel.db"),
+    1: ("pg",     "dbname=trep_trep user=trep password=trep host=localhost"),
+}
 
 _trep = None
 
@@ -24,8 +34,9 @@ async def lifespan(app: FastAPI):
     global _trep
     from pyopentrep.pyopentrep import OpenTrepSearcher
     _trep = OpenTrepSearcher()
-    ok = _trep.init(POR_PATH, XAPIAN_DIR, "sqlite", SQLITE_PATH,
-                    0, False, True, True, LOG_PATH)
+    sql_type, sql_conn = _SQL_TYPE[deploymentNb]
+    ok = _trep.init(POR_PATH, XAPIAN_DIR, sql_type, sql_conn,
+                    deploymentNb, False, True, True, LOG_PATH)
     if not ok:
         raise RuntimeError("OpenTREP init failed")
     logger.info("OpenTREP initialised")
