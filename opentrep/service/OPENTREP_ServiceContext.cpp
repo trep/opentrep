@@ -32,6 +32,10 @@ namespace OPENTREP {
    *  <li>SQLite connection string is '/tmp/opentrep/sqlite_travel.db',
    *      then the actual connection string becomes
    *      '/tmp/opentrep/sqlite_travel.db0'</li>
+   *  <li>PostgreSQL connection string is
+   *      'dbname=trep_trep user=trep password=trep host=localhost', then the
+   *      actual connection string becomes
+   *      'dbname=trep_trep0 user=trep password=trep host=localhost'</li>
    * </ul>
    */
   // //////////////////////////////////////////////////////////////////////
@@ -67,6 +71,25 @@ namespace OPENTREP {
        */
       const SQLDBConnectionString_T& lSQLDBConnStr =
         buildMySQLConnectionString (lStrMap, _deploymentNumber);
+
+      // Store the newly formed SQL connection string
+      _sqlDBConnectionString = lSQLDBConnStr;
+
+    } else if (_sqlDBType == DBType::PG) {
+      /**
+       * Parse the connection string. Typically, it is
+       * 'dbname=trep_trep user=trep password=trep host=localhost'
+       * Split by space into key-value pairs, then by '=' into key and value.
+       */
+      const StringMap_T& lStrMap =
+        parsePGConnectionString (_sqlDBConnectionStringWPfxDBName);
+
+      /**
+       * Recompose the connection string
+       * 'dbname=trep_trep0 user=trep password=trep host=localhost'
+       */
+      const SQLDBConnectionString_T& lSQLDBConnStr =
+        buildPGConnectionString (lStrMap, _deploymentNumber);
 
       // Store the newly formed SQL connection string
       _sqlDBConnectionString = lSQLDBConnStr;
