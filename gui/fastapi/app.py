@@ -3,9 +3,11 @@ OpenTREP travel search - FastAPI backend
 """
 import json, math, logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Query
+from typing import Optional
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
+from pydantic import BaseModel, Field
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +33,96 @@ async def lifespan(app: FastAPI):
     _trep.finalize()
     logger.info("OpenTREP finalised")
 
-app = FastAPI(title="Travel Search", lifespan=lifespan)
+# ── Response models ───────────────────────────────────────────────────────────
+
+class CityDetails(BaseModel):
+    iata_code:  str = Field("", description="IATA code of the serving city")
+    geonames_id: str = Field("", description="Geonames identifier of the city")
+    name_utf:   str = Field("", description="City name (UTF-8)")
+    name_ascii: str = Field("", description="City name (ASCII)")
+
+class Cities(BaseModel):
+    city_details: Optional[CityDetails] = None
+
+class UnlocodeCodes(BaseModel):
+    unlocode_code: str = Field("", description="UN/LOCODE")
+
+class NameEntry(BaseModel):
+    name: str = Field("", description="Alternate name")
+
+class Location(BaseModel):
+    iata_code:          str   = Field(..., description="IATA 3-letter code", examples=["NCE"])
+    icao_code:          str   = Field("",  description="ICAO 4-letter code (empty if none)", examples=["LFMN"])
+    geonames_id:        str   = Field("",  description="Geonames numeric identifier", examples=["2990440"])
+    feature_class:      str   = Field("",  description="Geonames feature class (P=populated place, S=spot/facility…)")
+    feature_code:       str   = Field("",  description="Geonames feature code (AIRP, PPL, PPLA2…)")
+    faa_code:           str   = Field("",  description="FAA code (US only)")
+    name_common:        str   = Field("",  description="Common travel name", examples=["Nice"])
+    name_ascii:         str   = Field("",  description="ASCII transliteration of the common name")
+    country_code:       str   = Field("",  description="ISO 3166-1 alpha-2 country code", examples=["FR"])
+    country_name:       str   = Field("",  description="Country name", examples=["France"])
+    adm1_code:          str   = Field("",  description="Administrative level-1 code")
+    adm1_name_utf:      str   = Field("",  description="Administrative level-1 name")
+    adm2_code:          str   = Field("",  description="Administrative level-2 code")
+    adm2_name_utf:      str   = Field("",  description="Administrative level-2 name")
+    state_code:         str   = Field("",  description="State/region code")
+    continent_code:     str   = Field("",  description="Continent code")
+    continent_name:     str   = Field("",  description="Continent name")
+    time_zone:          str   = Field("",  description="IANA time-zone identifier", examples=["Europe/Paris"])
+    offset_gmt:         str   = Field("",  description="UTC offset (standard time), hours", examples=["1"])
+    offset_dst:         str   = Field("",  description="UTC offset (daylight saving time), hours", examples=["2"])
+    offset_raw:         str   = Field("",  description="Raw UTC offset, hours", examples=["1"])
+    lat:                float = Field(0.0, description="Latitude (WGS84 decimal degrees)", examples=[43.7031])
+    lon:                float = Field(0.0, description="Longitude (WGS84 decimal degrees)", examples=[7.2661])
+    population:         str   = Field("",  description="Population (0 for non-populated features)")
+    elevation:          str   = Field("",  description="Elevation above sea level (metres)")
+    page_rank:          float = Field(0.0, description="OpenTREP PageRank score (0–100)", examples=[9.52])
+    wiki_link:          str   = Field("",  description="Wikipedia article URL", examples=["https://en.wikipedia.org/wiki/Nice"])
+    currency_code:      str   = Field("",  description="ISO 4217 currency code", examples=["EUR"])
+    tvl_por_list:       str   = Field("",  description="Pipe-separated list of travel-related POR IATA codes served by this entry")
+    wac:                str   = Field("",  description="World Area Code")
+    wac_name:           str   = Field("",  description="World Area Code name")
+    original_keywords:  str   = Field("",  description="Original query keyword(s) matched to this result (may be NA when Xapian is bypassed for direct IATA lookups — known OpenTREP issue)")
+    corrected_keywords: str   = Field("",  description="Spell-corrected keyword(s) matched to this result")
+    matching_percentage: str  = Field("",  description="Xapian matching percentage (0 for exact IATA matches)")
+    edit_distance:      str   = Field("",  description="Edit distance between query and matched term")
+    allowable_distance: str   = Field("",  description="Maximum allowable edit distance for this match")
+    unlocode_codes:     Optional[UnlocodeCodes] = Field(None, description="UN/LOCODE entry")
+    cities:             Optional[Cities]        = Field(None, description="Serving city information")
+    names:              Optional[list[NameEntry]] = Field(None, description="All known alternate names (from Geonames)")
+    distance_km:        int   = Field(0,   description="Great-circle distance from the previous location in the result list (0 for the first)")
+
+class SearchResponse(BaseModel):
+    query:      str            = Field(..., description="Query string as received", examples=["nce cdg jfk"])
+    locations:  list[Location] = Field(..., description="Ordered list of matched Points of Reference")
+    total_km:   int            = Field(0,   description="Total great-circle distance along the full route (km)", examples=[9808])
+
+# ── App ───────────────────────────────────────────────────────────────────────
+
+app = FastAPI(
+    title="OpenTREP Travel Search",
+    version="0.7.18",
+    description=(
+        "REST API for the [OpenTREP](https://github.com/trep/opentrep) open-source "
+        "travel search engine.\n\n"
+        "OpenTREP uses Xapian full-text search and SQLite (or MySQL/PostgreSQL) to "
+        "index and query the [OpenTravelData (OPTD)](https://github.com/opentraveldata/opentraveldata) "
+        "Points of Reference (POR) dataset, which covers all IATA-registered airports, "
+        "cities, and heliports worldwide.\n\n"
+        "**Source**: https://github.com/trep/opentrep  \n"
+        "**OPTD data**: https://github.com/opentraveldata/opentraveldata"
+    ),
+    contact={
+        "name":  "OpenTREP project",
+        "url":   "https://github.com/trep/opentrep",
+        "email": "denis.arnaud_opentrep@m4x.org",
+    },
+    license_info={
+        "name": "MIT",
+        "url":  "https://opensource.org/licenses/MIT",
+    },
+    lifespan=lifespan,
+)
 
 def _great_circle_km(lat1, lon1, lat2, lon2):
     r = math.pi / 180.0
@@ -43,6 +134,10 @@ def _great_circle_km(lat1, lon1, lat2, lon2):
 
 def _enrich(locations: list) -> list:
     for loc in locations:
+        # Coerce empty strings to None for optional nested models
+        for field in ("unlocode_codes", "cities", "names"):
+            if loc.get(field) == "":
+                loc[field] = None
         loc["lat"] = float(loc.get("lat", 0))
         loc["lon"] = float(loc.get("lon", 0))
         loc["page_rank"] = float(loc.get("page_rank", 0))
@@ -52,16 +147,39 @@ def _enrich(locations: list) -> list:
                              loc["lat"], loc["lon"]))
     return locations
 
-@app.get("/api/search")
-def search(q: str = Query(..., min_length=1, max_length=200)):
+@app.get("/api/search",
+         summary="Search Points of Reference",
+         description=(
+             "Search the OPTD POR dataset using OpenTREP.\n\n"
+             "The query can be free-text (city name, airport name) or a sequence of "
+             "IATA codes. When multiple locations are resolved, the response includes "
+             "the great-circle distance between consecutive pairs and the total route "
+             "distance."
+         ),
+         response_model=SearchResponse)
+def search(q: str = Query(..., min_length=1, max_length=200,
+                          description="Search query: free-text or IATA code(s)",
+                          examples=["nce", "cdg jfk lax", "Tokyo London"])):
     raw = _trep.search("J", q)
     data = json.loads(raw)
-    locations = _enrich(data.get("locations", []))
+    raw_locs = data.get("locations", [])
+    if not raw_locs or raw_locs == "":
+        raise HTTPException(status_code=404, detail="No location found for query: " + repr(q))
+    locations = _enrich(raw_locs if isinstance(raw_locs, list) else [])
     total_km = sum(loc["distance_km"] for loc in locations)
     return {"query": q, "locations": locations, "total_km": total_km}
 
-@app.get("/api/random")
-def random_airports(n: int = Query(1, ge=1, le=10)):
+@app.get("/api/random",
+         summary="Random airports / itinerary",
+         description=(
+             "Draw *n* random Points of Reference from the OPTD dataset and return "
+             "the same structure as `/api/search`. Useful for demos and testing.\n\n"
+             "- `n=1` → single random airport  \n"
+             "- `n=3` → random three-leg itinerary"
+         ),
+         response_model=SearchResponse)
+def random_airports(n: int = Query(1, ge=1, le=10,
+                                   description="Number of random locations to draw")):
     raw = _trep.generate("S", n)
     codes = [part.split("/")[0] for part in raw.split(",") if "/" in part]
     return search(" ".join(codes))
