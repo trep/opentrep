@@ -36,9 +36,9 @@ namespace OPENTREP {
         //
         bpt::ptree lPTExtraLocationList;
 
-        NbOfMatches_T idxExtra = 0;
+        // NbOfMatches_T idxExtra = 0;
         for (LocationList_T::const_iterator itLoc = lExtraLocationList.begin();
-             itLoc != lExtraLocationList.end(); ++itLoc, ++idxExtra) {
+             itLoc != lExtraLocationList.end(); ++itLoc) {
           const Location& lExtraLocation = *itLoc;
           //
           bpt::ptree lPTExtraLocation;
@@ -61,9 +61,9 @@ namespace OPENTREP {
         //
         bpt::ptree lPTAltLocationList;
 
-        NbOfMatches_T idxAlter = 0;
+        // NbOfMatches_T idxAlter = 0;
         for (LocationList_T::const_iterator itLoc = lAltLocationList.begin();
-             itLoc != lAltLocationList.end(); ++itLoc, ++idxAlter) {
+             itLoc != lAltLocationList.end(); ++itLoc) {
           const Location& lAltLocation = *itLoc;
           //
           bpt::ptree lPTAltLocation;

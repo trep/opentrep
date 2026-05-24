@@ -324,8 +324,9 @@ namespace OPENTREP {
     //    matches with the Xapian index
     WordList_T::const_iterator itWord = lWordList.begin();
     WordList_T::const_iterator itNextWord = lWordList.begin(); ++itNextWord;
-    for (unsigned short idx = 1, idx_rel = 1; itNextWord != lWordList.end();
-         ++itWord, ++itNextWord, ++idx, ++idx_rel) {
+    // for (unsigned short idx = 1, idx_rel = 1; itNextWord != lWordList.end(); ++idx
+    for (unsigned short idx_rel = 1; itNextWord != lWordList.end();
+         ++itWord, ++itNextWord, ++idx_rel) {
       const std::string& leftWord = *itWord;
       const std::string& rightWord = *itNextWord;
 

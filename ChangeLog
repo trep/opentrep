@@ -1,7 +1,10 @@
-* Wed Dec 24 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.20:
+* Mon May 25 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.08.01
+- Added support for PostgreSQL database
+
+* Wed Dec 24 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.20
 - Upgraded CMake conf for Python
 
-* Tue Dec 16 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.19:
+* Tue Dec 16 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.19
 - Fixed a few issues with the doc and man pages
 
 * Mon Mar 24 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.07.18
