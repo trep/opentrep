@@ -773,6 +773,54 @@ $ psql -h $PG_SVR -U trep -d trep1 -c "select 42 as nb;"
 (1 row)
 ```
 
+### Downloading the OPTD POR data file with `opentrep-datasync`
+
+As mentioned above, OpenTREP no longer ships with the (full) OPTD POR
+data file; only a small test file is shipped. The `opentrep-datasync`
+utility, installed alongside `opentrep-dbmgr`, `opentrep-indexer` and
+`opentrep-searcher`, automates that download. It is a minimal,
+dependency-free (Python 3 standard library only) command-line tool.
+
+* Show the help:
+
+```bash
+$ ./opentrep/ui/cmdline/opentrep-datasync -h
+```
+
+* Default usage: download the IATA-only `optd_por_public.csv` file into
+  the current working directory:
+
+```bash
+$ ./opentrep/ui/cmdline/opentrep-datasync
+```
+
+* Download the full `optd_por_public_all.csv` file (which also includes
+  non-IATA points of reference) into a specific directory, creating it
+  if it does not already exist:
+
+```bash
+$ ./opentrep/ui/cmdline/opentrep-datasync -n 1 -p /var/www/webapps/opentrep/trep/share/opentrep/data/por
+```
+
+The tool downloads straight from the
+[OpenTravelData GitHub repository](https://github.com/opentraveldata/opentraveldata),
+atomically (via a temporary file, renamed only once the download is
+complete and sanity-checked), and reports the source URL, the
+destination file path and its size. Any HTTP or network error results
+in a clear error message and a non-zero exit code.
+
+Note that `opentrep-datasync` only downloads the file under its
+upstream name (`optd_por_public.csv` or `optd_por_public_all.csv`) into
+the given destination directory. In a production deployment such as
+`/var/www/webapps/opentrep/trep/share/opentrep/data/por/`, that
+directory typically holds per-deployment-slot copies of the POR data
+file (e.g., suffixed `_0`/`_1`, mirroring the `trep0`/`trep1`
+PostgreSQL deployment-slot databases described above). Renaming or
+copying the downloaded file into those per-slot file names remains
+external to this minimal utility, and is expected to be handled by
+whatever deployment/provisioning process manages the `_0`/`_1`
+rotation.
+
 # Use cases
 
 ## Indexing the POR data

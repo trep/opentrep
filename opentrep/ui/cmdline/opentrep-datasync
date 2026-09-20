@@ -1,0 +1,195 @@
+#!/usr/bin/env python3
+"""
+opentrep-datasync
+==================
+
+Download the OpenTravelData (OPTD) POR (points of reference) reference
+data file that OpenTREP indexes (with `opentrep-indexer`) and searches
+(with `opentrep-searcher`).
+
+OpenTREP no longer ships with the (full) OPTD POR data file; only a
+small test file is shipped. This utility fetches the current version of
+either the IATA-only ('optd_por_public.csv') or the full
+('optd_por_public_all.csv') OPTD POR data file straight from the
+upstream OpenTravelData GitHub repository.
+
+This is a minimal, dependency-free (Python 3 standard library only)
+utility. In particular, it does not handle renaming/copying the
+downloaded file into the per-deployment-slot ('_0'/'_1') production
+layout; that step remains external to this tool (see the README).
+"""
+import argparse
+import os
+import shutil
+import sys
+import tempfile
+import urllib.error
+import urllib.request
+
+
+OPTD_RAW_BASE_URL = (
+    "https://raw.githubusercontent.com/opentraveldata/opentraveldata/"
+    "master/opentraveldata"
+)
+
+# Mapping from the '-n'/'--noniata' option value to the OPTD POR data
+# file name to be downloaded.
+OPTD_POR_FILENAMES = {
+    0: "optd_por_public.csv",
+    1: "optd_por_public_all.csv",
+}
+
+DOWNLOAD_TIMEOUT_SECONDS = 60
+
+
+def build_arg_parser():
+    """
+    Build and return the command-line argument parser.
+    """
+    parser = argparse.ArgumentParser(
+        prog="opentrep-datasync",
+        description=(
+            "Download the OpenTravelData (OPTD) POR (points of "
+            "reference) reference data file used by OpenTREP to build "
+            "its Xapian index and (optional) SQL database."
+        ),
+    )
+    parser.add_argument(
+        "-n", "--noniata",
+        type=int,
+        choices=(0, 1),
+        default=0,
+        help=(
+            "Select which OPTD POR data file to download: 0 downloads "
+            "the IATA-only 'optd_por_public.csv' file (default); 1 "
+            "downloads the full 'optd_por_public_all.csv' file, which "
+            "also includes non-IATA points of reference."
+        ),
+    )
+    parser.add_argument(
+        "-p", "--porpath",
+        type=str,
+        default=os.getcwd(),
+        help=(
+            "Destination directory where the downloaded OPTD POR data "
+            "file is to be stored (default: current working "
+            "directory). The directory is created if it does not "
+            "already exist."
+        ),
+    )
+    return parser
+
+
+def sanity_check_csv(file_path):
+    """
+    Perform a lightweight sanity check on the downloaded file: it must
+    be non-empty, and its first (header) line must look like a caret
+    ('^')-separated OPTD POR CSV header.
+    """
+    if os.path.getsize(file_path) == 0:
+        raise ValueError(f"the downloaded file '{file_path}' is empty")
+
+    with open(file_path, "r", encoding="utf-8", errors="replace") as csv_file:
+        header_line = csv_file.readline()
+
+    if not header_line.strip():
+        raise ValueError(
+            f"the downloaded file '{file_path}' has an empty header line"
+        )
+
+    if "^" not in header_line:
+        raise ValueError(
+            f"the downloaded file '{file_path}' does not look like a "
+            "caret ('^')-separated OPTD POR CSV file (no '^' "
+            "separator found on the header line)"
+        )
+
+
+def download_por_file(url, destination_path, timeout=DOWNLOAD_TIMEOUT_SECONDS):
+    """
+    Download the given URL into destination_path atomically: the
+    content is first streamed into a temporary file created in the
+    same directory as the destination, sanity-checked, and only then
+    renamed (a single, atomic file-system operation) to its final
+    name. On any error, the temporary file is removed and the
+    destination file is left untouched.
+    """
+    destination_dir = os.path.dirname(destination_path) or "."
+
+    tmp_fd, tmp_path = tempfile.mkstemp(
+        prefix=".opentrep-datasync-", dir=destination_dir
+    )
+    os.close(tmp_fd)
+
+    try:
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "opentrep-datasync"}
+        )
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            with open(tmp_path, "wb") as tmp_file:
+                shutil.copyfileobj(response, tmp_file)
+
+        sanity_check_csv(tmp_path)
+
+        os.replace(tmp_path, destination_path)
+    except BaseException:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise
+
+
+def main(argv=None):
+    """
+    Parse the command-line arguments, download the selected OPTD POR
+    data file, and report the outcome. Return a process exit code.
+    """
+    parser = build_arg_parser()
+    args = parser.parse_args(argv)
+
+    filename = OPTD_POR_FILENAMES[args.noniata]
+    url = f"{OPTD_RAW_BASE_URL}/{filename}"
+
+    try:
+        os.makedirs(args.porpath, exist_ok=True)
+    except OSError as error:
+        print(
+            f"opentrep-datasync: error: cannot create destination "
+            f"directory '{args.porpath}': {error}",
+            file=sys.stderr,
+        )
+        return 1
+
+    destination_path = os.path.join(args.porpath, filename)
+
+    print(f"opentrep-datasync: downloading '{url}' ...")
+
+    try:
+        download_por_file(url, destination_path)
+    except urllib.error.HTTPError as error:
+        print(
+            f"opentrep-datasync: error: HTTP error {error.code} while "
+            f"downloading '{url}': {error.reason}",
+            file=sys.stderr,
+        )
+        return 1
+    except urllib.error.URLError as error:
+        print(
+            f"opentrep-datasync: error: network error while "
+            f"downloading '{url}': {error.reason}",
+            file=sys.stderr,
+        )
+        return 1
+    except (ValueError, OSError) as error:
+        print(f"opentrep-datasync: error: {error}", file=sys.stderr)
+        return 1
+
+    size_bytes = os.path.getsize(destination_path)
+    print(f"opentrep-datasync: downloaded from: '{url}'")
+    print(f"opentrep-datasync: destination file: '{destination_path}'")
+    print(f"opentrep-datasync: file size: {size_bytes} bytes")
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -51,6 +51,15 @@ module_binary_add (batches opentrep-searcher)
 module_binary_add (ui/cmdline opentrep-dbmgr)
 
 ##
+# Installing the 'opentrep-datasync' utility.
+# It is a stand-alone, Python 3 standard-library-only script (no compiled
+# binary), so it is installed directly as an executable program, next to
+# the other OpenTREP command-line tools, rather than through
+# module_binary_add() (which expects a C++ source file to compile).
+install (PROGRAMS ui/cmdline/opentrep-datasync
+  DESTINATION "${INSTALL_BIN_DIR}" COMPONENT runtime)
+
+##
 # Installing Python scripts
 #python_module_add (python/pyopentrep.py)
 module_script_add (python/pyopentrep.py)

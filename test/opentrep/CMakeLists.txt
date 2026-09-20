@@ -77,3 +77,14 @@ if (Boost_FOUND AND ENABLE_TEST)
             "$<TARGET_FILE:opentrep-dbmgrbin>")
   add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
 endif (Boost_FOUND AND ENABLE_TEST)
+
+##
+# Regression/feature test for the 'opentrep-datasync' command-line
+# utility ('-h'/'--help' output and command-line argument validation
+# only). This test does not perform any network access; downloading
+# an actual OPTD POR data file is validated manually (see the README).
+if (ENABLE_TEST)
+  add_test (NAME opentrep-datasync_help_and_args_test
+    COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/datasync-help-and-args-test.sh"
+            "${CMAKE_SOURCE_DIR}/opentrep/ui/cmdline/opentrep-datasync")
+endif (ENABLE_TEST)
