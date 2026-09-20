@@ -43,3 +43,19 @@ if (Boost_FOUND AND ENABLE_TEST)
             "$<TARGET_FILE:opentrep-dbmgrbin>")
   add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
 endif (Boost_FOUND AND ENABLE_TEST)
+
+##
+# Regression/feature test for the opentrep-dbmgr 'create_user',
+# 'create_tables' and 'create_indexes' commands with the PostgreSQL
+# ('-t pg') SQL database type:
+#  * Connecting to an unreachable/non-existent deployment-slot database
+#    (e.g., 'trep0') used to crash the application with an uncaught
+#    SQLDatabaseImpossibleConnectionException; it is now reported as a
+#    user-friendly, actionable error message. This is reproduced
+#    deterministically and does not require a running PostgreSQL server.
+if (Boost_FOUND AND ENABLE_TEST)
+  add_test (NAME opentrep-dbmgr_create_tables_pg_test
+    COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dbmgr-create-tables-pg-test.sh"
+            "$<TARGET_FILE:opentrep-dbmgrbin>")
+  add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
+endif (Boost_FOUND AND ENABLE_TEST)

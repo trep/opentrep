@@ -1161,12 +1161,39 @@ processUserCommand (const std::string& iUserInput, TokenList_T& ioTokenList,
       // database.
       // On SQLite, delete the directory hosting the database, and re-create it.
       // On other database types, do nothing.
-      const bool lCreationSuccessful = ioOpentrepService.createSQLDBUser();
+      //
+      // Note: on MySQL/MariaDB and PostgreSQL, that command connects to the
+      // deployment-slot-suffixed database (e.g., 'trep0') in order to
+      // (re-)create the 'trep' user/role and that same database. If that
+      // database does not exist yet, and/or the connecting user lacks the
+      // privilege to create it, the connection attempt fails and throws a
+      // SQLDatabaseException (e.g., SQLDatabaseImpossibleConnectionException
+      // or SQLDatabaseUserCreationException). That exception is caught here
+      // so that such a (mis-)configuration is reported as a friendly error
+      // message instead of aborting the whole application.
+      try {
+        const bool lCreationSuccessful = ioOpentrepService.createSQLDBUser();
 
-      // Reporting
-      if (lCreationSuccessful == true) {
-        std::cout << "The 'trep' user and 'trep_trep' database have been created"
-                  << std::endl;
+        // Reporting
+        if (lCreationSuccessful == true) {
+          std::cout << "The 'trep' user and 'trep_trep' database have been created"
+                    << std::endl;
+        } else {
+          std::cout << "The 'trep' user and 'trep_trep' database could not be "
+                    << "created. See the log file ('" << iLogFilename
+                    << "') for details." << std::endl;
+        }
+
+      } catch (const OPENTREP::SQLDatabaseException& eSQLDBException) {
+        std::cerr << "The 'trep' user and '" << iDBType.describe()
+                  << "' database could not be created: "
+                  << eSQLDBException.what() << ". This may happen when the "
+                  << "deployment-slot database (e.g., 'trep0') does not "
+                  << "exist yet and/or the connecting user/role lacks the "
+                  << "privilege to create databases. On PostgreSQL, that "
+                  << "database may need to be pre-created (e.g., "
+                  << "'createdb -h localhost -U trep trep0'), or the 'trep' "
+                  << "role may need the CREATEDB privilege." << std::endl;
       }
 
       break;
@@ -1266,11 +1293,29 @@ processUserCommand (const std::string& iUserInput, TokenList_T& ioTokenList,
                 << " database tables" << std::endl;
     
       // Create/reset the tables (on SQLite3, PostgreSQL, MySQL)
-      ioOpentrepService.createSQLDBTables();
-
       //
-      std::cout << "The " << iDBType.describe()
-                << " tables has been created/resetted" << std::endl;
+      // Note: this connects to the deployment-slot-suffixed database (e.g.,
+      // 'trep0'). If that database has not been created beforehand (see the
+      // 'create_user' command) and/or the DDL statements fail (e.g., due to
+      // insufficient privileges), a SQLDatabaseException is thrown. It is
+      // caught here so as to report a friendly error message instead of
+      // aborting the whole application.
+      try {
+        ioOpentrepService.createSQLDBTables();
+
+        //
+        std::cout << "The " << iDBType.describe()
+                  << " tables has been created/resetted" << std::endl;
+
+      } catch (const OPENTREP::SQLDatabaseException& eSQLDBException) {
+        std::cerr << "The " << iDBType.describe() << " database tables could "
+                  << "not be created/reset: " << eSQLDBException.what()
+                  << ". Make sure that the '" << iDBType.describe()
+                  << "' database has already been created (see the "
+                  << "'create_user' command) and that the corresponding "
+                  << "connection string is correct (see the 'info' command)."
+                  << std::endl;
+      }
 
       break;
     }
@@ -1282,11 +1327,26 @@ processUserCommand (const std::string& iUserInput, TokenList_T& ioTokenList,
                 << " database indices" << std::endl;
     
       // Create/reset the indices (on SQLite3, PostgreSQL, MySQL)
-      ioOpentrepService.createSQLDBIndexes();
-
       //
-      std::cout << "The " << iDBType.describe()
-                << " indices has been created/resetted" << std::endl;
+      // See the note in the 'create_tables' case above: the same class of
+      // exception can be thrown here (e.g., if the database does not exist,
+      // or the underlying tables have not been created yet), and is caught
+      // for the same reason.
+      try {
+        ioOpentrepService.createSQLDBIndexes();
+
+        //
+        std::cout << "The " << iDBType.describe()
+                  << " indices has been created/resetted" << std::endl;
+
+      } catch (const OPENTREP::SQLDatabaseException& eSQLDBException) {
+        std::cerr << "The " << iDBType.describe() << " database indices "
+                  << "could not be created/reset: " << eSQLDBException.what()
+                  << ". Make sure that the '" << iDBType.describe()
+                  << "' database and tables have already been created (see "
+                  << "the 'create_user' and 'create_tables' commands)."
+                  << std::endl;
+      }
 
       break;
     }
