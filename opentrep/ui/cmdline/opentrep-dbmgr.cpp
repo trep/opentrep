@@ -9,6 +9,8 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/regex.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
 // GNU Readline Wrapper
 #include <opentrep/ui/cmdline/SReadline.hpp>
@@ -95,7 +97,8 @@ int readConfiguration (int argc, char* argv[],
                        bool& ioIncludeNonIATAPOR,
                        bool& ioIndexPORInXapian,
                        bool& ioAddPORInDB,
-                       std::string& ioLogFilename) {
+                       std::string& ioLogFilename,
+                       std::string& ioCommand) {
 
   // Declare a group of options that will be allowed only on command line
   boost::program_options::options_description generic ("Generic options");
@@ -135,6 +138,9 @@ int readConfiguration (int argc, char* argv[],
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_OPENTREP_DEFAULT_LOG_FILENAME),
      "Filepath for the logs")
+    ("command,c",
+     boost::program_options::value< std::string >(&ioCommand)->default_value(""),
+     "Execute the given semicolon-separated dbmgr command(s) (e.g., \"list_nb ; list_by_iata nce\") in non-interactive mode, and then exit")
     ;
   
   // Hidden options, will be allowed both on command line and
@@ -262,6 +268,10 @@ int readConfiguration (int argc, char* argv[],
   
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
+  }
+
+  if (vm.count ("command")) {
+    ioCommand = vm["command"].as< std::string >();
   }
 
   // Information
@@ -560,106 +570,78 @@ TokenList_T extractTokenListForGeonameID (const TokenList_T& iTokenList) {
 }    
 
 
-// /////////////// M A I N /////////////////
-int main (int argc, char* argv[]) {
+// //////////////////////////////////////////////////////////////////
+/**
+ * Check that a SQL database has been configured (i.e., that the SQL
+ * database type is not 'nodb') before performing a SQL database look-up.
+ *
+ * When no SQL database is configured, the underlying OpenTREP service
+ * methods (e.g., listByIataCode()) cannot obtain a SOCI database session,
+ * and would otherwise fail with an assertion error. So, that check avoids
+ * that crash, and instead reports a user-friendly error message.
+ */
+bool requireSQLDatabase (const OPENTREP::DBType& iDBType,
+                        const std::string& iCommandName) {
+  if (iDBType == OPENTREP::DBType::NODB) {
+    std::cout << "The '" << iCommandName << "' command requires a SQL "
+              << "database (SQLite3, MySQL/MariaDB or PostgreSQL), but no "
+              << "SQL database has been configured (the SQL database type "
+              << "is currently set to '" << iDBType.describe() << "'). "
+              << "Restart the application with the '--sqldbtype' (-t) "
+              << "option set to 'sqlite', 'mysql' or 'pg', or type 'info' "
+              << "to check the current configuration." << std::endl;
+    return false;
+  }
+  return true;
+}
 
-  // Readline history
-  const unsigned int lHistorySize (100);
-  const std::string lHistoryFilename ("opentrep-dbmgr.hist");
-  const std::string lHistoryBackupFilename ("opentrep-dbmgr.hist.bak");
+// //////////////////////////////////////////////////////////////////
+/**
+ * Split a command line into a list of semicolon-separated commands,
+ * trimming white spaces around each command and discarding empty ones.
+ *
+ * That method is used by the non-interactive command mode (-c/--command
+ * option), so that several dbmgr commands may be given at once
+ * (e.g., "list_nb ; list_by_iata nce").
+ */
+std::vector<std::string> splitCommandLine (const std::string& iCommandLine) {
+  std::vector<std::string> oCommandList;
 
-  // Output log File
-  std::string lLogFilename;
-
-  // File-path of POR (points of reference)
-  std::string lPORFilepathStr;
-
-  // Xapian database name (directory of the index)
-  std::string lXapianDBNameStr;
-
-  // SQL database type
-  std::string lSQLDBTypeStr;
-
-  // SQL database connection string
-  std::string lSQLDBConnectionStr;
-
-  // Deployment number/version
-  OPENTREP::DeploymentNumber_T lDeploymentNumber;
-  
-  // Whether or not to include non-IATA-referenced POR
-  OPENTREP::shouldIndexNonIATAPOR_T lIncludeNonIATAPOR;
-
-  // Whether or not to index the POR in Xapian
-  OPENTREP::shouldIndexPORInXapian_T lShouldIndexPORInXapian;
-  
-  // Whether or not to insert the POR in the SQL database
-  OPENTREP::shouldAddPORInSQLDB_T lShouldAddPORInSQLDB;
-
-  // Call the command-line option parser
-  const int lOptionParserStatus =
-    readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
-                       lSQLDBTypeStr, lSQLDBConnectionStr, lDeploymentNumber,
-                       lIncludeNonIATAPOR, lShouldIndexPORInXapian,
-                       lShouldAddPORInSQLDB, lLogFilename);
-
-  if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
-    return 0;
+  boost::char_separator<char> lSeparator (";");
+  boost::tokenizer<boost::char_separator<char> > lTokenizer (iCommandLine,
+                                                             lSeparator);
+  for (boost::tokenizer<boost::char_separator<char> >::const_iterator itTok =
+         lTokenizer.begin(); itTok != lTokenizer.end(); ++itTok) {
+    std::string lSingleCommand (*itTok);
+    boost::algorithm::trim (lSingleCommand);
+    if (lSingleCommand.empty() == false) {
+      oCommandList.push_back (lSingleCommand);
+    }
   }
 
-  // Set the log parameters
-  std::ofstream logOutputFile;
-  // open and clean the log outputfile
-  logOutputFile.open (lLogFilename.c_str());
-  logOutputFile.clear();
+  return oCommandList;
+}
 
-  // Initialise the context
-  const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
-  const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
-  const OPENTREP::DBType lDBType (lSQLDBTypeStr);
-  const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
-  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
-                                              lXapianDBName,
-                                              lDBType, lSQLDBConnStr,
-                                              lDeploymentNumber,
-                                              lIncludeNonIATAPOR,
-                                              lShouldIndexPORInXapian,
-                                              lShouldAddPORInSQLDB);
-
-  // DEBUG
-  OPENTREP_LOG_DEBUG ("====================================================");
-  OPENTREP_LOG_DEBUG ("=       Beginning of the interactive session       =");
-  OPENTREP_LOG_DEBUG ("====================================================");
-
-  // Initialise the GNU readline wrapper
-  swift::SReadline lReader (lHistoryFilename, lHistorySize);
-  initReadline (lReader);
-
-  // Now we can ask user for a line
-  std::string lUserInput;
-  bool EndOfInput (false);
-  Command_T::Type_T lCommandType (Command_T::NOP);
-  
-  while (lCommandType != Command_T::QUIT && EndOfInput == false) {
-    // Prompt
-    std::ostringstream oPromptStr;
-    oPromptStr << "opentrep> ";
-
-    // Call read-line, which will fill the list of tokens
-    TokenList_T lTokenListByReadline;
-    lUserInput = lReader.GetLine (oPromptStr.str(), lTokenListByReadline,
-                                  EndOfInput);
-
-    // The history can be saved to an arbitrary file at any time
-    lReader.SaveHistory (lHistoryBackupFilename);
-
-    // The end-of-input typically corresponds to a CTRL-D typed by the user
-    if (EndOfInput) {
-      std::cout << std::endl;
-      break;
-    }
-
-    // Interpret the user input
-    lCommandType = extractCommand (lTokenListByReadline);
+// //////////////////////////////////////////////////////////////////
+/**
+ * Interpret and execute a single (already tokenised) dbmgr command.
+ *
+ * That dispatcher is shared by both the interactive (readline-based)
+ * session and the non-interactive command mode (-c/--command option),
+ * so that the two modes behave identically for a given command.
+ */
+Command_T::Type_T
+processUserCommand (const std::string& iUserInput, TokenList_T& ioTokenList,
+                    OPENTREP::OPENTREP_Service& ioOpentrepService,
+                    const OPENTREP::DBType& iDBType,
+                    const std::string& iLogFilename,
+                    const std::string& iPORFilepathStr,
+                    OPENTREP::DeploymentNumber_T& ioDeploymentNumber,
+                    OPENTREP::shouldIndexNonIATAPOR_T& ioIncludeNonIATAPOR,
+                    OPENTREP::shouldIndexPORInXapian_T& ioShouldIndexPORInXapian,
+                    OPENTREP::shouldAddPORInSQLDB_T& ioShouldAddPORInSQLDB) {
+  // Interpret the user input
+  Command_T::Type_T lCommandType = extractCommand (ioTokenList);
 
     switch (lCommandType) {
 
@@ -746,32 +728,32 @@ int main (int argc, char* argv[]) {
       // ////////////////////////////// Information ////////////////////////
     case Command_T::INFO: {
       const OPENTREP::OPENTREP_Service::FilePathSet_T& lFPSet =
-        opentrepService.getFilePaths();
+        ioOpentrepService.getFilePaths();
       const OPENTREP::OPENTREP_Service::DBFilePathPair_T& lDBFPPair =
         lFPSet.second;
       const OPENTREP::TravelDBFilePath_T& lXapianDBFP = lDBFPPair.first;
       const OPENTREP::SQLDBConnectionString_T& lSQLConnStr = lDBFPPair.second;
       std::cout << std::endl;
-      std::cout << "Log file-path: " << "\t\t\t\t\t" << lLogFilename
+      std::cout << "Log file-path: " << "\t\t\t\t\t" << iLogFilename
                 << std::endl;
-      std::cout << "POR file-path: " << "\t\t\t\t\t" << lPORFilepathStr
+      std::cout << "POR file-path: " << "\t\t\t\t\t" << iPORFilepathStr
                 << std::endl;
       std::cout << "Xapian index/database file-path: " << "\t\t"
                 << lXapianDBFP << std::endl;
-      std::cout << "SQL database type: " << "\t\t\t\t" << lDBType.describe()
+      std::cout << "SQL database type: " << "\t\t\t\t" << iDBType.describe()
                 << std::endl;
       std::cout << "SQL database connection string: " << "\t\t" << lSQLConnStr
                 << std::endl;
       std::cout << "Deployment number/version: " << "\t\t\t"
-                << lDeploymentNumber << "/"
+                << ioDeploymentNumber << "/"
                 << OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE-1
                 << std::endl;
       std::cout << "Whether to index NON-IATA-referenced POR: " << "\t"
-                << lIncludeNonIATAPOR << std::endl;
+                << ioIncludeNonIATAPOR << std::endl;
       std::cout << "Whether to index the POR in Xapian: " << "\t\t"
-                << lShouldIndexPORInXapian << std::endl;
+                << ioShouldIndexPORInXapian << std::endl;
       std::cout << "Whether to insert the POR in the SQL DB: " << "\t"
-                << lShouldAddPORInSQLDB << std::endl;
+                << ioShouldAddPORInSQLDB << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -827,9 +809,9 @@ int main (int argc, char* argv[]) {
       // ////////////////////////////// List Number /////////////////////////
     case Command_T::LIST_NB: {
       // Call the underlying OpenTREP service
-      if (lDBType == OPENTREP::DBType::NODB) {
+      if (iDBType == OPENTREP::DBType::NODB) {
         const OPENTREP::NbOfDBEntries_T nbOfEntries =
-          opentrepService.getIndexSize();
+          ioOpentrepService.getIndexSize();
 
         // Reporting
         std::cout << nbOfEntries
@@ -839,12 +821,12 @@ int main (int argc, char* argv[]) {
 
       } else {
         const OPENTREP::NbOfDBEntries_T nbOfEntries =
-          opentrepService.getNbOfPORFromDB();
+          ioOpentrepService.getNbOfPORFromDB();
 
         // Reporting
         std::cout << nbOfEntries
                   << " POR (points of reference) have been found in the "
-                  << lDBType.describe() << " database" << std::endl;
+                  << iDBType.describe() << " database" << std::endl;
       }
 
       break;
@@ -852,6 +834,10 @@ int main (int argc, char* argv[]) {
 
       // ////////////////////////////// List All /////////////////////////
     case Command_T::LIST_ALL: {
+      if (requireSQLDatabase (iDBType, "list_all") == false) {
+        break;
+      }
+
       // For now, just hard code a single IATA code.
       // TODO: implement the page down process, so that the full list
       // can be retrieved and browsed.
@@ -861,7 +847,7 @@ int main (int argc, char* argv[]) {
       const OPENTREP::IATACode_T lIataCode (lIataCodeStr);
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByIataCode (lIataCode, lLocationList);
+        ioOpentrepService.listByIataCode (lIataCode, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -887,8 +873,12 @@ int main (int argc, char* argv[]) {
 
       // ////////////////////////// List by IATA code ////////////////////////
     case Command_T::LIST_BY_IATA: {
+      if (requireSQLDatabase (iDBType, "list_by_iata") == false) {
+        break;
+      }
+
       //
-      TokenList_T lTokenList = extractTokenListForIataCode(lTokenListByReadline);
+      TokenList_T lTokenList = extractTokenListForIataCode(ioTokenList);
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -899,7 +889,7 @@ int main (int argc, char* argv[]) {
       const OPENTREP::IATACode_T lIataCode (lIataCodeStr);
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByIataCode (lIataCode, lLocationList);
+        ioOpentrepService.listByIataCode (lIataCode, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -925,8 +915,12 @@ int main (int argc, char* argv[]) {
 
       // ////////////////////////// List by ICAO code ////////////////////////
     case Command_T::LIST_BY_ICAO: {
+      if (requireSQLDatabase (iDBType, "list_by_icao") == false) {
+        break;
+      }
+
       //
-      TokenList_T lTokenList = extractTokenListForIcaoCode(lTokenListByReadline);
+      TokenList_T lTokenList = extractTokenListForIcaoCode(ioTokenList);
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -937,7 +931,7 @@ int main (int argc, char* argv[]) {
       const OPENTREP::ICAOCode_T lIcaoCode (lIcaoCodeStr);
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByIcaoCode (lIcaoCode, lLocationList);
+        ioOpentrepService.listByIcaoCode (lIcaoCode, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -963,8 +957,12 @@ int main (int argc, char* argv[]) {
 
       // ////////////////////////// List by FAA code ////////////////////////
     case Command_T::LIST_BY_FAA: {
+      if (requireSQLDatabase (iDBType, "list_by_faa") == false) {
+        break;
+      }
+
       //
-      TokenList_T lTokenList = extractTokenListForFaaCode(lTokenListByReadline);
+      TokenList_T lTokenList = extractTokenListForFaaCode(ioTokenList);
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -975,7 +973,7 @@ int main (int argc, char* argv[]) {
       const OPENTREP::FAACode_T lFaaCode (lFaaCodeStr);
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByFaaCode (lFaaCode, lLocationList);
+        ioOpentrepService.listByFaaCode (lFaaCode, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -1001,8 +999,12 @@ int main (int argc, char* argv[]) {
 
       // //////////////////////// List by UN/LOCODE code //////////////////////
     case Command_T::LIST_BY_UNLOCODE: {
+      if (requireSQLDatabase (iDBType, "list_by_unlocode") == false) {
+        break;
+      }
+
       //
-      TokenList_T lTokenList = extractTokenListForUNLOCode(lTokenListByReadline);
+      TokenList_T lTokenList = extractTokenListForUNLOCode(ioTokenList);
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -1013,7 +1015,7 @@ int main (int argc, char* argv[]) {
       const OPENTREP::UNLOCode_T lUNLOCode (lUNLOCodeStr);
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByUNLOCode (lUNLOCode, lLocationList);
+        ioOpentrepService.listByUNLOCode (lUNLOCode, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -1039,8 +1041,12 @@ int main (int argc, char* argv[]) {
 
       // //////////////////////// List by UIC code //////////////////////
     case Command_T::LIST_BY_UICCODE: {
+      if (requireSQLDatabase (iDBType, "list_by_uiccode") == false) {
+        break;
+      }
+
       //
-      TokenList_T lTokenList = extractTokenListForUICCode(lTokenListByReadline);
+      TokenList_T lTokenList = extractTokenListForUICCode(ioTokenList);
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -1064,7 +1070,7 @@ int main (int argc, char* argv[]) {
       // Call the underlying OpenTREP service
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByUICCode (lUICCode, lLocationList);
+        ioOpentrepService.listByUICCode (lUICCode, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -1090,9 +1096,13 @@ int main (int argc, char* argv[]) {
 
       // ////////////////////////// List by Geoname ID ////////////////////////
     case Command_T::LIST_BY_GEONAMEID: {
+      if (requireSQLDatabase (iDBType, "list_by_geonameid") == false) {
+        break;
+      }
+
       //
       TokenList_T lTokenList =
-        extractTokenListForGeonameID (lTokenListByReadline);
+        extractTokenListForGeonameID (ioTokenList);
 
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
@@ -1116,7 +1126,7 @@ int main (int argc, char* argv[]) {
       // Call the underlying OpenTREP service
       OPENTREP::LocationList_T lLocationList;
       const OPENTREP::NbOfMatches_T nbOfMatches =
-        opentrepService.listByGeonameID (lGeonameID, lLocationList);
+        ioOpentrepService.listByGeonameID (lGeonameID, lLocationList);
 
       //
       std::cout << nbOfMatches << " (geographical) location(s) have been found "
@@ -1150,7 +1160,7 @@ int main (int argc, char* argv[]) {
       // database.
       // On SQLite, delete the directory hosting the database, and re-create it.
       // On other database types, do nothing.
-      const bool lCreationSuccessful = opentrepService.createSQLDBUser();
+      const bool lCreationSuccessful = ioOpentrepService.createSQLDBUser();
 
       // Reporting
       if (lCreationSuccessful == true) {
@@ -1165,7 +1175,7 @@ int main (int argc, char* argv[]) {
     case Command_T::RESET_CONNECTION_STRING: {
       // Parse the parameters given by the user, giving default values
       // in case the user does not specify some (or all) of them
-      const std::string lConnectionStringStr = toString (lTokenListByReadline);
+      const std::string lConnectionStringStr = toString (ioTokenList);
 
       //
       std::cout << "Reset the connection string" << std::endl;
@@ -1173,7 +1183,7 @@ int main (int argc, char* argv[]) {
       // Reset the connection string
       const OPENTREP::SQLDBConnectionString_T
         lConnectionString (lConnectionStringStr);
-      opentrepService.setSQLDBConnectString (lConnectionString);
+      ioOpentrepService.setSQLDBConnectString (lConnectionString);
 
       //
       std::cout << "The connection string has been reset" << std::endl;
@@ -1184,10 +1194,10 @@ int main (int argc, char* argv[]) {
       // /////////////////// Deployment number/version /////////////////////
     case Command_T::TOGGLE_DEPLOYMENT_NUMBER: {
       // Toggle the deployment number/version
-      lDeploymentNumber = opentrepService.toggleDeploymentNumber();
+      ioDeploymentNumber = ioOpentrepService.toggleDeploymentNumber();
 
       // Reporting
-      std::cout << "The new deployment number/version is: " << lDeploymentNumber
+      std::cout << "The new deployment number/version is: " << ioDeploymentNumber
                 << "/" << OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER_SIZE-1
                 << std::endl;
     
@@ -1197,10 +1207,10 @@ int main (int argc, char* argv[]) {
       // /////////////////// Index or not non-IATA POR /////////////////////
     case Command_T::TOGGLE_NONIATA_INDEXING_FLAG: {
       // Toggle the flag
-      lIncludeNonIATAPOR = opentrepService.toggleShouldIncludeAllPORFlag();
+      ioIncludeNonIATAPOR = ioOpentrepService.toggleShouldIncludeAllPORFlag();
 
       // Reporting
-      std::cout << "The new flag is: " << lIncludeNonIATAPOR << std::endl;
+      std::cout << "The new flag is: " << ioIncludeNonIATAPOR << std::endl;
     
       break;
     }
@@ -1208,11 +1218,11 @@ int main (int argc, char* argv[]) {
       // ///////////////////// Index or not in Xapian ///////////////////////
     case Command_T::TOGGLE_XAPIAN_IDEXING_FLAG: {
       // Toggle the flag
-      lShouldIndexPORInXapian =
-        opentrepService.toggleShouldIndexPORInXapianFlag();
+      ioShouldIndexPORInXapian =
+        ioOpentrepService.toggleShouldIndexPORInXapianFlag();
 
       // Reporting
-      std::cout << "The new flag is: " << lShouldIndexPORInXapian << std::endl;
+      std::cout << "The new flag is: " << ioShouldIndexPORInXapian << std::endl;
     
       break;
     }
@@ -1220,10 +1230,10 @@ int main (int argc, char* argv[]) {
       // ///////////////////// Add or not in SQL DB ///////////////////////
     case Command_T::TOGGLE_SQLDB_INSERTING_FLAG: {
       // Toggle the flag
-      lShouldAddPORInSQLDB = opentrepService.toggleShouldAddPORInSQLDBFlag();
+      ioShouldAddPORInSQLDB = ioOpentrepService.toggleShouldAddPORInSQLDBFlag();
 
       // Reporting
-      std::cout << "The new flag is: " << lShouldAddPORInSQLDB << std::endl;
+      std::cout << "The new flag is: " << ioShouldAddPORInSQLDB << std::endl;
     
       break;
     }
@@ -1231,14 +1241,14 @@ int main (int argc, char* argv[]) {
       // ///////////////////////// Tables Creation /////////////////////////
     case Command_T::CREATE_TABLES: {
       //
-      std::cout << "Creating/resetting the " << lDBType.describe()
+      std::cout << "Creating/resetting the " << iDBType.describe()
                 << " database tables" << std::endl;
     
       // Create/reset the tables (on SQLite3, PostgreSQL, MySQL)
-      opentrepService.createSQLDBTables();
+      ioOpentrepService.createSQLDBTables();
 
       //
-      std::cout << "The " << lDBType.describe()
+      std::cout << "The " << iDBType.describe()
                 << " tables has been created/resetted" << std::endl;
 
       break;
@@ -1247,14 +1257,14 @@ int main (int argc, char* argv[]) {
       // ///////////////////////// Indexes Creation /////////////////////////
     case Command_T::CREATE_INDEXES: {
       //
-      std::cout << "Creating/resetting the " << lDBType.describe()
+      std::cout << "Creating/resetting the " << iDBType.describe()
                 << " database indices" << std::endl;
     
       // Create/reset the indices (on SQLite3, PostgreSQL, MySQL)
-      opentrepService.createSQLDBIndexes();
+      ioOpentrepService.createSQLDBIndexes();
 
       //
-      std::cout << "The " << lDBType.describe()
+      std::cout << "The " << iDBType.describe()
                 << " indices has been created/resetted" << std::endl;
 
       break;
@@ -1270,7 +1280,7 @@ int main (int argc, char* argv[]) {
     
       // Launch the indexation
       const OPENTREP::NbOfDBEntries_T lNbOfEntries =
-        opentrepService.insertIntoDBAndXapian();
+        ioOpentrepService.insertIntoDBAndXapian();
 
       //
       std::cout << lNbOfEntries << " entries have been processed" << std::endl;
@@ -1287,12 +1297,172 @@ int main (int argc, char* argv[]) {
     default: {
       // DEBUG
       std::ostringstream oStr;
-      oStr << "That command is not yet understood: '" << lUserInput
-           << "' => " << lTokenListByReadline;
+      oStr << "That command is not yet understood: '" << iUserInput
+           << "' => " << ioTokenList;
       OPENTREP_LOG_DEBUG (oStr.str());
       std::cout << oStr.str() << std::endl;
     }
     }
+
+
+  return lCommandType;
+}
+
+// /////////////// M A I N /////////////////
+int main (int argc, char* argv[]) {
+
+  // Readline history
+  const unsigned int lHistorySize (100);
+  const std::string lHistoryFilename ("opentrep-dbmgr.hist");
+  const std::string lHistoryBackupFilename ("opentrep-dbmgr.hist.bak");
+
+  // Output log File
+  std::string lLogFilename;
+
+  // File-path of POR (points of reference)
+  std::string lPORFilepathStr;
+
+  // Xapian database name (directory of the index)
+  std::string lXapianDBNameStr;
+
+  // SQL database type
+  std::string lSQLDBTypeStr;
+
+  // SQL database connection string
+  std::string lSQLDBConnectionStr;
+
+  // Deployment number/version
+  OPENTREP::DeploymentNumber_T lDeploymentNumber;
+  
+  // Whether or not to include non-IATA-referenced POR
+  OPENTREP::shouldIndexNonIATAPOR_T lIncludeNonIATAPOR;
+
+  // Whether or not to index the POR in Xapian
+  OPENTREP::shouldIndexPORInXapian_T lShouldIndexPORInXapian;
+  
+  // Whether or not to insert the POR in the SQL database
+  OPENTREP::shouldAddPORInSQLDB_T lShouldAddPORInSQLDB;
+
+  // Semicolon-separated command(s) to execute in non-interactive mode
+  // (-c/--command option)
+  std::string lCommandStr;
+
+  // Call the command-line option parser
+  const int lOptionParserStatus =
+    readConfiguration (argc, argv, lPORFilepathStr, lXapianDBNameStr,
+                       lSQLDBTypeStr, lSQLDBConnectionStr, lDeploymentNumber,
+                       lIncludeNonIATAPOR, lShouldIndexPORInXapian,
+                       lShouldAddPORInSQLDB, lLogFilename, lCommandStr);
+
+  if (lOptionParserStatus == K_OPENTREP_EARLY_RETURN_STATUS) {
+    return 0;
+  }
+
+  // Set the log parameters
+  std::ofstream logOutputFile;
+  // open and clean the log outputfile
+  logOutputFile.open (lLogFilename.c_str());
+  logOutputFile.clear();
+
+  // Initialise the context
+  const OPENTREP::PORFilePath_T lPORFilepath (lPORFilepathStr);
+  const OPENTREP::TravelDBFilePath_T lXapianDBName (lXapianDBNameStr);
+  const OPENTREP::DBType lDBType (lSQLDBTypeStr);
+  const OPENTREP::SQLDBConnectionString_T lSQLDBConnStr (lSQLDBConnectionStr);
+  OPENTREP::OPENTREP_Service opentrepService (logOutputFile, lPORFilepath,
+                                              lXapianDBName,
+                                              lDBType, lSQLDBConnStr,
+                                              lDeploymentNumber,
+                                              lIncludeNonIATAPOR,
+                                              lShouldIndexPORInXapian,
+                                              lShouldAddPORInSQLDB);
+
+  // If one (or several) command(s) have been given on the command-line
+  // (-c/--command option), execute them in a non-interactive way (i.e.,
+  // without prompting the user, nor using the GNU readline library),
+  // and then exit.
+  if (lCommandStr.empty() == false) {
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("==================================================");
+    OPENTREP_LOG_DEBUG ("=     Beginning of the non-interactive session   =");
+    OPENTREP_LOG_DEBUG ("==================================================");
+
+    const TokenList_T lCommandLineList = splitCommandLine (lCommandStr);
+    Command_T::Type_T lNonInteractiveCommandType (Command_T::NOP);
+
+    for (TokenList_T::const_iterator itCommand = lCommandLineList.begin();
+         itCommand != lCommandLineList.end()
+           && lNonInteractiveCommandType != Command_T::QUIT; ++itCommand) {
+      const std::string& lSingleCommandStr = *itCommand;
+
+      // Echo the command being executed, so that the (non-interactive)
+      // session remains easy to follow (e.g., when scripted)
+      std::cout << "opentrep> " << lSingleCommandStr << std::endl;
+
+      // Tokenise that single command, the same way the GNU readline
+      // library would have done for the interactive session
+      TokenList_T lTokenList;
+      SplitTokens (lSingleCommandStr, lTokenList);
+
+      // Interpret and execute the command, re-using the very same
+      // dispatcher as the interactive session
+      lNonInteractiveCommandType =
+        processUserCommand (lSingleCommandStr, lTokenList, opentrepService,
+                           lDBType, lLogFilename, lPORFilepathStr,
+                           lDeploymentNumber, lIncludeNonIATAPOR,
+                           lShouldIndexPORInXapian, lShouldAddPORInSQLDB);
+    }
+
+    // DEBUG
+    OPENTREP_LOG_DEBUG ("End of the session. Exiting.");
+    std::cout << "End of the session. Exiting." << std::endl;
+
+    // Close the Log outputFile
+    logOutputFile.close();
+
+    return 0;
+  }
+
+  // DEBUG
+  OPENTREP_LOG_DEBUG ("====================================================");
+  OPENTREP_LOG_DEBUG ("=       Beginning of the interactive session       =");
+  OPENTREP_LOG_DEBUG ("====================================================");
+
+  // Initialise the GNU readline wrapper
+  swift::SReadline lReader (lHistoryFilename, lHistorySize);
+  initReadline (lReader);
+
+  // Now we can ask user for a line
+  std::string lUserInput;
+  bool EndOfInput (false);
+  Command_T::Type_T lCommandType (Command_T::NOP);
+  
+  while (lCommandType != Command_T::QUIT && EndOfInput == false) {
+    // Prompt
+    std::ostringstream oPromptStr;
+    oPromptStr << "opentrep> ";
+
+    // Call read-line, which will fill the list of tokens
+    TokenList_T lTokenListByReadline;
+    lUserInput = lReader.GetLine (oPromptStr.str(), lTokenListByReadline,
+                                  EndOfInput);
+
+    // The history can be saved to an arbitrary file at any time
+    lReader.SaveHistory (lHistoryBackupFilename);
+
+    // The end-of-input typically corresponds to a CTRL-D typed by the user
+    if (EndOfInput) {
+      std::cout << std::endl;
+      break;
+    }
+
+    // Interpret and execute the user command, reusing the same dispatcher
+    // as the non-interactive command mode (-c/--command option)
+    lCommandType =
+      processUserCommand (lUserInput, lTokenListByReadline, opentrepService,
+                         lDBType, lLogFilename, lPORFilepathStr,
+                         lDeploymentNumber, lIncludeNonIATAPOR,
+                         lShouldIndexPORInXapian, lShouldAddPORInSQLDB);
   }
 
   // DEBUG
