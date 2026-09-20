@@ -16,6 +16,7 @@
 #include <opentrep/ui/cmdline/SReadline.hpp>
 // OpenTREP
 #include <opentrep/OPENTREP_Service.hpp>
+#include <opentrep/OPENTREP_exceptions.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/CityDetails.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
@@ -1181,12 +1182,32 @@ processUserCommand (const std::string& iUserInput, TokenList_T& ioTokenList,
       std::cout << "Reset the connection string" << std::endl;
     
       // Reset the connection string
-      const OPENTREP::SQLDBConnectionString_T
-        lConnectionString (lConnectionStringStr);
-      ioOpentrepService.setSQLDBConnectString (lConnectionString);
-
       //
-      std::cout << "The connection string has been reset" << std::endl;
+      // Note: the connection string format is specific to the current SQL
+      // database type. For instance, PostgreSQL expects libpq-style
+      // keywords (e.g., "dbname=trep user=trep password=trep"), whereas
+      // MySQL/MariaDB expects "db=trep user=trep password=trep". Setting
+      // the connection string triggers its parsing (so as to be able to
+      // later append the deployment number/version to the database name),
+      // which throws a SQLDatabaseConnectionStringParsingException when the
+      // given string does not match the format expected for that database
+      // type. That exception is caught here so that a malformed connection
+      // string reports a friendly error message instead of aborting the
+      // whole application.
+      try {
+        const OPENTREP::SQLDBConnectionString_T
+          lConnectionString (lConnectionStringStr);
+        ioOpentrepService.setSQLDBConnectString (lConnectionString);
+
+        //
+        std::cout << "The connection string has been reset" << std::endl;
+
+      } catch (const OPENTREP::SQLDatabaseConnectionStringParsingException& eParsing) {
+        std::cerr << "The connection string ('" << lConnectionStringStr
+                  << "') cannot be understood for the '" << iDBType.describe()
+                  << "' database type: " << eParsing.what() << ". "
+                  << "The connection string has not been changed." << std::endl;
+      }
 
       break;
     }

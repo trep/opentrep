@@ -28,3 +28,18 @@ if (Boost_FOUND AND ENABLE_TEST)
             "$<TARGET_FILE:opentrep-dbmgrbin>")
   add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
 endif (Boost_FOUND AND ENABLE_TEST)
+
+##
+# Regression/feature test for the opentrep-dbmgr 'reset_connection_string'
+# command with the PostgreSQL ('-t pg') SQL database type:
+#  * A malformed (MySQL-style 'db=') connection string used to crash the
+#    application with an uncaught parsing exception; it is now reported as
+#    a user-friendly error message.
+#  * A well-formed (libpq-style 'dbname=') connection string is still
+#    accepted. Neither scenario requires a running PostgreSQL server.
+if (Boost_FOUND AND ENABLE_TEST)
+  add_test (NAME opentrep-dbmgr_reset_connection_string_pg_test
+    COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dbmgr-reset-connection-string-pg-test.sh"
+            "$<TARGET_FILE:opentrep-dbmgrbin>")
+  add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
+endif (Boost_FOUND AND ENABLE_TEST)
