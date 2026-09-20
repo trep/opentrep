@@ -10,6 +10,10 @@ TREP_DIR="/var/www/webapps/opentrep/trep"
 TREP_DATA_DIR="${TREP_DIR}/share/opentrep/data/por"
 LOG_DIR="/var/log/webapps/search"
 
+# Prefer the OpenTREP binaries built/installed from source under TREP_DIR
+# over any older version installed system-wide (e.g. from the EPEL RPM).
+PATH="${TREP_DIR}/bin:${PATH}"
+
 depnb_max=2
 depnb_from=$(grep "^deploymentNb = " ${VIEWPY} | cut -d'=' -f2 | tr -d ' ')
 depnb_from=$((0 + depnb_from))
@@ -59,6 +63,7 @@ echo "  POR file    : ${POR_FILE}"
 echo "  Xapian DB   : ${TREP_DIR}/traveldb${depnb_to}/"
 echo "  SQL         : ${SQL_TYPE} / ${SQL_CONN}"
 echo "  Non-IATA    : ${INC_NO_IATA}"
+echo "  Indexer bin : $(command -v opentrep-indexer) ($(opentrep-indexer --version 2>&1))"
 echo
 
 time opentrep-indexer \
