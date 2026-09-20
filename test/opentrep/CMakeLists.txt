@@ -59,3 +59,21 @@ if (Boost_FOUND AND ENABLE_TEST)
             "$<TARGET_FILE:opentrep-dbmgrbin>")
   add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
 endif (Boost_FOUND AND ENABLE_TEST)
+
+##
+# Regression/feature test for the opentrep-dbmgr 'reset_connection_string'
+# command with the MySQL/MariaDB ('-t mysql') SQL database type:
+#  * A connection string containing a 'host=' (and/or 'port=') key used to
+#    crash the application with an assertion failure in
+#    OPENTREP::parseMySQLConnectionString (a fragile, position-based
+#    state-machine parser that only recognized 'db'/'user'/'password').
+#    The parser has been rewritten as a generic key=value parser
+#    (mirroring the PostgreSQL one), so 'host='/'port=' are now properly
+#    recognized. Neither scenario requires a running MySQL/MariaDB
+#    server.
+if (Boost_FOUND AND ENABLE_TEST)
+  add_test (NAME opentrep-dbmgr_reset_connection_string_mysql_host_test
+    COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dbmgr-reset-connection-string-mysql-host-test.sh"
+            "$<TARGET_FILE:opentrep-dbmgrbin>")
+  add_dependencies (check_${MODULE_NAME}tst opentrep-dbmgrbin)
+endif (Boost_FOUND AND ENABLE_TEST)

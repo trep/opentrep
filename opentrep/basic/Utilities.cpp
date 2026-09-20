@@ -106,74 +106,31 @@ namespace OPENTREP {
   StringMap_T
   parseMySQLConnectionString (const SQLDBConnectionString_T& iSQLDBConnStr) {
     StringMap_T oStrMap;
-    
+
+    // Split on spaces; each token is "key=value". Split each token on the
+    // first '=' only, so that passwords containing '=' are handled
+    // correctly. This also means that any key supported by the underlying
+    // MySQL/MariaDB client library (e.g., 'db', 'user', 'password', 'host',
+    // 'port', 'unix_socket', etc.) is accepted and preserved, instead of
+    // only a fixed, hard-coded subset.
     std::stringstream lConnStream (iSQLDBConnStr);
     std::string kvStr;
-    std::vector<std::string> kvList;
-    unsigned short keyDBName = 0;
-    unsigned short keyDBUser = 0;
-    unsigned short keyDBPasswd = 0;
-    unsigned short lastKey = 0;
 
     while (std::getline (lConnStream, kvStr, ' ')) {
-      std::stringstream kvStream (kvStr);
-      std::string keyStr;
-
-      while (std::getline (kvStream, keyStr, '=')) {
-        if (keyStr == "db") {
-          ++lastKey;
-          keyDBName = lastKey;
-          continue;
-          
-        } else if (keyStr == "user") {
-          ++lastKey;
-          keyDBUser = lastKey;
-          continue;
-          
-        } else if (keyStr == "password") {
-          ++lastKey;
-          keyDBPasswd = lastKey;
-          continue;
-          
-        } else if (lastKey == keyDBName) {
-          const bool isSuccess =
-            oStrMap.insert (std::make_pair ("db", keyStr)).second;
-	  if (isSuccess == false) {
-	    std::ostringstream errStr;
-            errStr << "Internal error while inserting the SQL database name ('"
-                   << keyDBName << "') into the internal STL map";
-            OPENTREP_LOG_ERROR (errStr.str());
-	  }
-          assert (isSuccess == true);
-          continue;
-          
-        } else if (lastKey == keyDBUser) {
-          const bool isSuccess =
-            oStrMap.insert (std::make_pair ("user", keyStr)).second;
-          if (isSuccess == false) {
-            std::ostringstream errStr;
-            errStr << "Internal error while inserting the SQL database user ('"
-		   << keyDBUser << "') into the internal STL map";
-	    OPENTREP_LOG_ERROR (errStr.str());
-	  }
-	  assert (isSuccess == true);
-          continue;
-          
-        } else if (lastKey == keyDBPasswd) {
-          const bool isSuccess =
-            oStrMap.insert (std::make_pair ("password", keyStr)).second;
-	  if (isSuccess == false) {
-	    std::ostringstream errStr;
-	    errStr << "Internal error while inserting the SQL database password "
-		   << " into the internal STL map";
-	    OPENTREP_LOG_ERROR (errStr.str());
-	  }
-          assert (isSuccess == true);
-          continue;
-        }
+      if (kvStr.empty()) {
+        continue;
       }
+
+      const size_t eqPos = kvStr.find ('=');
+      if (eqPos == std::string::npos) {
+        continue;
+      }
+
+      const std::string lKey = kvStr.substr (0, eqPos);
+      const std::string lVal = kvStr.substr (eqPos + 1);
+      oStrMap[lKey] = lVal;
     }
-    
+
     /**
      * Check that the parsing went well
      */
@@ -242,7 +199,21 @@ namespace OPENTREP {
 
     //
     oStr << " password=" << lDBPasswd;
-    
+
+    // Optional host and port (and, more generally, any other extra key
+    // supported by the underlying MySQL/MariaDB client library) are passed
+    // through unchanged, since they do not need to be re-suffixed with the
+    // deployment number.
+    const StringMap_T::const_iterator itHost = iStringMap.find ("host");
+    if (itHost != iStringMap.end()) {
+      oStr << " host=" << itHost->second;
+    }
+
+    const StringMap_T::const_iterator itPort = iStringMap.find ("port");
+    if (itPort != iStringMap.end()) {
+      oStr << " port=" << itPort->second;
+    }
+
     return SQLDBConnectionString_T (oStr.str());
   }
 
