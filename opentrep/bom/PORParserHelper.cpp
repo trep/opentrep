@@ -1555,7 +1555,7 @@ namespace OPENTREP {
           ;
 
         alt_lang_code =
-          (+~bsa::char_("|=")
+          (+~bsa::char_("|=^")
            - (bsq::eoi|bsq::eol))[storeAltLangCodeFull(_location)]
           ;
 
@@ -1574,7 +1574,16 @@ namespace OPENTREP {
           '_' >> bsq::repeat(1,4)[bsa::char_("a-z0-9")][storeAltLangCodeHist(_location)];
 
         alt_name =
-          (bsq::no_skip[+~bsa::char_("|=")]
+          (bsq::no_skip[+(~bsa::char_("|=^")
+                          | (bsa::char_('=')
+                             >> !((bsq::repeat(2,4)[bsa::char_("a-z")]
+                                   >> -(('-'
+                                          >> bsq::repeat(1,4)[bsa::char_('A',
+                                                                        'Z')])
+                                        | ('_'
+                                           >> bsq::repeat(1,4)[bsa::char_(
+                                                "a-z0-9")]))
+                                   >> '|'))))]
            - (bsq::eoi|bsq::eol))[storeAltName(_location)]
           ;
 

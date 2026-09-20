@@ -77,7 +77,11 @@ namespace OPENTREP {
     for (Place::StringSet_T::const_iterator itTerm = lSpellingSet.begin();
          itTerm != lSpellingSet.end(); ++itTerm) {
       const std::string& lTerm = *itTerm;
-      ioDatabase.add_spelling (lTerm);
+      // Xapian prefixes spelling keys with 'W', while backend keys are
+      // limited to 255 bytes.
+      if (lTerm.size() <= 254) {
+        ioDatabase.add_spelling (lTerm);
+      }
     }
 
     // DEBUG
@@ -185,8 +189,17 @@ namespace OPENTREP {
       // Add the document, associated to the Place object, to the Xapian index,
       // if required
       if (ioXapianDB_ptr != NULL) {
-        IndexBuilder::addDocumentToIndex (*ioXapianDB_ptr, lPlace,
-                                          iTransliterator);
+        try {
+          IndexBuilder::addDocumentToIndex (*ioXapianDB_ptr, lPlace,
+                                            iTransliterator);
+        } catch (const Xapian::Error& iError) {
+          std::ostringstream errorStr;
+          errorStr << "Xapian failed while indexing '"
+                   << lPlace.describeKey() << "': "
+                   << iError.get_description();
+          OPENTREP_LOG_ERROR (errorStr.str());
+          throw XapianDatabaseFailureException (errorStr.str());
+        }
       }
 
       // Add the document to the SQL database, if required
@@ -242,7 +255,6 @@ namespace OPENTREP {
      * a. Remove any existing directory for Xapian
      * b. Create the Xapian database (index). As the directory has been fully
      * cleaned, deleted and re-created, that Xapian database (index) is empty
-     * c. Start a transaction for Xapian
      */
     if (iShouldIndexPORInXapian) {
       // Delete and recreate the directory, and its full content,
@@ -260,19 +272,6 @@ namespace OPENTREP {
                           << "') has been re-created, checked and opened");
 
 
-      /**
-       * Begin a transation on the Xapian database (index).
-       *
-       * There may be around 120,000 entries (rows/documents) to
-       * be indexed. Not specifying the beginning of a transaction would
-       * mean that every document addition would end up in a corresponding
-       * independant transaction, which would be very much inefficient.
-       */
-      lXapianDatabase_ptr->begin_transaction();
-
-      // DEBUG
-      OPENTREP_LOG_DEBUG ("A transaction has begun on the Xapian database ('"
-                          << iTravelIndexFilePath << "')");
     }
 
     /**
@@ -333,12 +332,15 @@ namespace OPENTREP {
                                      iIncludeNonIATAPOR, iTransliterator);
 
     /**
-     *            5. Commit the transactions of the Xapian database (index).
+     *            5. Commit pending changes to the Xapian database (index).
      *
      */
     if (iShouldIndexPORInXapian) {
       assert (lXapianDatabase_ptr != NULL);
-      lXapianDatabase_ptr->commit_transaction();
+      // Xapian automatically commits batches as its flush threshold is
+      // reached. A single atomic transaction for a production POR file can
+      // grow too large for the backend to commit.
+      lXapianDatabase_ptr->commit();
 
       // DEBUG
       OPENTREP_LOG_DEBUG ("Xapian has indexed " << oNbOfEntries << " entries.");

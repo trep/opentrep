@@ -20,6 +20,7 @@
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
 #include <opentrep/basic/Utilities.hpp>
+#include <opentrep/bom/PORParserHelper.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/CityDetails.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
@@ -170,10 +171,108 @@ BOOST_AUTO_TEST_CASE (opentrep_default_pg_connection_string) {
   BOOST_CHECK_EQUAL (lDeploymentParams.find ("host")->second, "localhost");
 }
 
+/**
+ * Alternate names may legitimately contain '=' characters. They must not be
+ * mistaken for separators between language/name entries.
+ */
+BOOST_AUTO_TEST_CASE (opentrep_alt_name_with_equals_sign) {
+  std::ifstream lPORFile (K_POR_FILEPATH.c_str());
+  BOOST_REQUIRE (lPORFile.good());
+
+  std::string lHeader;
+  std::string lPORRecord;
+  std::getline (lPORFile, lHeader);
+  std::getline (lPORFile, lPORRecord);
+
+  const std::string lOriginalAltName ("ja|ケプラヴィーク国際空港|");
+  const std::string lAltNameWithEquals ("ja|ケプラ=ヴィーク国際空港|");
+  const std::string::size_type lAltNamePos =
+    lPORRecord.find (lOriginalAltName);
+  BOOST_REQUIRE (lAltNamePos != std::string::npos);
+  lPORRecord.replace (lAltNamePos, lOriginalAltName.size(),
+                      lAltNameWithEquals);
+
+  OPENTREP::PORStringParser lPORParser (lPORRecord);
+  const OPENTREP::Location& lLocation = lPORParser.generateLocation();
+  BOOST_CHECK_EQUAL (lLocation.getIataCode(), "KEF");
+}
+
+/**
+ * An empty alternate-name section must stop at its '^' field delimiter,
+ * even when a later field contains '=' separators.
+ */
+BOOST_AUTO_TEST_CASE (opentrep_empty_alt_name_before_equals_sign) {
+  std::ifstream lPORFile (K_POR_FILEPATH.c_str());
+  BOOST_REQUIRE (lPORFile.good());
+
+  std::string lHeader;
+  std::string lPORRecord;
+  std::getline (lPORFile, lHeader);
+  std::getline (lPORFile, lPORRecord);
+
+  std::vector<std::string> lFields;
+  std::stringstream lRecordStream (lPORRecord);
+  std::string lField;
+  while (std::getline (lRecordStream, lField, '^')) {
+    lFields.push_back (lField);
+  }
+  BOOST_REQUIRE (lFields.size() == 51);
+  lFields[43] = "";
+  lFields[47] = "AUBWS|=AUWW3|";
+
+  std::ostringstream lModifiedRecord;
+  for (std::vector<std::string>::const_iterator itField = lFields.begin();
+       itField != lFields.end(); ++itField) {
+    if (itField != lFields.begin()) {
+      lModifiedRecord << '^';
+    }
+    lModifiedRecord << *itField;
+  }
+
+  OPENTREP::PORStringParser lPORParser (lModifiedRecord.str());
+  const OPENTREP::Location& lLocation = lPORParser.generateLocation();
+  BOOST_CHECK_EQUAL (lLocation.getIataCode(), "KEF");
+}
+
+/**
+ * Xapian spelling keys include an internal one-byte prefix and therefore
+ * cannot store UTF-8 terms longer than 254 bytes.
+ */
+BOOST_AUTO_TEST_CASE (opentrep_long_spelling_term) {
+  std::ifstream lPORFile (K_POR_FILEPATH.c_str());
+  BOOST_REQUIRE (lPORFile.good());
+
+  std::string lHeader;
+  std::string lPORRecord;
+  std::getline (lPORFile, lHeader);
+  std::getline (lPORFile, lPORRecord);
+
+  const std::string lOriginalAltName ("ja|ケプラヴィーク国際空港|");
+  const std::string lLongAltName ("ja|" + std::string (300, 'a') + "|");
+  const std::string::size_type lAltNamePos =
+    lPORRecord.find (lOriginalAltName);
+  BOOST_REQUIRE (lAltNamePos != std::string::npos);
+  lPORRecord.replace (lAltNamePos, lOriginalAltName.size(), lLongAltName);
+
+  const std::string lPORFilepath ("/tmp/opentrep-long-spelling-term.csv");
+  std::ofstream lModifiedPORFile (lPORFilepath.c_str());
+  BOOST_REQUIRE (lModifiedPORFile.good());
+  lModifiedPORFile << lHeader << '\n' << lPORRecord << '\n';
+  lModifiedPORFile.close();
+
+  std::ofstream lLogFile ("/tmp/opentrep-long-spelling-term.log");
+  OPENTREP::OPENTREP_Service lService (
+    lLogFile, OPENTREP::PORFilePath_T (lPORFilepath),
+    OPENTREP::TravelDBFilePath_T ("/tmp/opentrep-long-spelling-term-xapian"),
+    OPENTREP::DBType (OPENTREP::DBType::NODB),
+    OPENTREP::SQLDBConnectionString_T (""), 0, true, true, false);
+
+  BOOST_CHECK_EQUAL (lService.insertIntoDBAndXapian(), 1);
+}
+
 // End the test suite
 BOOST_AUTO_TEST_SUITE_END()
 
 /*!
  * \endcode
  */
-

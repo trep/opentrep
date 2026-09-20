@@ -950,6 +950,8 @@ namespace OPENTREP {
         /**
          * SQL DDL (Data Definition Language) queries for PostgreSQL:
          * ----------------------------------------------------------
+         delete from optd_por a using optd_por b
+           where a.pk = b.pk and a.ctid < b.ctid;
          create unique index optd_por_pk on optd_por (pk);
          create index optd_por_iata_code on optd_por (iata_code asc);
          create index optd_por_iata_date on optd_por (iata_code asc, date_from asc, date_until asc);
@@ -958,6 +960,34 @@ namespace OPENTREP {
          create index optd_por_unlocode_code on optd_por (unlocode_code asc);
          create index optd_por_uic_code on optd_por (uic_code asc);
         */
+
+        /**
+         * The upstream OPTD POR data file occasionally contains a few
+         * duplicate rows (ie, sharing the same primary key -- see
+         * https://github.com/opentraveldata/opentraveldata/issues/285
+         * for an example). Rather than aborting the whole indexing
+         * process, keep the last-inserted row of each duplicate set and
+         * log a warning about the others.
+         */
+        long long lNbOfDuplicatedPKs = 0;
+        ioSociSession
+          << "select count(*) from "
+             "(select pk from optd_por group by pk having count(*) > 1) "
+             "as duplicated_pk;", soci::into (lNbOfDuplicatedPKs);
+        if (lNbOfDuplicatedPKs > 0) {
+          std::ostringstream warningStr;
+          warningStr << lNbOfDuplicatedPKs << " duplicated primary key(s) "
+                     << "have been found in the 'optd_por' table (the "
+                     << "upstream OPTD POR data file contains a few rows "
+                     << "sharing the same key). For each duplicated key, "
+                     << "all but the last-inserted row will be removed "
+                     << "before creating the unique index.";
+          OPENTREP_LOG_WARNING (warningStr.str());
+
+          ioSociSession
+            << "delete from optd_por a using optd_por b "
+               "where a.pk = b.pk and a.ctid < b.ctid;";
+        }
 
         ioSociSession
           << "create unique index optd_por_pk on optd_por (pk);";
