@@ -60,6 +60,15 @@ const std::string K_POR_FILEPATH (OPENTREP_POR_DATA_DIR
                                   "/csv/test-optd-por-public.csv");
 
 /**
+ * File-path of a single real-world OPTD POR record (QSW, As-Suwayda,
+ * Syria) whose Japanese ('ja') alternate name contains a literal '='
+ * character ('アス=スワイダ'), used as a regression fixture (see
+ * opentrep_alt_name_with_embedded_equals_and_valid_lang_code below).
+ */
+const std::string K_POR_FILEPATH_QSW (OPENTREP_POR_DATA_DIR
+                                      "/csv/test-optd-por-qsw-as-suwayda.csv");
+
+/**
  * Xapian database/index file-path (directory containing the index).
  */
 const std::string X_XAPIAN_DB_FP ("/tmp/opentrep/test_traveldb");
@@ -195,6 +204,33 @@ BOOST_AUTO_TEST_CASE (opentrep_alt_name_with_equals_sign) {
   OPENTREP::PORStringParser lPORParser (lPORRecord);
   const OPENTREP::Location& lLocation = lPORParser.generateLocation();
   BOOST_CHECK_EQUAL (lLocation.getIataCode(), "KEF");
+}
+
+/**
+ * Real-world regression: the QSW (As-Suwayda, Syria) OPTD POR record has
+ * a Japanese ('ja') alternate name containing a literal '=' character
+ * ('アス=スワイダ'). Unlike the synthetic case above, here the '='
+ * follows a *valid* two-letter ASCII language code ('ja') and a '|'
+ * separator, so this exercises the alt_name_details/alt_name_section
+ * boundary (list-splitting on '=') just as much as the alt_name rule's
+ * own embedded-'=' guard. This record was seen to crash indexing in
+ * production with the pre-fix grammar (opentraveldata/opentraveldata
+ * has since also been notified, but this is a parser robustness issue,
+ * not a data error).
+ */
+BOOST_AUTO_TEST_CASE (opentrep_alt_name_with_embedded_equals_and_valid_lang_code) {
+  std::ifstream lPORFile (K_POR_FILEPATH_QSW.c_str());
+  BOOST_REQUIRE (lPORFile.good());
+
+  std::string lHeader;
+  std::string lPORRecord;
+  std::getline (lPORFile, lHeader);
+  std::getline (lPORFile, lPORRecord);
+  BOOST_REQUIRE (lPORRecord.find ("ja|アス=スワイダ|") != std::string::npos);
+
+  OPENTREP::PORStringParser lPORParser (lPORRecord);
+  const OPENTREP::Location& lLocation = lPORParser.generateLocation();
+  BOOST_CHECK_EQUAL (lLocation.getIataCode(), "QSW");
 }
 
 /**
