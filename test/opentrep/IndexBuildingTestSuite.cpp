@@ -6,6 +6,7 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <sstream>
@@ -209,14 +210,9 @@ BOOST_AUTO_TEST_CASE (opentrep_alt_name_with_equals_sign) {
 /**
  * Real-world regression: the QSW (As-Suwayda, Syria) OPTD POR record has
  * a Japanese ('ja') alternate name containing a literal '=' character
- * ('アス=スワイダ'). Unlike the synthetic case above, here the '='
- * follows a *valid* two-letter ASCII language code ('ja') and a '|'
- * separator, so this exercises the alt_name_details/alt_name_section
- * boundary (list-splitting on '=') just as much as the alt_name rule's
- * own embedded-'=' guard. This record was seen to crash indexing in
- * production with the pre-fix grammar (opentraveldata/opentraveldata
- * has since also been notified, but this is a parser robustness issue,
- * not a data error).
+ * ('アス=スワイダ'). The alt-name itself is delimited by '|', so '='
+ * must remain ordinary name content even when followed later by another
+ * valid language/name entry.
  */
 BOOST_AUTO_TEST_CASE (opentrep_alt_name_with_embedded_equals_and_valid_lang_code) {
   std::ifstream lPORFile (K_POR_FILEPATH_QSW.c_str());
@@ -231,6 +227,18 @@ BOOST_AUTO_TEST_CASE (opentrep_alt_name_with_embedded_equals_and_valid_lang_code
   OPENTREP::PORStringParser lPORParser (lPORRecord);
   const OPENTREP::Location& lLocation = lPORParser.generateLocation();
   BOOST_CHECK_EQUAL (lLocation.getIataCode(), "QSW");
+
+  OPENTREP::NameList_T lJapaneseNames;
+  BOOST_REQUIRE (lLocation.getNameList (OPENTREP::LanguageCode_T ("ja"),
+                                        lJapaneseNames));
+  BOOST_CHECK (std::find (lJapaneseNames.begin(), lJapaneseNames.end(),
+                          "アス=スワイダ") != lJapaneseNames.end());
+
+  OPENTREP::NameList_T lJavaneseNames;
+  BOOST_REQUIRE (lLocation.getNameList (OPENTREP::LanguageCode_T ("jv"),
+                                        lJavaneseNames));
+  BOOST_CHECK (std::find (lJavaneseNames.begin(), lJavaneseNames.end(),
+                          "As-Suwayda") != lJavaneseNames.end());
 }
 
 /**
