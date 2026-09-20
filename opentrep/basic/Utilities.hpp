@@ -85,7 +85,7 @@ namespace OPENTREP {
    * Parse a PostgreSQL SOCI connection string.
    *
    * Typically, the connection string is like
-   * 'dbname=trep_trep user=trep password=trep host=localhost port=5432'.
+   * 'dbname=trep user=trep password=trep host=localhost port=5432'.
    *
    * @param const SQLDBConnectionString_T& Connection string for PostgreSQL
    * @return StringMap_T Connection details for PostgreSQL
@@ -96,7 +96,7 @@ namespace OPENTREP {
    * Recompose the PostgreSQL connection string, appending the deployment
    * number to the database name.
    *
-   * For instance, 'dbname=trep_trep0 user=trep password=trep'
+   * For instance, 'dbname=trep0 user=trep password=trep'
    *
    * @param const StringMap_T& Connection details for PostgreSQL
    * @param const DeploymentNumber_T& Deployment number

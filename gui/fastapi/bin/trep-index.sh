@@ -20,7 +20,7 @@ POR_FILE="${TREP_DATA_DIR}/optd_por_public_${depnb_to}.csv"
 SQL_TYPE_0="sqlite"
 SQL_CONN_0="${TREP_DIR}/sqlite_travel.db"
 SQL_TYPE_1="pg"
-SQL_CONN_1="dbname=trep_trep user=trep password=trep host=localhost"
+SQL_CONN_1="dbname=trep user=trep password=trep host=localhost"
 
 eval SQL_TYPE=\$SQL_TYPE_${depnb_to}
 eval SQL_CONN=\$SQL_CONN_${depnb_to}

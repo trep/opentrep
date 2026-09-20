@@ -19,6 +19,7 @@
 // OpenTrep
 #include <opentrep/OPENTREP_Service.hpp>
 #include <opentrep/basic/BasConst_OPENTREP_Service.hpp>
+#include <opentrep/basic/Utilities.hpp>
 #include <opentrep/Location.hpp>
 #include <opentrep/CityDetails.hpp>
 #include <opentrep/config/opentrep-paths.hpp>
@@ -141,6 +142,32 @@ BOOST_AUTO_TEST_CASE (opentrep_simple_index) {
 
   // Close the Log outputFile
   logOutputFile.close();
+}
+
+/**
+ * Check that the default PostgreSQL connection targets the provisioned
+ * deployment-slot database (trep0 for deployment 0).
+ */
+BOOST_AUTO_TEST_CASE (opentrep_default_pg_connection_string) {
+  const OPENTREP::SQLDBConnectionString_T lDefaultConnection (
+    OPENTREP::DEFAULT_OPENTREP_PG_CONN_STRING);
+  const OPENTREP::StringMap_T lDefaultParams =
+    OPENTREP::parsePGConnectionString (lDefaultConnection);
+
+  BOOST_REQUIRE (lDefaultParams.find ("dbname") != lDefaultParams.end());
+  BOOST_REQUIRE (lDefaultParams.find ("host") != lDefaultParams.end());
+  BOOST_CHECK_EQUAL (lDefaultParams.find ("dbname")->second, "trep");
+  BOOST_CHECK_EQUAL (lDefaultParams.find ("host")->second, "localhost");
+
+  const OPENTREP::SQLDBConnectionString_T lDeploymentConnection =
+    OPENTREP::buildPGConnectionString (lDefaultParams, 0);
+  const OPENTREP::StringMap_T lDeploymentParams =
+    OPENTREP::parsePGConnectionString (lDeploymentConnection);
+
+  BOOST_REQUIRE (lDeploymentParams.find ("dbname") != lDeploymentParams.end());
+  BOOST_REQUIRE (lDeploymentParams.find ("host") != lDeploymentParams.end());
+  BOOST_CHECK_EQUAL (lDeploymentParams.find ("dbname")->second, "trep0");
+  BOOST_CHECK_EQUAL (lDeploymentParams.find ("host")->second, "localhost");
 }
 
 // End the test suite

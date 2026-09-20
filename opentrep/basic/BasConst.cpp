@@ -32,10 +32,11 @@ namespace OPENTREP {
   const std::string DEFAULT_OPENTREP_SQL_DB_TYPE ("nodb");
 
   /**
-   * Default connection string for the MySQL/MariaDB database.
+   * Default connection string for the PostgreSQL database.
    */
   const std::string
-  DEFAULT_OPENTREP_PG_CONN_STRING ("dbname=trep_trep user=trep password=trep");
+  DEFAULT_OPENTREP_PG_CONN_STRING
+  ("dbname=trep user=trep password=trep host=localhost");
 
   /**
    * Default connection string for the MySQL/MariaDB database.

@@ -24,7 +24,7 @@ LOG_PATH    = "/var/log/webapps/search/pyopentrep.log"
 # SQL backend per deployment slot
 _SQL_TYPE = {
     0: ("sqlite", f"{TREP_DIR}/sqlite_travel.db"),
-    1: ("pg",     "dbname=trep_trep user=trep password=trep host=localhost"),
+    1: ("pg",     "dbname=trep user=trep password=trep host=localhost"),
 }
 
 _trep = None

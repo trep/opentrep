@@ -50,7 +50,7 @@ namespace OPENTREP {
    * <ul>
    *   <li>Database user name: <tt>trep</tt></li>
    *   <li>Database user password: <tt>trep</tt></li>
-   *   <li>Database name: <tt>trep_trep</tt></li>
+   *   <li>Database name prefix: <tt>trep</tt></li>
    *   <li>Server hostname: <tt>localhost</tt></li>
    *   <li>Server port: <tt>5432</tt></li>
    * </ul>

@@ -145,7 +145,7 @@ int readConfiguration (int argc, char* argv[],
     ("sqldbconx,s",
      boost::program_options::value< std::string >(&ioSQLDBConnectionString),
      "SQL database connection string (e.g., ~/tmp/opentrep/sqlite_travel.db for SQLite, "
-     "\"dbname=trep_trep user=trep password=trep\" for PostgreSQL, "
+     "\"dbname=trep user=trep password=trep host=localhost\" for PostgreSQL, "
      "\"db=trep_trep user=trep password=trep\" for MariaDB/MySQL)")
     ("deploymentnb,m",
      boost::program_options::value<unsigned short>(&ioDeploymentNumber)->default_value(OPENTREP::DEFAULT_OPENTREP_DEPLOYMENT_NUMBER), 
