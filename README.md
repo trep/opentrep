@@ -605,7 +605,7 @@ To customize OpenTREP to your environment, you can alter
 the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export TREP_VER="0.08.01"
+export TREP_VER="0.08.02"
 ```
 
 Then, as usual:

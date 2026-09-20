@@ -1,3 +1,12 @@
+* 2026-09-20:
+- Version 0.08.02
+- Hardened PostgreSQL/MySQL database-manager commands against crashes
+- Fixed MySQL connection-string host/port support
+- Fixed PostgreSQL indexer/searcher default connection string
+- Fixed full-scale OPTD indexing issues (parsing, Xapian limits, PG duplicate keys)
+- Added opentrep-datasync command-line utility
+- Documented PostgreSQL database and user provisioning
+
 * 2026-05-25:
 - Version 0.08.01
 - Added support for PostgreSQL database

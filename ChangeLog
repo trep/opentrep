@@ -1,3 +1,15 @@
+* Sun Sep 20 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.08.02
+- Hardened PostgreSQL/MySQL database-manager commands against uncaught
+  exceptions (connection-string parsing, database/user/table/index creation)
+- Fixed MySQL connection-string parser to support host/port options
+- Fixed PostgreSQL indexer/searcher default connection string to target the
+  provisioned trep0/trep1 deployment-slot databases
+- Fixed full-scale OPTD indexing issues: alt-name parsing with literal '='
+  characters, Xapian spelling-key size limit, oversized single transaction,
+  and duplicate primary keys on PostgreSQL unique index creation
+- Added opentrep-datasync command-line utility to fetch OPTD POR data files
+- Documented PostgreSQL database and user provisioning
+
 * Mon May 25 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.08.01
 - Added support for PostgreSQL database
 
