@@ -570,6 +570,8 @@ $ sudo make install
 $ popd
 ```
 
+
+
 #### Debian
 ```bash
 $ wget https://github.com/trep/opentrep/raw/master/ci-scripts/soci-debian-cmake.patch -O /opt/soci/soci-debian-cmake.patch
@@ -703,13 +705,73 @@ $ ${INSTALL_BASEDIR}/opentrep-${TREP_VER}/bin/opentrep-{dbmgr,indexer,searcher}
 
 ## Underlying (relational) database, SQLite or MySQL/MariaDB, if any
 OpenTREP may use, if so configured, a relational database. For now,
-two database products are supported, SQLite3 and MySQL/MariaDB.
+three database products are supported, SQLite3, MySQL/MariaDB, and
+PostgreSQL.
 The database accelerates the look up of POR by (IATA, ICAO, FAA) codes
 and of Geonames ID. When OpenTREP is configured to run without database,
 those codes and Geonames ID are full-text searched directly with Xapian.
 Note that the database can be managed directly, _i.e._, without the
 OpenTREP search interface on top of it, thanks to the `opentrep-dbmgr`
 utility, which is detailed below.
+
+### Setting up the PostgreSQL database and user
+
+The PostgreSQL deployment-slot databases (`trep0`, `trep1`, ...) must be
+created and prepared by a PostgreSQL administrator before the
+`opentrep-dbmgr` `create_user`, `create_tables`, or `create_indexes`
+commands can succeed against them. If a deployment-slot database does not
+exist, `opentrep-dbmgr` reports an actionable connection error instead of
+crashing.
+
+The canonical provisioning procedure is maintained in the
+[OpenTREP database and user section of the PostgreSQL cheat sheet](https://github.com/data-engineering-helpers/ks-cheat-sheets/blob/main/db/postgresql/README.md#opentrep-database-and-user).
+The commands are reproduced below:
+
+* Set the PostgreSQL server and administrator account:
+
+```bash
+$ PG_SVR="localhost"; PG_ADM_USR="$USER"
+```
+
+* Create the deployment-slot databases and the `trep` user, then grant the
+  user access to both databases:
+
+```bash
+$ psql -h $PG_SVR -U $PG_ADM_USR -d postgres -c "create database trep0; create database trep1;"
+CREATE DATABASE
+$ psql -h $PG_SVR -U $PG_ADM_USR -d postgres -c "create user trep with encrypted password '<trep-pass>'; grant all privileges on database trep0 to trep; grant all privileges on database trep1 to trep;"
+CREATE ROLE
+GRANT
+```
+
+* Grant schema and table privileges in each deployment-slot database:
+
+```bash
+$ psql -h $PG_SVR -U $PG_ADM_USR -d trep0 -c "grant all on schema public to trep;"
+GRANT
+$ psql -h $PG_SVR -U $PG_ADM_USR -d trep0 -c "create schema trep; grant all on schema trep to trep; grant all privileges on all tables in schema trep to trep;"
+GRANT
+$ psql -h $PG_SVR -U $PG_ADM_USR -d trep1 -c "grant all on schema public to trep;"
+GRANT
+$ psql -h $PG_SVR -U $PG_ADM_USR -d trep1 -c "create schema trep; grant all on schema trep to trep; grant all privileges on all tables in schema trep to trep;"
+GRANT
+```
+
+* Check that access to both PostgreSQL deployment-slot databases works:
+
+```bash
+$ psql -h $PG_SVR -U trep -d trep0 -c "select 42 as nb;"
+ nb
+----
+ 42
+(1 row)
+
+$ psql -h $PG_SVR -U trep -d trep1 -c "select 42 as nb;"
+ nb
+----
+ 42
+(1 row)
+```
 
 # Use cases
 
