@@ -136,6 +136,11 @@ increased functionality, speed and accuracy. In particular the
 [Xapian](http://xapian.org) and [SOCI](http://soci.sourceforge.net)
 libraries are used.
 
+An AI-agent skill covering OpenTREP development, indexing, database-backend
+(SQLite3/MySQL-MariaDB/PostgreSQL) work, and OPTD-driven index refreshes is
+available in the
+[`ai-helpers/ai-skills-curated` repository](https://github.com/ai-helpers/ai-skills-curated/tree/main/agents/skills/opentrep).
+
 # Docker images
 
 ## OpenTREP Docker images
