@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 # Blue-green deployment: 0 = current (SQLite), 1 = next (PostgreSQL)
 # Change deploymentNb and restart the service to switch deployments.
 deploymentNb = 1
+import os
+if "TREP_TARGET_SLOT" in os.environ:
+    deploymentNb = int(os.environ["TREP_TARGET_SLOT"])
 
 TREP_DIR    = "/var/www/webapps/opentrep/trep"
 POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
