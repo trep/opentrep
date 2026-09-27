@@ -244,9 +244,14 @@ class DeploymentInfo(BaseModel):
     indexed_timestamp: str = Field(..., description="When the Xapian/SQL index was built")
     non_iata_indexed: bool = Field(..., description="Whether non-IATA locations were indexed")
 
+class FeedbackLinks(BaseModel):
+    opentrep_issues: str = Field(..., description="URL to submit issues or feedback for the OpenTREP search engine")
+    optd_issues: str = Field(..., description="URL to submit issues or feedback for the OpenTravelData (OPTD) dataset")
+
 class AppInfoResponse(BaseModel):
     active_slot: int = Field(..., description="Currently active deployment slot")
     deployments: list[DeploymentInfo] = Field(..., description="Information about both deployment slots")
+    feedback: FeedbackLinks = Field(..., description="Links for submitting feedback or reporting issues")
 
 @app.get("/api/info", summary="Get deployment metadata and index status", response_model=AppInfoResponse)
 def get_info():
@@ -303,7 +308,11 @@ def get_info():
         
     return AppInfoResponse(
         active_slot=deploymentNb,
-        deployments=deployments
+        deployments=deployments,
+        feedback=FeedbackLinks(
+            opentrep_issues="https://github.com/trep/opentrep/issues",
+            optd_issues="https://github.com/opentraveldata/opentraveldata/issues"
+        )
     )
 
 app.mount("/static", StaticFiles(directory="/var/www/webapps/search/static"), name="static")
