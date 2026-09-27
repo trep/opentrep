@@ -14,16 +14,18 @@ logger = logging.getLogger(__name__)
 
 # Blue-green deployment: 0 = current (SQLite), 1 = next (PostgreSQL)
 # Change deploymentNb and restart the service to switch deployments.
-deploymentNb = 0
+deploymentNb = 1
 
 TREP_DIR    = "/var/www/webapps/opentrep/trep"
 POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
 XAPIAN_DIR  = f"{TREP_DIR}/traveldb"   # opentrep appends deploymentNb automatically
 LOG_PATH    = "/var/log/webapps/search/pyopentrep.log"
 
-# SQL backend per deployment slot
+# SQL backend per deployment slot.
+# For PG, pass the base DB name ("trep_trep") — the library appends the
+# deployment number automatically, producing trep_trep0 or trep_trep1.
 _SQL_TYPE = {
-    0: ("sqlite", f"{TREP_DIR}/sqlite_travel.db"),
+    0: ("pg",     "dbname=trep user=trep password=trep host=localhost"),
     1: ("pg",     "dbname=trep user=trep password=trep host=localhost"),
 }
 
@@ -172,7 +174,12 @@ def search(q: str = Query(..., min_length=1, max_length=200,
                           description="Search query: free-text or IATA code(s)",
                           examples=["nce", "cdg jfk lax", "Tokyo London"])):
     raw = _trep.search("J", q)
-    data = json.loads(raw)
+    if not raw:
+        raise HTTPException(status_code=404, detail="No location found for query: " + repr(q))
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid response from OpenTREP backend: " + repr(raw))
     raw_locs = data.get("locations", [])
     if not raw_locs or raw_locs == "":
         raise HTTPException(status_code=404, detail="No location found for query: " + repr(q))
@@ -191,8 +198,38 @@ def search(q: str = Query(..., min_length=1, max_length=200,
          response_model=SearchResponse)
 def random_airports(n: int = Query(1, ge=1, le=10,
                                    description="Number of random locations to draw")):
-    raw = _trep.generate("S", n)
-    codes = [part.split("/")[0] for part in raw.split(",") if "/" in part]
+    import subprocess, os
+    sql_type, sql_conn = _SQL_TYPE[deploymentNb]
+    codes = []
+    
+    if sql_type == "pg":
+        db_base, user, host = "trep", "trep", "localhost"
+        for part in sql_conn.split():
+            if part.startswith("dbname="): db_base = part.split("=")[1]
+            elif part.startswith("user="): user = part.split("=")[1]
+            elif part.startswith("host="): host = part.split("=")[1]
+        
+        db_name = f"{db_base}{deploymentNb}"
+        cmd = [
+            "psql", "-U", user, "-h", host, "-d", db_name, "-t", "-A", "-c",
+            f"SELECT COALESCE(NULLIF(iata_code, ''), NULLIF(icao_code, ''), NULLIF(unlocode_code, ''), geoname_id::varchar, pk) FROM trep.optd_por ORDER BY RANDOM() LIMIT {n};"
+        ]
+        try:
+            env = os.environ.copy()
+            env["PGPASSWORD"] = "trep"
+            res = subprocess.check_output(cmd, env=env, text=True)
+            codes = [line.strip() for line in res.split("\n") if line.strip()]
+        except Exception as e:
+            logger.error(f"Failed to get random codes from PG: {e}")
+
+    # Fallback to standard generator if SQLite or if PG failed
+    if not codes:
+        raw = _trep.generate("S", n * 10)
+        codes = [part.split("/")[0] for part in raw.split(",") if "/" in part and part.split("/")[0]]
+        codes = codes[:n]
+
+    if not codes:
+        raise HTTPException(status_code=404, detail="Database not fully indexed or random generation failed.")
     return search(" ".join(codes))
 
 app.mount("/static", StaticFiles(directory="/var/www/webapps/search/static"), name="static")
@@ -317,7 +354,7 @@ async function doRandom(n) {
     const r = await fetch("/api/random?n=" + n);
     if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
     const data = await r.json();
-    document.getElementById("q").value = data.locations.map(l => l.iata_code).join(" ");
+    document.getElementById("q").value = data.query;
     render(data);
   } catch(e) { setErr(e.message); }
 }
@@ -429,6 +466,17 @@ function render(data) {
     map.fitBounds(group.getBounds().pad(0.15));
   }
 }
+
+// ── Init on load ─────────────────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  let q = params.get("q");
+  if (q) {
+    q = q.replace(/^["']|["']$/g, "");
+    document.getElementById("q").value = q;
+    doSearch();
+  }
+});
 </script>
 </body>
 </html>
