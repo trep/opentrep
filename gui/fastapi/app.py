@@ -232,6 +232,80 @@ def random_airports(n: int = Query(1, ge=1, le=10,
         raise HTTPException(status_code=404, detail="Database not fully indexed or random generation failed.")
     return search(" ".join(codes))
 
+class DeploymentInfo(BaseModel):
+    slot: int = Field(..., description="Deployment slot number (0 or 1)")
+    status: str = Field(..., description="Status (active or staging)")
+    por_count: int = Field(..., description="Number of PORs in the Postgres database")
+    source_file: str = Field(..., description="Original file name downloaded from OPTD")
+    github_url: str = Field(..., description="URL of the source file on GitHub")
+    git_sha1: str = Field(..., description="Git SHA1 of the file when pulled")
+    git_timestamp: str = Field(..., description="Git commit timestamp of the file")
+    staged_timestamp: str = Field(..., description="When the file was downloaded to the server")
+    indexed_timestamp: str = Field(..., description="When the Xapian/SQL index was built")
+    non_iata_indexed: bool = Field(..., description="Whether non-IATA locations were indexed")
+
+class AppInfoResponse(BaseModel):
+    active_slot: int = Field(..., description="Currently active deployment slot")
+    deployments: list[DeploymentInfo] = Field(..., description="Information about both deployment slots")
+
+@app.get("/api/info", summary="Get deployment metadata and index status", response_model=AppInfoResponse)
+def get_info():
+    import os, subprocess, json
+    
+    deployments = []
+    for slot in (0, 1):
+        status = "active" if slot == deploymentNb else "staging"
+        
+        # Get count from Postgres
+        por_count = 0
+        sql_type, sql_conn = _SQL_TYPE[slot]
+        if sql_type == "pg":
+            db_base, user, host = "trep", "trep", "localhost"
+            for part in sql_conn.split():
+                if part.startswith("dbname="): db_base = part.split("=")[1]
+                elif part.startswith("user="): user = part.split("=")[1]
+                elif part.startswith("host="): host = part.split("=")[1]
+            
+            db_name = f"{db_base}{slot}"
+            cmd = ["psql", "-U", user, "-h", host, "-d", db_name, "-t", "-A", "-c", "SELECT count(*) FROM trep.optd_por;"]
+            try:
+                env = os.environ.copy()
+                env["PGPASSWORD"] = "trep"
+                res = subprocess.check_output(cmd, env=env, text=True)
+                por_count = int(res.strip())
+            except Exception:
+                pass
+                
+        # Read metadata JSON
+        meta = {
+            "source_file": "unknown",
+            "github_url": "unknown",
+            "git_sha1": "unknown",
+            "git_timestamp": "unknown",
+            "staged_timestamp": "unknown",
+            "indexed_timestamp": "unknown",
+            "non_iata_indexed": True
+        }
+        meta_path = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{slot}.meta.json"
+        if os.path.exists(meta_path):
+            try:
+                with open(meta_path, "r") as mf:
+                    meta.update(json.load(mf))
+            except Exception:
+                pass
+                
+        deployments.append(DeploymentInfo(
+            slot=slot,
+            status=status,
+            por_count=por_count,
+            **meta
+        ))
+        
+    return AppInfoResponse(
+        active_slot=deploymentNb,
+        deployments=deployments
+    )
+
 app.mount("/static", StaticFiles(directory="/var/www/webapps/search/static"), name="static")
 
 @app.get("/favicon.ico", include_in_schema=False)
