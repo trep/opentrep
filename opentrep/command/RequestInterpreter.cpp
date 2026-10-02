@@ -131,7 +131,8 @@ namespace OPENTREP {
   void searchString (const StringPartition& iStringPartition,
                      const Xapian::Database& iDatabase,
                      ResultCombination& ioResultCombination,
-                     WordList_T& ioWordList) {
+                     WordList_T& ioWordList,
+                     const std::string& iNegativeQuery = "") {
 
     // Catch any thrown Xapian::Error exceptions
     try {
@@ -178,7 +179,7 @@ namespace OPENTREP {
           // Perform the Xapian-based full-text match: the set of
           // matching documents is filled.
           const std::string& lMatchedString =
-            lResult.fullTextMatch (iDatabase, lQueryString);
+            lResult.fullTextMatch (iDatabase, lQueryString, iNegativeQuery);
 
           // When a single-word string is unmatched/unknown by/from Xapian,
           // add it to the dedicated list (i.e., ioWordList).
@@ -464,9 +465,32 @@ namespace OPENTREP {
     OPENTREP_LOG_DEBUG (std::endl
                         << "=========================================");
       
-    // First, cut the travel query in slices and calculate all the partitions
+
+    // Separate positive and negative words (starting with '-')
+    std::string lPositiveQuery, lNegativeQuery;
+    std::istringstream iss(iTravelQuery);
+    std::string word;
+    bool firstPos = true, firstNeg = true;
+    while (iss >> word) {
+        if (word.length() > 1 && word[0] == '-') {
+            if (!firstNeg) lNegativeQuery += " ";
+            lNegativeQuery += word;
+            firstNeg = false;
+        } else {
+            if (!firstPos) lPositiveQuery += " ";
+            lPositiveQuery += word;
+            firstPos = false;
+        }
+    }
+
+    if (lPositiveQuery.empty()) {
+        lPositiveQuery = iTravelQuery; // Fallback if all were negative
+        lNegativeQuery.clear();
+    }
+
+    // First, cut the positive query in slices and calculate all the partitions
     // for each of those query slices
-    QuerySlices lQuerySlices (lXapianDatabase, iTravelQuery, iTransliterator);
+    QuerySlices lQuerySlices (lXapianDatabase, lPositiveQuery, iTransliterator);
 
     // DEBUG
     OPENTREP_LOG_DEBUG ("+=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
@@ -556,7 +580,7 @@ namespace OPENTREP {
          *      list of Result instances.
          */
         OPENTREP::searchString (lTravelQuerySlice, lXapianDatabase,
-                                lResultCombination, ioWordList);
+                                lResultCombination, ioWordList, lNegativeQuery);
 
         /**
          * 1.2. Calculate/set all the weights for all the matching documents

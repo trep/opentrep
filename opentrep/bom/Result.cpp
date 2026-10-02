@@ -319,7 +319,8 @@ namespace OPENTREP {
   // //////////////////////////////////////////////////////////////////////
   std::string Result::fullTextMatch (const Xapian::Database& iDatabase,
                                      const TravelQuery_T& iQueryString,
-                                     Xapian::MSet& ioMatchingSet) {
+                                     Xapian::MSet& ioMatchingSet,
+                                     const std::string& iNegativeQuery) {
     std::string oMatchedString;
 
     // Catch any Xapian::Error exceptions thrown
@@ -356,8 +357,13 @@ namespace OPENTREP {
        * operator).  With the above example ('sna francicso'), it
        * yields "sna PHRASE 2 francicso".
        */
+      std::string lQueryStringToParse = iQueryString;
+      if (!iNegativeQuery.empty()) {
+        lQueryStringToParse += " " + iNegativeQuery;
+      }
+      
       const Xapian::Query& lXapianQuery =
-        lQueryParser.parse_query (iQueryString,
+        lQueryParser.parse_query (lQueryStringToParse,
                                   Xapian::QueryParser::FLAG_BOOLEAN
                                   | Xapian::QueryParser::FLAG_PHRASE
                                   | Xapian::QueryParser::FLAG_LOVEHATE);
@@ -445,8 +451,13 @@ namespace OPENTREP {
        * 'san francisco', it yields the query "san PHRASE 2 francisco",
        * which should provide matches.
        */
+      std::string lCorrectedQueryStringToParse = lCorrectedString;
+      if (!iNegativeQuery.empty()) {
+        lCorrectedQueryStringToParse += " " + iNegativeQuery;
+      }
+
       const Xapian::Query& lCorrectedXapianQuery = 
-        lQueryParser.parse_query (lCorrectedString,
+        lQueryParser.parse_query (lCorrectedQueryStringToParse,
                                   Xapian::QueryParser::FLAG_BOOLEAN
                                   | Xapian::QueryParser::FLAG_PHRASE
                                   | Xapian::QueryParser::FLAG_LOVEHATE);
@@ -520,7 +531,8 @@ namespace OPENTREP {
 
   // //////////////////////////////////////////////////////////////////////
   std::string Result::fullTextMatch (const Xapian::Database& iDatabase,
-                                     const TravelQuery_T& iQueryString) {
+                                     const TravelQuery_T& iQueryString,
+                                     const std::string& iNegativeQuery) {
     std::string oMatchedString;
 
     // Catch any Xapian::Error exceptions thrown
@@ -536,7 +548,7 @@ namespace OPENTREP {
 
       Xapian::MSet lMatchingSet;
       if (isToBeAdded == true) {
-        oMatchedString = fullTextMatch (iDatabase, iQueryString, lMatchingSet);
+        oMatchedString = fullTextMatch (iDatabase, iQueryString, lMatchingSet, iNegativeQuery);
       }
 
       // Create the corresponding documents (from the Xapian MSet object)

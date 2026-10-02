@@ -253,7 +253,7 @@ namespace OPENTREP {
      * @param const Xapian::Database& The Xapian index/database.
      * @param const TravelQuery_T& The query string.
      */
-    std::string fullTextMatch (const Xapian::Database&, const TravelQuery_T&);
+    std::string fullTextMatch (const Xapian::Database&, const TravelQuery_T&, const std::string& = "");
 
     /**
      * Parse the raw data, as stored by the given Xapian document, and
@@ -373,7 +373,7 @@ namespace OPENTREP {
      * @param Xapian::MSet& The resulting matching set of Xapian documents
      */
     std::string fullTextMatch (const Xapian::Database&, const TravelQuery_T&,
-                               Xapian::MSet&);
+                               Xapian::MSet&, const std::string& = "");
 
 
   public:
