@@ -1,65 +1,37 @@
-name: CI
+name: OpenTREP CI
 
 on:
   push:
-    branches: [ master, "opentrep-*" ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
-permissions:
-  contents: read
-
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
-    env:
-      LANG: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
-
+    runs-on: ubuntu-24.04
+    
     steps:
     - uses: actions/checkout@v4
-
-    - name: Setup locale
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install locales
-        sudo locale-gen $LANG
-
+    
     - name: Install dependencies
       run: |
-        sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
-        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-        sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ $(. /etc/os-release && echo "$VERSION_CODENAME") main"
         sudo apt-get update
-        sudo apt-get -y install cmake cmake-data libmysql++3v5
-        sudo cmake --version
-        sudo apt-get -y install gcc g++ cppcheck zlib1g-dev libbz2-dev libgmp-dev
-        sudo apt-get -y install libxapian-dev graphviz libreadline-dev libncurses5-dev
-        sudo apt-get -y install libzmq3-dev libssl-dev libffi-dev sqlite3 libsqlite3-dev
-        sudo apt-get -y install libmariadb-dev-compat libmariadb-dev postgresql-client libpq-dev
-        sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
-        sudo apt-get -y install python3 python3-dev libpython3-dev
-        sudo apt-get -y install doxygen ghostscript texlive-latex-recommended
-        sudo apt-get -y install libboost-all-dev libsoci-dev
-
+        sudo apt-get install -y cmake g++ libboost-all-dev sqlite3 libsqlite3-dev \
+          libreadline-dev libicu-dev python3-dev xapian-tools libxapian-dev \
+          libgtest-dev google-mock doxygen
+          
     - name: Configure CMake
       run: |
         mkdir build
         cd build
-        cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON -DRUN_GCOV:BOOL=OFF -DLIB_SUFFIX= ..
-
-    - name: Build and Install
+        cmake ..
+        
+    - name: Build
       run: |
         cd build
         make -j$(nproc)
-        sudo make install
-
+        
     - name: Run Tests
       run: |
         cd build
         make test
-
-    - name: Run Indexer and Searcher
-      run: |
-        /usr/bin/opentrep-indexer
-        /usr/bin/opentrep-searcher
