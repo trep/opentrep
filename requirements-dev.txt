@@ -1,6 +1,6 @@
 -i https://pypi.org/simple
 attrs==22.1.0; python_version >= '3.5'
-bleach==5.0.1; python_version >= '3.7'
+bleach==6.4.0; python_version >= '3.7'
 certifi==2022.9.24; python_version >= '3.6'
 charset-normalizer==2.1.1; python_version >= '3.6'
 cmake==3.25.0
