@@ -22,7 +22,7 @@ if "TREP_TARGET_SLOT" in os.environ:
 TREP_DIR    = "/var/www/webapps/opentrep/trep"
 POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
 XAPIAN_DIR  = f"{TREP_DIR}/traveldb"   # opentrep appends deploymentNb automatically
-LOG_PATH    = "/var/log/webapps/search/pyopentrep.log"
+LOG_PATH    = "/var/log/webapps/search/pyopentrep_{os.getpid()}.log"
 
 # SQL backend per deployment slot.
 # For PG, pass the base DB name ("trep_trep") — the library appends the
@@ -173,7 +173,7 @@ def _enrich(locations: list) -> list:
              "distance."
          ),
          response_model=SearchResponse)
-def search(q: str = Query(..., min_length=1, max_length=200,
+async def search(q: str = Query(..., min_length=1, max_length=200,
                           description="Search query: free-text or IATA code(s)",
                           examples=["nce", "cdg jfk lax", "Tokyo London"])):
     raw = _trep.search("J", q)
