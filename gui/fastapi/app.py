@@ -108,12 +108,17 @@ app = FastAPI(
     version="0.7.18",
     description=(
         "REST API for the [OpenTREP](https://github.com/trep/opentrep) open-source "
-        "travel search engine.\n\n"
+        "travel search engine.
+
+"
         "OpenTREP uses Xapian full-text search and SQLite (or MySQL/PostgreSQL) to "
         "index and query the [OpenTravelData (OPTD)](https://github.com/opentraveldata/opentraveldata) "
         "Points of Reference (POR) dataset, which covers all IATA-registered airports, "
-        "cities, and heliports worldwide.\n\n"
-        "**Source**: https://github.com/trep/opentrep  \n"
+        "cities, and heliports worldwide.
+
+"
+        "**Source**: https://github.com/trep/opentrep  
+"
         "**OPTD data**: https://github.com/opentraveldata/opentraveldata"
     ),
     contact={
@@ -154,7 +159,9 @@ def _enrich(locations: list) -> list:
 @app.get("/api/search",
          summary="Search Points of Reference",
          description=(
-             "Search the OPTD POR dataset using OpenTREP.\n\n"
+             "Search the OPTD POR dataset using OpenTREP.
+
+"
              "The query can be free-text (city name, airport name) or a sequence of "
              "IATA codes. When multiple locations are resolved, the response includes "
              "the great-circle distance between consecutive pairs and the total route "
@@ -164,7 +171,16 @@ def _enrich(locations: list) -> list:
 def search(q: str = Query(..., min_length=1, max_length=200,
                           description="Search query: free-text or IATA code(s)",
                           examples=["nce", "cdg jfk lax", "Tokyo London"])):
-    import subprocess\n    import os\n    wrapper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wrapper.py")\n    try:\n        result = subprocess.run(["python3", wrapper_path, "search", q, POR_PATH, XAPIAN_DIR, str(deploymentNb)], capture_output=True, text=True, check=True)\n        raw = result.stdout.strip()\n    except subprocess.CalledProcessError as e:\n        raise HTTPException(status_code=500, detail=e.stderr.strip())\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))
+    import subprocess
+    import os
+    wrapper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wrapper.py")
+    try:
+        result = subprocess.run(["python3", wrapper_path, "search", q, POR_PATH, XAPIAN_DIR, str(deploymentNb)], capture_output=True, text=True, check=True)
+        raw = result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=500, detail=e.stderr.strip())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     if not raw:
         raise HTTPException(status_code=404, detail="No location found for query: " + repr(q))
     try:
@@ -182,8 +198,11 @@ def search(q: str = Query(..., min_length=1, max_length=200,
          summary="Random airports / itinerary",
          description=(
              "Draw *n* random Points of Reference from the OPTD dataset and return "
-             "the same structure as `/api/search`. Useful for demos and testing.\n\n"
-             "- `n=1` → single random airport  \n"
+             "the same structure as `/api/search`. Useful for demos and testing.
+
+"
+             "- `n=1` → single random airport  
+"
              "- `n=3` → random three-leg itinerary"
          ),
          response_model=SearchResponse)
@@ -209,13 +228,23 @@ def random_airports(n: int = Query(1, ge=1, le=10,
             env = os.environ.copy()
             env["PGPASSWORD"] = "trep"
             res = subprocess.check_output(cmd, env=env, text=True)
-            codes = [line.strip() for line in res.split("\n") if line.strip()]
+            codes = [line.strip() for line in res.split("
+") if line.strip()]
         except Exception as e:
             logger.error(f"Failed to get random codes from PG: {e}")
 
     # Fallback to standard generator if SQLite or if PG failed
     if not codes:
-        import subprocess\n    import os\n    wrapper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wrapper.py")\n    try:\n        result = subprocess.run(["python3", wrapper_path, "generate", "S", str(n * 10), POR_PATH, XAPIAN_DIR, str(deploymentNb)], capture_output=True, text=True, check=True)\n        raw = result.stdout.strip()\n    except subprocess.CalledProcessError as e:\n        raise HTTPException(status_code=500, detail=e.stderr.strip())\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))
+        import subprocess
+    import os
+    wrapper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wrapper.py")
+    try:
+        result = subprocess.run(["python3", wrapper_path, "generate", "S", str(n * 10), POR_PATH, XAPIAN_DIR, str(deploymentNb)], capture_output=True, text=True, check=True)
+        raw = result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=500, detail=e.stderr.strip())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
         codes = [part.split("/")[0] for part in raw.split(",") if "/" in part and part.split("/")[0]]
         codes = codes[:n]
 
