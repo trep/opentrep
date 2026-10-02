@@ -40,8 +40,8 @@ async def lifespan(app: FastAPI):
     from pyopentrep.pyopentrep import OpenTrepSearcher
     _trep = OpenTrepSearcher()
     sql_type, sql_conn = _SQL_TYPE[deploymentNb]
-    ok = _trep.init(POR_PATH, XAPIAN_DIR, sql_type, sql_conn,
-                    deploymentNb, False, True, True, LOG_PATH)
+    ok = _trep.init(POR_PATH, XAPIAN_DIR, "nodb", "",
+                    deploymentNb, False, True, False, LOG_PATH)
     if not ok:
         raise RuntimeError("OpenTREP init failed")
     logger.info("OpenTREP initialised")
