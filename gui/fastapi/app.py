@@ -22,7 +22,7 @@ if "TREP_TARGET_SLOT" in os.environ:
 TREP_DIR    = "/var/www/webapps/opentrep/trep"
 POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
 XAPIAN_DIR  = f"{TREP_DIR}/traveldb"   # opentrep appends deploymentNb automatically
-
+LOG_PATH    = f"/var/log/webapps/search/pyopentrep_{os.getpid()}.log"
 
 # SQL backend per deployment slot.
 # For PG, pass the base DB name ("trep_trep") — the library appends the
@@ -108,17 +108,12 @@ app = FastAPI(
     version="0.7.18",
     description=(
         "REST API for the [OpenTREP](https://github.com/trep/opentrep) open-source "
-        "travel search engine.
-
-"
+        "travel search engine.\n\n"
         "OpenTREP uses Xapian full-text search and SQLite (or MySQL/PostgreSQL) to "
         "index and query the [OpenTravelData (OPTD)](https://github.com/opentraveldata/opentraveldata) "
         "Points of Reference (POR) dataset, which covers all IATA-registered airports, "
-        "cities, and heliports worldwide.
-
-"
-        "**Source**: https://github.com/trep/opentrep  
-"
+        "cities, and heliports worldwide.\n\n"
+        "**Source**: https://github.com/trep/opentrep  \n"
         "**OPTD data**: https://github.com/opentraveldata/opentraveldata"
     ),
     contact={
@@ -159,16 +154,14 @@ def _enrich(locations: list) -> list:
 @app.get("/api/search",
          summary="Search Points of Reference",
          description=(
-             "Search the OPTD POR dataset using OpenTREP.
-
-"
+             "Search the OPTD POR dataset using OpenTREP.\n\n"
              "The query can be free-text (city name, airport name) or a sequence of "
              "IATA codes. When multiple locations are resolved, the response includes "
              "the great-circle distance between consecutive pairs and the total route "
              "distance."
          ),
          response_model=SearchResponse)
-def search(q: str = Query(..., min_length=1, max_length=200,
+async def search(q: str = Query(..., min_length=1, max_length=200,
                           description="Search query: free-text or IATA code(s)",
                           examples=["nce", "cdg jfk lax", "Tokyo London"])):
     import subprocess
@@ -198,11 +191,8 @@ def search(q: str = Query(..., min_length=1, max_length=200,
          summary="Random airports / itinerary",
          description=(
              "Draw *n* random Points of Reference from the OPTD dataset and return "
-             "the same structure as `/api/search`. Useful for demos and testing.
-
-"
-             "- `n=1` → single random airport  
-"
+             "the same structure as `/api/search`. Useful for demos and testing.\n\n"
+             "- `n=1` → single random airport  \n"
              "- `n=3` → random three-leg itinerary"
          ),
          response_model=SearchResponse)
@@ -228,8 +218,7 @@ def random_airports(n: int = Query(1, ge=1, le=10,
             env = os.environ.copy()
             env["PGPASSWORD"] = "trep"
             res = subprocess.check_output(cmd, env=env, text=True)
-            codes = [line.strip() for line in res.split("
-") if line.strip()]
+            codes = [line.strip() for line in res.split("\n") if line.strip()]
         except Exception as e:
             logger.error(f"Failed to get random codes from PG: {e}")
 
