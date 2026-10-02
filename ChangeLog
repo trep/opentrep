@@ -1,3 +1,11 @@
+* Fri Oct 02 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.08.03
+- Disabled Xapian BM25 document length normalization (b=0.0) to prevent
+  penalizing major hubs that have large multilingual alias lists.
+- Increased Xapian matching set retrieval limit (K_DEFAULT_XAPIAN_MATCHING_SET_SIZE)
+  from 30 to 300 to prevent highly-ranked but alias-heavy candidates (e.g. Kyiv)
+  from being prematurely discarded before PageRank weights can be applied.
+
+
 * Sun Sep 20 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.08.02
 - Hardened PostgreSQL/MySQL database-manager commands against uncaught
   exceptions (connection-string parsing, database/user/table/index creation)

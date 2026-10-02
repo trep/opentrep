@@ -348,6 +348,7 @@ namespace OPENTREP {
         
       // Start an enquire session
       Xapian::Enquire enquire (iDatabase);
+      enquire.set_weighting_scheme(Xapian::BM25Weight(1.0, 0.0, 1.0, 0.0, 0.5));
 
       /**
        * The Xapian::QueryParser::parse_query() method aggregates all

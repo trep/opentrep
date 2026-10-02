@@ -156,6 +156,7 @@ namespace OPENTREP {
         
       // Start an enquire session
       Xapian::Enquire enquire (iDatabase);
+      enquire.set_weighting_scheme(Xapian::BM25Weight(1.0, 0.0, 1.0, 0.0, 0.5));
 
       /**
        * The Xapian::QueryParser::parse_query() method aggregates all
@@ -173,7 +174,7 @@ namespace OPENTREP {
       enquire.set_query (lXapianQuery);
 
       // Get the top 20 results of the query
-      lMatchingSet = enquire.get_mset (0, 20);
+      lMatchingSet = enquire.get_mset (0, K_DEFAULT_XAPIAN_MATCHING_SET_SIZE);
 
       // Display the results
       int nbMatches = lMatchingSet.size();
@@ -247,7 +248,7 @@ namespace OPENTREP {
                                   | Xapian::QueryParser::FLAG_LOVEHATE);
 
       enquire.set_query (lCorrectedXapianQuery);
-      lMatchingSet = enquire.get_mset (0, 20);
+      lMatchingSet = enquire.get_mset (0, K_DEFAULT_XAPIAN_MATCHING_SET_SIZE);
 
       // Display the results
       nbMatches = lMatchingSet.size();

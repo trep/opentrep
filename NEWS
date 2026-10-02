@@ -1,3 +1,9 @@
+* 2026-10-02:
+- Version 0.08.03
+- Fixed Xapian indexer document length normalization for major hubs
+- Increased default Xapian matching set size from 30 to 300 to prevent premature results cutoff
+
+
 * 2026-09-20:
 - Version 0.08.02
 - Hardened PostgreSQL/MySQL database-manager commands against crashes

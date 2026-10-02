@@ -150,7 +150,7 @@ namespace OPENTREP {
   /**
    * Default size of matching set for Xapian (e.g., 30)
    */
-  const NbOfMatches_T K_DEFAULT_XAPIAN_MATCHING_SET_SIZE (30);
+  const NbOfMatches_T K_DEFAULT_XAPIAN_MATCHING_SET_SIZE (300);
 
   /**
    * Default indexing weight for standard terms (e.g., 1)
