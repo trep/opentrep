@@ -1,3 +1,7 @@
+* Sat Oct 03 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.09.01
+- Added support for filtering keywords with a minus sign (e.g. -bridge) by appending them to the Xapian query string as NOT filters
+
+
 * Fri Oct 02 2026 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 0.08.03
 - Disabled Xapian BM25 document length normalization (b=0.0) to prevent
   penalizing major hubs that have large multilingual alias lists.

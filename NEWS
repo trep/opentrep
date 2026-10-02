@@ -1,3 +1,8 @@
+* 2026-10-03:
+- Version 0.09.01
+- Added support for filtering keywords with a minus sign (e.g. -bridge)
+
+
 * 2026-10-02:
 - Version 0.08.03
 - Fixed Xapian indexer document length normalization for major hubs
