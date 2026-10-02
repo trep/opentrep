@@ -22,7 +22,7 @@ if "TREP_TARGET_SLOT" in os.environ:
 TREP_DIR    = "/var/www/webapps/opentrep/trep"
 POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
 XAPIAN_DIR  = f"{TREP_DIR}/traveldb"   # opentrep appends deploymentNb automatically
-LOG_PATH    = f"/var/log/webapps/search/pyopentrep_{os.getpid()}.log"
+
 
 # SQL backend per deployment slot.
 # For PG, pass the base DB name ("trep_trep") — the library appends the
@@ -36,19 +36,7 @@ _trep = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global _trep
-    from pyopentrep.pyopentrep import OpenTrepSearcher
-    _trep = OpenTrepSearcher()
-    sql_type, sql_conn = _SQL_TYPE[deploymentNb]
-    ok = _trep.init(POR_PATH, XAPIAN_DIR, "nodb", "",
-                    deploymentNb, False, True, False, LOG_PATH)
-    if not ok:
-        raise RuntimeError("OpenTREP init failed")
-    logger.info("OpenTREP initialised")
     yield
-    _trep.finalize()
-    logger.info("OpenTREP finalised")
-
 # ── Response models ───────────────────────────────────────────────────────────
 
 class CityDetails(BaseModel):
@@ -173,10 +161,10 @@ def _enrich(locations: list) -> list:
              "distance."
          ),
          response_model=SearchResponse)
-async def search(q: str = Query(..., min_length=1, max_length=200,
+def search(q: str = Query(..., min_length=1, max_length=200,
                           description="Search query: free-text or IATA code(s)",
                           examples=["nce", "cdg jfk lax", "Tokyo London"])):
-    raw = _trep.search("J", q)
+    import subprocess\n    import os\n    wrapper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wrapper.py")\n    try:\n        result = subprocess.run(["python3", wrapper_path, "search", q, POR_PATH, XAPIAN_DIR, str(deploymentNb)], capture_output=True, text=True, check=True)\n        raw = result.stdout.strip()\n    except subprocess.CalledProcessError as e:\n        raise HTTPException(status_code=500, detail=e.stderr.strip())\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))
     if not raw:
         raise HTTPException(status_code=404, detail="No location found for query: " + repr(q))
     try:
@@ -227,7 +215,7 @@ def random_airports(n: int = Query(1, ge=1, le=10,
 
     # Fallback to standard generator if SQLite or if PG failed
     if not codes:
-        raw = _trep.generate("S", n * 10)
+        import subprocess\n    import os\n    wrapper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wrapper.py")\n    try:\n        result = subprocess.run(["python3", wrapper_path, "generate", "S", str(n * 10), POR_PATH, XAPIAN_DIR, str(deploymentNb)], capture_output=True, text=True, check=True)\n        raw = result.stdout.strip()\n    except subprocess.CalledProcessError as e:\n        raise HTTPException(status_code=500, detail=e.stderr.strip())\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))
         codes = [part.split("/")[0] for part in raw.split(",") if "/" in part and part.split("/")[0]]
         codes = codes[:n]
 
