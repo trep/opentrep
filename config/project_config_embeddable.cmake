@@ -757,11 +757,13 @@ macro (get_protobuf)
 
   set (Protobuf_FOUND False)
 
-  find_package (absl REQUIRED)
-  list (APPEND PROJ_DEP_LIBS_FOR_LIB absl::log_internal_message)
-  list (APPEND PROJ_DEP_LIBS_FOR_LIB absl::log_internal_check_op)
-  
   find_package (Protobuf ${_required_version} REQUIRED)
+  if (Protobuf_VERSION VERSION_GREATER_EQUAL "4.22.0")
+    find_package (absl REQUIRED)
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB absl::log_internal_message)
+    list (APPEND PROJ_DEP_LIBS_FOR_LIB absl::log_internal_check_op)
+  endif ()
+
   if (Protobuf_LIBRARY)
     set (Protobuf_FOUND True)
   endif (Protobuf_LIBRARY)
