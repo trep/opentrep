@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
@@ -26,18 +26,18 @@ jobs:
       run: |
         sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
         wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-        sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ jammy main'
+        sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ $(. /etc/os-release && echo "$VERSION_CODENAME") main"
         sudo apt-get update
         sudo apt-get -y install cmake cmake-data libmysql++3v5
         sudo cmake --version
         sudo apt-get -y install gcc g++ cppcheck zlib1g-dev libbz2-dev libgmp-dev
         sudo apt-get -y install libxapian-dev graphviz libreadline-dev libncurses5-dev
         sudo apt-get -y install libzmq3-dev libssl-dev libffi-dev sqlite3 libsqlite3-dev
-        sudo apt-get -y install libmariadb-dev-compat libmariadb-dev postgresql-client
+        sudo apt-get -y install libmariadb-dev-compat libmariadb-dev postgresql-client libpq-dev
         sudo apt-get -y install libicu-dev libprotobuf-dev protobuf-compiler
-        sudo apt-get -y install python3.10 python3.10-dev libpython3.10 libpython3.10-dev
+        sudo apt-get -y install python3 python3-dev libpython3-dev
         sudo apt-get -y install doxygen ghostscript texlive-latex-recommended
-        sudo apt-get -y install libboost1.74-all-dev libsoci-dev
+        sudo apt-get -y install libboost-all-dev libsoci-dev
 
     - name: Configure CMake
       run: |
