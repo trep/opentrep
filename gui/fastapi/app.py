@@ -22,7 +22,7 @@ if "TREP_TARGET_SLOT" in os.environ:
 TREP_DIR    = "/var/www/webapps/opentrep/trep"
 POR_PATH    = f"{TREP_DIR}/share/opentrep/data/por/optd_por_public_{deploymentNb}.csv"
 XAPIAN_DIR  = f"{TREP_DIR}/traveldb"   # opentrep appends deploymentNb automatically
-LOG_PATH    = "/var/log/webapps/search/pyopentrep_{os.getpid()}.log"
+LOG_PATH    = f"/var/log/webapps/search/pyopentrep_{os.getpid()}.log"
 
 # SQL backend per deployment slot.
 # For PG, pass the base DB name ("trep_trep") — the library appends the
@@ -423,10 +423,22 @@ document.getElementById("q").addEventListener("keydown", e => {
   if (e.key === "Enter") doSearch();
 });
 
+
+function updateURL(q) {
+  let urlQ = q;
+  if (!urlQ.startsWith('"') && !urlQ.startsWith("'")) {
+    urlQ = '"' + urlQ + '"';
+  }
+  const url = new URL(window.location);
+  url.searchParams.set("q", urlQ);
+  window.history.pushState({}, "", url);
+}
+
 async function doSearch() {
   const q = document.getElementById("q").value.trim();
   if (!q) return;
   setStatus("Searching…");
+  updateURL(q);
   try {
     const r = await fetch("/api/search?q=" + encodeURIComponent(q));
     if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
@@ -441,6 +453,7 @@ async function doRandom(n) {
     if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
     const data = await r.json();
     document.getElementById("q").value = data.query;
+    updateURL(data.query);
     render(data);
   } catch(e) { setErr(e.message); }
 }
