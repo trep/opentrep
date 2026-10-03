@@ -40,6 +40,10 @@ jobs:
         cd build
         make -j$(nproc)
         
+    - name: Install
+      run: |
+        sudo cmake --install build
+
     - name: Run Tests
       run: |
         cd build
