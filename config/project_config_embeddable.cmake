@@ -147,7 +147,7 @@ macro (set_project_options _build_doc _enable_tests _run_gcov)
 
   # Define OPENTREP_SAMPLE_DIR if the project is OPENTREP
   if ("${PROJECT_NAME}" STREQUAL "opentrep")
-    set (OPENTREP_SAMPLE_DIR ${INSTALL_DATA_DIR}/${PACKAGE}/data)
+    set (OPENTREP_SAMPLE_DIR ${INSTALL_SAMPLE_DIR})
   endif ("${PROJECT_NAME}" STREQUAL "opentrep")
 
   ##
